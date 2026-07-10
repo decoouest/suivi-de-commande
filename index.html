@@ -168,6 +168,7 @@
     .form-grid{grid-template-columns:1fr;}
   }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
 
@@ -358,6 +359,7 @@
       <div style="display:flex;gap:10px;align-items:center;">
         <span class="saving-msg" id="saving-msg">Enregistrement...</span>
         <button class="btn btn-outline" onclick="closeModal()">Annuler</button>
+        <button class="btn btn-outline" onclick="genererRapportChantier()" style="border-color:#1565C0;color:#1565C0;">📄 Rapport PDF</button>
         <button class="btn btn-primary" onclick="sauvegarder()">💾 Enregistrer</button>
       </div>
     </div>
@@ -1113,6 +1115,119 @@ function renderPlanning() {
   html += '</div>';
 
   document.getElementById('planning-content').innerHTML = html;
+}
+
+
+async function genererRapportChantier() {
+  if (editLigne === null) { alert('Enregistrez d\'abord la commande.'); return; }
+  var c = commandes.find(function(x){return x.ligne===editLigne;});
+  if (!c) return;
+
+  try {
+    var jspdf = window.jspdf;
+    var doc = new jspdf.jsPDF({orientation:'portrait', unit:'mm', format:'a4'});
+
+    // En-tête bleu
+    doc.setFillColor(21,101,192);
+    doc.rect(0, 0, 210, 30, 'F');
+    doc.setTextColor(255,255,255);
+    doc.setFontSize(18); doc.setFont('helvetica','bold');
+    doc.text('FICHE CHANTIER', 105, 13, {align:'center'});
+    doc.setFontSize(10); doc.setFont('helvetica','normal');
+    doc.text('ECO OUEST - Suivi de commande', 105, 22, {align:'center'});
+
+    var y = 42;
+
+    // Client
+    doc.setFontSize(16); doc.setFont('helvetica','bold'); doc.setTextColor(21,101,192);
+    doc.text(c.client || '—', 14, y);
+    y += 10;
+
+    // Infos générales
+    doc.setDrawColor(220,220,220);
+    doc.setFontSize(10); doc.setTextColor(60,60,60); doc.setFont('helvetica','normal');
+
+    function ligne(label, val) {
+      doc.setFont('helvetica','bold');
+      doc.text(label, 14, y);
+      doc.setFont('helvetica','normal');
+      doc.text(String(val || '—'), 70, y);
+      y += 7;
+    }
+
+    ligne('Fournisseur :', c.fournisseur);
+    ligne('N° Devis :', c.devis);
+    ligne('N° Commande :', c.commande);
+    ligne('N° ARC :', c.arc);
+    ligne('Prev. livraison :', c.prevLivraison);
+    ligne('Statut livraison :', c.statutLivraison);
+    ligne('Statut pose :', c.statutPose);
+    ligne('Date de pose :', c.datePose);
+    ligne('PV chantier :', (c.pvChantier||'').toUpperCase()==='OUI' ? 'FAIT' : 'MANQUANT');
+
+    y += 4;
+    doc.setDrawColor(21,101,192); doc.setLineWidth(0.5);
+    doc.line(14, y, 196, y);
+    y += 8;
+
+    // Commentaire bureau
+    doc.setFillColor(255,243,224);
+    doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(230,81,0);
+    doc.text('NOTE BUREAU', 14, y);
+    y += 6;
+    doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(60,60,60);
+    if (c.commentaire) {
+      var lignesC = doc.splitTextToSize(c.commentaire, 182);
+      doc.text(lignesC, 14, y);
+      y += lignesC.length * 5 + 6;
+    } else {
+      doc.text('Aucune note.', 14, y); y += 8;
+    }
+
+    // Commentaires poseurs
+    var poseurs = [
+      {nom:'ANATOLE', key:'poseur_ANATOLE'},
+      {nom:'ARTIOM',  key:'poseur_ARTIOM'},
+      {nom:'ANTONIO', key:'poseur_ANTONIO'},
+      {nom:'VINCENT', key:'poseur_VINCENT'},
+      {nom:'LAMRI',   key:'poseur_LAMRI'}
+    ];
+
+    poseurs.forEach(function(p) {
+      if (!c[p.key] || !c[p.key].trim()) return;
+      if (y > 250) { doc.addPage(); y = 20; }
+      doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(21,101,192);
+      doc.text('POSEUR : ' + p.nom, 14, y);
+      y += 6;
+      doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(60,60,60);
+      var lignesP = doc.splitTextToSize(c[p.key], 182);
+      doc.text(lignesP, 14, y);
+      y += lignesP.length * 5 + 6;
+    });
+
+    // Photo si présente
+    if (c.photo && c.photo.startsWith('data:')) {
+      if (y > 200) { doc.addPage(); y = 20; }
+      doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(21,101,192);
+      doc.text('PHOTO DU CHANTIER', 14, y);
+      y += 6;
+      try {
+        doc.addImage(c.photo, 'JPEG', 14, y, 80, 60);
+        y += 66;
+      } catch(e) {}
+    }
+
+    // Footer
+    doc.setFillColor(21,101,192);
+    doc.rect(0, 285, 210, 12, 'F');
+    doc.setTextColor(255,255,255); doc.setFontSize(8); doc.setFont('helvetica','normal');
+    doc.text('ECO OUEST - Genere le ' + new Date().toLocaleDateString('fr-FR'), 105, 292, {align:'center'});
+
+    var fn = 'Fiche_' + (c.client||'chantier').replace(/\s/g,'_') + '.pdf';
+    doc.save(fn);
+  } catch(e) {
+    alert('Erreur PDF : ' + e.message);
+  }
 }
 
 function fillFournisseur() {
