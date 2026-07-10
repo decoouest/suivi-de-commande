@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
+<link rel="manifest" href="manifest-artiom.json">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ARTIOM">
+<meta name="theme-color" content="#2E7D32">
+<title>ECO OUEST — АРТЁМ</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:Arial,sans-serif;background:#F0F4F8;color:#1A1A2E;min-height:100vh;}
+.header{background:#2E7D32;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+.header h1{font-size:15px;font-weight:700;color:#fff;}
+.header small{font-size:10px;color:rgba(255,255,255,.7);display:block;}
+.badge{background:rgba(255,255,255,.25);color:#fff;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700;}
+.btn-back{background:none;border:none;color:rgba(255,255,255,.8);font-size:22px;cursor:pointer;margin-right:8px;padding:0;}
+.screen{display:none;padding:16px;}
+.screen.active{display:block;}
+.week-bar{background:#fff;border-radius:10px;border:1px solid #E0E7EF;padding:12px 14px;margin-bottom:12px;display:flex;align-items:center;gap:10px;}
+.week-bar label{font-size:12px;font-weight:600;color:#546E7A;white-space:nowrap;}
+.week-bar input{flex:1;border:1.5px solid #E0E7EF;border-radius:7px;padding:8px;font-size:15px;font-weight:700;text-align:center;outline:none;}
+.week-bar button{background:#2E7D32;color:#fff;border:none;border-radius:7px;padding:8px 16px;font-size:13px;font-weight:700;cursor:pointer;}
+.card{background:#fff;border-radius:12px;border:1px solid #E0E7EF;padding:14px;margin-bottom:10px;}
+.card-client{font-size:15px;font-weight:700;margin-bottom:3px;}
+.card-meta{font-size:12px;color:#546E7A;margin-bottom:10px;}
+.card-btns{display:flex;gap:8px;}
+.card-btns button{flex:1;padding:12px;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:Arial,sans-serif;}
+.btn-av{background:#2E7D32;color:#fff;}
+.btn-pv-card{background:#2E7D32;color:#fff;}
+.badge-pv-ok{display:inline-block;background:#E8F5E9;color:#2E7D32;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;margin-bottom:8px;}
+.badge-pv-non{display:inline-block;background:#FFEBEE;color:#D32F2F;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;margin-bottom:8px;}
+.empty{text-align:center;padding:48px 20px;color:#546E7A;}
+.loader{text-align:center;padding:40px;color:#546E7A;}
+.spinner{width:32px;height:32px;border:3px solid #E3F2FD;border-top-color:#2E7D32;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#546E7A;margin:14px 0 6px;}
+.input-f{width:100%;border:1.5px solid #E0E7EF;border-radius:8px;padding:10px 12px;font-size:14px;font-family:Arial,sans-serif;outline:none;color:#1A1A2E;}
+textarea.input-f{resize:vertical;min-height:70px;margin-bottom:0;}
+.statuts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;}
+.s-btn{padding:10px;border-radius:8px;border:2px solid #E0E7EF;background:#fff;font-family:Arial,sans-serif;font-size:13px;font-weight:600;cursor:pointer;text-align:center;}
+.s-vert{border-color:#2E7D32;background:#E8F5E9;color:#2E7D32;}
+.s-orange{border-color:#E65100;background:#FFF3E0;color:#E65100;}
+.s-rouge{border-color:#D32F2F;background:#FFEBEE;color:#D32F2F;}
+.s-jaune{border-color:#F9A825;background:#FFFDE7;color:#856404;}
+.types{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;}
+.type-item{display:flex;align-items:center;gap:8px;background:#F5F7FA;border-radius:8px;padding:10px 12px;cursor:pointer;border:1.5px solid transparent;}
+.type-item.on{background:#E8F5E9;border-color:#2E7D32;}
+.type-item label{font-size:13px;cursor:pointer;}
+.historique{background:#F5F7FA;border-radius:8px;padding:10px 12px;font-size:12px;color:#546E7A;font-style:italic;max-height:100px;overflow-y:auto;white-space:pre-wrap;margin-bottom:8px;}
+.pv-check{padding:12px;background:#E8F5E9;border-radius:10px;border:1.5px solid #2E7D32;margin:12px 0;display:flex;align-items:center;gap:10px;cursor:pointer;}
+.pv-check span{font-size:14px;font-weight:700;color:#2E7D32;}
+.pv-check input{width:20px;height:20px;accent-color:#2E7D32;cursor:pointer;}
+.btn-save{width:100%;padding:14px;background:#2E7D32;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;margin-top:10px;font-family:Arial,sans-serif;}
+.btn-pv-open{width:100%;padding:14px;background:#1565C0;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;margin-top:8px;font-family:Arial,sans-serif;}
+.pv-form{background:#fff;border-radius:12px;border:1px solid #E0E7EF;padding:18px;}
+.pv-title{font-size:16px;font-weight:700;color:#1565C0;margin-bottom:4px;}
+.pv-sub{font-size:12px;color:#546E7A;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #E0E7EF;}
+.radio-group{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;}
+.radio-btn{display:flex;align-items:center;gap:8px;padding:12px;border:2px solid #E0E7EF;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;}
+.rb-vert{border-color:#2E7D32;background:#E8F5E9;color:#2E7D32;}
+.rb-orange{border-color:#E65100;background:#FFF3E0;color:#E65100;}
+.sig-zone{border:2px dashed #E0E7EF;border-radius:10px;overflow:hidden;background:#fff;margin-top:6px;}
+.sig-zone canvas{display:block;width:100%;touch-action:none;}
+.sig-toolbar{display:flex;gap:8px;margin-top:8px;}
+.btn-clear{background:#FFEBEE;color:#D32F2F;border:none;border-radius:7px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:Arial,sans-serif;}
+.btn-gen{width:100%;padding:16px;background:#1565C0;color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;margin-top:16px;font-family:Arial,sans-serif;}
+.btn-mail{width:100%;padding:14px;background:#0078D4;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;margin-top:8px;font-family:Arial,sans-serif;display:none;}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1A1A2E;color:#fff;padding:12px 24px;border-radius:10px;font-size:14px;font-weight:600;z-index:999;display:none;}
+.toast.on{display:block;}
+.divider{background:#1565C0;color:#fff;text-align:center;padding:8px;font-size:11px;font-weight:700;letter-spacing:2px;border-radius:6px;margin:14px 0 10px;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div style="display:flex;align-items:center;">
+    <button class="btn-back" id="btn-back" onclick="goBack()" style="display:none">&#8592;</button>
+    <div><h1>ECO OUEST &#8212; ARTIOM</h1><div style="font-size:11px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:3px;">v06/07/2026 16:33</div><small id="sub">Мои объекты</small></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;"><button onclick="ouvrirConfig()" style="background:rgba(255,255,255,.2);color:#fff;border:none;border-radius:8px;padding:5px 10px;font-size:12px;cursor:pointer;">⚙️</button><div class="badge">ARTIOM</div></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="screen active" id="s-list">
+  <div class="week-bar">
+    <label>Неделя :</label>
+    <input type="number" id="week-inp" min="1" max="53" value="26">
+    <button onclick="filtrer()">Смотреть</button>
+  </div>
+  <div id="list-content"><div class="loader"><div class="spinner"></div>Загрузка...</div></div>
+</div>
+
+<div class="screen" id="s-av">
+  <div id="av-content"></div>
+</div>
+
+<script>
+var WEBAPP_DEFAULT = 'https://script.google.com/macros/s/AKfycbyLfDXzm5Wr1Mubw8odhWN1pQZAiBJDffcDkUbKNO0A6UjhN3Az7pxB8u_5GPEnyyNC/exec';
+var WEBAPP = localStorage.getItem('eco-webapp-url') || WEBAPP_DEFAULT;
+var NOM = 'ARTIOM';
+var COL = 18;
+var TERMINES = ["Livr\u00e9", "Termin\u00e9", "Pos\u00e9", "LIVRE", "TERMINE", "POSE", "Livre", "Завершено"];
+var STATUTS = [{"label": "Завершено", "cls": "vert", "val": "Завершено"}, {"label": "В работе", "cls": "orange", "val": "В работе"}, {"label": "Планировать", "cls": "jaune", "val": "Планировать"}, {"label": "Сервис", "cls": "rouge", "val": "Сервис"}];
+var TYPES = ["Окно", "Дверь", "Жалюзи", "Дверь-fenetre", "Витраж", "Ворота", "Штора", "Перила", "Пергола", "Веранда", "Дверь de garage", "Другое"];
+var allData = [];
+var currentC = null;
+var currentLigne = null;
+var sigCanvas, sigCtx, sigDraw = false, sigOk = false;
+
+
+function ouvrirConfig() {
+  document.getElementById('cfg-url').value = WEBAPP;
+  show('s-config');
+}
+function saveCfg() {
+  var url = document.getElementById('cfg-url').value.trim();
+  if (!url || !url.startsWith('https://')) {
+    document.getElementById('cfg-status').innerHTML = '<span style="color:#D32F2F;">Неверный URL</span>';
+    return;
+  }
+  localStorage.setItem('eco-webapp-url', url);
+  WEBAPP = url;
+  document.getElementById('cfg-status').innerHTML = '<span style="color:#2E7D32;">✅ Enregistré !</span>';
+  setTimeout(function() { show('s-list'); charger(); }, 1000);
+}
+
+function show(id) {
+  document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
+  document.getElementById(id).classList.add('active');
+}
+
+function goBack() {
+  var cur = document.querySelector('.screen.active').id;
+  if (cur === 's-av') {
+    show('s-list');
+    document.getElementById('sub').textContent = 'Мои объекты';
+    document.getElementById('btn-back').style.display = 'none';
+  }
+}
+
+function toast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('on');
+  setTimeout(function() { t.classList.remove('on'); }, 3000);
+}
+
+function h(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function getWeek(d) {
+  d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+  d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7));
+  var y = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+  return Math.ceil((((d - y) / 86400000) + 1) / 7);
+}
+
+window.addEventListener('load', function() {
+  var sem = getWeek(new Date());
+  document.getElementById('week-inp').value = sem;
+  charger();
+});
+
+function charger() {
+  document.getElementById('list-content').innerHTML = '<div class="loader"><div class="spinner"></div>Загрузка...</div>';
+  var old = document.getElementById('jsonp-sc');
+  if (old) old.parentNode.removeChild(old);
+  var to = setTimeout(function() {
+    document.getElementById('list-content').innerHTML = '<div class="empty"><p>Ошибка подключения</p></div>';
+  }, 15000);
+  window['_cbArtiom'] = function(d) {
+    clearTimeout(to);
+    if (!d.ok) { document.getElementById('list-content').innerHTML = '<div class="empty"><p>Erreur</p></div>'; return; }
+    allData = d.data.filter(function(c) { return (c.commentaireARC||'').toUpperCase() !== 'ANNULER'; });
+    filtrer();
+  };
+  var sc = document.createElement('script');
+  sc.id = 'jsonp-sc';
+  sc.src = WEBAPP + '?callback=_cbArtiom&t=' + Date.now();
+  sc.onerror = function() { clearTimeout(to); document.getElementById('list-content').innerHTML = '<div class="empty"><p>Erreur connexion</p></div>'; };
+  document.head.appendChild(sc);
+}
+
+function filtrer() {
+  var sem = parseInt(document.getElementById('week-inp').value, 10);
+  var POSES_OK = ['Terminé','Termine','Posé','Pose','TERMINE','POSE'];
+  var f = allData.filter(function(c) {
+    // Exclure si pose terminée
+    if (POSES_OK.indexOf((c.statutPose||'').trim()) !== -1) return false;
+    var dp = (c.datePose||'').trim();
+    if (!dp) return false;
+    var m = dp.match(/S\s*0*(\d{1,2})/i);
+    if (m) return parseInt(m[1], 10) === sem;
+    var d = new Date(dp);
+    if (!isNaN(d)) return getWeek(d) === sem;
+    return false;
+  });
+  if (!f.length) {
+    document.getElementById('list-content').innerHTML = '<div class="empty"><p>Нет объектов для недели S' + sem + '</p></div>';
+    return;
+  }
+  var rev = f.slice().reverse();
+  var html = rev.map(function(c, i) {
+    var pv = (c.pvChantier||'').toUpperCase() === 'OUI';
+    return '<div class="card">' +
+      (pv ? '<span class="badge-pv-ok">ПВ сделан</span>' : '<span class="badge-pv-non">ПВ отсутствует</span>') +
+      '<div class="card-client">' + h(c.client) + '</div>' +
+      '<div class="card-meta">' + h(c.fournisseur||'') + (c.datePose ? ' - ' + c.datePose : '') + '</div>' +
+      '<div class="card-btns"><button class="btn-av" data-idx="' + i + '">✏️ Прогресс</button></div>' +
+      '</div>';
+  }).join('');
+  document.getElementById('list-content').innerHTML = html;
+  document.getElementById('list-content').querySelectorAll('.btn-av').forEach(function(btn) {
+    var idx = parseInt(btn.getAttribute('data-idx'), 10);
+    btn.addEventListener('click', function() { ouvrirAv(rev[idx]); });
+  });
+}
+
+
+function previewФотоAv(event) {
+  var file = event.target.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var img = new Image();
+    img.onload = function() {
+      var canvas = document.createElement('canvas');
+      var max = 600;
+      var w = img.width, h = img.height;
+      if (w > max) { h = Math.round(h * max / w); w = max; }
+      if (h > max) { w = Math.round(w * max / h); h = max; }
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      var compressed = canvas.toDataURL('image/jpeg', 0.6);
+      // Si trop grand, réduire progressivement
+      if (compressed.length > 45000) {
+        compressed = canvas.toDataURL('image/jpeg', 0.4);
+      }
+      if (compressed.length > 45000) {
+        canvas.width = Math.round(w * 0.7); canvas.height = Math.round(h * 0.7);
+        canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+        compressed = canvas.toDataURL('image/jpeg', 0.4);
+      }
+      window._photoAv = compressed;
+      var prev = document.getElementById('photo-preview-av');
+      if (prev) prev.innerHTML = '<img src="'+compressed+'" style="width:60px;height:60px;object-fit:cover;border-radius:6px;border:2px solid #1565C0;">';
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function ouvrirAv(c) {
+  currentC = c;
+  currentLigne = c.ligne;
+  window._photoAv = c.photo || null;
+  document.getElementById('sub').textContent = c.client;
+  document.getElementById('btn-back').style.display = 'block';
+  var sP = c.statutPose || '';
+  var histo = c['poseur_' + NOM] || '';
+  var html = '<div style="padding:16px;">';
+  html += '<div style="font-size:16px;font-weight:700;margin-bottom:2px;">' + h(c.client) + '</div>';
+  html += '<div style="font-size:12px;color:#546E7A;margin-bottom:14px;">' + h(c.fournisseur||'') + (c.datePose ? ' - ' + c.datePose : '') + '</div>';
+  if (c.commentaire) {
+    html += '<div style="padding:10px;background:#FFF3E0;border-radius:8px;border-left:3px solid #E65100;margin-bottom:12px;">';
+    html += '<div style="font-size:11px;font-weight:700;color:#E65100;">ЗАМЕТКА БЮРО</div>';
+    html += '<div style="font-size:12px;margin-top:4px;">' + h(c.commentaire) + '</div></div>';
+  }
+  html += '<div class="section-label">Статус</div>';
+  html += '<div class="statuts">';
+  STATUTS.forEach(function(s) {
+    var on = sP.toLowerCase() === s.val.toLowerCase();
+    html += '<button class="s-btn' + (on ? ' s-' + s.cls : '') + '" data-val="' + s.val + '" data-cls="' + s.cls + '">' + s.label + '</button>';
+  });
+  html += '</div>';
+  html += '<div class="section-label">Установленные элементы</div>';
+  html += '<div class="types">';
+  TYPES.forEach(function(t) {
+    html += '<div class="type-item" data-type="' + t + '"><input type="checkbox" onclick="event.stopPropagation()"><label>' + t + '</label></div>';
+  });
+  html += '</div>';
+  html += '<div class="section-label">Комнаты</div>';
+  html += '<input class="input-f" id="pi-av" type="text" placeholder="Гостиная, Спальня...">';
+  html += '<div class="section-label">Осталось сделать</div>';
+  html += '<textarea class="input-f" id="re-av" placeholder="Детали..."></textarea>';
+  html += '<div class="section-label">История посёра</div>';
+  html += '<div class="historique" id="hi-av">' + h(histo) + '</div>';
+  html += '<div class="section-label">Новый комментарий</div>';
+  html += '<textarea class="input-f" id="co-av" placeholder="Новое замечание..."></textarea>';
+  html += '<label class="pv-check"><input type="checkbox" id="pvcb-av" ' + ((c.pvChantier||'').toUpperCase()==='OUI'?'checked':'') + '><span>ПВ по окончании работ выполнен</span></label>';
+  html += '<div class="section-label">Фото объекта</div>';
+  html += '<div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">';
+  html += '<input type="file" id="photo-input-av" accept="image/*" style="display:none" onchange="previewФотоAv(event)">';
+  html += '<button type="button" id="btn-photo-av" style="padding:10px 16px;background:#F5F7FA;border:1.5px solid #E0E7EF;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;">📷 Photo</button>';
+  html += '<div id="photo-preview-av">'+(currentC&&currentC.photo?'<img src="'+currentC.photo+'" style="width:60px;height:60px;object-fit:cover;border-radius:6px;border:2px solid #1565C0;">':'')+'</div>';
+  html += '</div>';
+  html += '<button class="btn-save" id="btn-enreg">Сохранить</button>';
+  
+  html += '</div>';
+  document.getElementById('av-content').innerHTML = html;
+  show('s-av');
+  // Статусs
+  document.querySelectorAll('.s-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var val = btn.getAttribute('data-val');
+      var cls = btn.getAttribute('data-cls');
+      document.querySelectorAll('.s-btn').forEach(function(b) { b.className = 's-btn'; });
+      btn.className = 's-btn s-' + cls;
+    });
+  });
+  // Types
+  document.querySelectorAll('.type-item').forEach(function(item) {
+    item.addEventListener('click', function() {
+      var cb = item.querySelector('input[type=checkbox]');
+      cb.checked = !cb.checked;
+      item.classList.toggle('on', cb.checked);
+    });
+  });
+  // Сохранить
+  document.getElementById('btn-enreg').addEventListener('click', function() { enreg(); });
+  var btnPhoto = document.getElementById('btn-photo-av');
+  if (btnPhoto) btnPhoto.addEventListener('click', function() { document.getElementById('photo-input-av').click(); });
+  // PV
+  document.getElementById('btn-open-pv').addEventListener('click', function() { ouvrirPV(currentC); });
+}
+
+async function enreg() {
+  var btn = document.getElementById('btn-enreg');
+  if (btn) { btn.disabled = true; btn.textContent = 'Enregistrement...'; }
+  var sS = '';
+  document.querySelectorAll('.s-btn').forEach(function(b) {
+    if (b.className.indexOf('s-vert') !== -1) sS = 'Завершено';
+    else if (b.className.indexOf('s-orange') !== -1) sS = 'В работе';
+    else if (b.className.indexOf('s-jaune') !== -1) sS = 'Планировать';
+    else if (b.className.indexOf('s-rouge') !== -1) sS = 'Сервис';
+  });
+  var types = [];
+  document.querySelectorAll('.type-item.on').forEach(function(item) { types.push(item.getAttribute('data-type')); });
+  var pi = (document.getElementById('pi-av')||{}).value || '';
+  var re = (document.getElementById('re-av')||{}).value || '';
+  var co = (document.getElementById('co-av')||{}).value || '';
+  var pvCb = document.getElementById('pvcb-av');
+  var pvVal = pvCb && pvCb.checked ? 'OUI' : 'NON';
+  var histo = document.getElementById('hi-av');
+  var histoTxt = histo ? histo.textContent : '';
+  var now = new Date();
+  var ds = now.toLocaleDateString('fr-FR', {day:'2-digit',month:'2-digit',year:'numeric'}) + ' ' + now.toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'});
+  var parts = [];
+  if (sS) parts.push('Статус: ' + sS);
+  if (types.length) parts.push('Pose: ' + types.join(', '));
+  if (pi.trim()) parts.push('Комнаты: ' + pi.trim());
+  if (re.trim()) parts.push('Reste: ' + re.trim());
+  if (co.trim()) parts.push(co.trim());
+  var newLine = parts.length ? '[' + ds + ' - ' + NOM + '] ' + parts.join(' | ') : '';
+  var final = histoTxt ? (histoTxt + (newLine ? '\n' + newLine : '')) : newLine;
+  var champs = {};
+  if (sS) champs[13] = sS;
+  champs[16] = pvVal;
+  if (final) champs[COL] = final;
+  if (window._photoAv) champs[23] = window._photoAv;
+  try {
+    var r = await fetch(WEBAPP, {method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action:'modifier',ligne:currentLigne,champs:champs}),redirect:'follow'});
+    var d = await r.json();
+    if (!d.ok) throw new Error(d.error);
+    if (histo) histo.textContent = final;
+    var coEl = document.getElementById('co-av');
+    if (coEl) coEl.value = '';
+    toast('Сохранено !');
+  } catch(e) { toast('Ошибка: ' + e.message); }
+  if (btn) { btn.disabled = false; btn.textContent = 'Сохранить'; }
+}
+</script>
+</body>
+</html>
