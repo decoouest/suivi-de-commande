@@ -159,13 +159,52 @@
   .photo-modal img{max-width:90vw;max-height:90vh;border-radius:10px;}
   .photo-modal-close{position:fixed;top:20px;right:20px;background:#fff;border:none;border-radius:50%;width:36px;height:36px;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
   @media(max-width:900px){
-    .sidebar{width:56px;}
+    .sidebar{width:52px;}
     .sidebar .nav-item span,.sidebar-logo span,.sidebar-logo small,.sidebar-footer{display:none;}
-    .main{margin-left:56px;}
-    .sidebar-logo{padding:16px 10px;}
-    .nav-item{padding:12px;justify-content:center;}
+    .main{margin-left:52px;}
+    .sidebar-logo{padding:14px 8px;}
+    .nav-item{padding:14px 8px;justify-content:center;}
+    .nav-item .icon{font-size:20px;}
     .dash-grid{grid-template-columns:1fr;}
     .form-grid{grid-template-columns:1fr;}
+  }
+
+  @media(max-width:768px){
+    /* Topbar compacte */
+    .topbar{flex-wrap:wrap;gap:8px;padding:10px 12px;}
+    .topbar-title{font-size:16px;width:100%;}
+    .topbar-actions{width:100%;justify-content:space-between;gap:6px;}
+    .topbar-actions .btn{font-size:12px;padding:8px 10px;flex:1;}
+
+    /* Recherche et filtres en colonne */
+    .filters-bar{flex-direction:column;gap:8px;padding:10px;}
+    .search-box{width:100%;}
+    .select-filter{width:100%;}
+    .filter-badges{width:100%;display:flex;flex-wrap:wrap;gap:6px;}
+    .filter-badge{flex:1;min-width:70px;text-align:center;font-size:12px;padding:6px 8px;}
+
+    /* KPI en 2 colonnes */
+    .kpi-grid{grid-template-columns:1fr 1fr;gap:8px;}
+    .kpi-card{padding:12px;}
+    .kpi-value{font-size:22px;}
+
+    /* TABLEAU EN CARTES sur mobile */
+    .table-wrap{overflow:visible;}
+    table thead{display:none;}
+    table, table tbody, table tr, table td{display:block;width:100%;}
+    table tr{background:#fff;border-radius:12px;border:1px solid var(--bordure);margin-bottom:10px;padding:12px;box-shadow:0 1px 3px rgba(0,0,0,.05);}
+    table td{border:none;padding:5px 0;text-align:left !important;display:flex;justify-content:space-between;align-items:center;gap:10px;}
+    table td::before{content:attr(data-label);font-weight:700;font-size:11px;text-transform:uppercase;color:var(--texte2);flex-shrink:0;}
+    table td:first-child{font-size:16px;font-weight:700;color:var(--bleu);border-bottom:1px solid var(--bordure);padding-bottom:8px;margin-bottom:4px;}
+    table td:first-child::before{display:none;}
+    .col-comment{max-width:none !important;white-space:normal !important;}
+
+    /* Modal plein écran */
+    .modal-content{width:100%;max-width:100%;height:100%;max-height:100%;border-radius:0;}
+    .form-grid{grid-template-columns:1fr;}
+
+    /* Planning */
+    #planning-titre{font-size:14px;}
   }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -535,17 +574,17 @@ function renderTable() {
     var sP=c.statutPose?'<span class="badge '+(c.statutPose==='Terminé'?'badge-ok':c.statutPose==='SAV'?'badge-urgent':'badge-info')+'">'+h(c.statutPose)+'</span>':'—';
     var extra=a.t.indexOf(' | ')!==-1?'<br><span style="font-size:10px;color:var(--texte2);">+'+(a.t.split(' | ').length-1)+' autre(s)</span>':'';
     return '<tr>'+
-      '<td class="col-client">'+h(c.client)+'</td>'+
-      '<td><span style="background:'+fc+'18;color:'+fc+';padding:3px 8px;border-radius:5px;font-size:11px;font-weight:700;">'+h(c.fournisseur||'—')+'</span></td>'+
-      '<td class="col-mono">'+h(c.devis||'—')+'</td>'+
+      '<td class="col-client" data-label="Client">'+h(c.client)+'</td>'+
+      '<td data-label="Fournisseur"><span style="background:'+fc+'18;color:'+fc+';padding:3px 8px;border-radius:5px;font-size:11px;font-weight:700;">'+h(c.fournisseur||'—')+'</span></td>'+
+      '<td class="col-mono" data-label="Devis">'+h(c.devis||'—')+'</td>'+
       '<td>'+(c.commande==='OUI'?'<span class="badge badge-ok">OUI</span>':c.commande==='NON'?'<span class="badge badge-urgent">NON</span>':'—')+'</td>'+
-      '<td class="col-mono">'+h(c.arc||'—')+'</td>'+
-      '<td>'+semaineBadge(c.prevLivraison)+'</td>'+
-      '<td>'+sL+'</td><td>'+sP+'</td>'+
-      '<td style="font-size:12px;font-weight:600;color:var(--bleu);">'+h(c.datePose||'—')+'</td>'+
-      '<td>'+pvBadge(c.pvChantier, c.ligne)+'</td>'+photoCell(c.photo)+
-      '<td class="col-comment" title="'+h(c.commentaire)+'">'+h(c.commentaire||'')+'</td>'+
-      '<td><span class="alerte-text '+aClass(a.n)+'">'+(a.n===0?'OK':'⚠ '+h(a.t.split(' | ')[0]))+'</span>'+extra+'</td>'+
+      '<td class="col-mono" data-label="ARC">'+h(c.arc||'—')+'</td>'+
+      '<td data-label="Livraison">'+semaineBadge(c.prevLivraison)+'</td>'+
+      '<td data-label="Statut livr.">'+sL+'</td><td data-label="Statut pose">'+sP+'</td>'+
+      '<td style="font-size:12px;font-weight:600;color:var(--bleu);" data-label="Date pose">'+h(c.datePose||'—')+'</td>'+
+      '<td data-label="PV">'+pvBadge(c.pvChantier, c.ligne)+'</td>'+photoCell(c.photo)+
+      '<td class="col-comment" data-label="Commentaire" title="'+h(c.commentaire)+'">'+h(c.commentaire||'')+'</td>'+
+      '<td data-label="Alerte"><span class="alerte-text '+aClass(a.n)+'">'+(a.n===0?'OK':'⚠ '+h(a.t.split(' | ')[0]))+'</span>'+extra+'</td>'+
       '<td><button class="action-btn" onclick="openModal('+c._i+')">✏️</button></td>'+
     '</tr>';
   }).join('');
@@ -1022,8 +1061,8 @@ async function traduireCommentairesPoseurs() {
 
 
 function photoCell(photo) {
-  if (!photo || !photo.startsWith('data:')) return '<td style="color:#ccc;text-align:center;">—</td>';
-  return '<td><img src="' + photo + '" style="width:48px;height:48px;object-fit:cover;border-radius:5px;cursor:pointer;" onclick="openPhotoModal(event,this.src)"></td>';
+  if (!photo || !photo.startsWith('data:')) return '<td data-label="Photo" style="color:#ccc;">—</td>';
+  return '<td data-label="Photo"><img src="' + photo + '" style="width:48px;height:48px;object-fit:cover;border-radius:5px;cursor:pointer;" onclick="openPhotoModal(event,this.src)"></td>';
 }
 
 
