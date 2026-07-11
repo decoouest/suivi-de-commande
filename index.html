@@ -258,8 +258,9 @@
         <span class="filter-badge warn" id="fb-warn" onclick="setFilter('warn')">🟠 Attention</span>
         <span class="filter-badge ok" id="fb-ok" onclick="setFilter('ok')">🟢 OK</span>
       </div>
-      <div style="margin-top:8px;">
-        <span class="filter-badge" id="fb-sav" onclick="setFilter('sav')" style="border:1.5px solid #D32F2F;color:#D32F2F;font-weight:700;width:100%;display:block;text-align:center;padding:8px;border-radius:8px;cursor:pointer;">🔧 Voir tous les SAV (<span id="sav-count">0</span>)</span>
+      <div style="margin-top:8px;display:flex;gap:8px;">
+        <span class="filter-badge" id="fb-sav" onclick="setFilter('sav')" style="border:1.5px solid #D32F2F;color:#D32F2F;font-weight:700;flex:1;text-align:center;padding:8px;border-radius:8px;cursor:pointer;">🔧 SAV (<span id="sav-count">0</span>)</span>
+        <span class="filter-badge" id="fb-noncmd" onclick="setFilter('noncmd')" style="border:1.5px solid #E65100;color:#E65100;font-weight:700;flex:1;text-align:center;padding:8px;border-radius:8px;cursor:pointer;">📦 Non commandé (<span id="noncmd-count">0</span>)</span>
       </div>
       <div class="table-wrap">
         <table>
@@ -576,6 +577,11 @@ function renderTable() {
   var savEl = document.getElementById('sav-count');
   if(savEl) savEl.textContent = savCount;
   if(alertFilter==='sav')rows=rows.filter(function(c){return (c.statutPose||'').trim()==='SAV'||(c.statutLivraison||'').trim()==='SAV'||(c.client||'').toLowerCase().indexOf('sav')!==-1;});
+  // Compter non commandés
+  var noncmdCount = commandes.filter(function(c){return (c.commande||'').trim().toUpperCase()!=='OUI';}).length;
+  var noncmdEl = document.getElementById('noncmd-count');
+  if(noncmdEl) noncmdEl.textContent = noncmdCount;
+  if(alertFilter==='noncmd')rows=rows.filter(function(c){return (c.commande||'').trim().toUpperCase()!=='OUI';});
   rows.sort(function(a,b){
     if(sortCol==='ligne'){
       return sortAsc ? (a.ligne-b.ligne) : (b.ligne-a.ligne);
