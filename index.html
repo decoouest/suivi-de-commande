@@ -252,6 +252,7 @@
           <option value="">Tous statuts</option>
           <option>A planifier</option><option>A PLANIFIER</option><option>Livré</option><option>En cours</option><option>EN COURS</option><option>SAV</option><option>Terminé</option><option>Posé</option><option>Annulé</option><option>En attente</option><option>Bloqué</option>
         </select>
+        <label style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--texte2);cursor:pointer;white-space:nowrap;"><input type="checkbox" id="show-termines" onchange="renderTable()" style="width:15px;height:15px;cursor:pointer;">Voir terminés</label>
         <span class="filter-badge all active" id="fb-all" onclick="setFilter('all')">Toutes</span>
         <span class="filter-badge urgent" id="fb-urgent" onclick="setFilter('urgent')">🔴 Urgentes</span>
         <span class="filter-badge warn" id="fb-warn" onclick="setFilter('warn')">🟠 Attention</span>
@@ -356,7 +357,7 @@
         </div>
         <div class="form-group"><label>Prevision livraison</label><input id="f-prevLivraison" type="text"></div>
         <div class="form-group"><label>Statut livraison</label>
-          <select id="f-statutLivraison"><option value="">—</option><option>En cours</option><option>Livré</option><option>Terminé</option><option>En attente</option><option>Bloqué</option><option>Annulé</option><option>A PLANIFIER</option></select>
+          <select id="f-statutLivraison"><option value="">—</option><option>En cours</option><option>Livré</option><option>Terminé</option><option>En attente</option><option>Bloqué</option><option>SAV</option><option>Annulé</option><option>A PLANIFIER</option></select>
         </div>
         <div class="form-group"><label>Statut pose</label>
           <select id="f-statutPose"><option value="">—</option><option>A PLANIFIER</option><option>En cours</option><option>Posé</option><option>Terminé</option><option>SAV</option><option>Annulé</option><option>EN COURS</option></select>
@@ -552,13 +553,22 @@ function renderTable() {
   var q=(document.getElementById('search').value||'').toLowerCase();
   var fF=document.getElementById('filter-fournisseur').value;
   var fS=document.getElementById('filter-statut').value;
+  var afficherTermines = document.getElementById('show-termines') && document.getElementById('show-termines').checked;
+  var STATUTS_TERMINES = ['Terminé','Termine','Posé','Pose','TERMINE','POSE','Livré','Livre','LIVRE'];
   var rows=commandes.map(function(c,i){return Object.assign({},c,{_i:i,_a:alerte(c)});});
+  if (!afficherTermines) {
+    rows = rows.filter(function(c){
+      return STATUTS_TERMINES.indexOf((c.statutLivraison||'').trim()) === -1
+          && STATUTS_TERMINES.indexOf((c.statutPose||'').trim()) === -1;
+    });
+  }
   if(q)rows=rows.filter(function(c){return (c.client||'').toLowerCase().indexOf(q)!==-1||(c.devis||'').toLowerCase().indexOf(q)!==-1||(c.arc||'').toLowerCase().indexOf(q)!==-1||(c.fournisseur||'').toLowerCase().indexOf(q)!==-1;});
   if(fF)rows=rows.filter(function(c){return c.fournisseur===fF;});
   if(fS)rows=rows.filter(function(c){var fSl=fS.toLowerCase();return (c.statutLivraison||'').toLowerCase().indexOf(fSl)!==-1||(c.statutPose||'').toLowerCase().indexOf(fSl)!==-1;});
   if(alertFilter==='urgent')rows=rows.filter(function(c){return c._a.n===3;});
   if(alertFilter==='warn')rows=rows.filter(function(c){return c._a.n>=1&&c._a.n<=2;});
   if(alertFilter==='ok')rows=rows.filter(function(c){return c._a.n===0;});
+  if(alertFilter==='sav')rows=rows.filter(function(c){return (c.statutPose||'').trim()==='SAV'||(c.statutLivraison||'').trim()==='SAV'||(c.client||'').toLowerCase().indexOf('sav')!==-1;});
   rows.sort(function(a,b){
     if(sortCol==='ligne'){
       return sortAsc ? (a.ligne-b.ligne) : (b.ligne-a.ligne);
