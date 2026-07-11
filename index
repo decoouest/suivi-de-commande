@@ -1,0 +1,782 @@
+// ============================================================
+//  D ECO OUEST — API Apps Script (VERSION FINALE)
+//  Déployer → Gérer les déploiements → ✏️ → Nouvelle version
+// ============================================================
+
+const SHEET_ID = '1ZdpDEnQGeBKyMqK1aLBvnoL1XbLGseZYLh4Snn9S6cg';
+
+const SALARIES = {
+  ANATOLE: { sheet: 'ANATOLE 2026', startRow: 6, colRemarque: 19 },
+  ARTIOM:  { sheet: 'ARTIOM 2026',  startRow: 6, colRemarque: 19 },
+  // heuresParJour : clé = jour de semaine JS (0=dim,1=lun,2=mar,3=mer,4=jeud,5=ven,6=sam)
+  // Antonio : 39h/semaine → 8h du lundi au jeudi, 7h le vendredi
+  ANTONIO: { sheet: 'ANTONIO 2026', startRow: 3, colRemarque: 16,
+             heuresParJour: { 1: 8, 2: 8, 3: 8, 4: 8, 5: 7 } },
+};
+
+function doGet(e) {
+  const action  = e.parameter.action || 'solde';
+  const salarie = (e.parameter.salarie || '').toUpperCase();
+  let result;
+  try {
+    if (action === 'solde')           result = getSoldeGlobal();
+    else if (action === 'recap')      result = getRecapSalarie(salarie);
+    else if (action === 'semaine')    result = getSemaineCourante(salarie, e.parameter.offset);
+    else if (action === 'ping')       result = { ok: true };
+    // Actions d'écriture via GET (évite CORS depuis fichier local)
+    else if (action === 'saisir_type')        result = saisirType({ salarie: salarie, row: parseInt(e.parameter.row), type: e.parameter.type });
+    else if (action === 'saisir_fin')         result = saisirFin({ salarie: salarie, row: parseInt(e.parameter.row), fin: e.parameter.fin });
+    else if (action === 'saisir_photo')       result = saisirPhoto({ salarie: salarie, row: parseInt(e.parameter.row), imageBase64: e.parameter.imageBase64 });
+    else if (action === 'saisir_remarque')   result = saisirRemarque({ salarie: salarie, row: parseInt(e.parameter.row), remarque: e.parameter.remarque });
+    else if (action === 'saisir_photo_chunk') result = saisirPhotoChunk({ salarie: salarie, row: parseInt(e.parameter.row), chunk: e.parameter.chunk, idx: parseInt(e.parameter.idx), total: parseInt(e.parameter.total) });
+    else if (action === 'pdf_salarie')  result = genererPdfSalarie(salarie);
+    else if (action === 'mois')          result = getMoisCourant(salarie, e.parameter.offset);
+    else if (action === 'moisCalendrier') result = getMoisCalendrier(salarie, e.parameter.offset);
+    else if (action === 'pv_chunk')       result = pvChunk({ chantier: e.parameter.chantier, datePv: e.parameter.datePv, page: e.parameter.page, chunk: e.parameter.chunk, idx: e.parameter.idx, total: e.parameter.total });
+    else if (action === 'solidarite')    result = getJourneeSolidarite(salarie);
+    else if (action === 'pdf_mensuel')       result = genererPdfDepuisHTML(decodeURIComponent(e.parameter.html || ''));
+    else if (action === 'pdf_mensuel_chunk') result = pdfMensuelChunk({ chunk: e.parameter.chunk, idx: parseInt(e.parameter.idx), total: parseInt(e.parameter.total), salarie: salarie });
+    else result = { error: 'Action inconnue' };
+  } catch(err) { result = { error: err.message }; }
+  return buildResponse(result);
+}
+
+function buildResponse(result) {
+  const output = ContentService.createTextOutput(JSON.stringify(result))
+    .setMimeType(ContentService.MimeType.JSON);
+  return output;
+}
+
+function doPost(e) {
+  let result;
+  try {
+    const raw = e.postData.contents;
+    const data = JSON.parse(raw);
+    if      (data.action === 'saisir_type')  result = saisirType(data);
+    else if (data.action === 'saisir_fin')   result = saisirFin(data);
+    else if (data.action === 'saisir_photo') result = saisirPhoto(data);
+    else result = { error: 'Action inconnue' };
+  } catch(err) { result = { error: err.message }; }
+  // Ajouter headers CORS
+  return buildResponse(result);
+}
+
+// ── SOLDE GLOBAL ─────────────────────────────────────────────
+function getSoldeGlobal() {
+  const ss      = SpreadsheetApp.openById(SHEET_ID);
+  const ws      = ss.getSheetByName('  SOLDE GLOBAL ');
+  const raw     = ws.getRange('A3:G5').getValues();
+  const display = ws.getRange('A3:G5').getDisplayValues();
+  const salaries = [];
+  for (let i = 0; i < 3; i++) {
+    const r = raw[i]; const d = display[i];
+    const soldeStr = String(d[3]);
+    const positif  = !soldeStr.startsWith('-') && soldeStr !== '0:00';
+    const nomKey   = String(r[0]).trim().toUpperCase();
+    let solidarite = { found: false };
+    if (SALARIES[nomKey]) {
+      const cfg = SALARIES[nomKey];
+      const ws2 = ss.getSheetByName(cfg.sheet);
+      const lastRow = ws2.getLastRow();
+      const nbRows = lastRow - cfg.startRow + 1;
+      const types = ws2.getRange(cfg.startRow, 5, nbRows, 1).getValues();
+      const dates = ws2.getRange(cfg.startRow, 2, nbRows, 1).getValues();
+      for (let j = 0; j < types.length; j++) {
+        if (String(types[j][0]) === 'journee solidarité travaillé') {
+          const dv = dates[j][0];
+          if (dv instanceof Date) {
+            solidarite = { found: true, date: Utilities.formatDate(dv, 'Europe/Paris', 'dd/MM/yyyy') };
+          }
+          break;
+        }
+      }
+    }
+    salaries.push({
+      nom: String(r[0]).trim(), net2026: d[1], report: d[2],
+      solde: d[3], statut: String(r[4]).trim(),
+      jours: String(r[5]).trim(), mois: String(r[6]).trim(), positif: positif,
+      solidarite: solidarite,
+    });
+  }
+  return { ok: true, timestamp: new Date().toISOString(), salaries: salaries };
+}
+
+// ── RECAP ─────────────────────────────────────────────────────
+function getRecapSalarie(nom) {
+  if (!SALARIES[nom]) return { error: 'Salarié inconnu' };
+  const ss  = SpreadsheetApp.openById(SHEET_ID);
+  const ws  = ss.getSheetByName('  SOLDE GLOBAL ');
+  const rng = { ANATOLE: 'A11:K23', ARTIOM: 'A30:K42', ANTONIO: 'A48:K61' };
+  const raw     = ws.getRange(rng[nom]).getValues();
+  const display = ws.getRange(rng[nom]).getDisplayValues();
+  const mois = [];
+
+  if (nom === 'ANTONIO') {
+    const compteurs = compterTypesParMois(nom);
+
+    for (let i = 0; i < 12; i++) {
+      const d = display[i];
+      const jAbsent  = parseInt(d[1]) || 0;
+      const jRtt     = parseInt(d[3]) || 0;
+      const jWeTrav  = parseInt(d[5]) || 0;
+      const moisIdx  = i;
+      const conges   = (compteurs[moisIdx] && compteurs[moisIdx].conges) || parseInt(d[10]) || 0;
+      const arretMal = (compteurs[moisIdx] && compteurs[moisIdx].arret)  || parseInt(d[7])  || 0;
+      mois.push({
+        mois:     String(d[0]),
+        jAbsent:  jAbsent,
+        hAbsent:  d[2] === '0:00:00' ? '0:00' : d[2],
+        jRtt:     jRtt,
+        hRtt:     d[4] === '0:00:00' ? '0:00' : d[4],
+        jWeTrav:  jWeTrav,
+        hWeTrav:  d[6] === '0:00:00' ? '0:00' : d[6],
+        conges:   conges,
+        arretMal: arretMal,
+      });
+    }
+    const td = display[12];
+    const totJAbs   = mois.reduce((s,m) => s + m.jAbsent, 0);
+    const totJWe    = mois.reduce((s,m) => s + m.jWeTrav, 0);
+    const totConges = mois.reduce((s,m) => s + m.conges, 0);
+    const totArret  = mois.reduce((s,m) => s + (m.arretMal || 0), 0);
+
+    function hhmToMin(str) {
+      if (!str || str === '0:00' || str === '0:00:00') return 0;
+      const p = str.replace('-','').split(':');
+      return parseInt(p[0]||0)*60 + parseInt(p[1]||0);
+    }
+    function minToHhm(min) {
+      const h = Math.floor(min/60), m = min%60;
+      return h + ':' + String(m).padStart(2,'0');
+    }
+    const totHAbs = minToHhm(mois.reduce((s,m) => s + hhmToMin(m.hAbsent), 0));
+    const totHWe  = minToHhm(mois.reduce((s,m) => s + hhmToMin(m.hWeTrav), 0));
+
+    return { ok: true, nom: nom, mois: mois, isAntonio: true, total: {
+      jAbsent:  totJAbs,  hAbsent: totHAbs,
+      jRtt:     parseInt(td[3])||0, hRtt: td[4],
+      jWeTrav:  totJWe,   hWeTrav: totHWe,
+      conges:   totConges,
+      arretMal: totArret,
+    }};
+  }
+
+  for (let i = 0; i < 12; i++) {
+    const r = raw[i]; const d = display[i];
+    mois.push({ mois: String(r[0]), hSupMaj: d[1], jRtt: Number(r[2])||0,
+      hRtt: d[3], jAbsent: Number(r[4])||0, hAbsent: d[5], net: d[6],
+      arretMal: Number(r[7])||0, totalHAbs: d[8], totalJAbs: Number(r[9])||0,
+      conges: Number(r[10])||0 });
+  }
+  const tr = raw[12]; const td = display[12];
+  return { ok: true, nom: nom, mois: mois, isAntonio: false, total: {
+    hSupMaj: td[1], jRtt: Number(tr[2])||0, hRtt: td[3],
+    jAbsent: Number(tr[4])||0, hAbsent: td[5], net: td[6],
+    arretMal: Number(tr[7])||0, conges: Number(tr[10])||0 }};
+}
+
+// ── COMPTAGE CONGÉS / ARRÊTS MALADIE depuis la feuille de pointage ──
+function compterTypesParMois(nom) {
+  const resultat = [];
+  for (let i = 0; i < 12; i++) resultat.push({ conges: 0, arret: 0 });
+  try {
+    const cfg = SALARIES[nom];
+    const ss  = SpreadsheetApp.openById(SHEET_ID);
+    const ws  = ss.getSheetByName(cfg.sheet);
+    const lastRow = ws.getLastRow();
+    const nbRows  = lastRow - cfg.startRow + 1;
+    const dates = ws.getRange(cfg.startRow, 2, nbRows, 1).getValues();
+    const types = ws.getRange(cfg.startRow, 5, nbRows, 1).getValues();
+    for (let i = 0; i < nbRows; i++) {
+      const d = dates[i][0];
+      if (!(d instanceof Date)) continue;
+      const type = String(types[i][0] || '').trim().toUpperCase();
+      const m = d.getMonth();
+      if (type === 'CONGE') resultat[m].conges++;
+      else if (type === 'ARRET TRAVAIL MALADIE') resultat[m].arret++;
+    }
+  } catch(err) {}
+  return resultat;
+}
+
+// ── PHOTO : extraire les infos depuis la formule =IMAGE() ──
+function extraitPhotoInfoFormula(formula) {
+  if (!formula) return null;
+  const match = formula.match(/id=([a-zA-Z0-9_-]+)/);
+  if (!match) return null;
+  const fileId = match[1];
+  return {
+    thumbUrl: 'https://drive.google.com/thumbnail?id=' + fileId + '&sz=w800',
+    viewUrl: 'https://drive.google.com/file/d/' + fileId + '/view',
+    fileId: fileId,
+  };
+}
+
+// ── MOIS COMPLET ──────────────────────────────────────────────
+function getMoisCourant(nom, offset) {
+  if (!SALARIES[nom]) return { error: 'Salarié inconnu' };
+  const cfg = SALARIES[nom];
+  const ss  = SpreadsheetApp.openById(SHEET_ID);
+  const ws  = ss.getSheetByName(cfg.sheet);
+  offset = parseInt(offset) || 0;
+  const today = new Date(); today.setHours(0,0,0,0);
+  const target = new Date(today.getFullYear(), today.getMonth() + offset, 1);
+  const firstDay = new Date(target.getFullYear(), target.getMonth(), 1);
+  const lastDay  = new Date(target.getFullYear(), target.getMonth() + 1, 0);
+  const lastRow  = ws.getLastRow();
+  const nbRows   = lastRow - cfg.startRow + 1;
+  const colRem   = cfg.colRemarque - 1;
+
+  const allRaw = ws.getRange(cfg.startRow, 1, nbRows, 19).getValues();
+  const allDsp = ws.getRange(cfg.startRow, 1, nbRows, 19).getDisplayValues();
+  const allFml = ws.getRange(cfg.startRow, 1, nbRows, 19).getFormulas();
+
+  const jours = [];
+  for (let i = 0; i < allRaw.length; i++) {
+    const d = allRaw[i][1];
+    if (!(d instanceof Date)) continue;
+    const dc = new Date(d); dc.setHours(0,0,0,0);
+    if (dc >= firstDay && dc <= lastDay) {
+      const rowIdx = cfg.startRow + i;
+      const rowRaw = allRaw[i];
+      const rowDsp = allDsp[i];
+      jours.push({
+        row: rowIdx,
+        date: Utilities.formatDate(dc, 'Europe/Paris', 'dd/MM/yyyy'),
+        jour: String(rowRaw[2]), type: String(rowRaw[4]),
+        base: rowDsp[5], arrivee: rowDsp[6], pauseMidi: rowDsp[7],
+        reprise: rowDsp[8], fin: rowDsp[9],
+        travaille: rowDsp[11], ecart: rowDsp[12], cumul: rowDsp[13],
+        remarque: String(rowRaw[colRem] || ''),
+        photo: extraitPhotoInfoFormula(allFml[i][10]),
+        isToday: dc.getTime() === today.getTime(),
+      });
+    }
+  }
+  const nomMois = Utilities.formatDate(target, 'Europe/Paris', 'MMMM yyyy');
+  return { ok: true, mois: jours, nomMois: nomMois };
+}
+
+// ── MOIS POUR LE CALENDRIER ──
+function getMoisCalendrier(nom, offset) {
+  if (!SALARIES[nom]) return { error: 'Salarié inconnu' };
+  const cfg = SALARIES[nom];
+  const ss  = SpreadsheetApp.openById(SHEET_ID);
+  const ws  = ss.getSheetByName(cfg.sheet);
+  offset = parseInt(offset) || 0;
+
+  const now = new Date();
+  const target = new Date(now.getFullYear(), now.getMonth() + offset, 1);
+  const firstDay = new Date(target.getFullYear(), target.getMonth(), 1);
+  const lastDay  = new Date(target.getFullYear(), target.getMonth() + 1, 0);
+
+  const firstMonday = new Date(firstDay);
+  firstMonday.setHours(0,0,0,0);
+  firstMonday.setDate(firstDay.getDate() - ((firstDay.getDay()+6)%7));
+  const lastSunday = new Date(lastDay);
+  lastSunday.setHours(0,0,0,0);
+  lastSunday.setDate(lastDay.getDate() + ((7 - lastDay.getDay()) % 7));
+
+  const lastRow = ws.getLastRow();
+  const nbRows  = lastRow - cfg.startRow + 1;
+  const colRem  = cfg.colRemarque - 1;
+
+  const allRaw = ws.getRange(cfg.startRow, 1, nbRows, 19).getValues();
+  const allDsp = ws.getRange(cfg.startRow, 1, nbRows, 19).getDisplayValues();
+  const allFml = ws.getRange(cfg.startRow, 1, nbRows, 19).getFormulas();
+
+  const today = new Date(); today.setHours(0,0,0,0);
+  const joursParTimestamp = {};
+
+  for (let i = 0; i < allRaw.length; i++) {
+    const d = allRaw[i][1];
+    if (!(d instanceof Date)) continue;
+    const dc = new Date(d); dc.setHours(0,0,0,0);
+    if (dc >= firstMonday && dc <= lastSunday) {
+      const rowIdx = cfg.startRow + i;
+      const rowRaw = allRaw[i];
+      const rowDsp = allDsp[i];
+      joursParTimestamp[dc.getTime()] = {
+        row: rowIdx,
+        date: Utilities.formatDate(dc, 'Europe/Paris', 'dd/MM/yyyy'),
+        jour: String(rowRaw[2]), type: String(rowRaw[4]),
+        base: rowDsp[5], arrivee: rowDsp[6], pauseMidi: rowDsp[7],
+        reprise: rowDsp[8], fin: rowDsp[9],
+        travaille: rowDsp[11], ecart: rowDsp[12], cumul: rowDsp[13],
+        remarque: String(rowRaw[colRem] || ''),
+        photo: extraitPhotoInfoFormula(allFml[i][10]),
+        isToday: dc.getTime() === today.getTime(),
+      };
+    }
+  }
+
+  const semaines = [];
+  let cursor = new Date(firstMonday);
+  while (cursor <= lastSunday) {
+    const jours = [];
+    for (let k = 0; k < 5; k++) {
+      const dj = new Date(cursor); dj.setDate(cursor.getDate() + k);
+      const j = joursParTimestamp[dj.getTime()];
+      if (j) jours.push(j);
+    }
+    semaines.push({
+      monday: Utilities.formatDate(cursor, 'Europe/Paris', 'yyyy-MM-dd'),
+      jours: jours,
+    });
+    cursor.setDate(cursor.getDate() + 7);
+  }
+
+  return { ok: true, semaines: semaines };
+}
+
+function getSemaineCourante(nom, offset) {
+  if (!SALARIES[nom]) return { error: 'Salarié inconnu' };
+  const cfg = SALARIES[nom];
+  const ss  = SpreadsheetApp.openById(SHEET_ID);
+  const ws  = ss.getSheetByName(cfg.sheet);
+  offset = parseInt(offset) || 0;
+  const today    = new Date(); today.setHours(0,0,0,0);
+  const lundi    = new Date(today);
+  lundi.setDate(today.getDate() - ((today.getDay()+6)%7) + offset * 7);
+  const vendredi = new Date(lundi); vendredi.setDate(lundi.getDate()+4);
+  const lastRow  = ws.getLastRow();
+  const nbRows   = lastRow - cfg.startRow + 1;
+  const colRem   = cfg.colRemarque - 1;
+
+  const allRaw = ws.getRange(cfg.startRow, 1, nbRows, 19).getValues();
+  const allDsp = ws.getRange(cfg.startRow, 1, nbRows, 19).getDisplayValues();
+  const allFml = ws.getRange(cfg.startRow, 1, nbRows, 19).getFormulas();
+
+  const jours = [];
+  for (let i = 0; i < allRaw.length; i++) {
+    const d = allRaw[i][1];
+    if (!(d instanceof Date)) continue;
+    const dc = new Date(d); dc.setHours(0,0,0,0);
+    if (dc >= lundi && dc <= vendredi) {
+      const rowIdx = cfg.startRow + i;
+      const rowRaw = allRaw[i];
+      const rowDsp = allDsp[i];
+      jours.push({
+        row: rowIdx,
+        date: Utilities.formatDate(dc, 'Europe/Paris', 'dd/MM/yyyy'),
+        jour: String(rowRaw[2]), type: String(rowRaw[4]),
+        base: rowDsp[5], arrivee: rowDsp[6], pauseMidi: rowDsp[7],
+        reprise: rowDsp[8], fin: rowDsp[9],
+        travaille: rowDsp[11], ecart: rowDsp[12], cumul: rowDsp[13],
+        remarque: String(rowRaw[colRem] || ''),
+        photo: extraitPhotoInfoFormula(allFml[i][10]),
+        isToday: dc.getTime() === today.getTime(),
+      });
+    }
+  }
+  return { ok: true, semaine: jours };
+}
+
+function saisirType(data) {
+  const { salarie, row, type } = data;
+  if (!SALARIES[salarie]) return { error: 'Salarié inconnu' };
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  const ws = ss.getSheetByName(SALARIES[salarie].sheet);
+  ws.getRange(row, 5).setValue(type);
+  SpreadsheetApp.flush();
+  return { ok: true };
+}
+
+// ── SAISIR HEURE DE FIN (col J) ───────────────────────────────
+// CORRIGÉ : écriture systématique de F/G/H/I à chaque saisie (au lieu de
+// "seulement si vide"), avec capture d'erreur précise par cellule pour
+// identifier immédiatement un blocage (ex: plage protégée).
+function saisirFin(data) {
+  const { salarie, row, fin } = data;
+  if (!SALARIES[salarie]) return { error: 'Salarié inconnu' };
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  const ws = ss.getSheetByName(SALARIES[salarie].sheet);
+
+  if (fin) {
+    const cfg = SALARIES[salarie];
+    let baseHeures = 7;
+    if (cfg.heuresParJour) {
+      const dateCell = ws.getRange(row, 2).getValue();
+      if (dateCell instanceof Date) {
+        const jourSemaine = dateCell.getDay();
+        if (cfg.heuresParJour[jourSemaine] !== undefined) {
+          baseHeures = cfg.heuresParJour[jourSemaine];
+        }
+      }
+    }
+
+    const heuresHabituelles = [
+      { col: 6, h: baseHeures, m: 0, nom: 'F (Base)' },
+      { col: 7, h: 8,  m: 0, nom: 'G (Arrivée)' },
+      { col: 8, h: 12, m: 0, nom: 'H (Pause midi)' },
+      { col: 9, h: 13, m: 0, nom: 'I (Reprise)' },
+    ];
+
+    for (const hh of heuresHabituelles) {
+      try {
+        const cellHH = ws.getRange(row, hh.col);
+        const fraction = (hh.h * 60 + hh.m) / (24 * 60);
+        cellHH.setValue(fraction);
+        cellHH.setNumberFormat('HH:mm');
+      } catch (errCell) {
+        return { error: 'Échec écriture ' + hh.nom + ' (ligne ' + row + ') : ' + errCell.message };
+      }
+    }
+
+    try {
+      const parts = fin.split(':');
+      const h = parseInt(parts[0]);
+      const m = parseInt(parts[1]);
+      const fractionOfDay = (h * 60 + m) / (24 * 60);
+      const cell = ws.getRange(row, 10);
+      cell.setValue(fractionOfDay);
+      cell.setNumberFormat('HH:mm');
+    } catch (errFin) {
+      return { error: 'Échec écriture J (Fin) : ' + errFin.message };
+    }
+
+    try {
+      assurerFormuleL(ws, row, salarie);
+    } catch (errL) {
+      return { error: 'Échec formule L : ' + errL.message };
+    }
+  }
+  SpreadsheetApp.flush();
+  return { ok: true };
+}
+
+// ── ASSURER LA FORMULE COLONNE L (travaillé) ──────────────────
+// Anatole/Artiom : +6 minutes d'habillage. Antonio : pas de bonus habillage.
+function assurerFormuleL(ws, row, salarie) {
+  const cellL = ws.getRange(row, 12);
+  const formuleActuelle = cellL.getFormula();
+  const valeurActuelle = cellL.getValue();
+  const enErreur = typeof valeurActuelle === 'string' && valeurActuelle.indexOf('#') === 0;
+
+  const referencesOk = formuleActuelle
+    && formuleActuelle.indexOf('H' + row) !== -1
+    && formuleActuelle.indexOf('J' + row) !== -1;
+
+  if (referencesOk && !enErreur) return;
+
+  const bonusHabillage = (salarie === 'ANTONIO') ? '' : '+TIME(0,6,0)';
+  const bonusHabillageAlt = (salarie === 'ANTONIO') ? '' : '+TIME(0;6;0)';
+  cellL.setFormula('=(H' + row + '-G' + row + ')+(J' + row + '-I' + row + ')' + bonusHabillage);
+  SpreadsheetApp.flush();
+  const val = cellL.getValue();
+  if (typeof val === 'string' && val.indexOf('#') === 0) {
+    cellL.setFormula('=(H' + row + '-G' + row + ')+(J' + row + '-I' + row + ')' + bonusHabillageAlt);
+  }
+}
+
+// ── RÉPARER TOUTES LES FORMULES (menu manuel) ──────────────────
+function reparerToutesLesFormules() {
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  let nbReparees = 0;
+
+  for (const nom in SALARIES) {
+    const cfg = SALARIES[nom];
+    const ws = ss.getSheetByName(cfg.sheet);
+    if (!ws) continue;
+
+    const lastRow = ws.getLastRow();
+    for (let row = cfg.startRow; row <= lastRow; row++) {
+      const type = ws.getRange(row, 5).getValue();
+      const fin = ws.getRange(row, 10).getValue();
+      if (type === 'Jour Travaillé' && fin !== '' && fin !== null) {
+        const avant = ws.getRange(row, 12).getFormula();
+        assurerFormuleL(ws, row, nom);
+        const apres = ws.getRange(row, 12).getFormula();
+        if (avant !== apres) nbReparees++;
+      }
+    }
+  }
+
+  SpreadsheetApp.getUi().alert(
+    nbReparees > 0
+      ? nbReparees + ' formule(s) réparée(s) dans la colonne L.'
+      : 'Aucune formule à réparer, tout est déjà correct.'
+  );
+}
+
+// ── MENU (apparaît à l'ouverture du Sheet) ─────────────────────
+function onOpen() {
+  SpreadsheetApp.getUi()
+    .createMenu('📋 D ECO OUEST')
+    .addItem('↓ Aller à aujourd\'hui', 'allerAujourdHui')
+    .addSeparator()
+    .addItem('Réparer les formules (colonne L)', 'reparerToutesLesFormules')
+    .addToUi();
+}
+
+// ── SAISIR PHOTO (col K) ─────────────────────────────────────
+function saisirPhoto(data) {
+  const { salarie, row, imageBase64 } = data;
+  if (!SALARIES[salarie]) return { error: 'Salarié inconnu' };
+  if (!imageBase64) return { error: 'Pas de photo' };
+
+  try {
+    const ss = SpreadsheetApp.openById(SHEET_ID);
+    const ws = ss.getSheetByName(SALARIES[salarie].sheet);
+
+    const decoded = Utilities.base64Decode(imageBase64);
+    const blob    = Utilities.newBlob(decoded, 'image/jpeg', 'reolink_' + salarie + '_row' + row + '.jpg');
+
+    const folder = getOrCreateFolder('D ECO OUEST Photos');
+    const file   = folder.createFile(blob);
+    file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+
+    SpreadsheetApp.flush();
+    Utilities.sleep(1500);
+
+    const fileId  = file.getId();
+    const viewUrl = 'https://drive.google.com/file/d/' + fileId + '/view';
+
+    const images = ws.getImages();
+    for (const img of images) {
+      const anchor = img.getAnchorCell();
+      if (anchor.getRow() === row && anchor.getColumn() === 11) {
+        img.remove();
+      }
+    }
+
+    const imageUrl = 'https://drive.google.com/thumbnail?id=' + fileId + '&sz=w400';
+    const cell = ws.getRange(row, 11);
+    cell.setFormula('=IMAGE("' + imageUrl + '",4,60,60)');
+
+    cell.setNote('📷 Photo pleine résolution :\n' + viewUrl);
+
+    SpreadsheetApp.flush();
+    return { ok: true, fileId: fileId, url: viewUrl };
+
+  } catch(err) {
+    return { error: err.message };
+  }
+}
+
+// ── SAISIR PHOTO EN CHUNKS ──
+function saisirPhotoChunk(data) {
+  const { salarie, row, chunk, idx, total } = data;
+  const keyPrefix = 'PHOTO_' + salarie + '_' + row + '_';
+  const props = PropertiesService.getScriptProperties();
+
+  const decodedChunk = decodeURIComponent(chunk || '');
+  props.setProperty(keyPrefix + idx, decodedChunk);
+
+  if (idx === total - 1) {
+    let fullBase64 = '';
+    for (let i = 0; i < total; i++) {
+      fullBase64 += props.getProperty(keyPrefix + i) || '';
+      props.deleteProperty(keyPrefix + i);
+    }
+    return saisirPhoto({ salarie: salarie, row: row, imageBase64: fullBase64 });
+  }
+
+  return { ok: true, received: idx + 1, total: total };
+}
+
+function getOrCreateFolder(name) {
+  const folders = DriveApp.getFoldersByName(name);
+  return folders.hasNext() ? folders.next() : DriveApp.createFolder(name);
+}
+
+// ── PV DE FIN DE CHANTIER ──
+function pvChunk(data) {
+  const { chantier, datePv, page, chunk, idx, total } = data;
+  if (!chantier) return { error: 'Nom de chantier manquant' };
+  const keyPrefix = 'PV_' + chantier.replace(/[^a-zA-Z0-9]/g, '') + '_' + page + '_';
+  const props = PropertiesService.getScriptProperties();
+
+  const decodedChunk = decodeURIComponent(chunk || '');
+  props.setProperty(keyPrefix + idx, decodedChunk);
+
+  if (parseInt(idx) === parseInt(total) - 1) {
+    let fullBase64 = '';
+    for (let i = 0; i < parseInt(total); i++) {
+      fullBase64 += props.getProperty(keyPrefix + i) || '';
+      props.deleteProperty(keyPrefix + i);
+    }
+    return archiverPagePv(chantier, datePv, page, fullBase64);
+  }
+
+  return { ok: true, received: parseInt(idx) + 1, total: parseInt(total) };
+}
+
+function archiverPagePv(chantier, datePv, page, imageBase64) {
+  try {
+    if (!imageBase64) return { error: 'Image vide' };
+
+    const base64Pur = imageBase64.indexOf('base64,') !== -1
+      ? imageBase64.split('base64,')[1]
+      : imageBase64;
+
+    const decoded = Utilities.base64Decode(base64Pur);
+    const nomFichier = 'PV_' + chantier + '_' + (datePv || '') + '_page' + page + '.jpg';
+    const blob = Utilities.newBlob(decoded, 'image/jpeg', nomFichier);
+
+    const racine = getOrCreateFolder('D ECO OUEST PV Chantier');
+    const nomSousDossier = chantier + (datePv ? ' - ' + datePv : '');
+    let sousDossier;
+    const existants = racine.getFoldersByName(nomSousDossier);
+    sousDossier = existants.hasNext() ? existants.next() : racine.createFolder(nomSousDossier);
+
+    const file = sousDossier.createFile(blob);
+
+    return {
+      ok: true,
+      page: page,
+      fileId: file.getId(),
+      url: 'https://drive.google.com/file/d/' + file.getId() + '/view',
+      dossierUrl: 'https://drive.google.com/drive/folders/' + sousDossier.getId(),
+    };
+  } catch(err) {
+    return { error: err.message };
+  }
+}
+
+function getJourneeSolidarite(nom) {
+  if (!SALARIES[nom]) return { error: 'Salarié inconnu' };
+  const cfg = SALARIES[nom];
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  const ws = ss.getSheetByName(cfg.sheet);
+
+  const lastRow = ws.getLastRow();
+  const nbRows = lastRow - cfg.startRow + 1;
+
+  const types = ws.getRange(cfg.startRow, 5, nbRows, 1).getValues();
+  const dates = ws.getRange(cfg.startRow, 2, nbRows, 1).getValues();
+
+  for (let i = 0; i < types.length; i++) {
+    if (String(types[i][0]) === 'journee solidarité travaillé') {
+      const d = dates[i][0];
+      if (d instanceof Date) {
+        return { ok: true, found: true, date: Utilities.formatDate(d, 'Europe/Paris', 'dd/MM/yyyy') };
+      }
+    }
+  }
+  return { ok: true, found: false };
+}
+
+function genererPdfSalarie(nom) {
+  if (!SALARIES[nom]) return { error: 'Salarié inconnu' };
+
+  try {
+    const ss = SpreadsheetApp.openById(SHEET_ID);
+    const ws = ss.getSheetByName('  SOLDE GLOBAL ');
+
+    const rng = { ANATOLE: 'A11:K23', ARTIOM: 'A30:K42', ANTONIO: 'A48:K61' };
+    const idxMap = { ANATOLE: 0, ARTIOM: 1, ANTONIO: 2 };
+    const isAntonio = (nom === 'ANTONIO');
+
+    const sal = {
+      nom: nom,
+      sheet: SALARIES[nom].sheet,
+      range: rng[nom],
+      startRow: SALARIES[nom].startRow,
+      isAntonio: isAntonio,
+    };
+
+    const soldeDsp = ws.getRange('A3:G5').getDisplayValues()[idxMap[nom]];
+    const positif = !String(soldeDsp[3]).startsWith('-') && soldeDsp[3] !== '0:00';
+
+    let html = `
+    <html><head><meta charset="utf-8"><style>
+      body { font-family: Arial, sans-serif; font-size: 11px; color: #263238; }
+      h1 { color: #1565C0; font-size: 20px; margin-bottom: 4px; }
+      .date { color: #607D8B; font-size: 12px; margin-bottom: 20px; }
+      h2 { color: #1565C0; font-size: 15px; margin-top: 24px; margin-bottom: 8px;
+           border-bottom: 2px solid #1565C0; padding-bottom: 4px; }
+      h3 { color: #455A64; font-size: 13px; margin-top: 16px; margin-bottom: 6px; }
+      table { width: 100%; border-collapse: collapse; margin-bottom: 12px; }
+      th { background: #1565C0; color: white; padding: 6px 8px; font-size: 10px; text-align: center; }
+      td { padding: 5px 8px; border-bottom: 1px solid #E0E0E0; text-align: center; font-size: 10px; }
+      tr:nth-child(even) td { background: #F5F7FA; }
+      .positif { color: #2E7D32; font-weight: bold; }
+      .negatif { color: #C62828; font-weight: bold; }
+      .badge { display: inline-block; padding: 2px 8px; border-radius: 10px;
+               font-size: 9px; font-weight: bold; color: white; }
+      .badge-ok { background: #2E7D32; }
+      .badge-ko { background: #C62828; }
+    </style></head><body>
+      <h1>D ECO OUEST — ${nom}</h1>
+      <div class="date">Généré le ${formatDateFr(new Date())}</div>
+
+      <h2>Solde Global</h2>
+      <table>
+        <tr><th>Net 2026</th><th>Report 2025</th><th>Solde Final</th><th>Statut</th><th>En jours</th><th>Mois en cours</th></tr>
+        <tr>
+          <td>${soldeDsp[1]}</td>
+          <td>${soldeDsp[2]}</td>
+          <td class="${positif?'positif':'negatif'}">${soldeDsp[3]}</td>
+          <td><span class="badge ${positif?'badge-ok':'badge-ko'}">${soldeDsp[4]}</span></td>
+          <td>${soldeDsp[5]}</td>
+          <td>${soldeDsp[6]}</td>
+        </tr>
+      </table>`;
+
+    html += construireRecapMensuel(ws, sal);
+    html += construireSemaineHTML(sal);
+    html += `</body></html>`;
+
+    const blob = Utilities.newBlob(html, 'text/html', 'r.html').getAs('application/pdf');
+    const base64 = Utilities.base64Encode(blob.getBytes());
+    const filename = 'Rapport_' + nom + '_' + formatDateFr(new Date()).replace(/\//g,'-') + '.pdf';
+
+    return { ok: true, filename: filename, base64: base64 };
+  } catch(err) {
+    return { error: err.message };
+  }
+}
+
+// ── PDF DEPUIS HTML (onglet Mensuel) ─────────────────────────
+function genererPdfDepuisHTML(htmlContent) {
+  try {
+    if (!htmlContent) return { error: 'HTML vide' };
+    const blob = Utilities.newBlob(htmlContent, 'text/html', 'rapport.html')
+      .getAs('application/pdf');
+    const base64 = Utilities.base64Encode(blob.getBytes());
+    return { ok: true, base64: base64 };
+  } catch(err) {
+    return { error: err.message };
+  }
+}
+
+function pdfMensuelChunk(data) {
+  const { chunk, idx, total, salarie } = data;
+  const key = 'PDF_' + salarie + '_' + (idx === 0 ? Date.now() : '');
+  const props = PropertiesService.getScriptProperties();
+
+  if (idx === 0) {
+    const allKeys = props.getKeys();
+    allKeys.filter(k => k.startsWith('PDF_' + salarie + '_')).forEach(k => props.deleteProperty(k));
+    props.setProperty('PDF_' + salarie + '_SESSION', key || 'PDF_' + salarie + '_' + Date.now());
+    props.setProperty(props.getProperty('PDF_' + salarie + '_SESSION'), chunk);
+  } else {
+    const sessionKey = props.getProperty('PDF_' + salarie + '_SESSION');
+    const existing = props.getProperty(sessionKey) || '';
+    props.setProperty(sessionKey, existing + chunk);
+  }
+
+  if (idx === total - 1) {
+    const sessionKey = props.getProperty('PDF_' + salarie + '_SESSION');
+    const fullEncoded = props.getProperty(sessionKey);
+    props.deleteProperty(sessionKey);
+    props.deleteProperty('PDF_' + salarie + '_SESSION');
+    const htmlContent = decodeURIComponent(fullEncoded);
+    return genererPdfDepuisHTML(htmlContent);
+  }
+
+  return { ok: true, received: idx + 1, total: total };
+}
+
+// ── SAISIR REMARQUE (col S ou P) ─────────────────────────────
+function saisirRemarque(data) {
+  const { salarie, row, remarque } = data;
+  if (!SALARIES[salarie]) return { error: 'Salarié inconnu' };
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  const ws = ss.getSheetByName(SALARIES[salarie].sheet);
+  const col = SALARIES[salarie].colRemarque;
+  ws.getRange(row, col).setValue(remarque || '');
+  SpreadsheetApp.flush();
+  return { ok: true };
+}
