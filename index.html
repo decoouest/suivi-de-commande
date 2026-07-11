@@ -258,6 +258,9 @@
         <span class="filter-badge warn" id="fb-warn" onclick="setFilter('warn')">🟠 Attention</span>
         <span class="filter-badge ok" id="fb-ok" onclick="setFilter('ok')">🟢 OK</span>
       </div>
+      <div style="margin-top:8px;">
+        <span class="filter-badge" id="fb-sav" onclick="setFilter('sav')" style="border:1.5px solid #D32F2F;color:#D32F2F;font-weight:700;width:100%;display:block;text-align:center;padding:8px;border-radius:8px;cursor:pointer;">🔧 Voir tous les SAV (<span id="sav-count">0</span>)</span>
+      </div>
       <div class="table-wrap">
         <table>
           <thead><tr>
@@ -568,6 +571,10 @@ function renderTable() {
   if(alertFilter==='urgent')rows=rows.filter(function(c){return c._a.n===3;});
   if(alertFilter==='warn')rows=rows.filter(function(c){return c._a.n>=1&&c._a.n<=2;});
   if(alertFilter==='ok')rows=rows.filter(function(c){return c._a.n===0;});
+  // Compter les SAV
+  var savCount = commandes.filter(function(c){return (c.statutPose||'').trim()==='SAV'||(c.statutLivraison||'').trim()==='SAV'||(c.client||'').toLowerCase().indexOf('sav')!==-1;}).length;
+  var savEl = document.getElementById('sav-count');
+  if(savEl) savEl.textContent = savCount;
   if(alertFilter==='sav')rows=rows.filter(function(c){return (c.statutPose||'').trim()==='SAV'||(c.statutLivraison||'').trim()==='SAV'||(c.client||'').toLowerCase().indexOf('sav')!==-1;});
   rows.sort(function(a,b){
     if(sortCol==='ligne'){
