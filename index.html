@@ -558,12 +558,12 @@ function renderTable() {
   var fF=document.getElementById('filter-fournisseur').value;
   var fS=document.getElementById('filter-statut').value;
   var afficherTermines = document.getElementById('show-termines') && document.getElementById('show-termines').checked;
-  var STATUTS_TERMINES = ['Terminé','Termine','Posé','Pose','TERMINE','POSE','Livré','Livre','LIVRE'];
+  var STATUTS_TERMINES = ['Terminé','Termine','Posé','Pose','TERMINE','POSE'];
   var rows=commandes.map(function(c,i){return Object.assign({},c,{_i:i,_a:alerte(c)});});
   if (!afficherTermines) {
     rows = rows.filter(function(c){
-      return STATUTS_TERMINES.indexOf((c.statutLivraison||'').trim()) === -1
-          && STATUTS_TERMINES.indexOf((c.statutPose||'').trim()) === -1;
+      // Masquer uniquement si la POSE est terminée (pas juste livré)
+      return STATUTS_TERMINES.indexOf((c.statutPose||'').trim()) === -1;
     });
   }
   if(q)rows=rows.filter(function(c){return (c.client||'').toLowerCase().indexOf(q)!==-1||(c.devis||'').toLowerCase().indexOf(q)!==-1||(c.arc||'').toLowerCase().indexOf(q)!==-1||(c.fournisseur||'').toLowerCase().indexOf(q)!==-1;});
