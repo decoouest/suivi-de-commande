@@ -216,7 +216,7 @@
   <div class="sidebar-logo">
     <span>ECO OUEST</span>
     <small>Suivi Commandes</small>
-    <div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v19/07/2026 19:51</div>
+    <div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v19/07/2026 19:56</div>
   </div>
   <nav class="nav">
     <div class="nav-item active" id="nav-suivi" onclick="showView('suivi')"><span class="icon">📋</span><span>Commandes</span></div>
@@ -226,7 +226,7 @@
     <div class="nav-item" id="nav-planning" onclick="showView('planning')"><span class="icon">📅</span><span>Planning</span></div>
     <div class="nav-item" id="nav-config" onclick="showView('config')"><span class="icon">⚙️</span><span>Config</span></div>
   </nav>
-  <div class="sidebar-footer">v19/07/2026 19:51</div>
+  <div class="sidebar-footer">v19/07/2026 19:56</div>
 </aside>
 
 <div class="main">
@@ -604,7 +604,7 @@ function renderTable() {
       '<td data-label="Fournisseur"><span style="background:'+fc+'18;color:'+fc+';padding:3px 8px;border-radius:5px;font-size:11px;font-weight:700;">'+h(c.fournisseur||'—')+'</span></td>'+
       '<td class="col-mono" data-label="Devis">'+h(c.devis||'—')+'</td>'+
       '<td>'+(c.commande==='OUI'?'<span class="badge badge-ok">OUI</span>':c.commande==='NON'?'<span class="badge badge-urgent">NON</span>':'—')+'</td>'+
-      '<td class="col-mono" data-label="ARC">'+(c.objetCommande ? '<span style="border-bottom:2px dotted var(--bleu);cursor:help;" title="📦 '+h(c.objetCommande)+'">'+h(c.arc||'—')+' 📦</span>' : h(c.arc||'—'))+'</td>'+
+      '<td class="col-mono" data-label="ARC">'+(c.objetCommande ? '<span style="border-bottom:2px dotted var(--bleu);cursor:pointer;" title="📦 '+h(c.objetCommande)+'" onclick="afficherObjet(event,'+JSON.stringify(h(c.objetCommande))+')">'+h(c.arc||'—')+' 📦</span>' : h(c.arc||'—'))+'</td>'+
       '<td data-label="Livraison">'+semaineBadge(c.prevLivraison)+'</td>'+
       '<td data-label="Statut livr.">'+sL+'</td><td data-label="Statut pose">'+sP+'</td>'+
       '<td style="font-size:12px;font-weight:600;color:var(--bleu);" data-label="Date pose">'+h(c.datePose||'—')+'</td>'+
@@ -1087,6 +1087,25 @@ async function traduireCommentairesPoseurs() {
   }
 }
 
+
+
+function afficherObjet(e, objet) {
+  e.stopPropagation();
+  // Créer un petit popup au lieu d'un alert basique
+  var existing = document.getElementById('objet-popup');
+  if (existing) existing.remove();
+
+  var popup = document.createElement('div');
+  popup.id = 'objet-popup';
+  popup.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:400;display:flex;align-items:center;justify-content:center;padding:20px;';
+  popup.onclick = function() { popup.remove(); };
+  popup.innerHTML = '<div style="background:#fff;border-radius:14px;padding:24px;max-width:400px;width:100%;box-shadow:0 10px 40px rgba(0,0,0,.3);" onclick="event.stopPropagation()">' +
+    '<div style="font-size:14px;font-weight:700;color:var(--bleu);margin-bottom:12px;">📦 Objet de la commande</div>' +
+    '<div style="font-size:14px;color:var(--texte);line-height:1.5;white-space:pre-wrap;">' + objet + '</div>' +
+    '<button onclick="document.getElementById(\'objet-popup\').remove()" style="margin-top:16px;width:100%;background:var(--bleu);color:#fff;border:none;border-radius:8px;padding:10px;font-size:14px;font-weight:600;cursor:pointer;">Fermer</button>' +
+    '</div>';
+  document.body.appendChild(popup);
+}
 
 function photoCell(photo) {
   if (!photo || !photo.startsWith('data:')) return '<td data-label="Photo" style="color:#ccc;">—</td>';
