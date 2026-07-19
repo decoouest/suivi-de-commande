@@ -216,7 +216,7 @@
   <div class="sidebar-logo">
     <span>ECO OUEST</span>
     <small>Suivi Commandes</small>
-    <div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v19/07/2026 18:35</div>
+    <div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v19/07/2026 19:51</div>
   </div>
   <nav class="nav">
     <div class="nav-item active" id="nav-suivi" onclick="showView('suivi')"><span class="icon">📋</span><span>Commandes</span></div>
@@ -226,7 +226,7 @@
     <div class="nav-item" id="nav-planning" onclick="showView('planning')"><span class="icon">📅</span><span>Planning</span></div>
     <div class="nav-item" id="nav-config" onclick="showView('config')"><span class="icon">⚙️</span><span>Config</span></div>
   </nav>
-  <div class="sidebar-footer">v19/07/2026 18:35</div>
+  <div class="sidebar-footer">v19/07/2026 19:51</div>
 </aside>
 
 <div class="main">
@@ -604,7 +604,7 @@ function renderTable() {
       '<td data-label="Fournisseur"><span style="background:'+fc+'18;color:'+fc+';padding:3px 8px;border-radius:5px;font-size:11px;font-weight:700;">'+h(c.fournisseur||'—')+'</span></td>'+
       '<td class="col-mono" data-label="Devis">'+h(c.devis||'—')+'</td>'+
       '<td>'+(c.commande==='OUI'?'<span class="badge badge-ok">OUI</span>':c.commande==='NON'?'<span class="badge badge-urgent">NON</span>':'—')+'</td>'+
-      '<td class="col-mono" data-label="ARC">'+h(c.arc||'—')+'</td>'+
+      '<td class="col-mono" data-label="ARC">'+(c.objetCommande ? '<span style="border-bottom:2px dotted var(--bleu);cursor:help;" title="📦 '+h(c.objetCommande)+'">'+h(c.arc||'—')+' 📦</span>' : h(c.arc||'—'))+'</td>'+
       '<td data-label="Livraison">'+semaineBadge(c.prevLivraison)+'</td>'+
       '<td data-label="Statut livr.">'+sL+'</td><td data-label="Statut pose">'+sP+'</td>'+
       '<td style="font-size:12px;font-weight:600;color:var(--bleu);" data-label="Date pose">'+h(c.datePose||'—')+'</td>'+
