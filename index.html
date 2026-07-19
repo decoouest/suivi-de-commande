@@ -1293,15 +1293,39 @@ async function genererRapportChantier() {
 }
 
 function fillFournisseur() {
-  var sel = document.getElementById('filter-fournisseur');
-  sel.innerHTML = '<option value="">Tous fournisseurs</option>';
-  var fous = [];
-  commandes.forEach(function(c) { if(c.fournisseur && fous.indexOf(c.fournisseur) === -1) fous.push(c.fournisseur); });
-  fous.sort().forEach(function(f) {
-    var o = document.createElement('option');
-    o.value = f; o.textContent = f;
-    sel.appendChild(o);
+  // Liste de base des fournisseurs connus
+  var baseFournisseurs = ['ATLANTEM','ATULAM','LALLEMANT','SOKO','ALUGLASS','FILTERSUN','DC PROD','KE FRANCE','SKYLUX','BVL SERRULAC','LEROY MERLIN','FOUSSIER','STOCK'];
+
+  // Ajouter tous les fournisseurs présents dans les données
+  var fous = baseFournisseurs.slice();
+  commandes.forEach(function(c) {
+    if(c.fournisseur && fous.indexOf(c.fournisseur) === -1) fous.push(c.fournisseur);
   });
+  fous.sort();
+
+  // Remplir le filtre du tableau
+  var sel = document.getElementById('filter-fournisseur');
+  if (sel) {
+    sel.innerHTML = '<option value="">Tous fournisseurs</option>';
+    fous.forEach(function(f) {
+      var o = document.createElement('option');
+      o.value = f; o.textContent = f;
+      sel.appendChild(o);
+    });
+  }
+
+  // Remplir aussi le dropdown du modal
+  var selModal = document.getElementById('f-fournisseur');
+  if (selModal) {
+    var current = selModal.value;
+    selModal.innerHTML = '<option value="">— Choisir —</option>';
+    fous.forEach(function(f) {
+      var o = document.createElement('option');
+      o.value = f; o.textContent = f;
+      selModal.appendChild(o);
+    });
+    selModal.value = current;
+  }
 }
 
 
