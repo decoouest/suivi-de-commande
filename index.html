@@ -216,7 +216,7 @@
   <div class="sidebar-logo">
     <span>ECO OUEST</span>
     <small>Suivi Commandes</small>
-    <div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v19/07/2026 18:26</div>
+    <div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v19/07/2026 18:35</div>
   </div>
   <nav class="nav">
     <div class="nav-item active" id="nav-suivi" onclick="showView('suivi')"><span class="icon">📋</span><span>Commandes</span></div>
@@ -226,7 +226,7 @@
     <div class="nav-item" id="nav-planning" onclick="showView('planning')"><span class="icon">📅</span><span>Planning</span></div>
     <div class="nav-item" id="nav-config" onclick="showView('config')"><span class="icon">⚙️</span><span>Config</span></div>
   </nav>
-  <div class="sidebar-footer">v19/07/2026 18:26</div>
+  <div class="sidebar-footer">v19/07/2026 18:35</div>
 </aside>
 
 <div class="main">
@@ -358,6 +358,7 @@
           <select id="f-commande"><option value="">—</option><option>OUI</option><option>NON</option></select>
         </div>
         <div class="form-group"><label>N° ARC</label><input id="f-arc" type="text"></div>
+        <div class="form-group full"><label>📦 Objet de la commande (note sur ARC)</label><textarea id="f-objetCommande" placeholder="Ex: 3 fenêtres PVC blanc, 1 porte-fenêtre..." style="width:100%;border:1.5px solid var(--bordure);border-radius:8px;padding:9px 12px;font-family:inherit;font-size:14px;outline:none;resize:vertical;min-height:50px;"></textarea></div>
         <div class="form-group"><label>Validation ARC</label>
           <select id="f-commentaireARC"><option value="">—</option><option>Confirmer</option><option>Valide</option><option>En attente</option><option>ANNULER</option></select>
         </div>
@@ -633,6 +634,8 @@ function openModal(idx) {
   var dpEl = document.getElementById('f-datePose');
   if (dpEl) dpEl.value = c.datePose || '';
   window._photoBase64 = c.photo || null;
+  var objEl = document.getElementById('f-objetCommande');
+  if (objEl) objEl.value = c.objetCommande || '';
   var prev = document.getElementById('f-photo-preview');
   if (prev) prev.innerHTML = c.photo ? '<img src="'+c.photo+'" style="width:60px;height:60px;object-fit:cover;border-radius:6px;border:2px solid var(--bleu);">' : '';
   document.getElementById('f-commentaire-historique').value = c.commentaire || '';
@@ -677,7 +680,7 @@ async function sauvegarder() {
   try {
     var res;
     if(editLigne>0){
-      res=await apiPost({action:'modifier',ligne:editLigne,champs:{1:c.client,3:c.devis,4:c.devisTTC,5:c.fournisseur,6:c.commande,7:c.arc,9:c.commentaireARC,10:c.prevLivraison,12:c.statutLivraison,13:c.statutPose,14:c.commentaire,16:c.pvChantier,20:c.datePose,23:c.photo||''}});
+      res=await apiPost({action:'modifier',ligne:editLigne,champs:{1:c.client,3:c.devis,4:c.devisTTC,5:c.fournisseur,6:c.commande,7:c.arc,9:c.commentaireARC,10:c.prevLivraison,12:c.statutLivraison,13:c.statutPose,14:c.commentaire,16:c.pvChantier,20:c.datePose,23:c.photo||'',note_G:(document.getElementById('f-objetCommande')?document.getElementById('f-objetCommande').value.trim():'')}});
     } else {
       res=await apiPost({action:'ajouter',commande:c});
     }
