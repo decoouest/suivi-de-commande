@@ -216,7 +216,7 @@
   <div class="sidebar-logo">
     <span>ECO OUEST</span>
     <small>Suivi Commandes</small>
-    <div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v19/07/2026 19:56</div>
+    <div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v20/07/2026 13:56</div>
   </div>
   <nav class="nav">
     <div class="nav-item active" id="nav-suivi" onclick="showView('suivi')"><span class="icon">📋</span><span>Commandes</span></div>
@@ -226,7 +226,7 @@
     <div class="nav-item" id="nav-planning" onclick="showView('planning')"><span class="icon">📅</span><span>Planning</span></div>
     <div class="nav-item" id="nav-config" onclick="showView('config')"><span class="icon">⚙️</span><span>Config</span></div>
   </nav>
-  <div class="sidebar-footer">v19/07/2026 19:56</div>
+  <div class="sidebar-footer">v20/07/2026 13:56</div>
 </aside>
 
 <div class="main">
@@ -252,7 +252,7 @@
         </select>
         <select class="select-filter" id="filter-statut" onchange="renderTable()">
           <option value="">Tous statuts</option>
-          <option>A planifier</option><option>A PLANIFIER</option><option>Livré</option><option>En cours</option><option>EN COURS</option><option>SAV</option><option>Terminé</option><option>Posé</option><option>Annulé</option><option>En attente</option><option>Bloqué</option>
+          <option>A planifier</option><option>Livré</option><option>En cours</option><option>SAV</option><option>Terminé</option><option>Posé</option><option>Annulé</option><option>En attente</option><option>Bloqué</option>
         </select>
         <label style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--texte2);cursor:pointer;white-space:nowrap;"><input type="checkbox" id="show-termines" onchange="renderTable()" style="width:15px;height:15px;cursor:pointer;">Voir terminés</label>
         <span class="filter-badge all active" id="fb-all" onclick="setFilter('all')">Toutes</span>
@@ -367,7 +367,7 @@
           <select id="f-statutLivraison"><option value="">—</option><option>En cours</option><option>Livré</option><option>Terminé</option><option>En attente</option><option>Bloqué</option><option>SAV</option><option>Annulé</option><option>A PLANIFIER</option></select>
         </div>
         <div class="form-group"><label>Statut pose</label>
-          <select id="f-statutPose"><option value="">—</option><option>A PLANIFIER</option><option>En cours</option><option>Posé</option><option>Terminé</option><option>SAV</option><option>Annulé</option><option>EN COURS</option></select>
+          <select id="f-statutPose"><option value="">—</option><option>A planifier</option><option>En cours</option><option>Posé</option><option>Terminé</option><option>SAV</option><option>Annulé</option></select>
         </div>
         <div class="form-group">
           <label>Date de pose (col. T)</label>
@@ -389,15 +389,11 @@
             <div id="f-photo-preview"></div>
           </div>
         </div>
-        <div class="form-group full">
-          <label>Nouveau commentaire (ajouté au fil)</label>
-          <textarea id="f-commentaire-new" placeholder="Tapez un nouveau commentaire..." style="width:100%;border:1.5px solid var(--bordure);border-radius:8px;padding:9px 12px;font-family:inherit;font-size:14px;outline:none;resize:vertical;min-height:60px;"></textarea>
-        </div>
+        
         <div class="form-group full"><label>Historique des commentaires / remarques</label>
           <textarea id="f-commentaire-historique" readonly style="background:#F5F7FA;color:var(--texte2);font-style:italic;min-height:90px;" placeholder="Aucun commentaire pour le moment."></textarea>
         </div>
-        <div class="form-group full"><label>Ajouter un nouveau commentaire</label>
-          <textarea id="f-commentaire-nouveau" placeholder="Ecrire une nouvelle remarque... (elle sera ajoutee a la suite avec la date du jour)"></textarea>
+        <div class="form-group full">
         </div>
       </div>
     </div>
@@ -615,6 +611,14 @@ function renderTable() {
     '</tr>';
   }).join('');
   document.getElementById('scroll-hint').textContent=rows.length+' commande(s) sur '+commandes.length;
+  // Attacher les clics sur les badges objet commande
+  document.querySelectorAll('.objet-badge').forEach(function(badge) {
+    badge.addEventListener('click', function(e) {
+      e.stopPropagation();
+      var objet = decodeURIComponent(badge.getAttribute('data-objet'));
+      afficherObjet(e, objet);
+    });
+  });
 }
 
 function sortBy(col){if(sortCol===col)sortAsc=!sortAsc;else{sortCol=col;sortAsc=true;}renderTable();}
@@ -639,7 +643,6 @@ function openModal(idx) {
   var prev = document.getElementById('f-photo-preview');
   if (prev) prev.innerHTML = c.photo ? '<img src="'+c.photo+'" style="width:60px;height:60px;object-fit:cover;border-radius:6px;border:2px solid var(--bleu);">' : '';
   document.getElementById('f-commentaire-historique').value = c.commentaire || '';
-  document.getElementById('f-commentaire-nouveau').value = '';
   document.getElementById('overlay').classList.add('open');
 }
 function closeModal(){document.getElementById('overlay').classList.remove('open');}
@@ -655,14 +658,7 @@ async function sauvegarder() {
   if (window._photoBase64) c.photo = window._photoBase64;
   var dpEl2 = document.getElementById('f-datePose');
   c.datePose = dpEl2 ? dpEl2.value.trim() : '';
-  // Ajouter nouveau commentaire en fil avec horodatage
-  var newCmt = document.getElementById('f-commentaire-new') ? document.getElementById('f-commentaire-new').value.trim() : '';
-  if (newCmt) {
-    var now = new Date();
-    var ds = now.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'}) + ' ' + now.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
-    var ancien = c.commentaire || '';
-    c.commentaire = ancien ? ancien + '\n[' + ds + '] ' + newCmt : '[' + ds + '] ' + newCmt;
-  }
+
   if(!c.client){alert('Client obligatoire.');return;}
 
   // Gestion historique commentaire : on ajoute le nouveau texte saisi a la suite de l'existant
@@ -730,11 +726,30 @@ function renderAlertes() {
 
 function renderDashboard() {
   var byFou={}, byStatut={}, ac={u:0,w:0,o:0};
+  // Calculs financiers
+  var caCommande=0, caPose=0, nbEnAttente=0, nbSAV=0;
+  var POSES_FINIES=['Terminé','Termine','Posé','Pose'];
+  function parseMontant(v){
+    if(!v) return 0;
+    var s=String(v).replace(/[^0-9,.]/g,'').replace(/\s/g,'').replace(',','.');
+    // Gérer les milliers avec point
+    var parts=s.split('.');
+    if(parts.length>2){ s=parts.slice(0,-1).join('')+'.'+parts[parts.length-1]; }
+    var n=parseFloat(s);
+    return isNaN(n)?0:n;
+  }
   commandes.forEach(function(c){
     if(c.fournisseur) byFou[c.fournisseur]=(byFou[c.fournisseur]||0)+1;
     var s=c.statutLivraison||'Non defini'; byStatut[s]=(byStatut[s]||0)+1;
     var a=alerte(c); if(a.n===3)ac.u++; else if(a.n>=1)ac.w++; else if(a.n===0)ac.o++;
+    // Financier
+    var montant=parseMontant(c.devisTTC);
+    if((c.commande||'').toUpperCase()==='OUI') caCommande+=montant;
+    if(POSES_FINIES.indexOf((c.statutPose||'').trim())!==-1) caPose+=montant;
+    if((c.commande||'').toUpperCase()!=='OUI') nbEnAttente++;
+    if((c.statutPose||'').trim()==='SAV'||(c.statutLivraison||'').trim()==='SAV'||(c.client||'').toLowerCase().indexOf('sav')!==-1) nbSAV++;
   });
+  function fmtEuro(n){ return n.toLocaleString('fr-FR',{maximumFractionDigits:0})+' €'; }
   var fS=Object.entries(byFou).sort(function(a,b){return b[1]-a[1];}), fM=fS[0]?fS[0][1]:1;
   var sS=Object.entries(byStatut).sort(function(a,b){return b[1]-a[1];}), sM=sS[0]?sS[0][1]:1;
   var n=commandes.length||1;
@@ -813,6 +828,13 @@ function renderDashboard() {
   }
 
   document.getElementById('dash-content').innerHTML =
+    '<div class="dash-card" style="grid-column:1/-1;background:linear-gradient(135deg,#1565C0,#0D47A1);color:#fff;"><h4 style="color:#fff;">💰 Vue financière</h4>' +
+    '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;margin-top:8px;">' +
+    '<div><div style="font-size:24px;font-weight:800;">' + fmtEuro(caCommande) + '</div><div style="font-size:12px;opacity:.85;">CA commandé</div></div>' +
+    '<div><div style="font-size:24px;font-weight:800;">' + fmtEuro(caPose) + '</div><div style="font-size:12px;opacity:.85;">CA posé</div></div>' +
+    '<div><div style="font-size:24px;font-weight:800;">' + nbEnAttente + '</div><div style="font-size:12px;opacity:.85;">En attente commande</div></div>' +
+    '<div><div style="font-size:24px;font-weight:800;">' + nbSAV + '</div><div style="font-size:12px;opacity:.85;">SAV ouverts</div></div>' +
+    '</div></div>' +
     '<div class="dash-card"><h4>Par fournisseur</h4>' +
     fS.map(function(e){
       return '<div class="bar-row"><span class="bar-label">' + e[0] + '</span><div class="bar-track"><div class="bar-fill" style="width:' + Math.round(e[1]/fM*100) + '%;background:' + (FOU_COLORS[e[0]]||'#546E7A') + '"></div></div><span class="bar-count">' + e[1] + '</span></div>';
@@ -1090,8 +1112,7 @@ async function traduireCommentairesPoseurs() {
 
 
 function afficherObjet(e, objet) {
-  e.stopPropagation();
-  // Créer un petit popup au lieu d'un alert basique
+  if (e) e.stopPropagation();
   var existing = document.getElementById('objet-popup');
   if (existing) existing.remove();
 
