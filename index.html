@@ -216,7 +216,7 @@
   <div class="sidebar-logo">
     <span>ECO OUEST</span>
     <small>Suivi Commandes</small>
-    <div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v20/07/2026 13:56</div>
+    <div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v27/07/2026 08:25</div>
   </div>
   <nav class="nav">
     <div class="nav-item active" id="nav-suivi" onclick="showView('suivi')"><span class="icon">📋</span><span>Commandes</span></div>
@@ -226,7 +226,7 @@
     <div class="nav-item" id="nav-planning" onclick="showView('planning')"><span class="icon">📅</span><span>Planning</span></div>
     <div class="nav-item" id="nav-config" onclick="showView('config')"><span class="icon">⚙️</span><span>Config</span></div>
   </nav>
-  <div class="sidebar-footer">v20/07/2026 13:56</div>
+  <div class="sidebar-footer">v27/07/2026 08:25</div>
 </aside>
 
 <div class="main">
@@ -392,6 +392,9 @@
         
         <div class="form-group full"><label>Historique des commentaires / remarques</label>
           <textarea id="f-commentaire-historique" readonly style="background:#F5F7FA;color:var(--texte2);font-style:italic;min-height:90px;" placeholder="Aucun commentaire pour le moment."></textarea>
+        </div>
+        <div class="form-group full"><label>Ajouter un nouveau commentaire</label>
+          <textarea id="f-commentaire-nouveau" placeholder="Ecrire une nouvelle remarque... (elle sera ajoutee a la suite avec la date du jour)" style="width:100%;border:1.5px solid var(--bordure);border-radius:8px;padding:9px 12px;font-family:inherit;font-size:14px;outline:none;resize:vertical;min-height:60px;"></textarea>
         </div>
         <div class="form-group full">
         </div>
@@ -643,6 +646,7 @@ function openModal(idx) {
   var prev = document.getElementById('f-photo-preview');
   if (prev) prev.innerHTML = c.photo ? '<img src="'+c.photo+'" style="width:60px;height:60px;object-fit:cover;border-radius:6px;border:2px solid var(--bleu);">' : '';
   document.getElementById('f-commentaire-historique').value = c.commentaire || '';
+  var cmtNouv = document.getElementById('f-commentaire-nouveau'); if(cmtNouv) cmtNouv.value = '';
   document.getElementById('overlay').classList.add('open');
 }
 function closeModal(){document.getElementById('overlay').classList.remove('open');}
