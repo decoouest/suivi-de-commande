@@ -216,7 +216,7 @@
   <div class="sidebar-logo">
     <span>ECO OUEST</span>
     <small>Suivi Commandes</small>
-    <div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v27/07/2026 08:25</div>
+    <div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v15/09/2026 01:09</div>
   </div>
   <nav class="nav">
     <div class="nav-item active" id="nav-suivi" onclick="showView('suivi')"><span class="icon">📋</span><span>Commandes</span></div>
@@ -226,7 +226,7 @@
     <div class="nav-item" id="nav-planning" onclick="showView('planning')"><span class="icon">📅</span><span>Planning</span></div>
     <div class="nav-item" id="nav-config" onclick="showView('config')"><span class="icon">⚙️</span><span>Config</span></div>
   </nav>
-  <div class="sidebar-footer">v27/07/2026 08:25</div>
+  <div class="sidebar-footer">v15/09/2026 01:09</div>
 </aside>
 
 <div class="main">
@@ -234,7 +234,7 @@
     <span class="topbar-title" id="topbar-title">Suivi des commandes</span>
     <div class="topbar-right">
       <span class="sync-info"><span class="sync-dot" id="sync-dot"></span><span id="sync-label">Chargement...</span></span>
-      <button class="btn btn-outline btn-sm" onclick="charger()">🔄 Actualiser</button>
+      <button class="btn btn-outline btn-sm" onclick="viderCache();charger(true)" title="Forcer rechargement depuis Sheets">🔄 Actualiser</button>
       <button class="btn btn-outline btn-sm" onclick="exportCSV()">⬇ CSV</button>
       <button class="btn btn-primary btn-sm" onclick="openModal(-1)">+ Nouvelle commande</button>
     </div>
@@ -488,21 +488,72 @@ function getWeekNumber(d) {
 }
 function aClass(n){return n===0?'alerte-ok':n===1?'alerte-jaune':n===2?'alerte-orange':n===3?'alerte-rouge':'';}
 
-async function charger() {
+var CACHE_DUREE = 5 * 60 * 1000; // 5 minutes en ms
+var CACHE_KEY = 'eco-ouest-cache';
+var CACHE_TIME_KEY = 'eco-ouest-cache-time';
+
+function chargerDepuisCache() {
+  try {
+    var ts = parseInt(localStorage.getItem(CACHE_TIME_KEY) || '0');
+    var age = Date.now() - ts;
+    if (age < CACHE_DUREE) {
+      var cached = localStorage.getItem(CACHE_KEY);
+      if (cached) {
+        commandes = JSON.parse(cached);
+        var t = new Date(ts).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+        var ageMin = Math.round(age/60000);
+        sync('ok', 'Cache (' + (ageMin === 0 ? 'à l\'instant' : ageMin + ' min') + ') · ' + t);
+        fillFournisseur();
+        renderAll();
+        setLoader(false);
+        return true; // Cache utilisé
+      }
+    }
+  } catch(e) {}
+  return false; // Pas de cache valide
+}
+
+function sauvegarderCache(data) {
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+    localStorage.setItem(CACHE_TIME_KEY, String(Date.now()));
+  } catch(e) {}
+}
+
+function viderCache() {
+  try {
+    localStorage.removeItem(CACHE_KEY);
+    localStorage.removeItem(CACHE_TIME_KEY);
+  } catch(e) {}
+}
+
+function charger(forceRefresh) {
+  // Essayer le cache d'abord (sauf si forceRefresh)
+  if (!forceRefresh && chargerDepuisCache()) return;
+
   setLoader(true); sync('loading','Chargement...');
   var old = document.getElementById('jsonp-script');
   if (old) old.parentNode.removeChild(old);
   window._jsonpTimeout = setTimeout(function() {
-    sync('error','Timeout - reessayez');
-    setLoader(false);
-    document.getElementById('table-body').innerHTML = '<tr><td colspan="13"><div class="empty-state"><p>Timeout. Cliquez Actualiser pour réessayer.</p></div></td></tr>';
+    // En cas de timeout, essayer le cache même expiré
+    var cached = localStorage.getItem(CACHE_KEY);
+    if (cached) {
+      commandes = JSON.parse(cached);
+      sync('warn','Timeout - données du cache');
+      fillFournisseur(); renderAll(); setLoader(false);
+    } else {
+      sync('error','Timeout - reessayez');
+      setLoader(false);
+      document.getElementById('table-body').innerHTML = '<tr><td colspan="13"><div class="empty-state"><p>Timeout. Cliquez Actualiser pour réessayer.</p></div></td></tr>';
+    }
   }, 20000);
   window._jsonpCallback = function(d) {
     clearTimeout(window._jsonpTimeout);
     if (!d.ok) { sync('error', d.error||'Erreur'); setLoader(false); return; }
     commandes = d.data;
+    sauvegarderCache(commandes); // Sauvegarder dans le cache
     var t = new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
-    sync('ok','Mis a jour '+t);
+    sync('ok','Mis à jour ' + t);
     fillFournisseur();
     renderAll();
     setLoader(false);
@@ -512,7 +563,15 @@ async function charger() {
   script.src = WEBAPP + '?callback=_jsonpCallback&t=' + Date.now();
   script.onerror = function() {
     clearTimeout(window._jsonpTimeout);
-    sync('error','Erreur connexion');
+    // En cas d'erreur réseau, utiliser le cache si disponible
+    var cached = localStorage.getItem(CACHE_KEY);
+    if (cached) {
+      commandes = JSON.parse(cached);
+      sync('warn','Hors ligne - données du cache');
+      fillFournisseur(); renderAll();
+    } else {
+      sync('error','Erreur connexion');
+    }
     setLoader(false);
   };
   document.head.appendChild(script);
@@ -544,12 +603,12 @@ function renderKPI() {
     {cls:'kpi-urgent',f:'urgent', lb:'Urgentes', v:urg, sub:'action requise'},
     {cls:'kpi-warn',  f:'warn',   lb:'Attention',v:warn,sub:'surveiller'},
     {cls:'kpi-ok',    f:'ok',     lb:'OK',       v:ok,  sub:'sans alerte'},
-    {cls:'kpi-info',  f:'',       lb:'En cours', v:enc, sub:'non livrees'},
+    {cls:'kpi-info',  f:'encours', lb:'En cours', v:enc, sub:'non livrees', link:true},
   ];
   items.forEach(function(it){
     var d=document.createElement('div');
     d.className='kpi-card '+it.cls;
-    if(it.f){(function(f){d.onclick=function(){setFilter(f);};})(it.f);}
+    if(it.f){(function(f){d.onclick=function(){setFilter(f);showView('suivi');}; d.style.cursor='pointer'; d.title='Cliquer pour filtrer';})(it.f);}
     d.innerHTML='<span class="kpi-label">'+it.lb+'</span><span class="kpi-value">'+it.v+'</span><span class="kpi-sub">'+it.sub+'</span>';
     grid.appendChild(d);
   });
@@ -584,6 +643,11 @@ function renderTable() {
   var noncmdEl = document.getElementById('noncmd-count');
   if(noncmdEl) noncmdEl.textContent = noncmdCount;
   if(alertFilter==='noncmd')rows=rows.filter(function(c){return (c.commande||'').trim().toUpperCase()!=='OUI';});
+  if(alertFilter==='encours')rows=rows.filter(function(c){
+    var sL=(c.statutLivraison||'').trim();
+    var LIVRES=['Livré','Livre','Terminé','Termine','LIVRE','TERMINE'];
+    return LIVRES.indexOf(sL)===-1;
+  });
   rows.sort(function(a,b){
     if(sortCol==='ligne'){
       return sortAsc ? (a.ligne-b.ligne) : (b.ligne-a.ligne);
@@ -919,7 +983,9 @@ function renderSuiviPose() {
   var poseurs = [
     {nom:'ANATOLE', key:'poseur_ANATOLE', couleur:'#1565C0'},
     {nom:'ARTIOM',  key:'poseur_ARTIOM',  couleur:'#2E7D32'},
-    {nom:'ANTONIO', key:'poseur_ANTONIO', couleur:'#E65100'}
+    {nom:'ANTONIO', key:'poseur_ANTONIO', couleur:'#E65100'},
+    {nom:'VINCENT', key:'poseur_VINCENT', couleur:'#6A1B9A'},
+    {nom:'LAMRI',   key:'poseur_LAMRI',   couleur:'#00695C'}
   ];
   function getSemaine(d) {
     d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
