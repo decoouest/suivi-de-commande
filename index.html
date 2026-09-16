@@ -211,7 +211,7 @@
   <div class="sidebar-logo">
     <span>ECO OUEST</span>
     <small>Suivi Commandes</small>
-    <div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v16/09/2026 06:53</div>
+    <div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v16/09/2026 07:21</div>
   </div>
   <nav class="nav">
     <div class="nav-item active" id="nav-suivi" onclick="showView('suivi')"><span class="icon">📋</span><span>Commandes</span></div>
@@ -221,7 +221,7 @@
     <div class="nav-item" id="nav-planning" onclick="showView('planning')"><span class="icon">📅</span><span>Planning</span></div>
     <div class="nav-item" id="nav-config" onclick="showView('config')"><span class="icon">⚙️</span><span>Config</span></div>
   </nav>
-  <div class="sidebar-footer">v16/09/2026 06:53</div>
+  <div class="sidebar-footer">v16/09/2026 07:21</div>
 </aside>
 
 <div class="main">
@@ -475,9 +475,15 @@ function getWeekNumber(d) {
 }
 function aClass(n){return n===0?'alerte-ok':n===1?'alerte-jaune':n===2?'alerte-orange':n===3?'alerte-rouge':'';}
 
-var CACHE_DUREE = 5 * 60 * 1000; // 5 minutes en ms
-var CACHE_KEY = 'eco-ouest-cache';
-var CACHE_TIME_KEY = 'eco-ouest-cache-time';
+var CACHE_DUREE = 3 * 60 * 1000; // 3 minutes en ms
+var CACHE_KEY = 'eco-ouest-cache-v2'; // v2 = sans photos
+var CACHE_TIME_KEY = 'eco-ouest-cache-time-v2';
+
+// Vider l'ancien cache avec photos au premier chargement
+try {
+  localStorage.removeItem('eco-ouest-cache');
+  localStorage.removeItem('eco-ouest-cache-time');
+} catch(e) {}
 
 function chargerDepuisCache() {
   try {
