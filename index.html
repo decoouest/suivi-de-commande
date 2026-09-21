@@ -152,7 +152,12 @@
   .poseur-card-date{font-size:11px;color:var(--texte2);}
   .poseur-card-comment{font-size:13px;color:var(--texte);line-height:1.6;white-space:pre-wrap;margin-top:6px;padding:10px 12px;background:var(--gris-bg);border-radius:8px;border-left:3px solid var(--bleu);}
   .poseur-empty{text-align:center;padding:24px;color:var(--texte2);font-size:13px;font-style:italic;}
+  .photo-thumb{width:48px;height:48px;object-fit:cover;border-radius:6px;cursor:pointer;border:2px solid var(--bordure);}
   .photo-thumb:hover{border-color:var(--bleu);}
+  .photo-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:300;align-items:center;justify-content:center;}
+  .photo-modal.open{display:flex;}
+  .photo-modal img{max-width:90vw;max-height:90vh;border-radius:10px;}
+  .photo-modal-close{position:fixed;top:20px;right:20px;background:#fff;border:none;border-radius:50%;width:36px;height:36px;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
   @media(max-width:900px){
     .sidebar{width:52px;}
     .sidebar .nav-item span,.sidebar-logo span,.sidebar-logo small,.sidebar-footer{display:none;}
@@ -211,7 +216,7 @@
   <div class="sidebar-logo">
     <span>ECO OUEST</span>
     <small>Suivi Commandes</small>
-    <div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v21/09/2026 09:59</div>
+    <div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v15/09/2026 01:09</div>
   </div>
   <nav class="nav">
     <div class="nav-item active" id="nav-suivi" onclick="showView('suivi')"><span class="icon">📋</span><span>Commandes</span></div>
@@ -221,7 +226,7 @@
     <div class="nav-item" id="nav-planning" onclick="showView('planning')"><span class="icon">📅</span><span>Planning</span></div>
     <div class="nav-item" id="nav-config" onclick="showView('config')"><span class="icon">⚙️</span><span>Config</span></div>
   </nav>
-  <div class="sidebar-footer">v21/09/2026 09:59</div>
+  <div class="sidebar-footer">v15/09/2026 01:09</div>
 </aside>
 
 <div class="main">
@@ -229,7 +234,7 @@
     <span class="topbar-title" id="topbar-title">Suivi des commandes</span>
     <div class="topbar-right">
       <span class="sync-info"><span class="sync-dot" id="sync-dot"></span><span id="sync-label">Chargement...</span></span>
-      <button class="btn btn-outline btn-sm" onclick="charger()" title="Forcer rechargement depuis Sheets">🔄 Actualiser</button>
+      <button class="btn btn-outline btn-sm" onclick="viderCache();charger(true)" title="Forcer rechargement depuis Sheets">🔄 Actualiser</button>
       <button class="btn btn-outline btn-sm" onclick="exportCSV()">⬇ CSV</button>
       <button class="btn btn-primary btn-sm" onclick="openModal(-1)">+ Nouvelle commande</button>
     </div>
@@ -272,6 +277,7 @@
             <th>Statut pose</th>
             <th>Date pose</th>
             <th>PV Chantier</th>
+            <th>Photo</th>
             <th>Commentaire</th>
             <th>Alerte</th>
             <th></th>
@@ -374,7 +380,14 @@
             <span style="font-size:13px;font-weight:600;">PV effectue</span>
           </label>
         </div>
-        
+        <div class="form-group full">
+          <label>Photo du chantier</label>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <input type="file" id="f-photo-input" accept="image/*" style="display:none" onchange="previewPhoto(event)">
+            <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('f-photo-input').click()">📷 Choisir une photo</button>
+            <button type="button" onclick="supprimerPhoto()" style="background:#FFEBEE;color:#D32F2F;border:1px solid #FFCDD2;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;">🗑 Supprimer photo</button>
+            <div id="f-photo-preview"></div>
+          </div>
         </div>
         
         <div class="form-group full"><label>Historique des commentaires / remarques</label>
@@ -475,22 +488,70 @@ function getWeekNumber(d) {
 }
 function aClass(n){return n===0?'alerte-ok':n===1?'alerte-jaune':n===2?'alerte-orange':n===3?'alerte-rouge':'';}
 
-// Cache désactivé - chargement direct
+var CACHE_DUREE = 5 * 60 * 1000; // 5 minutes en ms
+var CACHE_KEY = 'eco-ouest-cache';
+var CACHE_TIME_KEY = 'eco-ouest-cache-time';
 
-function charger() {
-  setLoader(true);
-  sync('loading','Chargement...');
+function chargerDepuisCache() {
+  try {
+    var ts = parseInt(localStorage.getItem(CACHE_TIME_KEY) || '0');
+    var age = Date.now() - ts;
+    if (age < CACHE_DUREE) {
+      var cached = localStorage.getItem(CACHE_KEY);
+      if (cached) {
+        commandes = JSON.parse(cached);
+        var t = new Date(ts).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+        var ageMin = Math.round(age/60000);
+        sync('ok', 'Cache (' + (ageMin === 0 ? 'à l\'instant' : ageMin + ' min') + ') · ' + t);
+        fillFournisseur();
+        renderAll();
+        setLoader(false);
+        return true; // Cache utilisé
+      }
+    }
+  } catch(e) {}
+  return false; // Pas de cache valide
+}
+
+function sauvegarderCache(data) {
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+    localStorage.setItem(CACHE_TIME_KEY, String(Date.now()));
+  } catch(e) {}
+}
+
+function viderCache() {
+  try {
+    localStorage.removeItem(CACHE_KEY);
+    localStorage.removeItem(CACHE_TIME_KEY);
+  } catch(e) {}
+}
+
+function charger(forceRefresh) {
+  // Essayer le cache d'abord (sauf si forceRefresh)
+  if (!forceRefresh && chargerDepuisCache()) return;
+
+  setLoader(true); sync('loading','Chargement...');
   var old = document.getElementById('jsonp-script');
   if (old) old.parentNode.removeChild(old);
   window._jsonpTimeout = setTimeout(function() {
-    sync('error','Timeout - reessayez');
-    setLoader(false);
-    document.getElementById('table-body').innerHTML = '<tr><td colspan="13"><div class="empty-state"><p>Timeout. Cliquez Actualiser pour réessayer.</p></div></td></tr>';
-  }, 45000);
+    // En cas de timeout, essayer le cache même expiré
+    var cached = localStorage.getItem(CACHE_KEY);
+    if (cached) {
+      commandes = JSON.parse(cached);
+      sync('warn','Timeout - données du cache');
+      fillFournisseur(); renderAll(); setLoader(false);
+    } else {
+      sync('error','Timeout - reessayez');
+      setLoader(false);
+      document.getElementById('table-body').innerHTML = '<tr><td colspan="13"><div class="empty-state"><p>Timeout. Cliquez Actualiser pour réessayer.</p></div></td></tr>';
+    }
+  }, 20000);
   window._jsonpCallback = function(d) {
     clearTimeout(window._jsonpTimeout);
     if (!d.ok) { sync('error', d.error||'Erreur'); setLoader(false); return; }
     commandes = d.data;
+    sauvegarderCache(commandes); // Sauvegarder dans le cache
     var t = new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
     sync('ok','Mis à jour ' + t);
     fillFournisseur();
@@ -502,12 +563,19 @@ function charger() {
   script.src = WEBAPP + '?callback=_jsonpCallback&t=' + Date.now();
   script.onerror = function() {
     clearTimeout(window._jsonpTimeout);
-    sync('error','Erreur connexion');
+    // En cas d'erreur réseau, utiliser le cache si disponible
+    var cached = localStorage.getItem(CACHE_KEY);
+    if (cached) {
+      commandes = JSON.parse(cached);
+      sync('warn','Hors ligne - données du cache');
+      fillFournisseur(); renderAll();
+    } else {
+      sync('error','Erreur connexion');
+    }
     setLoader(false);
   };
   document.head.appendChild(script);
 }
-
 
 
 async function apiPost(body) {
@@ -636,8 +704,11 @@ function openModal(idx) {
   if (pvEl) pvEl.checked = (c.pvChantier||'').toUpperCase() === 'OUI';
   var dpEl = document.getElementById('f-datePose');
   if (dpEl) dpEl.value = c.datePose || '';
+  window._photoBase64 = c.photo || null;
   var objEl = document.getElementById('f-objetCommande');
   if (objEl) objEl.value = c.objetCommande || '';
+  var prev = document.getElementById('f-photo-preview');
+  if (prev) prev.innerHTML = c.photo ? '<img src="'+c.photo+'" style="width:60px;height:60px;object-fit:cover;border-radius:6px;border:2px solid var(--bleu);">' : '';
   document.getElementById('f-commentaire-historique').value = c.commentaire || '';
   var cmtNouv = document.getElementById('f-commentaire-nouveau'); if(cmtNouv) cmtNouv.value = '';
   document.getElementById('overlay').classList.add('open');
@@ -645,30 +716,14 @@ function openModal(idx) {
 function closeModal(){document.getElementById('overlay').classList.remove('open');}
 function closeOut(e){if(e.target.id==='overlay')closeModal();}
 
-var _sauvegardeEnCours = false;
-var _sauvegardeEnCours = false;
-var _sauvegardeEnCours = false;
 async function sauvegarder() {
-  if (_sauvegardeEnCours) return;
-  _sauvegardeEnCours = true;
-  var btnSave = document.querySelector('button[onclick="sauvegarder()"]');
-  if (btnSave) { btnSave.disabled = true; btnSave.textContent = '⏳ Enregistrement...'; }
-  if (_sauvegardeEnCours) return;
-  _sauvegardeEnCours = true;
-  var btnSave = document.querySelector('button[onclick="sauvegarder()"]');
-  if (btnSave) { btnSave.disabled = true; btnSave.textContent = '⏳ Enregistrement...'; }
-  // Anti-doublon : ignorer si déjà en cours
-  if (_sauvegardeEnCours) return;
-  _sauvegardeEnCours = true;
-  // Désactiver le bouton visuellement
-  var btnSave = document.querySelector('.btn.btn-primary[onclick="sauvegarder()"]');
-  if (btnSave) { btnSave.disabled = true; btnSave.textContent = '⏳ Enregistrement...'; }
   var c={};
   ['client','devis','devisTTC','fournisseur','commande','arc','commentaireARC','prevLivraison','statutLivraison','statutPose'].forEach(function(f){
     var el=document.getElementById('f-'+f);if(el)c[f]=el.value.trim();
   });
   var pvEl = document.getElementById('f-pvChantier');
   c.pvChantier = pvEl && pvEl.checked ? 'OUI' : 'NON';
+  if (window._photoBase64) c.photo = window._photoBase64;
   var dpEl2 = document.getElementById('f-datePose');
   c.datePose = dpEl2 ? dpEl2.value.trim() : '';
 
@@ -689,7 +744,7 @@ async function sauvegarder() {
   try {
     var res;
     if(editLigne>0){
-      res=await apiPost({action:'modifier',ligne:editLigne,champs:{1:c.client,3:c.devis,4:c.devisTTC,5:c.fournisseur,6:c.commande,7:c.arc,9:c.commentaireARC,10:c.prevLivraison,12:c.statutLivraison,13:c.statutPose,14:c.commentaire,16:c.pvChantier,20:c.datePose,note_G:(document.getElementById('f-objetCommande')?document.getElementById('f-objetCommande').value.trim():'')}});
+      res=await apiPost({action:'modifier',ligne:editLigne,champs:{1:c.client,3:c.devis,4:c.devisTTC,5:c.fournisseur,6:c.commande,7:c.arc,9:c.commentaireARC,10:c.prevLivraison,12:c.statutLivraison,13:c.statutPose,14:c.commentaire,16:c.pvChantier,20:c.datePose,23:c.photo||'',note_G:(document.getElementById('f-objetCommande')?document.getElementById('f-objetCommande').value.trim():'')}});
     } else {
       res=await apiPost({action:'ajouter',commande:c});
     }
@@ -1040,6 +1095,47 @@ function cleanDate(s) {
 }
 
 
+function openPhotoModal(e, src) {
+  e.stopPropagation();
+  document.getElementById('photo-modal-img').src = src;
+  document.getElementById('photo-modal').classList.add('open');
+}
+function closePhotoModal() {
+  document.getElementById('photo-modal').classList.remove('open');
+}
+
+function supprimerPhoto() {
+  if (!confirm('Supprimer la photo ?')) return;
+  window._photoBase64 = '';
+  var prev = document.getElementById('f-photo-preview');
+  if (prev) prev.innerHTML = '<span style="color:#D32F2F;font-size:12px;">Photo supprimée</span>';
+}
+
+function previewPhoto(event) {
+  var file = event.target.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var base64 = e.target.result;
+    // Compresser l'image
+    var img = new Image();
+    img.onload = function() {
+      var canvas = document.createElement('canvas');
+      var max = 800;
+      var w = img.width, h = img.height;
+      if (w > max) { h = h * max / w; w = max; }
+      if (h > max) { w = w * max / h; h = max; }
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      var compressed = canvas.toDataURL('image/jpeg', 0.7);
+      window._photoBase64 = compressed;
+      var prev = document.getElementById('f-photo-preview');
+      prev.innerHTML = '<img src="'+compressed+'" style="width:60px;height:60px;object-fit:cover;border-radius:6px;border:2px solid var(--bleu);">';
+    };
+    img.src = base64;
+  };
+  reader.readAsDataURL(file);
+}
 
 
 function sauvegarderConfig() {
@@ -1100,6 +1196,11 @@ function afficherObjet(e, objet) {
     '<button onclick="document.getElementById(\'objet-popup\').remove()" style="margin-top:16px;width:100%;background:var(--bleu);color:#fff;border:none;border-radius:8px;padding:10px;font-size:14px;font-weight:600;cursor:pointer;">Fermer</button>' +
     '</div>';
   document.body.appendChild(popup);
+}
+
+function photoCell(photo) {
+  if (!photo || !photo.startsWith('data:')) return '<td data-label="Photo" style="color:#ccc;">—</td>';
+  return '<td data-label="Photo"><img src="' + photo + '" style="width:48px;height:48px;object-fit:cover;border-radius:5px;cursor:pointer;" onclick="openPhotoModal(event,this.src)"></td>';
 }
 
 
@@ -1392,5 +1493,9 @@ setInterval(function(){charger();}, 5*60*1000);
 </script>
 
 
+<div class="photo-modal" id="photo-modal" onclick="closePhotoModal()">
+  <button class="photo-modal-close" onclick="closePhotoModal()">✕</button>
+  <img id="photo-modal-img" src="" alt="Photo chantier">
+</div>
 </body>
 </html>
