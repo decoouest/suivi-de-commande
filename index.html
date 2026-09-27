@@ -145,37 +145,6 @@
   .poseur-card-client{font-weight:700;font-size:14px;}
   .poseur-card-date{font-size:11px;color:var(--texte2);}
   .poseur-card-comment{font-size:13px;color:var(--texte);line-height:1.6;white-space:pre-wrap;margin-top:6px;padding:10px 12px;background:var(--gris-bg);border-radius:8px;border-left:3px solid var(--bleu);}
-  /* ── MODE HORS-LIGNE ───────────────────────────── */
-  .offline-banner{position:fixed;top:0;left:var(--sidebar);right:0;z-index:150;background:linear-gradient(90deg,#E65100,#F57C00);color:#fff;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;gap:14px;font-size:13px;font-weight:600;box-shadow:0 2px 12px rgba(230,81,0,.35);transform:translateY(-100%);transition:transform .3s ease;}
-  .offline-banner.visible{transform:translateY(0);}
-  .offline-banner.offline{background:linear-gradient(90deg,#D32F2F,#C62828);}
-  .offline-banner-left{display:flex;align-items:center;gap:10px;}
-  .offline-banner-icon{font-size:18px;animation:pulse-warn 1.5s infinite;}
-  @keyframes pulse-warn{0%,100%{opacity:1}50%{opacity:.5}}
-  .offline-banner .btn-sync{background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.4);border-radius:6px;padding:5px 14px;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;}
-  .offline-banner .btn-sync:hover{background:rgba(255,255,255,.35);}
-  .offline-banner .btn-sync:disabled{opacity:.5;cursor:wait;}
-  .net-status{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;transition:all .2s;}
-  .net-status.online{background:var(--vert-bg);color:var(--vert);}
-  .net-status.offline{background:#FFEBEE;color:var(--rouge);}
-  .net-status.syncing{background:#FFF3E0;color:var(--orange);}
-  .net-status .net-dot{width:7px;height:7px;border-radius:50%;display:inline-block;}
-  .net-status.online .net-dot{background:var(--vert);}
-  .net-status.offline .net-dot{background:var(--rouge);animation:pulse-warn 1s infinite;}
-  .net-status.syncing .net-dot{background:var(--orange);animation:pulse-warn .6s infinite;}
-  /* ── NOTIFICATIONS ──────────────────────────── */
-  .notif-panel{position:fixed;bottom:20px;right:20px;z-index:180;display:flex;flex-direction:column;gap:10px;max-width:380px;}
-  .notif-toast{background:#fff;border-radius:10px;border-left:4px solid var(--bleu);box-shadow:0 8px 28px rgba(0,0,0,.15);padding:14px 18px;display:flex;gap:12px;align-items:flex-start;animation:slideIn .3s ease;}
-  .notif-toast.urgent{border-left-color:var(--rouge);}
-  .notif-toast.warn{border-left-color:var(--orange);}
-  .notif-toast.ok{border-left-color:var(--vert);}
-  .notif-toast-icon{font-size:22px;flex-shrink:0;}
-  .notif-toast-content{flex:1;}
-  .notif-toast-title{font-size:13px;font-weight:700;margin-bottom:3px;}
-  .notif-toast-msg{font-size:12px;color:var(--texte2);line-height:1.4;}
-  .notif-toast-close{background:none;border:none;cursor:pointer;font-size:14px;color:var(--texte2);padding:0;line-height:1;}
-  @keyframes slideIn{from{transform:translateX(120%);opacity:0}to{transform:translateX(0);opacity:1}}
-  @keyframes slideOut{from{transform:translateX(0);opacity:1}to{transform:translateX(120%);opacity:0}}
   @media(max-width:900px){
     .sidebar{width:52px;}
     .sidebar .nav-item span,.sidebar-logo span,.sidebar-logo small,.sidebar-footer{display:none;}
@@ -186,8 +155,6 @@
     .nav-item .icon{font-size:20px;}
     .dash-grid{grid-template-columns:1fr;}
     .form-grid{grid-template-columns:1fr;}
-    .offline-banner{left:52px;font-size:12px;padding:8px 12px;}
-    .notif-panel{max-width:calc(100vw - 84px);right:12px;bottom:12px;}
   }
   @media(max-width:768px){
     .topbar{flex-wrap:wrap;gap:8px;padding:10px 12px;}
@@ -220,23 +187,11 @@
 </head>
 <body>
 
-<!-- Bannière hors-ligne -->
-<div class="offline-banner" id="offline-banner">
-  <div class="offline-banner-left">
-    <span class="offline-banner-icon" id="offline-icon">⚠️</span>
-    <span id="offline-text">Vous êtes hors ligne</span>
-  </div>
-  <button class="btn-sync" id="btn-sync-all" onclick="synchroniserFile()" disabled>🔄 Synchroniser</button>
-</div>
-
-<!-- Panneau de notifications toast -->
-<div class="notif-panel" id="notif-panel"></div>
-
 <aside class="sidebar">
   <div class="sidebar-logo">
     <span>ECO OUEST</span>
     <small>Suivi Commandes</small>
-    <div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v2.0</div>
+    <div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v16/09/2026 07:21</div>
   </div>
   <nav class="nav">
     <div class="nav-item active" id="nav-suivi" onclick="showView('suivi')"><span class="icon">📋</span><span>Commandes</span></div>
@@ -246,19 +201,14 @@
     <div class="nav-item" id="nav-planning" onclick="showView('planning')"><span class="icon">📅</span><span>Planning</span></div>
     <div class="nav-item" id="nav-config" onclick="showView('config')"><span class="icon">⚙️</span><span>Config</span></div>
   </nav>
-  <div class="sidebar-footer">v2.0 — Offline-ready</div>
+  <div class="sidebar-footer">v16/09/2026 07:21</div>
 </aside>
 
 <div class="main">
   <div class="topbar">
     <span class="topbar-title" id="topbar-title">Suivi des commandes</span>
     <div class="topbar-right">
-      <span class="net-status online" id="net-status">
-        <span class="net-dot"></span>
-        <span id="net-label">En ligne</span>
-      </span>
       <span class="sync-info"><span class="sync-dot" id="sync-dot"></span><span id="sync-label">Chargement...</span></span>
-      <button class="btn btn-outline btn-sm" onclick="demanderPermissionNotif()" id="btn-notif" title="Activer les notifications">🔕</button>
       <button class="btn btn-outline btn-sm" onclick="viderCache();charger(true)" title="Forcer rechargement depuis Sheets">🔄 Actualiser</button>
       <button class="btn btn-outline btn-sm" onclick="exportCSV()">⬇ CSV</button>
       <button class="btn btn-primary btn-sm" onclick="openModal(-1)">+ Nouvelle commande</button>
@@ -384,7 +334,7 @@
           <select id="f-commande"><option value="">—</option><option>OUI</option><option>NON</option></select>
         </div>
         <div class="form-group"><label>N° ARC</label><input id="f-arc" type="text"></div>
-        <div class="form-group full"><label>📦 Objet de la commande</label><textarea id="f-objetCommande" placeholder="Ex: 3 fenêtres PVC blanc..." style="width:100%;border:1.5px solid var(--bordure);border-radius:8px;padding:9px 12px;font-family:inherit;font-size:14px;outline:none;resize:vertical;min-height:50px;"></textarea></div>
+        <div class="form-group full"><label>📦 Objet de la commande (note sur ARC)</label><textarea id="f-objetCommande" placeholder="Ex: 3 fenêtres PVC blanc, 1 porte-fenêtre..." style="width:100%;border:1.5px solid var(--bordure);border-radius:8px;padding:9px 12px;font-family:inherit;font-size:14px;outline:none;resize:vertical;min-height:50px;"></textarea></div>
         <div class="form-group"><label>Validation ARC</label>
           <select id="f-commentaireARC"><option value="">—</option><option>Confirmer</option><option>Valide</option><option>En attente</option><option>ANNULER</option></select>
         </div>
@@ -396,7 +346,7 @@
           <select id="f-statutPose"><option value="">—</option><option>A planifier</option><option>En cours</option><option>Posé</option><option>Terminé</option><option>SAV</option><option>Annulé</option></select>
         </div>
         <div class="form-group">
-          <label>Date de pose</label>
+          <label>Date de pose (col. T)</label>
           <input id="f-datePose" type="text" placeholder="Ex: S26 ou 23/06/2026">
         </div>
         <div class="form-group">
@@ -406,11 +356,11 @@
             <span style="font-size:13px;font-weight:600;">PV effectué</span>
           </label>
         </div>
-        <div class="form-group full"><label>Historique des commentaires</label>
-          <textarea id="f-commentaire-historique" readonly style="background:#F5F7FA;color:var(--texte2);font-style:italic;min-height:90px;" placeholder="Aucun commentaire."></textarea>
+        <div class="form-group full"><label>Historique des commentaires / remarques</label>
+          <textarea id="f-commentaire-historique" readonly style="background:#F5F7FA;color:var(--texte2);font-style:italic;min-height:90px;" placeholder="Aucun commentaire pour le moment."></textarea>
         </div>
-        <div class="form-group full"><label>Ajouter un commentaire</label>
-          <textarea id="f-commentaire-nouveau" placeholder="Nouvelle remarque (ajoutée avec date du jour)..." style="width:100%;border:1.5px solid var(--bordure);border-radius:8px;padding:9px 12px;font-family:inherit;font-size:14px;outline:none;resize:vertical;min-height:60px;"></textarea>
+        <div class="form-group full"><label>Ajouter un nouveau commentaire</label>
+          <textarea id="f-commentaire-nouveau" placeholder="Écrire une nouvelle remarque... (elle sera ajoutée à la suite avec la date du jour)" style="width:100%;border:1.5px solid var(--bordure);border-radius:8px;padding:9px 12px;font-family:inherit;font-size:14px;outline:none;resize:vertical;min-height:60px;"></textarea>
         </div>
       </div>
     </div>
@@ -425,6 +375,7 @@
     </div>
   </div>
 </div>
+
 <script>
 var _jsonpCallback = null;
 var WEBAPP_DEFAULT = 'https://script.google.com/macros/s/AKfycbyLfDXzm5Wr1Mubw8odhWN1pQZAiBJDffcDkUbKNO0A6UjhN3Az7pxB8u_5GPEnyyNC/exec';
@@ -467,10 +418,9 @@ function pvBadge(val, ligne) {
 async function togglePV(ligne, checked) {
   var val = checked ? 'OUI' : 'NON';
   try {
-    var r = await apiPost({action:'modifier', ligne:ligne, champs:{16: val}});
+    await apiPost({action:'modifier', ligne:ligne, champs:{16: val}});
     var c = commandes.find(function(x){return x.ligne===ligne;});
     if (c) c.pvChantier = val;
-    if (r && r.queued) sync('warn', 'PV en attente de sync');
   } catch(e) {
     alert('Erreur : ' + e.message);
   }
@@ -547,6 +497,7 @@ function viderCache() {
 
 function charger(forceRefresh) {
   if (!forceRefresh && chargerDepuisCache()) return;
+
   setLoader(true); sync('loading','Chargement...');
   var old = document.getElementById('jsonp-script');
   if (old) old.parentNode.removeChild(old);
@@ -559,7 +510,7 @@ function charger(forceRefresh) {
     } else {
       sync('error','Timeout - réessayez');
       setLoader(false);
-      document.getElementById('table-body').innerHTML = '<tr><td colspan="13"><div class="empty-state"><p>Timeout. Cliquez Actualiser.</p></div></td></tr>';
+      document.getElementById('table-body').innerHTML = '<tr><td colspan="13"><div class="empty-state"><p>Timeout. Cliquez Actualiser pour réessayer.</p></div></td></tr>';
     }
   }, 45000);
   window._jsonpCallback = function(d) {
@@ -591,6 +542,11 @@ function charger(forceRefresh) {
   document.head.appendChild(script);
 }
 
+async function apiPost(body) {
+  var r = await fetch(WEBAPP,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(body),redirect:'follow'});
+  return r.json();
+}
+
 function setLoader(on){document.getElementById('loader').classList.toggle('active',on);}
 function sync(state,label){
   document.getElementById('sync-label').textContent=label;
@@ -611,7 +567,7 @@ function renderKPI() {
     {cls:'kpi-urgent',f:'urgent', lb:'Urgentes', v:urg, sub:'action requise'},
     {cls:'kpi-warn',  f:'warn',   lb:'Attention',v:warn,sub:'surveiller'},
     {cls:'kpi-ok',    f:'ok',     lb:'OK',       v:ok,  sub:'sans alerte'},
-    {cls:'kpi-info',  f:'encours', lb:'En cours', v:enc, sub:'non livrées'}
+    {cls:'kpi-info',  f:'encours', lb:'En cours', v:enc, sub:'non livrées', link:true},
   ];
   items.forEach(function(it){
     var d=document.createElement('div');
@@ -654,7 +610,9 @@ function renderTable() {
     return LIVRES.indexOf(sL)===-1;
   });
   rows.sort(function(a,b){
-    if(sortCol==='ligne'){return sortAsc ? (a.ligne-b.ligne) : (b.ligne-a.ligne);}
+    if(sortCol==='ligne'){
+      return sortAsc ? (a.ligne-b.ligne) : (b.ligne-a.ligne);
+    }
     var va=(a[sortCol]||'').toString().toLowerCase(),vb=(b[sortCol]||'').toString().toLowerCase();
     return sortAsc?va.localeCompare(vb):vb.localeCompare(va);
   });
@@ -666,7 +624,7 @@ function renderTable() {
     var sP=c.statutPose?'<span class="badge '+(c.statutPose==='Terminé'?'badge-ok':c.statutPose==='SAV'?'badge-urgent':'badge-info')+'">'+h(c.statutPose)+'</span>':'—';
     var extra=a.t.indexOf(' | ')!==-1?'<br><span style="font-size:10px;color:var(--texte2);">+'+(a.t.split(' | ').length-1)+' autre(s)</span>':'';
     var objetBadge = c.objetCommande
-      ? '<span style="border-bottom:2px dotted var(--bleu);cursor:pointer;" onclick="afficherObjet(event,'+JSON.stringify(h(c.objetCommande))+')">'+h(c.arc||'—')+' 📦</span>'
+      ? '<span style="border-bottom:2px dotted var(--bleu);cursor:pointer;" title="📦 '+h(c.objetCommande)+'" onclick="afficherObjet(event,'+JSON.stringify(h(c.objetCommande))+')">'+h(c.arc||'—')+' 📦</span>'
       : h(c.arc||'—');
     return '<tr>'+
       '<td class="col-client" data-label="Client"><span style="display:inline-block;background:var(--gris-bg);color:var(--texte2);font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px;margin-right:6px;">L'+c.ligne+'</span>'+h(c.client)+'</td>'+
@@ -720,6 +678,7 @@ async function sauvegarder() {
   c.pvChantier = pvEl && pvEl.checked ? 'OUI' : 'NON';
   var dpEl2 = document.getElementById('f-datePose');
   c.datePose = dpEl2 ? dpEl2.value.trim() : '';
+
   if(!c.client){alert('Client obligatoire.');return;}
 
   var nouveauTexte = document.getElementById('f-commentaire-nouveau').value.trim();
@@ -741,17 +700,7 @@ async function sauvegarder() {
       res=await apiPost({action:'ajouter',commande:c});
     }
     if(!res.ok)throw new Error(res.error);
-    closeModal();
-    if (res.queued) {
-      sync('warn','Modification en attente de synchronisation');
-      if (editLigne > 0) {
-        var cLocal = commandes.find(function(x){return x.ligne===editLigne;});
-        if (cLocal) Object.assign(cLocal, c);
-      }
-      renderAll();
-    } else {
-      await charger(true);
-    }
+    closeModal();await charger(true);
   } catch(e){alert('Erreur : '+e.message);}
   document.getElementById('saving-msg').classList.remove('active');
 }
@@ -760,18 +709,7 @@ async function supprimerCommande() {
   var c=commandes.find(function(x){return x.ligne===editLigne;});
   if(!confirm('Supprimer "'+( c?c.client:'')+'" ?'))return;
   document.getElementById('saving-msg').classList.add('active');
-  try{
-    var r=await apiPost({action:'supprimer',ligne:editLigne});
-    if(!r.ok)throw new Error(r.error);
-    closeModal();
-    if (r.queued) {
-      sync('warn','Suppression en attente');
-      commandes = commandes.filter(function(x){return x.ligne!==editLigne;});
-      renderAll();
-    } else {
-      await charger(true);
-    }
-  }
+  try{var r=await apiPost({action:'supprimer',ligne:editLigne});if(!r.ok)throw new Error(r.error);closeModal();await charger(true);}
   catch(e){alert('Erreur : '+e.message);}
   document.getElementById('saving-msg').classList.remove('active');
 }
@@ -806,7 +744,7 @@ function renderAlertes() {
 }
 
 function renderDashboard() {
-  var byFou={}, ac={u:0,w:0,o:0};
+  var byFou={}, byStatut={}, ac={u:0,w:0,o:0};
   var caCommande=0, caPose=0, nbEnAttente=0, nbSAV=0;
   var POSES_FINIES=['Terminé','Termine','Posé','Pose'];
   function parseMontant(v){
@@ -819,6 +757,7 @@ function renderDashboard() {
   }
   commandes.forEach(function(c){
     if(c.fournisseur) byFou[c.fournisseur]=(byFou[c.fournisseur]||0)+1;
+    var s=c.statutLivraison||'Non defini'; byStatut[s]=(byStatut[s]||0)+1;
     var a=alerte(c); if(a.n===3)ac.u++; else if(a.n>=1)ac.w++; else if(a.n===0)ac.o++;
     var montant=parseMontant(c.devisTTC);
     if((c.commande||'').toUpperCase()==='OUI') caCommande+=montant;
@@ -828,6 +767,7 @@ function renderDashboard() {
   });
   function fmtEuro(n){ return n.toLocaleString('fr-FR',{maximumFractionDigits:0})+' €'; }
   var fS=Object.entries(byFou).sort(function(a,b){return b[1]-a[1];}), fM=fS[0]?fS[0][1]:1;
+  var sS=Object.entries(byStatut).sort(function(a,b){return b[1]-a[1];});
   var n=commandes.length||1;
 
   var TERMINES_D = ['Livré','Terminé','Posé','LIVRE','TERMINE','POSE','Livre','Termine'];
@@ -844,8 +784,12 @@ function renderDashboard() {
     return (b.datePose||'').localeCompare(a.datePose||'');
   });
 
-  var pvFaits = commandes.filter(function(c){ return (c.pvChantier||'').toUpperCase()==='OUI'; }).length;
-  var pvManquants = actifs.filter(function(c){ return (c.pvChantier||'').toUpperCase()!=='OUI'; }).length;
+  var pvFaits = commandes.filter(function(c){
+    return (c.pvChantier||'').toUpperCase()==='OUI';
+  }).length;
+  var pvManquants = actifs.filter(function(c){
+    return (c.pvChantier||'').toUpperCase()!=='OUI';
+  }).length;
 
   var hC = '';
   if (!actifs.length) {
@@ -855,24 +799,39 @@ function renderDashboard() {
       var pvFait = (c.pvChantier||'').toUpperCase() === 'OUI';
       hC += '<div style="background:#fff;border-radius:10px;border:1px solid var(--bordure);margin-bottom:10px;overflow:hidden;">';
       hC += '<div style="padding:10px 14px;background:var(--gris-bg);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;border-bottom:1px solid var(--bordure);">';
-      hC += '<div><span style="font-weight:700;font-size:14px;">' + h(c.client) + '</span>';
+      hC += '<div>';
+      hC += '<span style="font-weight:700;font-size:14px;">' + h(c.client) + '</span>';
       if(c.fournisseur) hC += ' <span style="font-size:11px;color:var(--texte2);">· ' + h(c.fournisseur) + '</span>';
-      hC += '</div><div style="display:flex;gap:6px;flex-wrap:wrap;">';
-      if(c.datePose) hC += '<span style="background:var(--bleu-bg);color:var(--bleu);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;">📅 ' + h(c.datePose) + '</span>';
-      hC += pvFait ? '<span style="background:var(--vert-bg);color:var(--vert);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;">✓ PV Fait</span>' : '<span style="background:#FFEBEE;color:var(--rouge);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;">✗ PV Manquant</span>';
-      hC += '</div></div><div style="padding:10px 14px;">';
+      hC += '</div>';
+      hC += '<div style="display:flex;gap:6px;flex-wrap:wrap;">';
+      if(c.datePose) {
+        hC += '<span style="background:var(--bleu-bg);color:var(--bleu);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;">📅 ' + h(c.datePose) + '</span>';
+      }
+      if(pvFait) {
+        hC += '<span style="background:var(--vert-bg);color:var(--vert);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;">✓ PV Fait</span>';
+      } else {
+        hC += '<span style="background:#FFEBEE;color:var(--rouge);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;">✗ PV Manquant</span>';
+      }
+      hC += '</div></div>';
+      hC += '<div style="padding:10px 14px;">';
       var hasRemarque = false;
       poseurs.forEach(function(p) {
         if(!c[p.key] || !c[p.key].trim()) return;
         hasRemarque = true;
         var lignes = c[p.key].split('\n');
         var dernier = lignes[lignes.length-1];
-        hC += '<div style="margin-bottom:8px;"><div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">';
+        hC += '<div style="margin-bottom:8px;">';
+        hC += '<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">';
         hC += '<div style="width:22px;height:22px;border-radius:50%;background:' + p.couleur + ';display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;">' + p.nom.slice(0,2) + '</div>';
-        hC += '<span style="font-size:12px;font-weight:700;color:' + p.couleur + ';">' + p.nom + '</span></div>';
-        hC += '<div style="font-size:11px;color:var(--texte);padding:6px 10px;background:var(--gris-bg);border-radius:6px;border-left:3px solid ' + p.couleur + ';">' + h(dernier) + '</div></div>';
+        hC += '<span style="font-size:12px;font-weight:700;color:' + p.couleur + ';">' + p.nom + '</span>';
+        if(lignes.length > 1) hC += '<span style="font-size:10px;color:var(--texte2);">+' + (lignes.length-1) + ' entrée(s)</span>';
+        hC += '</div>';
+        hC += '<div style="font-size:11px;color:var(--texte);padding:6px 10px;background:var(--gris-bg);border-radius:6px;border-left:3px solid ' + p.couleur + ';">' + h(dernier) + '</div>';
+        hC += '</div>';
       });
-      if(!hasRemarque) hC += '<div style="font-size:12px;color:var(--texte2);font-style:italic;">Aucune remarque poseur.</div>';
+      if(!hasRemarque) {
+        hC += '<div style="font-size:12px;color:var(--texte2);font-style:italic;">Aucune remarque poseur.</div>';
+      }
       hC += '</div></div>';
     });
   }
@@ -886,12 +845,15 @@ function renderDashboard() {
     '<div><div style="font-size:24px;font-weight:800;">' + nbSAV + '</div><div style="font-size:12px;opacity:.85;">SAV ouverts</div></div>' +
     '</div></div>' +
     '<div class="dash-card"><h4>Par fournisseur</h4>' +
-    fS.map(function(e){ return '<div class="bar-row"><span class="bar-label">' + e[0] + '</span><div class="bar-track"><div class="bar-fill" style="width:' + Math.round(e[1]/fM*100) + '%;background:' + (FOU_COLORS[e[0]]||'#546E7A') + '"></div></div><span class="bar-count">' + e[1] + '</span></div>'; }).join('') + '</div>' +
+    fS.map(function(e){
+      return '<div class="bar-row"><span class="bar-label">' + e[0] + '</span><div class="bar-track"><div class="bar-fill" style="width:' + Math.round(e[1]/fM*100) + '%;background:' + (FOU_COLORS[e[0]]||'#546E7A') + '"></div></div><span class="bar-count">' + e[1] + '</span></div>';
+    }).join('') + '</div>' +
     '<div class="dash-card"><h4>Alertes</h4>' +
     [['Urgentes',ac.u,'#D32F2F'],['Attention',ac.w,'#E65100'],['OK',ac.o,'#2E7D32']].map(function(x){
       return '<div class="bar-row"><span class="bar-label">' + x[0] + '</span><div class="bar-track"><div class="bar-fill" style="width:' + Math.round(x[1]/n*100) + '%;background:' + x[2] + '"></div></div><span class="bar-count">' + x[1] + '</span></div>';
     }).join('') + '</div>' +
-    '<div class="dash-card"><h4>Résumé</h4><div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:4px;">' +
+    '<div class="dash-card"><h4>Résumé</h4>' +
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:4px;">' +
     '<div style="text-align:center;padding:14px;background:var(--gris-bg);border-radius:8px;"><div style="font-size:28px;font-weight:700;color:var(--bleu);">' + commandes.length + '</div><div style="font-size:11px;color:var(--texte2);">Total</div></div>' +
     '<div style="text-align:center;padding:14px;background:#FFEBEE;border-radius:8px;"><div style="font-size:28px;font-weight:700;color:var(--rouge);">' + ac.u + '</div><div style="font-size:11px;color:var(--texte2);">Urgences</div></div>' +
     '<div style="text-align:center;padding:14px;background:var(--vert-bg);border-radius:8px;"><div style="font-size:28px;font-weight:700;color:var(--vert);">' + pvFaits + '</div><div style="font-size:11px;color:var(--texte2);">PV Faits</div></div>' +
@@ -934,6 +896,7 @@ function renderSuiviPose() {
     return Math.ceil((((d-y)/86400000)+1)/7);
   }
   var semActuelle = getSemaine(new Date());
+
   function datePoseEnSemaine(dp, sem) {
     if (!dp || !dp.trim()) return false;
     var m = dp.trim().match(/S\s*0*(\d{1,2})/i);
@@ -1051,6 +1014,7 @@ async function traduireTexte(texte) {
     var traduit = d[0].map(function(x){return x[0];}).join('');
     return traduit + ' <span style="font-size:10px;color:#90CAF9;font-style:italic;">[trad. auto]</span>';
   } catch(e) {
+    console.warn('Traduction échouée :', e.message);
     return texte;
   }
 }
@@ -1077,6 +1041,7 @@ function afficherObjet(e, objet) {
   if (e) e.stopPropagation();
   var existing = document.getElementById('objet-popup');
   if (existing) existing.remove();
+
   var popup = document.createElement('div');
   popup.id = 'objet-popup';
   popup.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:400;display:flex;align-items:center;justify-content:center;padding:20px;';
@@ -1141,16 +1106,20 @@ function renderPlanning() {
     var sP = c.statutPose || '';
     var sBg = sP==='SAV'?'#FFEBEE':sP.indexOf('Termin')!==-1?'#E8F5E9':'#FFF3E0';
     var sC = sP==='SAV'?'#D32F2F':sP.indexOf('Termin')!==-1?'#2E7D32':'#E65100';
+
     var poseursActifs = poseurs.filter(function(p){ return c[p.key] && c[p.key].trim(); });
+
     html += '<div style="background:#fff;border-radius:12px;border:1px solid var(--bordure);border-left:4px solid var(--bleu);padding:16px;">';
     html += '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px;">';
     html += '<div><span style="font-size:16px;font-weight:700;">' + h(c.client) + '</span>';
     if (c.fournisseur) html += ' <span style="font-size:12px;color:var(--texte2);">· ' + h(c.fournisseur) + '</span>';
-    html += '</div><div style="display:flex;gap:6px;flex-wrap:wrap;">';
+    html += '</div>';
+    html += '<div style="display:flex;gap:6px;flex-wrap:wrap;">';
     html += '<span style="background:var(--bleu-bg);color:var(--bleu);padding:3px 10px;border-radius:6px;font-size:12px;font-weight:700;">📅 ' + h(c.datePose) + '</span>';
     if (sP) html += '<span style="background:' + sBg + ';color:' + sC + ';padding:3px 10px;border-radius:6px;font-size:12px;font-weight:700;">' + h(sP) + '</span>';
     html += '<span style="background:' + (pvFait?'#E8F5E9':'#FFEBEE') + ';color:' + (pvFait?'#2E7D32':'#D32F2F') + ';padding:3px 10px;border-radius:6px;font-size:12px;font-weight:700;">' + (pvFait?'✓ PV':'✗ PV') + '</span>';
     html += '</div></div>';
+
     if (poseursActifs.length) {
       html += '<div style="display:flex;gap:8px;flex-wrap:wrap;">';
       poseursActifs.forEach(function(p) {
@@ -1160,12 +1129,15 @@ function renderPlanning() {
     } else {
       html += '<div style="font-size:12px;color:var(--texte2);font-style:italic;">Aucun poseur assigné</div>';
     }
+
     if (c.commentaire) {
       html += '<div style="margin-top:8px;font-size:12px;color:var(--texte2);padding:6px 10px;background:var(--gris-bg);border-radius:6px;">📋 ' + h(c.commentaire) + '</div>';
     }
+
     html += '</div>';
   });
   html += '</div>';
+
   document.getElementById('planning-content').innerHTML = html;
 }
 
@@ -1173,403 +1145,199 @@ async function genererRapportChantier() {
   if (editLigne === null) { alert('Enregistrez d\'abord la commande.'); return; }
   var c = commandes.find(function(x){return x.ligne===editLigne;});
   if (!c) return;
+
   try {
-    var jspdf = window.jspdf
-    
-// ══════════════════════════════════════════════════════════
-//  MODE HORS-LIGNE RENFORCÉ
-// ══════════════════════════════════════════════════════════
+    var jspdf = window.jspdf;
+    var doc = new jspdf.jsPDF({orientation:'portrait', unit:'mm', format:'a4'});
 
-var QUEUE_KEY = 'eco-ouest-queue-v1';
-var NET_CHECK_INTERVAL = 30000;
-var netCheckTimer = null;
-var isOnline = navigator.onLine;
-var isSyncing = false;
+    doc.setFillColor(21,101,192);
+    doc.rect(0, 0, 210, 30, 'F');
+    doc.setTextColor(255,255,255);
+    doc.setFontSize(18); doc.setFont('helvetica','bold');
+    doc.text('FICHE CHANTIER', 105, 13, {align:'center'});
+    doc.setFontSize(10); doc.setFont('helvetica','normal');
+    doc.text('ECO OUEST - Suivi de commande', 105, 22, {align:'center'});
 
-function getQueue() {
-  try { return JSON.parse(localStorage.getItem(QUEUE_KEY) || '[]'); } catch(e) { return []; }
-}
-function setQueue(q) {
-  try { localStorage.setItem(QUEUE_KEY, JSON.stringify(q)); updateOfflineBanner(); } catch(e) {}
-}
-function addToQueue(action, payload) {
-  var q = getQueue();
-  q.push({
-    id: 'op_' + Date.now() + '_' + Math.random().toString(36).slice(2,8),
-    action: action, payload: payload, timestamp: Date.now()
-  });
-  setQueue(q);
-  afficherToast('warn', '📥', 'Modification mise en attente', 'Sera synchronisée automatiquement au retour du réseau.');
-}
-function clearQueue() { setQueue([]); }
+    var y = 42;
 
-function updateOfflineBanner() {
-  var banner = document.getElementById('offline-banner');
-  var text = document.getElementById('offline-text');
-  var icon = document.getElementById('offline-icon');
-  var btn = document.getElementById('btn-sync-all');
-  if (!banner) return;
-  var q = getQueue();
-  var count = q.length;
-  if (!isOnline) {
-    banner.classList.add('visible','offline');
-    icon.textContent = '📴';
-    text.innerHTML = '<strong>Hors ligne</strong> — ' + count + ' modification(s) en attente';
-    btn.disabled = true;
-    btn.textContent = '⏳ En attente du réseau';
-  } else if (count > 0) {
-    banner.classList.add('visible');
-    banner.classList.remove('offline');
-    icon.textContent = '🔄';
-    text.innerHTML = '<strong>' + count + ' modification(s)</strong> à synchroniser';
-    btn.disabled = false;
-    btn.textContent = '🔄 Synchroniser';
-  } else {
-    banner.classList.remove('visible','offline');
-  }
-}
+    doc.setFontSize(16); doc.setFont('helvetica','bold'); doc.setTextColor(21,101,192);
+    doc.text(c.client || '—', 14, y);
+    y += 10;
 
-function updateNetStatus(state) {
-  var el = document.getElementById('net-status');
-  var lbl = document.getElementById('net-label');
-  if (!el || !lbl) return;
-  el.className = 'net-status ' + state;
-  lbl.textContent = state === 'online' ? 'En ligne' : state === 'offline' ? 'Hors ligne' : 'Synchro...';
-}
+    doc.setDrawColor(220,220,220);
+    doc.setFontSize(10); doc.setTextColor(60,60,60); doc.setFont('helvetica','normal');
 
-function detectOnline() {
-  if (!navigator.onLine) return Promise.resolve(false);
-  return new Promise(function(resolve) {
-    var img = new Image();
-    var done = false;
-    var timer = setTimeout(function() { if (!done) { done = true; resolve(false); } }, 3000);
-    img.onload = img.onerror = function() {
-      if (!done) { done = true; clearTimeout(timer); resolve(true); }
-    };
-    img.src = 'https://www.google.com/favicon.ico?_=' + Date.now();
-  });
-}
+    function ligne(label, val) {
+      doc.setFont('helvetica','bold');
+      doc.text(label, 14, y);
+      doc.setFont('helvetica','normal');
+      doc.text(String(val || '—'), 70, y);
+      y += 7;
+    }
 
-function verifierReseau() {
-  detectOnline().then(function(online) {
-    var wasOffline = !isOnline;
-    isOnline = online;
-    if (online) {
-      updateNetStatus(getQueue().length > 0 ? 'syncing' : 'online');
-      if (wasOffline) {
-        afficherToast('ok', '🌐', 'Réseau rétabli', 'Synchronisation en cours...');
-        setTimeout(synchroniserFile, 800);
-      }
+    ligne('Fournisseur :', c.fournisseur);
+    ligne('N° Devis :', c.devis);
+    ligne('N° Commande :', c.commande);
+    ligne('N° ARC :', c.arc);
+    ligne('Prev. livraison :', c.prevLivraison);
+    ligne('Statut livraison :', c.statutLivraison);
+    ligne('Statut pose :', c.statutPose);
+    ligne('Date de pose :', c.datePose);
+    ligne('PV chantier :', (c.pvChantier||'').toUpperCase()==='OUI' ? 'FAIT' : 'MANQUANT');
+
+    y += 4;
+    doc.setDrawColor(21,101,192); doc.setLineWidth(0.5);
+    doc.line(14, y, 196, y);
+    y += 8;
+
+    doc.setFillColor(255,243,224);
+    doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(230,81,0);
+    doc.text('NOTE BUREAU', 14, y);
+    y += 6;
+    doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(60,60,60);
+    if (c.commentaire) {
+      var lignesC = doc.splitTextToSize(c.commentaire, 182);
+      doc.text(lignesC, 14, y);
+      y += lignesC.length * 5 + 6;
     } else {
-      updateNetStatus('offline');
+      doc.text('Aucune note.', 14, y); y += 8;
     }
-    updateOfflineBanner();
-  });
-}
 
-window.addEventListener('online',  function() { verifierReseau(); });
-window.addEventListener('offline', function() { isOnline = false; updateNetStatus('offline'); updateOfflineBanner(); });
+    var poseurs = [
+      {nom:'ANATOLE', key:'poseur_ANATOLE'},
+      {nom:'ARTIOM',  key:'poseur_ARTIOM'},
+      {nom:'ANTONIO', key:'poseur_ANTONIO'},
+      {nom:'VINCENT', key:'poseur_VINCENT'},
+      {nom:'LAMRI',   key:'poseur_LAMRI'}
+    ];
 
-async function synchroniserFile(silencieux) {
-  if (isSyncing) return;
-  var q = getQueue();
-  if (!q.length) { updateNetStatus('online'); updateOfflineBanner(); return; }
-  if (!isOnline) {
-    if (!silencieux) alert('Impossible de synchroniser : hors ligne.');
-    return;
-  }
-  isSyncing = true;
-  updateNetStatus('syncing');
-  var btn = document.getElementById('btn-sync-all');
-  if (btn) { btn.disabled = true; btn.textContent = '⏳ Synchro...'; }
-  var reste = q.slice();
-  var succes = 0, echecs = 0;
-  for (var i = 0; i < q.length; i++) {
-    var op = q[i];
-    try {
-      var res = await _apiPostReal(op.payload);
-      if (res && res.ok) {
-        succes++;
-        reste = reste.filter(function(o){ return o.id !== op.id; });
-        setQueue(reste);
-      } else { echecs++; }
-    } catch(e) {
-      echecs++;
-      if (!navigator.onLine) break;
-    }
-  }
-  isSyncing = false;
-  if (succes > 0) {
-    sync('ok', succes + ' modif. synchronisée(s)');
-    afficherToast('ok', '✅', 'Synchronisation réussie', succes + ' modification(s) envoyée(s)');
-    await charger(true);
-  }
-  if (echecs > 0) {
-    sync('error', echecs + ' échec(s)');
-    afficherToast('urgent', '⚠️', 'Synchronisation partielle', echecs + ' modification(s) non envoyée(s)');
-  } else {
-    updateNetStatus('online');
-  }
-  updateOfflineBanner();
-}
-
-async function _apiPostReal(body) {
-  var r = await fetch(WEBAPP,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(body),redirect:'follow'});
-  return r.json();
-}
-
-async function apiPost(body) {
-  if (isOnline) {
-    try {
-      return await _apiPostReal(body);
-    } catch(e) {
-      isOnline = false;
-      updateNetStatus('offline');
-      addToQueue(body.action, body);
-      updateOfflineBanner();
-      return { ok: true, queued: true };
-    }
-  } else {
-    addToQueue(body.action, body);
-    updateOfflineBanner();
-    return { ok: true, queued: true };
-  }
-}
-
-function initOfflineMode() {
-  updateNetStatus(isOnline ? 'online' : 'offline');
-  updateOfflineBanner();
-  verifierReseau();
-  netCheckTimer = setInterval(verifierReseau, NET_CHECK_INTERVAL);
-}
-
-
-// ══════════════════════════════════════════════════════════
-//  NOTIFICATIONS NAVIGATEUR + TOASTS
-// ══════════════════════════════════════════════════════════
-
-var NOTIF_PREFS_KEY = 'eco-ouest-notif-prefs-v1';
-var notifPrefs = {
-  enabled: false,
-  dailyRecap: false,
-  lastDailyRecap: null,
-  knownUrgentLignes: []
-};
-
-function chargerNotifPrefs() {
-  try {
-    var saved = JSON.parse(localStorage.getItem(NOTIF_PREFS_KEY) || '{}');
-    Object.assign(notifPrefs, saved);
-  } catch(e) {}
-}
-
-function sauvegarderNotifPrefs() {
-  try { localStorage.setItem(NOTIF_PREFS_KEY, JSON.stringify(notifPrefs)); } catch(e) {}
-}
-
-function notifSupporte() { return 'Notification' in window; }
-function notifAccordee() { return notifSupporte() && Notification.permission === 'granted'; }
-
-function majBoutonNotif() {
-  var btn = document.getElementById('btn-notif');
-  if (!btn) return;
-  if (!notifSupporte()) { btn.textContent = '🔕'; btn.title = 'Non supporté'; btn.disabled = true; return; }
-  if (notifAccordee()) {
-    btn.textContent = '🔔';
-    btn.title = 'Notifications actives — cliquer pour désactiver';
-    btn.style.borderColor = 'var(--vert)';
-    btn.style.color = 'var(--vert)';
-  } else if (Notification.permission === 'denied') {
-    btn.textContent = '🔕';
-    btn.title = 'Refusées — modifiez les paramètres du navigateur';
-    btn.style.borderColor = 'var(--rouge)';
-    btn.style.color = 'var(--rouge)';
-  } else {
-    btn.textContent = '🔕';
-    btn.title = 'Activer les notifications';
-    btn.style.borderColor = '';
-    btn.style.color = '';
-  }
-}
-
-async function demanderPermissionNotif() {
-  if (!notifSupporte()) { afficherToast('warn','⚠️','Non supporté','Votre navigateur ne supporte pas les notifications.'); return; }
-  if (notifAccordee()) {
-    if (notifPrefs.enabled) {
-      notifPrefs.enabled = false;
-      notifPrefs.dailyRecap = false;
-      sauvegarderNotifPrefs();
-      majBoutonNotif();
-      afficherToast('warn','🔕','Notifications désactivées','Vous ne recevrez plus d\'alertes.');
-    } else {
-      notifPrefs.enabled = true;
-      notifPrefs.dailyRecap = true;
-      sauvegarderNotifPrefs();
-      majBoutonNotif();
-      afficherToast('ok','🔔','Notifications activées','Alertes urgentes + rappel quotidien à 8h.');
-      envoyerNotif('🔔 Notifications activées', 'Vous recevrez les alertes urgentes et le rappel quotidien à 8h.');
-    }
-    return;
-  }
-  try {
-    var perm = await Notification.requestPermission();
-    if (perm === 'granted') {
-      notifPrefs.enabled = true;
-      notifPrefs.dailyRecap = true;
-      sauvegarderNotifPrefs();
-      majBoutonNotif();
-      afficherToast('ok','🔔','Notifications activées','Alertes urgentes + rappel quotidien à 8h.');
-      envoyerNotif('🔔 Notifications activées', 'Vous recevrez les alertes urgentes et le rappel quotidien à 8h.');
-    } else {
-      afficherToast('urgent','❌','Permission refusée','Autorisez les notifications dans les paramètres du navigateur.');
-      majBoutonNotif();
-    }
-  } catch(e) { console.error(e); }
-}
-
-function envoyerNotif(titre, corps, options) {
-  options = options || {};
-  if (!notifAccordee()) return null;
-  try {
-    var n = new Notification(titre, {
-      body: corps,
-      icon: options.icon || undefined,
-      badge: options.badge || undefined,
-      tag: options.tag || 'eco-' + Date.now(),
-      requireInteraction: options.requireInteraction || false,
-      silent: options.silent || false
+    poseurs.forEach(function(p) {
+      if (!c[p.key] || !c[p.key].trim()) return;
+      if (y > 250) { doc.addPage(); y = 20; }
+      doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(21,101,192);
+      doc.text('POSEUR : ' + p.nom, 14, y);
+      y += 6;
+      doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(60,60,60);
+      var lignesP = doc.splitTextToSize(c[p.key], 182);
+      doc.text(lignesP, 14, y);
+      y += lignesP.length * 5 + 6;
     });
-    n.onclick = function() {
-      window.focus();
-      if (options.view && typeof showView === 'function') showView(options.view);
-      n.close();
-    };
-    return n;
-  } catch(e) { console.warn('Notif error:', e); return null; }
+
+    doc.setFillColor(21,101,192);
+    doc.rect(0, 285, 210, 12, 'F');
+    doc.setTextColor(255,255,255); doc.setFontSize(8); doc.setFont('helvetica','normal');
+    doc.text('ECO OUEST - Généré le ' + new Date().toLocaleDateString('fr-FR'), 105, 292, {align:'center'});
+
+    var fn = 'Fiche_' + (c.client||'chantier').replace(/\s/g,'_') + '.pdf';
+    doc.save(fn);
+  } catch(e) {
+    alert('Erreur PDF : ' + e.message);
+  }
 }
 
-function detecterUrgences() {
-  if (!notifPrefs.enabled || !notifAccordee()) return;
-  var urgents = commandes.filter(function(c) { return alerte(c).n === 3; });
-  var nouveaux = urgents.filter(function(c) {
-    return notifPrefs.knownUrgentLignes.indexOf(c.ligne) === -1;
+function fillFournisseur() {
+  var baseFournisseurs = ['ATLANTEM','ATULAM','LALLEMANT','SOKO','ALUGLASS','FILTERSUN','DC PROD','KE FRANCE','SKYLUX','BVL SERRULAC','LEROY MERLIN','FOUSSIER','STOCK'];
+  var fous = baseFournisseurs.slice();
+  commandes.forEach(function(c) {
+    if(c.fournisseur && fous.indexOf(c.fournisseur) === -1) fous.push(c.fournisseur);
   });
-  if (nouveaux.length === 0) {
-    notifPrefs.knownUrgentLignes = notifPrefs.knownUrgentLignes.filter(function(id) {
-      return urgents.some(function(c){ return c.ligne === id; });
+  fous.sort();
+
+  var sel = document.getElementById('filter-fournisseur');
+  if (sel) {
+    var curFilter = sel.value;
+    sel.innerHTML = '<option value="">Tous fournisseurs</option>';
+    fous.forEach(function(f) {
+      var o = document.createElement('option');
+      o.value = f; o.textContent = f;
+      sel.appendChild(o);
     });
-    sauvegarderNotifPrefs();
-    return;
+    sel.value = curFilter;
   }
-  var aNotifier = nouveaux.slice(0, 3);
-  aNotifier.forEach(function(c, i) {
-    setTimeout(function() {
-      var a = alerte(c);
-      envoyerNotif('🔴 Commande urgente : ' + (c.client || 'Sans nom'), a.t + (c.fournisseur ? ' · ' + c.fournisseur : ''), {
-        tag: 'urgent-' + c.ligne, requireInteraction: true, view: 'alertes'
-      });
-    }, i * 500);
-  });
-  if (nouveaux.length > 3) {
-    setTimeout(function() {
-      envoyerNotif('⚠️ ' + (nouveaux.length - 3) + ' autre(s) urgence(s)', 'Ouvrez l\'app pour voir toutes les alertes.', { view: 'alertes' });
-    }, 1800);
+
+  var selModal = document.getElementById('f-fournisseur');
+  if (selModal) {
+    var current = selModal.value;
+    selModal.innerHTML = '<option value="">— Choisir —</option>';
+    fous.forEach(function(f) {
+      var o = document.createElement('option');
+      o.value = f; o.textContent = f;
+      selModal.appendChild(o);
+    });
+    selModal.value = current;
   }
-  notifPrefs.knownUrgentLignes = notifPrefs.knownUrgentLignes.concat(nouveaux.map(function(c){ return c.ligne; }));
-  sauvegarderNotifPrefs();
 }
 
-function verifierRappelQuotidien() {
-  if (!notifPrefs.dailyRecap || !notifAccordee()) return;
-  var now = new Date();
-  var aujourdhui = now.getFullYear() + '-' + (now.getMonth()+1) + '-' + now.getDate();
-  if (notifPrefs.lastDailyRecap === aujourdhui) return;
-  if (now.getHours() !== 8) return;
-
-  var today = new Date();
-  var sem = getSemNum(today);
-  var POSES_FINIES = ['Terminé','Termine','Posé','Pose','TERMINE','POSE'];
-  var chantiersJour = commandes.filter(function(c) {
-    if ((c.commentaireARC||'').toUpperCase() === 'ANNULER') return false;
-    if (POSES_FINIES.indexOf((c.statutPose||'').trim()) !== -1) return false;
-    var dp = (c.datePose||'').trim();
-    if (!dp) return false;
-    var m = dp.match(/S\s*0*(\d{1,2})/i);
-    if (m) return parseInt(m[1],10) === sem;
-    var d = new Date(dp);
-    if (!isNaN(d)) return getSemNum(d) === sem;
-    return false;
-  });
-
-  if (chantiersJour.length > 0) {
-    var corps = chantiersJour.length + ' chantier(s) cette semaine :\n';
-    corps += chantiersJour.slice(0, 5).map(function(c){
-      return '• ' + c.client + (c.datePose ? ' (' + c.datePose + ')' : '');
-    }).join('\n');
-    if (chantiersJour.length > 5) corps += '\n… et ' + (chantiersJour.length - 5) + ' autre(s)';
-    envoyerNotif('📅 Chantiers du jour', corps, { tag: 'daily-recap', requireInteraction: true, view: 'planning' });
+function modifierCommentaire(ligne, key, idx) {
+  var c = commandes.find(function(x){return x.ligne===ligne;});
+  if (!c) return;
+  var lignes = (c[key]||'').split('\n').filter(function(l){return l.trim();});
+  var ancien = lignes[idx] || '';
+  var nouveau = prompt('Modifier ce commentaire :', ancien);
+  if (nouveau === null) return;
+  if (nouveau.trim()) {
+    lignes[idx] = nouveau.trim();
   } else {
-    envoyerNotif('📅 Aucun chantier prévu', 'Bonne journée ! Rien de planifié.', { tag: 'daily-recap', view: 'planning' });
+    lignes.splice(idx, 1);
   }
-  notifPrefs.lastDailyRecap = aujourdhui;
-  sauvegarderNotifPrefs();
+  var final = lignes.filter(function(l){return l.trim();}).join('\n');
+  sauvegarderCommentairePoseur(ligne, key, final, c);
 }
 
-function demarrerNotifLoop() {
-  setTimeout(function() { verifierRappelQuotidien(); detecterUrgences(); }, 3000);
-  setInterval(function() { verifierRappelQuotidien(); detecterUrgences(); }, 60 * 1000);
+async function supprimerCommentaire(ligne, key, idx) {
+  if (!confirm('Supprimer ce commentaire ?')) return;
+  var c = commandes.find(function(x){return x.ligne===ligne;});
+  if (!c) return;
+  var lignes = (c[key]||'').split('\n').filter(function(l){return l.trim();});
+  lignes.splice(idx, 1);
+  var final = lignes.join('\n');
+  sauvegarderCommentairePoseur(ligne, key, final, c);
 }
 
-function initNotifications() {
-  chargerNotifPrefs();
-  majBoutonNotif();
-  demarrerNotifLoop();
+async function sauvegarderCommentairePoseur(ligne, key, final, c) {
+  var colMap = {'poseur_ANATOLE':17,'poseur_ARTIOM':18,'poseur_ANTONIO':19,'poseur_VINCENT':21,'poseur_LAMRI':22};
+  var col = colMap[key];
+  if (!col) return;
+  try {
+    var champs = {};
+    champs[col] = final;
+    var r = await apiPost({action:'modifier', ligne:ligne, champs:champs});
+    if (!r.ok) throw new Error(r.error);
+    c[key] = final;
+    renderSuiviPose();
+  } catch(e) {
+    alert('Erreur : ' + e.message);
+  }
 }
 
-
-// ══════════════════════════════════════════════════════════
-//  TOASTS VISUELS (en complément des notifs système)
-// ══════════════════════════════════════════════════════════
-
-function afficherToast(type, icon, titre, msg, duree) {
-  var panel = document.getElementById('notif-panel');
-  if (!panel) return;
-  duree = duree || 5000;
-  var toast = document.createElement('div');
-  toast.className = 'notif-toast ' + type;
-  toast.innerHTML = '<span class="notif-toast-icon">' + icon + '</span>' +
-    '<div class="notif-toast-content">' +
-      '<div class="notif-toast-title">' + titre + '</div>' +
-      '<div class="notif-toast-msg">' + msg + '</div>' +
-    '</div>' +
-    '<button class="notif-toast-close" onclick="this.parentElement.remove()">✕</button>';
-  panel.appendChild(toast);
-  setTimeout(function() {
-    toast.style.animation = 'slideOut .3s ease forwards';
-    setTimeout(function() { toast.remove(); }, 300);
-  }, duree);
+function exportCSV() {
+  if (!commandes.length) { alert('Aucune donnée à exporter.'); return; }
+  var cols = ['ligne','client','fournisseur','devis','devisTTC','commande','arc','commentaireARC','prevLivraison','statutLivraison','statutPose','commentaire','pvChantier','datePose'];
+  var entetes = ['Ligne','Client','Fournisseur','Devis','Devis TTC','Commande','ARC','Validation ARC','Prev. Livraison','Statut Livraison','Statut Pose','Commentaire','PV','Date Pose'];
+  var lignes = [entetes.join(';')];
+  commandes.forEach(function(c) {
+    var row = cols.map(function(k) {
+      var v = c[k] == null ? '' : String(c[k]);
+      return '"' + v.replace(/"/g,'""').replace(/\n/g,' ').replace(/;/g,',') + '"';
+    });
+    lignes.push(row.join(';'));
+  });
+  var csv = '\uFEFF' + lignes.join('\n');
+  var blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'ECO_OUEST_export_' + new Date().toISOString().slice(0,10) + '.csv';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 
-
-// ══════════════════════════════════════════════════════════
-//  INITIALISATION
-// ══════════════════════════════════════════════════════════
-
-initOfflineMode();
-initNotifications();
+function renderAll(){renderKPI();renderTable();}
 
 charger();
-setInterval(function(){ charger(); }, 5*60*1000);
-
-// Raccourci : recharger quand on revient sur l'onglet après 5 min
-var lastVisibility = Date.now();
-document.addEventListener('visibilitychange', function() {
-  if (!document.hidden) {
-    var elapsed = Date.now() - lastVisibility;
-    if (elapsed > 5 * 60 * 1000) charger(true);
-    lastVisibility = Date.now();
-  }
-});
+setInterval(function(){charger();}, 5*60*1000);
 </script>
 
 </body>
