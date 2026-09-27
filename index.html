@@ -140,24 +140,11 @@
   .suivipose-comment{font-size:12px;color:var(--texte);line-height:1.6;white-space:pre-wrap;padding:8px 12px;background:var(--gris-bg);border-radius:8px;border-left:3px solid var(--bleu);}
   .suivipose-empty{font-size:12px;color:var(--texte2);font-style:italic;padding:6px 0;}
   .suivipose-date{display:inline-block;padding:3px 10px;border-radius:6px;font-size:12px;font-weight:700;background:var(--bleu-bg);color:var(--bleu);}
-  .suivipose-filters{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
-  .poseur-section{margin-bottom:24px;}
-  .poseur-section-title{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
-  .poseur-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0;}
-  .poseur-name{font-size:15px;font-weight:700;}
-  .poseur-count{font-size:11px;color:var(--texte2);font-weight:500;}
   .poseur-card{background:#fff;border-radius:10px;border:1px solid var(--bordure);padding:14px 18px;margin-bottom:8px;}
   .poseur-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
   .poseur-card-client{font-weight:700;font-size:14px;}
   .poseur-card-date{font-size:11px;color:var(--texte2);}
   .poseur-card-comment{font-size:13px;color:var(--texte);line-height:1.6;white-space:pre-wrap;margin-top:6px;padding:10px 12px;background:var(--gris-bg);border-radius:8px;border-left:3px solid var(--bleu);}
-  .poseur-empty{text-align:center;padding:24px;color:var(--texte2);font-size:13px;font-style:italic;}
-  .photo-thumb{width:48px;height:48px;object-fit:cover;border-radius:6px;cursor:pointer;border:2px solid var(--bordure);}
-  .photo-thumb:hover{border-color:var(--bleu);}
-  .photo-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:300;align-items:center;justify-content:center;}
-  .photo-modal.open{display:flex;}
-  .photo-modal img{max-width:90vw;max-height:90vh;border-radius:10px;}
-  .photo-modal-close{position:fixed;top:20px;right:20px;background:#fff;border:none;border-radius:50%;width:36px;height:36px;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
   @media(max-width:900px){
     .sidebar{width:52px;}
     .sidebar .nav-item span,.sidebar-logo span,.sidebar-logo small,.sidebar-footer{display:none;}
@@ -169,27 +156,19 @@
     .dash-grid{grid-template-columns:1fr;}
     .form-grid{grid-template-columns:1fr;}
   }
-
   @media(max-width:768px){
-    /* Topbar compacte */
     .topbar{flex-wrap:wrap;gap:8px;padding:10px 12px;}
     .topbar-title{font-size:16px;width:100%;}
     .topbar-actions{width:100%;justify-content:space-between;gap:6px;}
     .topbar-actions .btn{font-size:12px;padding:8px 10px;flex:1;}
-
-    /* Recherche et filtres en colonne */
     .filters-bar{flex-direction:column;gap:8px;padding:10px;}
     .search-box{width:100%;}
     .select-filter{width:100%;}
     .filter-badges{width:100%;display:flex;flex-wrap:wrap;gap:6px;}
     .filter-badge{flex:1;min-width:70px;text-align:center;font-size:12px;padding:6px 8px;}
-
-    /* KPI en 2 colonnes */
     .kpi-grid{grid-template-columns:1fr 1fr;gap:8px;}
     .kpi-card{padding:12px;}
     .kpi-value{font-size:22px;}
-
-    /* TABLEAU EN CARTES sur mobile */
     .table-wrap{overflow:visible;}
     table thead{display:none;}
     table, table tbody, table tr, table td{display:block;width:100%;}
@@ -199,12 +178,8 @@
     table td:first-child{font-size:16px;font-weight:700;color:var(--bleu);border-bottom:1px solid var(--bordure);padding-bottom:8px;margin-bottom:4px;}
     table td:first-child::before{display:none;}
     .col-comment{max-width:none !important;white-space:normal !important;}
-
-    /* Modal plein écran */
     .modal-content{width:100%;max-width:100%;height:100%;max-height:100%;border-radius:0;}
     .form-grid{grid-template-columns:1fr;}
-
-    /* Planning */
     #planning-titre{font-size:14px;}
   }
 </style>
@@ -216,7 +191,7 @@
   <div class="sidebar-logo">
     <span>ECO OUEST</span>
     <small>Suivi Commandes</small>
-    <div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v15/09/2026 01:09</div>
+    <div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v16/09/2026 07:21</div>
   </div>
   <nav class="nav">
     <div class="nav-item active" id="nav-suivi" onclick="showView('suivi')"><span class="icon">📋</span><span>Commandes</span></div>
@@ -226,7 +201,7 @@
     <div class="nav-item" id="nav-planning" onclick="showView('planning')"><span class="icon">📅</span><span>Planning</span></div>
     <div class="nav-item" id="nav-config" onclick="showView('config')"><span class="icon">⚙️</span><span>Config</span></div>
   </nav>
-  <div class="sidebar-footer">v15/09/2026 01:09</div>
+  <div class="sidebar-footer">v16/09/2026 07:21</div>
 </aside>
 
 <div class="main">
@@ -277,7 +252,6 @@
             <th>Statut pose</th>
             <th>Date pose</th>
             <th>PV Chantier</th>
-            <th>Photo</th>
             <th>Commentaire</th>
             <th>Alerte</th>
             <th></th>
@@ -290,10 +264,12 @@
 
     <div id="view-alertes" class="view"><div id="alertes-content"></div></div>
     <div id="view-dashboard" class="view"><div class="dash-grid" id="dash-content"></div></div>
-    <div id="view-suivipose" class="view"><div style="text-align:right;margin-bottom:10px;">
-      <button onclick="traduireCommentairesPoseurs()" style="background:var(--bleu-bg);color:var(--bleu);border:1px solid var(--bleu);border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;">🇫🇷 Traduire les commentaires</button>
+    <div id="view-suivipose" class="view">
+      <div style="text-align:right;margin-bottom:10px;">
+        <button onclick="traduireCommentairesPoseurs()" style="background:var(--bleu-bg);color:var(--bleu);border:1px solid var(--bleu);border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;">🇫🇷 Traduire les commentaires</button>
+      </div>
+      <div id="suivipose-content"></div>
     </div>
-    <div id="suivipose-content"></div></div>
     <div id="view-planning" class="view">
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
         <button onclick="planningSemaine(-1)" style="background:var(--bleu);color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:14px;font-weight:600;cursor:pointer;">← Sem. préc.</button>
@@ -307,7 +283,7 @@
       <div style="max-width:540px;">
         <div style="background:#fff;border-radius:12px;border:1px solid var(--bordure);padding:24px;">
           <h3 style="font-size:16px;font-weight:700;margin-bottom:6px;">⚙️ Configuration</h3>
-          <p style="font-size:13px;color:var(--texte2);margin-bottom:20px;">Changez l URL de la Web App si vous utilisez un autre Google Sheets.</p>
+          <p style="font-size:13px;color:var(--texte2);margin-bottom:20px;">Changez l'URL de la Web App si vous utilisez un autre Google Sheets.</p>
           <div style="margin-bottom:14px;">
             <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--texte2);display:block;margin-bottom:6px;">URL Web App Google Apps Script</label>
             <input type="text" id="config-url-input" style="width:100%;border:1.5px solid var(--bordure);border-radius:8px;padding:10px 12px;font-size:13px;font-family:inherit;outline:none;" placeholder="https://script.google.com/macros/s/.../exec">
@@ -319,12 +295,12 @@
             <p id="config-url-current" style="font-size:11px;color:var(--texte2);word-break:break-all;font-family:monospace;"></p>
           </div>
           <div style="margin-top:16px;padding:14px;background:#FFF3E0;border-radius:8px;border:1px solid #FFE0B2;">
-            <p style="font-size:12px;color:var(--orange);font-weight:700;margin-bottom:6px;">📋 Comment obtenir l URL :</p>
+            <p style="font-size:12px;color:var(--orange);font-weight:700;margin-bottom:6px;">📋 Comment obtenir l'URL :</p>
             <ol style="font-size:12px;color:var(--texte2);line-height:2;padding-left:16px;">
               <li>Ouvrir le nouveau Sheets</li>
               <li>Extensions → Apps Script</li>
               <li>Coller Code.gs et WebApp.gs</li>
-              <li>Déployer → App Web → Copier l URL</li>
+              <li>Déployer → App Web → Copier l'URL</li>
               <li>Coller ici et Enregistrer</li>
             </ol>
           </div>
@@ -354,7 +330,7 @@
         </div>
         <div class="form-group"><label>N° Devis</label><input id="f-devis" type="text"></div>
         <div class="form-group"><label>Devis TTC</label><input id="f-devisTTC" type="number"></div>
-        <div class="form-group"><label>Commande envoyee</label>
+        <div class="form-group"><label>Commande envoyée</label>
           <select id="f-commande"><option value="">—</option><option>OUI</option><option>NON</option></select>
         </div>
         <div class="form-group"><label>N° ARC</label><input id="f-arc" type="text"></div>
@@ -362,7 +338,7 @@
         <div class="form-group"><label>Validation ARC</label>
           <select id="f-commentaireARC"><option value="">—</option><option>Confirmer</option><option>Valide</option><option>En attente</option><option>ANNULER</option></select>
         </div>
-        <div class="form-group"><label>Prevision livraison</label><input id="f-prevLivraison" type="text"></div>
+        <div class="form-group"><label>Prévision livraison</label><input id="f-prevLivraison" type="text"></div>
         <div class="form-group"><label>Statut livraison</label>
           <select id="f-statutLivraison"><option value="">—</option><option>En cours</option><option>Livré</option><option>Terminé</option><option>En attente</option><option>Bloqué</option><option>SAV</option><option>Annulé</option><option>A PLANIFIER</option></select>
         </div>
@@ -377,26 +353,14 @@
           <label>PV fin de chantier</label>
           <label style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--gris-bg);border-radius:8px;cursor:pointer;">
             <input type="checkbox" id="f-pvChantier" style="width:18px;height:18px;accent-color:var(--vert);cursor:pointer;">
-            <span style="font-size:13px;font-weight:600;">PV effectue</span>
+            <span style="font-size:13px;font-weight:600;">PV effectué</span>
           </label>
         </div>
-        <div class="form-group full">
-          <label>Photo du chantier</label>
-          <div style="display:flex;align-items:center;gap:12px;">
-            <input type="file" id="f-photo-input" accept="image/*" style="display:none" onchange="previewPhoto(event)">
-            <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('f-photo-input').click()">📷 Choisir une photo</button>
-            <button type="button" onclick="supprimerPhoto()" style="background:#FFEBEE;color:#D32F2F;border:1px solid #FFCDD2;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;">🗑 Supprimer photo</button>
-            <div id="f-photo-preview"></div>
-          </div>
-        </div>
-        
         <div class="form-group full"><label>Historique des commentaires / remarques</label>
           <textarea id="f-commentaire-historique" readonly style="background:#F5F7FA;color:var(--texte2);font-style:italic;min-height:90px;" placeholder="Aucun commentaire pour le moment."></textarea>
         </div>
         <div class="form-group full"><label>Ajouter un nouveau commentaire</label>
-          <textarea id="f-commentaire-nouveau" placeholder="Ecrire une nouvelle remarque... (elle sera ajoutee a la suite avec la date du jour)" style="width:100%;border:1.5px solid var(--bordure);border-radius:8px;padding:9px 12px;font-family:inherit;font-size:14px;outline:none;resize:vertical;min-height:60px;"></textarea>
-        </div>
-        <div class="form-group full">
+          <textarea id="f-commentaire-nouveau" placeholder="Écrire une nouvelle remarque... (elle sera ajoutée à la suite avec la date du jour)" style="width:100%;border:1.5px solid var(--bordure);border-radius:8px;padding:9px 12px;font-family:inherit;font-size:14px;outline:none;resize:vertical;min-height:60px;"></textarea>
         </div>
       </div>
     </div>
@@ -414,7 +378,7 @@
 
 <script>
 var _jsonpCallback = null;
-var WEBAPP_DEFAULT = 'https://script.google.com/macros/s/AKfycbzU3tCq3Ejq1u9HT0wuKL7tES6HE1bsTdYfvF9WQMiSS9bdAPYTXip0sT0xlnPRPSwG/exec';
+var WEBAPP_DEFAULT = 'https://script.google.com/macros/s/AKfycbyLfDXzm5Wr1Mubw8odhWN1pQZAiBJDffcDkUbKNO0A6UjhN3Az7pxB8u_5GPEnyyNC/exec';
 var WEBAPP = localStorage.getItem('eco-webapp-url') || WEBAPP_DEFAULT;
 var FOU_COLORS = {'ATLANTEM':'#1565C0','ATULAM':'#6A1B9A','LALLEMANT':'#2E7D32','SOKO':'#00695C','ALUGLASS':'#E65100','FILTERSUN':'#C62828','DC PROD':'#37474F','KE FRANCE':'#0277BD','SKYLUX':'#558B2F','BVL SERRULAC':'#4527A0','LEROY MERLIN':'#1B5E20','FOUSSIER':'#6D4C41','STOCK':'#546E7A'};
 var TERMINES = ['LIVRE','LIVRÉ','TERMINE','TERMINÉ','POSE','POSÉ','Livré','Terminé','Posé','Livre','Termine'];
@@ -431,8 +395,8 @@ function alerte(c) {
   if (TERMINES.indexOf(sL)!==-1 || TERMINES.indexOf(sP)!==-1) return {t:'OK',n:0};
   if ((c.commentaireARC||'').trim().toUpperCase()==='ANNULER') return {t:'Annulee',n:-1};
   var m=[], s=0;
-  if (!c.commande || c.commande.toUpperCase()==='NON'){m.push('Commande non envoyee - URGENT');s=3;}
-  if (!c.arc||!c.arc.trim()){m.push('ARC non recu');if(s<2)s=2;}
+  if (!c.commande || c.commande.toUpperCase()==='NON'){m.push('Commande non envoyée - URGENT');s=3;}
+  if (!c.arc||!c.arc.trim()){m.push('ARC non reçu');if(s<2)s=2;}
   if (!c.commentaireARC||!c.commentaireARC.trim()){m.push('Validation ARC manquante');if(s<2)s=2;}
   else if ((c.commentaireARC||'').toUpperCase().indexOf('EN ATTENTE')!==-1){m.push('En attente ARC');if(s<2)s=2;}
   if (!c.prevLivraison||!c.prevLivraison.trim()){m.push('Date livraison manquante');if(s<1)s=1;}
@@ -455,7 +419,6 @@ async function togglePV(ligne, checked) {
   var val = checked ? 'OUI' : 'NON';
   try {
     await apiPost({action:'modifier', ligne:ligne, champs:{16: val}});
-    // Mettre à jour localement
     var c = commandes.find(function(x){return x.ligne===ligne;});
     if (c) c.pvChantier = val;
   } catch(e) {
@@ -488,9 +451,14 @@ function getWeekNumber(d) {
 }
 function aClass(n){return n===0?'alerte-ok':n===1?'alerte-jaune':n===2?'alerte-orange':n===3?'alerte-rouge':'';}
 
-var CACHE_DUREE = 5 * 60 * 1000; // 5 minutes en ms
-var CACHE_KEY = 'eco-ouest-cache';
-var CACHE_TIME_KEY = 'eco-ouest-cache-time';
+var CACHE_DUREE = 3 * 60 * 1000;
+var CACHE_KEY = 'eco-ouest-cache-v2';
+var CACHE_TIME_KEY = 'eco-ouest-cache-time-v2';
+
+try {
+  localStorage.removeItem('eco-ouest-cache');
+  localStorage.removeItem('eco-ouest-cache-time');
+} catch(e) {}
 
 function chargerDepuisCache() {
   try {
@@ -506,11 +474,11 @@ function chargerDepuisCache() {
         fillFournisseur();
         renderAll();
         setLoader(false);
-        return true; // Cache utilisé
+        return true;
       }
     }
   } catch(e) {}
-  return false; // Pas de cache valide
+  return false;
 }
 
 function sauvegarderCache(data) {
@@ -528,30 +496,28 @@ function viderCache() {
 }
 
 function charger(forceRefresh) {
-  // Essayer le cache d'abord (sauf si forceRefresh)
   if (!forceRefresh && chargerDepuisCache()) return;
 
   setLoader(true); sync('loading','Chargement...');
   var old = document.getElementById('jsonp-script');
   if (old) old.parentNode.removeChild(old);
   window._jsonpTimeout = setTimeout(function() {
-    // En cas de timeout, essayer le cache même expiré
     var cached = localStorage.getItem(CACHE_KEY);
     if (cached) {
       commandes = JSON.parse(cached);
       sync('warn','Timeout - données du cache');
       fillFournisseur(); renderAll(); setLoader(false);
     } else {
-      sync('error','Timeout - reessayez');
+      sync('error','Timeout - réessayez');
       setLoader(false);
       document.getElementById('table-body').innerHTML = '<tr><td colspan="13"><div class="empty-state"><p>Timeout. Cliquez Actualiser pour réessayer.</p></div></td></tr>';
     }
-  }, 20000);
+  }, 45000);
   window._jsonpCallback = function(d) {
     clearTimeout(window._jsonpTimeout);
     if (!d.ok) { sync('error', d.error||'Erreur'); setLoader(false); return; }
     commandes = d.data;
-    sauvegarderCache(commandes); // Sauvegarder dans le cache
+    sauvegarderCache(commandes);
     var t = new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
     sync('ok','Mis à jour ' + t);
     fillFournisseur();
@@ -563,7 +529,6 @@ function charger(forceRefresh) {
   script.src = WEBAPP + '?callback=_jsonpCallback&t=' + Date.now();
   script.onerror = function() {
     clearTimeout(window._jsonpTimeout);
-    // En cas d'erreur réseau, utiliser le cache si disponible
     var cached = localStorage.getItem(CACHE_KEY);
     if (cached) {
       commandes = JSON.parse(cached);
@@ -576,7 +541,6 @@ function charger(forceRefresh) {
   };
   document.head.appendChild(script);
 }
-
 
 async function apiPost(body) {
   var r = await fetch(WEBAPP,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(body),redirect:'follow'});
@@ -603,7 +567,7 @@ function renderKPI() {
     {cls:'kpi-urgent',f:'urgent', lb:'Urgentes', v:urg, sub:'action requise'},
     {cls:'kpi-warn',  f:'warn',   lb:'Attention',v:warn,sub:'surveiller'},
     {cls:'kpi-ok',    f:'ok',     lb:'OK',       v:ok,  sub:'sans alerte'},
-    {cls:'kpi-info',  f:'encours', lb:'En cours', v:enc, sub:'non livrees', link:true},
+    {cls:'kpi-info',  f:'encours', lb:'En cours', v:enc, sub:'non livrées', link:true},
   ];
   items.forEach(function(it){
     var d=document.createElement('div');
@@ -623,7 +587,6 @@ function renderTable() {
   var rows=commandes.map(function(c,i){return Object.assign({},c,{_i:i,_a:alerte(c)});});
   if (!afficherTermines) {
     rows = rows.filter(function(c){
-      // Masquer uniquement si la POSE est terminée (pas juste livré)
       return STATUTS_TERMINES.indexOf((c.statutPose||'').trim()) === -1;
     });
   }
@@ -633,12 +596,10 @@ function renderTable() {
   if(alertFilter==='urgent')rows=rows.filter(function(c){return c._a.n===3;});
   if(alertFilter==='warn')rows=rows.filter(function(c){return c._a.n>=1&&c._a.n<=2;});
   if(alertFilter==='ok')rows=rows.filter(function(c){return c._a.n===0;});
-  // Compter les SAV
   var savCount = commandes.filter(function(c){return (c.statutPose||'').trim()==='SAV'||(c.statutLivraison||'').trim()==='SAV'||(c.client||'').toLowerCase().indexOf('sav')!==-1;}).length;
   var savEl = document.getElementById('sav-count');
   if(savEl) savEl.textContent = savCount;
   if(alertFilter==='sav')rows=rows.filter(function(c){return (c.statutPose||'').trim()==='SAV'||(c.statutLivraison||'').trim()==='SAV'||(c.client||'').toLowerCase().indexOf('sav')!==-1;});
-  // Compter non commandés
   var noncmdCount = commandes.filter(function(c){return (c.commande||'').trim().toUpperCase()!=='OUI';}).length;
   var noncmdEl = document.getElementById('noncmd-count');
   if(noncmdEl) noncmdEl.textContent = noncmdCount;
@@ -656,36 +617,31 @@ function renderTable() {
     return sortAsc?va.localeCompare(vb):vb.localeCompare(va);
   });
   var tb=document.getElementById('table-body');
-  if(!rows.length){tb.innerHTML='<tr><td colspan="11"><div class="empty-state"><p>Aucune commande trouvee.</p></div></td></tr>';document.getElementById('scroll-hint').textContent='';return;}
+  if(!rows.length){tb.innerHTML='<tr><td colspan="13"><div class="empty-state"><p>Aucune commande trouvée.</p></div></td></tr>';document.getElementById('scroll-hint').textContent='';return;}
   tb.innerHTML=rows.map(function(c){
     var a=c._a,fc=FOU_COLORS[c.fournisseur]||'#546E7A';
     var sL=c.statutLivraison?'<span class="badge '+(c.statutLivraison==='Livré'?'badge-ok':c.statutLivraison==='SAV'?'badge-urgent':'badge-info')+'">'+h(c.statutLivraison)+'</span>':'—';
     var sP=c.statutPose?'<span class="badge '+(c.statutPose==='Terminé'?'badge-ok':c.statutPose==='SAV'?'badge-urgent':'badge-info')+'">'+h(c.statutPose)+'</span>':'—';
     var extra=a.t.indexOf(' | ')!==-1?'<br><span style="font-size:10px;color:var(--texte2);">+'+(a.t.split(' | ').length-1)+' autre(s)</span>':'';
+    var objetBadge = c.objetCommande
+      ? '<span style="border-bottom:2px dotted var(--bleu);cursor:pointer;" title="📦 '+h(c.objetCommande)+'" onclick="afficherObjet(event,'+JSON.stringify(h(c.objetCommande))+')">'+h(c.arc||'—')+' 📦</span>'
+      : h(c.arc||'—');
     return '<tr>'+
       '<td class="col-client" data-label="Client"><span style="display:inline-block;background:var(--gris-bg);color:var(--texte2);font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px;margin-right:6px;">L'+c.ligne+'</span>'+h(c.client)+'</td>'+
       '<td data-label="Fournisseur"><span style="background:'+fc+'18;color:'+fc+';padding:3px 8px;border-radius:5px;font-size:11px;font-weight:700;">'+h(c.fournisseur||'—')+'</span></td>'+
       '<td class="col-mono" data-label="Devis">'+h(c.devis||'—')+'</td>'+
       '<td>'+(c.commande==='OUI'?'<span class="badge badge-ok">OUI</span>':c.commande==='NON'?'<span class="badge badge-urgent">NON</span>':'—')+'</td>'+
-      '<td class="col-mono" data-label="ARC">'+(c.objetCommande ? '<span style="border-bottom:2px dotted var(--bleu);cursor:pointer;" title="📦 '+h(c.objetCommande)+'" onclick="afficherObjet(event,'+JSON.stringify(h(c.objetCommande))+')">'+h(c.arc||'—')+' 📦</span>' : h(c.arc||'—'))+'</td>'+
+      '<td class="col-mono" data-label="ARC">'+objetBadge+'</td>'+
       '<td data-label="Livraison">'+semaineBadge(c.prevLivraison)+'</td>'+
       '<td data-label="Statut livr.">'+sL+'</td><td data-label="Statut pose">'+sP+'</td>'+
       '<td style="font-size:12px;font-weight:600;color:var(--bleu);" data-label="Date pose">'+h(c.datePose||'—')+'</td>'+
-      '<td data-label="PV">'+pvBadge(c.pvChantier, c.ligne)+'</td>'+photoCell(c.photo)+
+      '<td data-label="PV">'+pvBadge(c.pvChantier, c.ligne)+'</td>'+
       '<td class="col-comment" data-label="Commentaire" title="'+h(c.commentaire)+'">'+h(c.commentaire||'')+'</td>'+
       '<td data-label="Alerte"><span class="alerte-text '+aClass(a.n)+'">'+(a.n===0?'OK':'⚠ '+h(a.t.split(' | ')[0]))+'</span>'+extra+'</td>'+
       '<td><button class="action-btn" onclick="openModal('+c._i+')">✏️</button></td>'+
     '</tr>';
   }).join('');
   document.getElementById('scroll-hint').textContent=rows.length+' commande(s) sur '+commandes.length;
-  // Attacher les clics sur les badges objet commande
-  document.querySelectorAll('.objet-badge').forEach(function(badge) {
-    badge.addEventListener('click', function(e) {
-      e.stopPropagation();
-      var objet = decodeURIComponent(badge.getAttribute('data-objet'));
-      afficherObjet(e, objet);
-    });
-  });
 }
 
 function sortBy(col){if(sortCol===col)sortAsc=!sortAsc;else{sortCol=col;sortAsc=true;}renderTable();}
@@ -704,11 +660,8 @@ function openModal(idx) {
   if (pvEl) pvEl.checked = (c.pvChantier||'').toUpperCase() === 'OUI';
   var dpEl = document.getElementById('f-datePose');
   if (dpEl) dpEl.value = c.datePose || '';
-  window._photoBase64 = c.photo || null;
   var objEl = document.getElementById('f-objetCommande');
   if (objEl) objEl.value = c.objetCommande || '';
-  var prev = document.getElementById('f-photo-preview');
-  if (prev) prev.innerHTML = c.photo ? '<img src="'+c.photo+'" style="width:60px;height:60px;object-fit:cover;border-radius:6px;border:2px solid var(--bleu);">' : '';
   document.getElementById('f-commentaire-historique').value = c.commentaire || '';
   var cmtNouv = document.getElementById('f-commentaire-nouveau'); if(cmtNouv) cmtNouv.value = '';
   document.getElementById('overlay').classList.add('open');
@@ -723,13 +676,11 @@ async function sauvegarder() {
   });
   var pvEl = document.getElementById('f-pvChantier');
   c.pvChantier = pvEl && pvEl.checked ? 'OUI' : 'NON';
-  if (window._photoBase64) c.photo = window._photoBase64;
   var dpEl2 = document.getElementById('f-datePose');
   c.datePose = dpEl2 ? dpEl2.value.trim() : '';
 
   if(!c.client){alert('Client obligatoire.');return;}
 
-  // Gestion historique commentaire : on ajoute le nouveau texte saisi a la suite de l'existant
   var nouveauTexte = document.getElementById('f-commentaire-nouveau').value.trim();
   var historique = document.getElementById('f-commentaire-historique').value || '';
   var commentaireFinal = historique;
@@ -744,12 +695,12 @@ async function sauvegarder() {
   try {
     var res;
     if(editLigne>0){
-      res=await apiPost({action:'modifier',ligne:editLigne,champs:{1:c.client,3:c.devis,4:c.devisTTC,5:c.fournisseur,6:c.commande,7:c.arc,9:c.commentaireARC,10:c.prevLivraison,12:c.statutLivraison,13:c.statutPose,14:c.commentaire,16:c.pvChantier,20:c.datePose,23:c.photo||'',note_G:(document.getElementById('f-objetCommande')?document.getElementById('f-objetCommande').value.trim():'')}});
+      res=await apiPost({action:'modifier',ligne:editLigne,champs:{1:c.client,3:c.devis,4:c.devisTTC,5:c.fournisseur,6:c.commande,7:c.arc,9:c.commentaireARC,10:c.prevLivraison,12:c.statutLivraison,13:c.statutPose,14:c.commentaire,16:c.pvChantier,20:c.datePose,note_G:(document.getElementById('f-objetCommande')?document.getElementById('f-objetCommande').value.trim():'')}});
     } else {
       res=await apiPost({action:'ajouter',commande:c});
     }
     if(!res.ok)throw new Error(res.error);
-    closeModal();await charger();
+    closeModal();await charger(true);
   } catch(e){alert('Erreur : '+e.message);}
   document.getElementById('saving-msg').classList.remove('active');
 }
@@ -758,7 +709,7 @@ async function supprimerCommande() {
   var c=commandes.find(function(x){return x.ligne===editLigne;});
   if(!confirm('Supprimer "'+( c?c.client:'')+'" ?'))return;
   document.getElementById('saving-msg').classList.add('active');
-  try{var r=await apiPost({action:'supprimer',ligne:editLigne});if(!r.ok)throw new Error(r.error);closeModal();await charger();}
+  try{var r=await apiPost({action:'supprimer',ligne:editLigne});if(!r.ok)throw new Error(r.error);closeModal();await charger(true);}
   catch(e){alert('Erreur : '+e.message);}
   document.getElementById('saving-msg').classList.remove('active');
 }
@@ -767,9 +718,9 @@ function renderAlertes() {
   var g={3:[],2:[],1:[]};
   commandes.forEach(function(c,i){var a=alerte(c);if(a.n>=1)g[a.n].push({c:c,i:i,a:a});});
   var sec=[
-    {n:3,lb:'Urgentes - Action immediate',dot:'#D32F2F',pBg:'#FFEBEE',pC:'#D32F2F'},
-    {n:2,lb:'Attention - A traiter rapidement',dot:'#E65100',pBg:'#FFF3E0',pC:'#E65100'},
-    {n:1,lb:'Information - A surveiller',dot:'#F9A825',pBg:'#FFFDE7',pC:'#B7860B'},
+    {n:3,lb:'Urgentes - Action immédiate',dot:'#D32F2F',pBg:'#FFEBEE',pC:'#D32F2F'},
+    {n:2,lb:'Attention - À traiter rapidement',dot:'#E65100',pBg:'#FFF3E0',pC:'#E65100'},
+    {n:1,lb:'Information - À surveiller',dot:'#F9A825',pBg:'#FFFDE7',pC:'#B7860B'},
   ];
   var html='';
   sec.forEach(function(s){
@@ -794,13 +745,11 @@ function renderAlertes() {
 
 function renderDashboard() {
   var byFou={}, byStatut={}, ac={u:0,w:0,o:0};
-  // Calculs financiers
   var caCommande=0, caPose=0, nbEnAttente=0, nbSAV=0;
   var POSES_FINIES=['Terminé','Termine','Posé','Pose'];
   function parseMontant(v){
     if(!v) return 0;
     var s=String(v).replace(/[^0-9,.]/g,'').replace(/\s/g,'').replace(',','.');
-    // Gérer les milliers avec point
     var parts=s.split('.');
     if(parts.length>2){ s=parts.slice(0,-1).join('')+'.'+parts[parts.length-1]; }
     var n=parseFloat(s);
@@ -810,7 +759,6 @@ function renderDashboard() {
     if(c.fournisseur) byFou[c.fournisseur]=(byFou[c.fournisseur]||0)+1;
     var s=c.statutLivraison||'Non defini'; byStatut[s]=(byStatut[s]||0)+1;
     var a=alerte(c); if(a.n===3)ac.u++; else if(a.n>=1)ac.w++; else if(a.n===0)ac.o++;
-    // Financier
     var montant=parseMontant(c.devisTTC);
     if((c.commande||'').toUpperCase()==='OUI') caCommande+=montant;
     if(POSES_FINIES.indexOf((c.statutPose||'').trim())!==-1) caPose+=montant;
@@ -819,7 +767,7 @@ function renderDashboard() {
   });
   function fmtEuro(n){ return n.toLocaleString('fr-FR',{maximumFractionDigits:0})+' €'; }
   var fS=Object.entries(byFou).sort(function(a,b){return b[1]-a[1];}), fM=fS[0]?fS[0][1]:1;
-  var sS=Object.entries(byStatut).sort(function(a,b){return b[1]-a[1];}), sM=sS[0]?sS[0][1]:1;
+  var sS=Object.entries(byStatut).sort(function(a,b){return b[1]-a[1];});
   var n=commandes.length||1;
 
   var TERMINES_D = ['Livré','Terminé','Posé','LIVRE','TERMINE','POSE','Livre','Termine'];
@@ -829,7 +777,6 @@ function renderDashboard() {
     {nom:'ANTONIO', key:'poseur_ANTONIO', couleur:'#E65100'}
   ];
 
-  // Chantiers actifs
   var actifs = commandes.filter(function(c){
     return TERMINES_D.indexOf((c.statutLivraison||'').trim()) === -1
         && (c.commentaireARC||'').toUpperCase() !== 'ANNULER';
@@ -844,7 +791,6 @@ function renderDashboard() {
     return (c.pvChantier||'').toUpperCase()!=='OUI';
   }).length;
 
-  // Construire HTML chantiers
   var hC = '';
   if (!actifs.length) {
     hC = '<div style="text-align:center;padding:24px;color:var(--texte2);">Aucun chantier actif.</div>';
@@ -852,26 +798,21 @@ function renderDashboard() {
     actifs.forEach(function(c) {
       var pvFait = (c.pvChantier||'').toUpperCase() === 'OUI';
       hC += '<div style="background:#fff;border-radius:10px;border:1px solid var(--bordure);margin-bottom:10px;overflow:hidden;">';
-
-      // Header
       hC += '<div style="padding:10px 14px;background:var(--gris-bg);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;border-bottom:1px solid var(--bordure);">';
       hC += '<div>';
       hC += '<span style="font-weight:700;font-size:14px;">' + h(c.client) + '</span>';
       if(c.fournisseur) hC += ' <span style="font-size:11px;color:var(--texte2);">· ' + h(c.fournisseur) + '</span>';
       hC += '</div>';
       hC += '<div style="display:flex;gap:6px;flex-wrap:wrap;">';
-
       if(c.datePose) {
         hC += '<span style="background:var(--bleu-bg);color:var(--bleu);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;">📅 ' + h(c.datePose) + '</span>';
       }
       if(pvFait) {
         hC += '<span style="background:var(--vert-bg);color:var(--vert);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;">✓ PV Fait</span>';
       } else {
-        hC += '<span style="background:var(--rouge-bg);color:var(--rouge);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;">✗ PV Manquant</span>';
+        hC += '<span style="background:#FFEBEE;color:var(--rouge);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;">✗ PV Manquant</span>';
       }
       hC += '</div></div>';
-
-      // Corps poseurs
       hC += '<div style="padding:10px 14px;">';
       var hasRemarque = false;
       poseurs.forEach(function(p) {
@@ -883,7 +824,7 @@ function renderDashboard() {
         hC += '<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">';
         hC += '<div style="width:22px;height:22px;border-radius:50%;background:' + p.couleur + ';display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;">' + p.nom.slice(0,2) + '</div>';
         hC += '<span style="font-size:12px;font-weight:700;color:' + p.couleur + ';">' + p.nom + '</span>';
-        if(lignes.length > 1) hC += '<span style="font-size:10px;color:var(--texte2);">+' + (lignes.length-1) + ' entree(s)</span>';
+        if(lignes.length > 1) hC += '<span style="font-size:10px;color:var(--texte2);">+' + (lignes.length-1) + ' entrée(s)</span>';
         hC += '</div>';
         hC += '<div style="font-size:11px;color:var(--texte);padding:6px 10px;background:var(--gris-bg);border-radius:6px;border-left:3px solid ' + p.couleur + ';">' + h(dernier) + '</div>';
         hC += '</div>';
@@ -921,15 +862,13 @@ function renderDashboard() {
     '<div class="dash-card" style="grid-column:1/-1;"><h4>📋 Suivi chantiers — Date de pose · Remarques poseurs · PV</h4>' + hC + '</div>';
 }
 
-
-// ── NAVIGATION ───────────────────────────────────────────
 function showView(v) {
   document.querySelectorAll('.view').forEach(function(el){el.classList.remove('active');});
   document.querySelectorAll('.nav-item').forEach(function(el){el.classList.remove('active');});
   document.getElementById('view-'+v).classList.add('active');
   var navEl = document.getElementById('nav-' + v);
   if (navEl) navEl.classList.add('active');
-  var titles = {suivi:'Suivi des commandes', alertes:'Alertes actives', dashboard:'Tableau de bord', poseurs:'Commentaires Poseurs', suivipose:'Suivi de Pose', planning:'Planning des poses', config:'Configuration'};
+  var titles = {suivi:'Suivi des commandes', alertes:'Alertes actives', dashboard:'Tableau de bord', suivipose:'Suivi de Pose', planning:'Planning des poses', config:'Configuration'};
   document.getElementById('topbar-title').textContent = titles[v] || v;
   if (v === 'config') {
     document.getElementById('config-url-input').value = WEBAPP;
@@ -938,47 +877,10 @@ function showView(v) {
   }
   if (v === 'alertes')    renderAlertes();
   if (v === 'dashboard')  renderDashboard();
-  if (v === 'poseurs')    renderPoseurs();
   if (v === 'suivipose')  { renderSuiviPose(); setTimeout(traduireCommentairesPoseurs, 500); }
   if (v === 'planning')   renderPlanning();
 }
 
-// ── POSEURS ───────────────────────────────────────────────
-function renderPoseurs() {
-  var poseurs = [
-    {nom:'ANATOLE', key:'poseur_ANATOLE', couleur:'#1565C0'},
-    {nom:'ARTIOM',  key:'poseur_ARTIOM',  couleur:'#2E7D32'},
-    {nom:'ANTONIO', key:'poseur_ANTONIO', couleur:'#E65100'}
-  ];
-  var html = '';
-  poseurs.forEach(function(p) {
-    var items = commandes.filter(function(c){return c[p.key] && c[p.key].trim();});
-    html += '<div class="poseur-section">';
-    html += '<div class="poseur-section-title">';
-    html += '<div class="poseur-avatar" style="background:'+p.couleur+'">'+p.nom.slice(0,2)+'</div>';
-    html += '<div><div class="poseur-name">'+p.nom+'</div><div class="poseur-count">'+items.length+' commentaire(s)</div></div>';
-    html += '</div>';
-    if (!items.length) {
-      html += '<div class="poseur-empty">Aucun commentaire pour le moment.</div>';
-    } else {
-      items.forEach(function(c) {
-        var lignes = c[p.key].split('\n');
-        html += '<div class="poseur-card">';
-        html += '<div class="poseur-card-header">';
-        html += '<span class="poseur-card-client">'+h(c.client)+'</span>';
-        var m = dernier.indexOf('[') !== -1 ? dernier.match(/\[(\d{2}\/\d{2}\/\d{4})/) : null;
-        if (m) html += '<span class="poseur-card-date">'+m[1]+'</span>';
-        html += '</div>';
-        html += '<div class="poseur-card-comment">'+h(c[p.key])+'</div>';
-        html += '</div>';
-      });
-    }
-    html += '</div>';
-  });
-  document.getElementById('poseurs-content').innerHTML = html;
-}
-
-// ── SUIVI POSE ────────────────────────────────────────────
 function renderSuiviPose() {
   var poseurs = [
     {nom:'ANATOLE', key:'poseur_ANATOLE', couleur:'#1565C0'},
@@ -1007,16 +909,14 @@ function renderSuiviPose() {
   var POSES_FINIES = ['Terminé','Termine','Posé','Pose','TERMINE','POSE'];
   var items = commandes.filter(function(c){
     if ((c.commentaireARC||'').toUpperCase() === 'ANNULER') return false;
-    // Exclure si pose terminée
     if (POSES_FINIES.indexOf((c.statutPose||'').trim()) !== -1) return false;
-    // Afficher uniquement si date de pose = semaine en cours
     return datePoseEnSemaine(c.datePose, semActuelle);
   }).slice().sort(function(a,b){
     return (b.datePose||'').localeCompare(a.datePose||'');
   });
 
   if (!items.length) {
-    document.getElementById('suivipose-content').innerHTML = '<div class="empty-state"><p>Aucun chantier actif.</p></div>';
+    document.getElementById('suivipose-content').innerHTML = '<div class="empty-state"><p>Aucun chantier actif cette semaine.</p></div>';
     return;
   }
 
@@ -1031,8 +931,8 @@ function renderSuiviPose() {
     if (c.datePose) html += '<span class="suivipose-date">📅 '+h(cleanDate(c.datePose))+'</span>';
     var sP = c.statutPose||'';
     if (sP) {
-      var sBg=sP==='SAV'?'var(--rouge-bg)':sP.indexOf('Termin')!==-1?'var(--vert-bg)':'var(--orange-bg)';
-      var sC=sP==='SAV'?'var(--rouge)':sP.indexOf('Termin')!==-1?'var(--vert)':'var(--orange)';
+      var sBg=sP==='SAV'?'#FFEBEE':sP.indexOf('Termin')!==-1?'var(--vert-bg)':'#FFF3E0';
+      var sC=sP==='SAV'?'#D32F2F':sP.indexOf('Termin')!==-1?'var(--vert)':'#E65100';
       html += '<br><span style="font-size:11px;font-weight:700;background:'+sBg+';color:'+sC+';padding:2px 8px;border-radius:5px;display:inline-block;margin-top:4px;">'+h(sP)+'</span>';
     }
     html += '<br><span style="font-size:11px;font-weight:700;background:'+(pvFait?'var(--vert-bg)':'#FFEBEE')+';color:'+(pvFait?'var(--vert)':'var(--rouge)')+';padding:2px 8px;border-radius:5px;display:inline-block;margin-top:4px;">'+(pvFait?'✓ PV Fait':'✗ PV Manquant')+'</span>';
@@ -1049,10 +949,9 @@ function renderSuiviPose() {
       html += '<div class="suivipose-poseur-avatar" style="background:'+p.couleur+'">'+p.nom.slice(0,2)+'</div>';
       html += '<span class="suivipose-poseur-label">'+p.nom+'</span></div>';
       if (c[p.key] && c[p.key].trim()) {
-        var lignes = c[p.key].split('\n');
+        var lignes = c[p.key].split('\n').filter(function(l){return l.trim();});
         html += '<div class="suivipose-comment" id="cmt-'+c.ligne+'-'+p.key+'">';
         lignes.forEach(function(l, li) {
-          if (!l.trim()) return;
           html += '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid var(--bordure);">';
           html += '<span style="flex:1;font-size:12px;">'+h(l)+'</span>';
           html += '<div style="display:flex;gap:4px;flex-shrink:0;">';
@@ -1069,7 +968,6 @@ function renderSuiviPose() {
     html += '</div></div>';
   });
   document.getElementById('suivipose-content').innerHTML = html;
-  // Attacher les boutons modifier/supprimer
   document.getElementById('suivipose-content').querySelectorAll('.btn-cmt-edit').forEach(function(btn) {
     btn.addEventListener('click', function() {
       modifierCommentaire(parseInt(btn.getAttribute('data-ligne')), btn.getAttribute('data-key'), parseInt(btn.getAttribute('data-idx')));
@@ -1082,10 +980,8 @@ function renderSuiviPose() {
   });
 }
 
-
 function cleanDate(s) {
   if (!s || !s.trim()) return '';
-  // Si c'est une date JS longue (GMT...) -> extraire juste la date
   var m = s.match(/(\w+ \w+ \d+ \d{4})/);
   if (m) {
     var d = new Date(s);
@@ -1093,50 +989,6 @@ function cleanDate(s) {
   }
   return s.trim();
 }
-
-
-function openPhotoModal(e, src) {
-  e.stopPropagation();
-  document.getElementById('photo-modal-img').src = src;
-  document.getElementById('photo-modal').classList.add('open');
-}
-function closePhotoModal() {
-  document.getElementById('photo-modal').classList.remove('open');
-}
-
-function supprimerPhoto() {
-  if (!confirm('Supprimer la photo ?')) return;
-  window._photoBase64 = '';
-  var prev = document.getElementById('f-photo-preview');
-  if (prev) prev.innerHTML = '<span style="color:#D32F2F;font-size:12px;">Photo supprimée</span>';
-}
-
-function previewPhoto(event) {
-  var file = event.target.files[0];
-  if (!file) return;
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    var base64 = e.target.result;
-    // Compresser l'image
-    var img = new Image();
-    img.onload = function() {
-      var canvas = document.createElement('canvas');
-      var max = 800;
-      var w = img.width, h = img.height;
-      if (w > max) { h = h * max / w; w = max; }
-      if (h > max) { w = w * max / h; h = max; }
-      canvas.width = w; canvas.height = h;
-      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-      var compressed = canvas.toDataURL('image/jpeg', 0.7);
-      window._photoBase64 = compressed;
-      var prev = document.getElementById('f-photo-preview');
-      prev.innerHTML = '<img src="'+compressed+'" style="width:60px;height:60px;object-fit:cover;border-radius:6px;border:2px solid var(--bleu);">';
-    };
-    img.src = base64;
-  };
-  reader.readAsDataURL(file);
-}
-
 
 function sauvegarderConfig() {
   var url = document.getElementById('config-url-input').value.trim();
@@ -1147,22 +999,22 @@ function sauvegarderConfig() {
   localStorage.setItem('eco-webapp-url', url);
   WEBAPP = url;
   document.getElementById('config-status').innerHTML = '<span style="color:var(--vert);">✅ Enregistré ! Rechargement...</span>';
-  setTimeout(function() { charger(); showView('suivi'); }, 1500);
+  setTimeout(function() { charger(true); showView('suivi'); }, 1500);
 }
 
-
-// Traduction automatique des commentaires russes
 async function traduireTexte(texte) {
   if (!texte || !texte.trim()) return texte;
-  // Détecter si le texte contient du cyrillique
   if (!/[\u0400-\u04FF]/.test(texte)) return texte;
   try {
-    var url = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=ru&tl=fr&dt=t&q=' + encodeURIComponent(texte);
+    var target = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=ru&tl=fr&dt=t&q=' + encodeURIComponent(texte);
+    var url = 'https://corsproxy.io/?' + encodeURIComponent(target);
     var r = await fetch(url);
+    if (!r.ok) throw new Error('HTTP ' + r.status);
     var d = await r.json();
     var traduit = d[0].map(function(x){return x[0];}).join('');
     return traduit + ' <span style="font-size:10px;color:#90CAF9;font-style:italic;">[trad. auto]</span>';
   } catch(e) {
+    console.warn('Traduction échouée :', e.message);
     return texte;
   }
 }
@@ -1172,14 +1024,18 @@ async function traduireCommentairesPoseurs() {
   for (var i = 0; i < elements.length; i++) {
     var el = elements[i];
     var texte = el.textContent.trim();
-    if (/[\u0400-\u04FF]/.test(texte)) {
+    if (/[\u0400-\u04FF]/.test(texte) && !el.querySelector('.trad-flag')) {
       var traduit = await traduireTexte(texte);
-      el.innerHTML = el.innerHTML + '<div style="background:#E3F2FD;border-radius:6px;padding:6px 10px;margin-top:6px;font-size:11px;color:#1565C0;">🇫🇷 ' + traduit + '</div>';
+      if (traduit !== texte) {
+        var div = document.createElement('div');
+        div.className = 'trad-flag';
+        div.style.cssText = 'background:#E3F2FD;border-radius:6px;padding:6px 10px;margin-top:6px;font-size:11px;color:#1565C0;';
+        div.innerHTML = '🇫🇷 ' + traduit;
+        el.appendChild(div);
+      }
     }
   }
 }
-
-
 
 function afficherObjet(e, objet) {
   if (e) e.stopPropagation();
@@ -1197,12 +1053,6 @@ function afficherObjet(e, objet) {
     '</div>';
   document.body.appendChild(popup);
 }
-
-function photoCell(photo) {
-  if (!photo || !photo.startsWith('data:')) return '<td data-label="Photo" style="color:#ccc;">—</td>';
-  return '<td data-label="Photo"><img src="' + photo + '" style="width:48px;height:48px;object-fit:cover;border-radius:5px;cursor:pointer;" onclick="openPhotoModal(event,this.src)"></td>';
-}
-
 
 var planningSemActuelle = null;
 
@@ -1235,7 +1085,6 @@ function renderPlanning() {
     {nom:'LAMRI',   key:'poseur_LAMRI',   couleur:'#00695C'}
   ];
 
-  // Chantiers de la semaine
   var chantiers = commandes.filter(function(c) {
     var dp = (c.datePose||'').trim();
     if (!dp) return false;
@@ -1258,7 +1107,6 @@ function renderPlanning() {
     var sBg = sP==='SAV'?'#FFEBEE':sP.indexOf('Termin')!==-1?'#E8F5E9':'#FFF3E0';
     var sC = sP==='SAV'?'#D32F2F':sP.indexOf('Termin')!==-1?'#2E7D32':'#E65100';
 
-    // Trouver quel poseur est sur ce chantier
     var poseursActifs = poseurs.filter(function(p){ return c[p.key] && c[p.key].trim(); });
 
     html += '<div style="background:#fff;border-radius:12px;border:1px solid var(--bordure);border-left:4px solid var(--bleu);padding:16px;">';
@@ -1272,7 +1120,6 @@ function renderPlanning() {
     html += '<span style="background:' + (pvFait?'#E8F5E9':'#FFEBEE') + ';color:' + (pvFait?'#2E7D32':'#D32F2F') + ';padding:3px 10px;border-radius:6px;font-size:12px;font-weight:700;">' + (pvFait?'✓ PV':'✗ PV') + '</span>';
     html += '</div></div>';
 
-    // Poseurs assignés
     if (poseursActifs.length) {
       html += '<div style="display:flex;gap:8px;flex-wrap:wrap;">';
       poseursActifs.forEach(function(p) {
@@ -1294,7 +1141,6 @@ function renderPlanning() {
   document.getElementById('planning-content').innerHTML = html;
 }
 
-
 async function genererRapportChantier() {
   if (editLigne === null) { alert('Enregistrez d\'abord la commande.'); return; }
   var c = commandes.find(function(x){return x.ligne===editLigne;});
@@ -1304,7 +1150,6 @@ async function genererRapportChantier() {
     var jspdf = window.jspdf;
     var doc = new jspdf.jsPDF({orientation:'portrait', unit:'mm', format:'a4'});
 
-    // En-tête bleu
     doc.setFillColor(21,101,192);
     doc.rect(0, 0, 210, 30, 'F');
     doc.setTextColor(255,255,255);
@@ -1315,12 +1160,10 @@ async function genererRapportChantier() {
 
     var y = 42;
 
-    // Client
     doc.setFontSize(16); doc.setFont('helvetica','bold'); doc.setTextColor(21,101,192);
     doc.text(c.client || '—', 14, y);
     y += 10;
 
-    // Infos générales
     doc.setDrawColor(220,220,220);
     doc.setFontSize(10); doc.setTextColor(60,60,60); doc.setFont('helvetica','normal');
 
@@ -1347,7 +1190,6 @@ async function genererRapportChantier() {
     doc.line(14, y, 196, y);
     y += 8;
 
-    // Commentaire bureau
     doc.setFillColor(255,243,224);
     doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(230,81,0);
     doc.text('NOTE BUREAU', 14, y);
@@ -1361,7 +1203,6 @@ async function genererRapportChantier() {
       doc.text('Aucune note.', 14, y); y += 8;
     }
 
-    // Commentaires poseurs
     var poseurs = [
       {nom:'ANATOLE', key:'poseur_ANATOLE'},
       {nom:'ARTIOM',  key:'poseur_ARTIOM'},
@@ -1382,23 +1223,10 @@ async function genererRapportChantier() {
       y += lignesP.length * 5 + 6;
     });
 
-    // Photo si présente
-    if (c.photo && c.photo.startsWith('data:')) {
-      if (y > 200) { doc.addPage(); y = 20; }
-      doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(21,101,192);
-      doc.text('PHOTO DU CHANTIER', 14, y);
-      y += 6;
-      try {
-        doc.addImage(c.photo, 'JPEG', 14, y, 80, 60);
-        y += 66;
-      } catch(e) {}
-    }
-
-    // Footer
     doc.setFillColor(21,101,192);
     doc.rect(0, 285, 210, 12, 'F');
     doc.setTextColor(255,255,255); doc.setFontSize(8); doc.setFont('helvetica','normal');
-    doc.text('ECO OUEST - Genere le ' + new Date().toLocaleDateString('fr-FR'), 105, 292, {align:'center'});
+    doc.text('ECO OUEST - Généré le ' + new Date().toLocaleDateString('fr-FR'), 105, 292, {align:'center'});
 
     var fn = 'Fiche_' + (c.client||'chantier').replace(/\s/g,'_') + '.pdf';
     doc.save(fn);
@@ -1408,28 +1236,25 @@ async function genererRapportChantier() {
 }
 
 function fillFournisseur() {
-  // Liste de base des fournisseurs connus
   var baseFournisseurs = ['ATLANTEM','ATULAM','LALLEMANT','SOKO','ALUGLASS','FILTERSUN','DC PROD','KE FRANCE','SKYLUX','BVL SERRULAC','LEROY MERLIN','FOUSSIER','STOCK'];
-
-  // Ajouter tous les fournisseurs présents dans les données
   var fous = baseFournisseurs.slice();
   commandes.forEach(function(c) {
     if(c.fournisseur && fous.indexOf(c.fournisseur) === -1) fous.push(c.fournisseur);
   });
   fous.sort();
 
-  // Remplir le filtre du tableau
   var sel = document.getElementById('filter-fournisseur');
   if (sel) {
+    var curFilter = sel.value;
     sel.innerHTML = '<option value="">Tous fournisseurs</option>';
     fous.forEach(function(f) {
       var o = document.createElement('option');
       o.value = f; o.textContent = f;
       sel.appendChild(o);
     });
+    sel.value = curFilter;
   }
 
-  // Remplir aussi le dropdown du modal
   var selModal = document.getElementById('f-fournisseur');
   if (selModal) {
     var current = selModal.value;
@@ -1442,7 +1267,6 @@ function fillFournisseur() {
     selModal.value = current;
   }
 }
-
 
 function modifierCommentaire(ligne, key, idx) {
   var c = commandes.find(function(x){return x.ligne===ligne;});
@@ -1471,7 +1295,7 @@ async function supprimerCommentaire(ligne, key, idx) {
 }
 
 async function sauvegarderCommentairePoseur(ligne, key, final, c) {
-  var colMap = {'poseur_ANATOLE':17,'poseur_ARTIOM':18,'poseur_ANTONIO':19};
+  var colMap = {'poseur_ANATOLE':17,'poseur_ARTIOM':18,'poseur_ANTONIO':19,'poseur_VINCENT':21,'poseur_LAMRI':22};
   var col = colMap[key];
   if (!col) return;
   try {
@@ -1486,16 +1310,35 @@ async function sauvegarderCommentairePoseur(ligne, key, final, c) {
   }
 }
 
+function exportCSV() {
+  if (!commandes.length) { alert('Aucune donnée à exporter.'); return; }
+  var cols = ['ligne','client','fournisseur','devis','devisTTC','commande','arc','commentaireARC','prevLivraison','statutLivraison','statutPose','commentaire','pvChantier','datePose'];
+  var entetes = ['Ligne','Client','Fournisseur','Devis','Devis TTC','Commande','ARC','Validation ARC','Prev. Livraison','Statut Livraison','Statut Pose','Commentaire','PV','Date Pose'];
+  var lignes = [entetes.join(';')];
+  commandes.forEach(function(c) {
+    var row = cols.map(function(k) {
+      var v = c[k] == null ? '' : String(c[k]);
+      return '"' + v.replace(/"/g,'""').replace(/\n/g,' ').replace(/;/g,',') + '"';
+    });
+    lignes.push(row.join(';'));
+  });
+  var csv = '\uFEFF' + lignes.join('\n');
+  var blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'ECO_OUEST_export_' + new Date().toISOString().slice(0,10) + '.csv';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
 function renderAll(){renderKPI();renderTable();}
 
 charger();
 setInterval(function(){charger();}, 5*60*1000);
 </script>
 
-
-<div class="photo-modal" id="photo-modal" onclick="closePhotoModal()">
-  <button class="photo-modal-close" onclick="closePhotoModal()">✕</button>
-  <img id="photo-modal-img" src="" alt="Photo chantier">
-</div>
 </body>
 </html>
