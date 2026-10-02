@@ -212,7 +212,8 @@
   <div class="topbar">
     <span class="topbar-title" id="topbar-title">Suivi des commandes</span>
     <div class="topbar-right">
-      <span class="sync-info"><span class="sync-dot" id="sync-dot"></span><span id="sync-label">Chargement...</span></span>
+            <span class="sync-info"><span class="sync-dot" id="sync-dot"></span><span id="sync-label">Chargement...</span></span>
+      <button class="btn btn-outline btn-sm" id="btn-notif" onclick="activerNotifications()" title="Activer les notifications">🔕 Notifs</button>
       <button class="btn btn-outline btn-sm" onclick="viderCache();charger(true)" title="Forcer rechargement depuis Sheets">🔄 Actualiser</button>
       <button class="btn btn-outline btn-sm" onclick="exportCSV()">⬇ CSV</button>
       <button class="btn btn-primary btn-sm" onclick="openModal(-1)">+ Nouvelle commande</button>
