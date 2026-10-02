@@ -11,181 +11,171 @@
 <meta name="theme-color" content="#1565C0">
 <title>ECO OUEST — Suivi Commandes</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
-  :root {
-    --bleu:#1565C0;--bleu-clair:#1976D2;--bleu-bg:#E3F2FD;
-    --rouge:#D32F2F;--orange:#E65100;--jaune:#F9A825;
-    --vert:#2E7D32;--vert-bg:#C8E6C9;--gris:#78909C;--gris-bg:#F5F7FA;
-    --texte:#1A1A2E;--texte2:#546E7A;--bordure:#E0E7EF;--sidebar:180px;
-  }
-  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-  body{font-family:"Inter",sans-serif;background:#F0F4F8;color:var(--texte);min-height:100vh;display:flex;}
-  .sidebar{width:var(--sidebar);background:var(--bleu);min-height:100vh;display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;}
-  .sidebar-logo{padding:18px 16px 14px;border-bottom:1px solid rgba(255,255,255,.15);}
-  .sidebar-logo span{display:block;font-size:18px;font-weight:700;color:#fff;}
-  .sidebar-logo small{font-size:10px;color:#90CAF9;text-transform:uppercase;letter-spacing:1.5px;}
-  .nav{flex:1;padding:12px 0;}
-  .nav-item{display:flex;align-items:center;gap:10px;padding:11px 18px;color:rgba(255,255,255,.7);cursor:pointer;font-size:13px;font-weight:500;transition:all .15s;border-left:3px solid transparent;}
-  .nav-item:hover{color:#fff;background:rgba(255,255,255,.08);}
-  .nav-item.active{color:#fff;background:rgba(255,255,255,.12);border-left-color:#90CAF9;}
-  .nav-item .icon{font-size:16px;width:20px;text-align:center;}
-  .sidebar-footer{padding:14px 16px;border-top:1px solid rgba(255,255,255,.1);font-size:11px;color:rgba(255,255,255,.4);}
-  .main{margin-left:var(--sidebar);flex:1;display:flex;flex-direction:column;min-height:100vh;}
-  .topbar{background:#fff;border-bottom:1px solid var(--bordure);padding:8px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
-  .topbar-title{font-size:16px;font-weight:600;}
-  .topbar-right{display:flex;align-items:center;gap:10px;}
-  .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:7px;border:none;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;transition:all .15s;}
-  .btn-primary{background:var(--bleu);color:#fff;} .btn-primary:hover{background:var(--bleu-clair);}
-  .btn-outline{background:#fff;color:var(--bleu);border:1.5px solid var(--bleu);} .btn-outline:hover{background:var(--bleu-bg);}
-  .btn-danger{background:var(--rouge);color:#fff;}
-  .btn-sm{padding:5px 11px;font-size:12px;}
-  .content{padding:12px 28px;flex:1;}
-  .view{display:none;} .view.active{display:block;}
-  .loader-bar{height:3px;background:var(--bleu-bg);margin-bottom:12px;border-radius:2px;overflow:hidden;display:none;}
-  .loader-bar.active{display:block;}
-  .loader-fill{height:100%;background:var(--bleu);border-radius:2px;animation:load 1.2s ease-in-out infinite;}
-  @keyframes load{0%{width:0%;margin-left:0}50%{width:60%;margin-left:20%}100%{width:0%;margin-left:100%}}
-  .sync-info{font-size:11px;color:var(--texte2);display:flex;align-items:center;gap:6px;}
-  .sync-dot{width:7px;height:7px;border-radius:50%;background:var(--vert);display:inline-block;}
-  .sync-dot.loading{background:var(--orange);animation:pulse .8s infinite;}
-  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-  .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:12px;}
-  .kpi-card{background:#fff;border-radius:10px;padding:10px 16px;border:1px solid var(--bordure);display:flex;flex-direction:column;gap:4px;cursor:pointer;transition:box-shadow .15s;}
-  .kpi-card:hover{box-shadow:0 4px 14px rgba(0,0,0,.08);}
-  .kpi-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--texte2);}
-  .kpi-value{font-size:22px;font-weight:700;line-height:1;}
-  .kpi-sub{font-size:11px;color:var(--texte2);}
-  .kpi-urgent .kpi-value{color:var(--rouge);} .kpi-warn .kpi-value{color:var(--orange);}
-  .kpi-ok .kpi-value{color:var(--vert);} .kpi-info .kpi-value{color:var(--bleu);}
-  .filters-bar{background:#fff;border-radius:10px;border:1px solid var(--bordure);padding:8px 14px;display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:10px;}
-  .search-input{flex:1;min-width:180px;border:1.5px solid var(--bordure);border-radius:7px;padding:7px 12px;font-family:inherit;font-size:13px;outline:none;}
-  .search-input:focus{border-color:var(--bleu);}
-  .select-filter{border:1.5px solid var(--bordure);border-radius:7px;padding:7px 10px;font-family:inherit;font-size:13px;outline:none;background:#fff;cursor:pointer;}
-  .filter-badge{padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid transparent;transition:all .15s;}
-  .filter-badge.all{border-color:var(--bleu);color:var(--bleu);background:var(--bleu-bg);}
-  .filter-badge.urgent{border-color:var(--rouge);color:var(--rouge);}
-  .filter-badge.warn{border-color:var(--orange);color:var(--orange);}
-  .filter-badge.ok{border-color:var(--vert);color:var(--vert);}
-  .filter-badge.all.active{background:var(--bleu);color:#fff;}
-  .filter-badge.urgent.active{background:var(--rouge);color:#fff;}
-  .filter-badge.warn.active{background:var(--orange);color:#fff;}
-  .filter-badge.ok.active{background:var(--vert);color:#fff;}
-  .table-wrap{background:#fff;border-radius:10px;border:1px solid var(--bordure);overflow:auto;max-height:calc(100vh - 220px);}
-  table{width:100%;border-collapse:collapse;font-size:13px;}
-  thead th{position:sticky;top:0;z-index:10;background:var(--gris-bg);box-shadow:0 2px 0 var(--bordure);text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--texte2);text-transform:uppercase;letter-spacing:.8px;white-space:nowrap;cursor:pointer;user-select:none;}
-  thead th:hover{color:var(--bleu);}
-  td{padding:10px 14px;border-bottom:1px solid var(--bordure);vertical-align:middle;}
-  tr:last-child td{border-bottom:none;}
-  tr:hover td{background:#F8FBFF;}
-  .col-client{font-weight:600;}
-  .col-mono{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--texte2);}
-  .col-comment{font-style:italic;color:var(--texte2);max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .badge{display:inline-block;padding:3px 9px;border-radius:5px;font-size:11px;font-weight:600;white-space:nowrap;}
-  .badge-ok{background:var(--vert-bg);color:var(--vert);}
-  .badge-urgent{background:#FFEBEE;color:var(--rouge);}
-  .badge-info{background:var(--bleu-bg);color:var(--bleu);}
-  .alerte-text{font-size:11px;font-weight:600;}
-  .alerte-ok{color:var(--vert);} .alerte-rouge{color:var(--rouge);}
-  .alerte-orange{color:var(--orange);} .alerte-jaune{color:#B7860B;}
-  .action-btn{background:none;border:none;cursor:pointer;padding:4px 6px;border-radius:5px;font-size:15px;}
-  .action-btn:hover{background:var(--gris-bg);}
-  .scroll-hint{font-size:11px;color:var(--texte2);padding:8px 14px;border-top:1px solid var(--bordure);}
-  .empty-state{text-align:center;padding:48px 24px;color:var(--texte2);}
-  .overlay{display:none;position:fixed;inset:0;background:rgba(10,20,40,.45);z-index:200;align-items:center;justify-content:center;}
-  .overlay.open{display:flex;}
-  .modal{background:#fff;border-radius:14px;width:640px;max-width:96vw;max-height:92vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2);animation:fadeUp .2s ease;}
-  @keyframes fadeUp{from{transform:translateY(16px);opacity:0}to{transform:translateY(0);opacity:1}}
-  .modal-header{display:flex;align-items:center;justify-content:space-between;padding:22px 28px 16px;border-bottom:1px solid var(--bordure);}
-  .modal-header h3{font-size:17px;font-weight:700;}
-  .modal-close{width:30px;height:30px;border-radius:8px;border:none;background:var(--gris-bg);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;}
-  .modal-body{padding:22px 28px;}
-  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-  .form-group{display:flex;flex-direction:column;gap:5px;}
-  .form-group.full{grid-column:1/-1;}
-  label{font-size:11px;font-weight:600;color:var(--texte2);text-transform:uppercase;letter-spacing:.8px;}
-  input,select,textarea{border:1.5px solid var(--bordure);border-radius:7px;padding:8px 11px;font-family:inherit;font-size:13px;outline:none;transition:border-color .15s;color:var(--texte);}
-  input:focus,select:focus,textarea:focus{border-color:var(--bleu);}
-  textarea{resize:vertical;min-height:70px;}
-  .modal-footer{padding:16px 28px 22px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--bordure);}
-  .saving-msg{font-size:12px;color:var(--texte2);display:none;}
-  .saving-msg.active{display:block;}
-  .alert-section{margin-bottom:22px;}
-  .alert-section-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--texte2);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
-  .dot-badge{width:8px;height:8px;border-radius:50%;display:inline-block;}
-  .alert-card{background:#fff;border-radius:9px;border:1px solid var(--bordure);padding:14px 18px;margin-bottom:8px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;}
-  .alert-card:hover{box-shadow:0 3px 12px rgba(0,0,0,.07);}
-  .alert-card-client{font-weight:700;font-size:14px;margin-bottom:3px;}
-  .alert-card-detail{font-size:12px;color:var(--texte2);}
-  .alert-card-comment{font-size:12px;color:var(--bleu);font-style:italic;margin-top:4px;}
-  .alert-pill{padding:4px 12px;border-radius:6px;font-size:11px;font-weight:700;white-space:nowrap;align-self:flex-start;}
-  .dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
-  .dash-card{background:#fff;border-radius:10px;border:1px solid var(--bordure);padding:20px;}
-  .dash-card h4{font-size:13px;font-weight:600;color:var(--texte2);margin-bottom:14px;}
-  .bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:12px;}
-  .bar-label{width:110px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .bar-track{flex:1;height:8px;background:var(--bordure);border-radius:4px;overflow:hidden;}
-  .bar-fill{height:100%;border-radius:4px;}
-  .bar-count{width:24px;text-align:right;color:var(--texte2);font-weight:600;}
-  .suivipose-card{background:#fff;border-radius:12px;border:1px solid var(--bordure);margin-bottom:14px;overflow:hidden;}
-  .suivipose-header{padding:14px 18px;background:var(--gris-bg);display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bordure);}
-  .suivipose-client{font-size:15px;font-weight:700;}
-  .suivipose-meta{font-size:11px;color:var(--texte2);}
-  .suivipose-body{padding:14px 18px;}
-  .suivipose-poseur{margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--bordure);}
-  .suivipose-poseur:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none;}
-  .suivipose-poseur-name{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
-  .suivipose-poseur-avatar{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;}
-  .suivipose-poseur-label{font-size:13px;font-weight:700;}
-  .suivipose-comment{font-size:12px;color:var(--texte);line-height:1.6;white-space:pre-wrap;padding:8px 12px;background:var(--gris-bg);border-radius:8px;border-left:3px solid var(--bleu);}
-  .suivipose-empty{font-size:12px;color:var(--texte2);font-style:italic;padding:6px 0;}
-  .suivipose-date{display:inline-block;padding:3px 10px;border-radius:6px;font-size:12px;font-weight:700;background:var(--bleu-bg);color:var(--bleu);}
-  .poseur-card{background:#fff;border-radius:10px;border:1px solid var(--bordure);padding:14px 18px;margin-bottom:8px;}
-  .poseur-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
-  .poseur-card-client{font-weight:700;font-size:14px;}
-  .poseur-card-date{font-size:11px;color:var(--texte2);}
-  .poseur-card-comment{font-size:13px;color:var(--texte);line-height:1.6;white-space:pre-wrap;margin-top:6px;padding:10px 12px;background:var(--gris-bg);border-radius:8px;border-left:3px solid var(--bleu);}
-  .toast{position:fixed;bottom:20px;right:20px;z-index:500;background:#fff;border-radius:10px;box-shadow:0 8px 28px rgba(0,0,0,.2);padding:14px 18px;display:flex;gap:12px;align-items:flex-start;max-width:380px;animation:slideIn .3s ease;border-left:4px solid var(--bleu);}
-  .toast.urgent{border-left-color:var(--rouge);}
-  .toast.warn{border-left-color:var(--orange);}
-  .toast.ok{border-left-color:var(--vert);}
-  .toast-icon{font-size:20px;flex-shrink:0;}
-  .toast-title{font-size:13px;font-weight:700;margin-bottom:3px;}
-  .toast-msg{font-size:12px;color:var(--texte2);}
-  @keyframes slideIn{from{transform:translateX(120%);opacity:0}to{transform:translateX(0);opacity:1}}
-  @media(max-width:900px){
-    .sidebar{width:52px;}
-    .sidebar .nav-item span,.sidebar-logo span,.sidebar-logo small,.sidebar-footer{display:none;}
-    .sidebar-logo #version-info{display:none;}
-    .main{margin-left:52px;}
-    .sidebar-logo{padding:14px 8px;}
-    .nav-item{padding:14px 8px;justify-content:center;}
-    .nav-item .icon{font-size:20px;}
-    .dash-grid{grid-template-columns:1fr;}
-    .form-grid{grid-template-columns:1fr;}
-  }
-  @media(max-width:768px){
-    .topbar{flex-wrap:wrap;gap:8px;padding:10px 12px;}
-    .topbar-title{font-size:16px;width:100%;}
-    .topbar-right{width:100%;justify-content:space-between;gap:6px;flex-wrap:wrap;}
-    .topbar-right .btn{font-size:12px;padding:8px 10px;flex:1;min-width:80px;}
-    .filters-bar{flex-direction:column;gap:8px;padding:10px;}
-    .search-input,.select-filter{width:100%;}
-    .filter-badge{flex:1;min-width:70px;text-align:center;font-size:12px;padding:6px 8px;}
-    .kpi-grid{grid-template-columns:1fr 1fr;gap:8px;}
-    .kpi-card{padding:12px;}
-    .kpi-value{font-size:22px;}
-    .table-wrap{overflow:visible;}
-    table thead{display:none;}
-    table, table tbody, table tr, table td{display:block;width:100%;}
-    table tr{background:#fff;border-radius:12px;border:1px solid var(--bordure);margin-bottom:10px;padding:12px;box-shadow:0 1px 3px rgba(0,0,0,.05);}
-    table td{border:none;padding:5px 0;text-align:left !important;display:flex;justify-content:space-between;align-items:center;gap:10px;}
-    table td::before{content:attr(data-label);font-weight:700;font-size:11px;text-transform:uppercase;color:var(--texte2);flex-shrink:0;}
-    table td:first-child{font-size:16px;font-weight:700;color:var(--bleu);border-bottom:1px solid var(--bordure);padding-bottom:8px;margin-bottom:4px;}
-    table td:first-child::before{display:none;}
-    .col-comment{max-width:none !important;white-space:normal !important;}
-    .form-grid{grid-template-columns:1fr;}
-    #planning-titre{font-size:14px;}
-  }
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+:root{--bleu:#1565C0;--bleu-clair:#1976D2;--bleu-bg:#E3F2FD;--rouge:#D32F2F;--orange:#E65100;--jaune:#F9A825;--vert:#2E7D32;--vert-bg:#C8E6C9;--gris:#78909C;--gris-bg:#F5F7FA;--texte:#1A1A2E;--texte2:#546E7A;--bordure:#E0E7EF;--sidebar:180px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"Inter",sans-serif;background:#F0F4F8;color:var(--texte);min-height:100vh;display:flex;}
+.sidebar{width:var(--sidebar);background:var(--bleu);min-height:100vh;display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;}
+.sidebar-logo{padding:18px 16px 14px;border-bottom:1px solid rgba(255,255,255,.15);}
+.sidebar-logo span{display:block;font-size:18px;font-weight:700;color:#fff;}
+.sidebar-logo small{font-size:10px;color:#90CAF9;text-transform:uppercase;letter-spacing:1.5px;}
+.nav{flex:1;padding:12px 0;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:11px 18px;color:rgba(255,255,255,.7);cursor:pointer;font-size:13px;font-weight:500;transition:all .15s;border-left:3px solid transparent;}
+.nav-item:hover{color:#fff;background:rgba(255,255,255,.08);}
+.nav-item.active{color:#fff;background:rgba(255,255,255,.12);border-left-color:#90CAF9;}
+.nav-item .icon{font-size:16px;width:20px;text-align:center;}
+.sidebar-footer{padding:14px 16px;border-top:1px solid rgba(255,255,255,.1);font-size:11px;color:rgba(255,255,255,.4);}
+.main{margin-left:var(--sidebar);flex:1;display:flex;flex-direction:column;min-height:100vh;}
+.topbar{background:#fff;border-bottom:1px solid var(--bordure);padding:8px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+.topbar-title{font-size:16px;font-weight:600;}
+.topbar-right{display:flex;align-items:center;gap:10px;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:7px;border:none;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;transition:all .15s;}
+.btn-primary{background:var(--bleu);color:#fff;}.btn-primary:hover{background:var(--bleu-clair);}
+.btn-outline{background:#fff;color:var(--bleu);border:1.5px solid var(--bleu);}.btn-outline:hover{background:var(--bleu-bg);}
+.btn-danger{background:var(--rouge);color:#fff;}
+.btn-sm{padding:5px 11px;font-size:12px;}
+.content{padding:12px 28px;flex:1;}
+.view{display:none;}.view.active{display:block;}
+.loader-bar{height:3px;background:var(--bleu-bg);margin-bottom:12px;border-radius:2px;overflow:hidden;display:none;}
+.loader-bar.active{display:block;}
+.loader-fill{height:100%;background:var(--bleu);border-radius:2px;animation:load 1.2s ease-in-out infinite;}
+@keyframes load{0%{width:0%;margin-left:0}50%{width:60%;margin-left:20%}100%{width:0%;margin-left:100%}}
+.sync-info{font-size:11px;color:var(--texte2);display:flex;align-items:center;gap:6px;}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:var(--vert);display:inline-block;}
+.sync-dot.loading{background:var(--orange);animation:pulse .8s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:12px;}
+.kpi-card{background:#fff;border-radius:10px;padding:10px 16px;border:1px solid var(--bordure);display:flex;flex-direction:column;gap:4px;cursor:pointer;transition:box-shadow .15s;}
+.kpi-card:hover{box-shadow:0 4px 14px rgba(0,0,0,.08);}
+.kpi-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--texte2);}
+.kpi-value{font-size:22px;font-weight:700;line-height:1;}
+.kpi-sub{font-size:11px;color:var(--texte2);}
+.kpi-urgent .kpi-value{color:var(--rouge);}.kpi-warn .kpi-value{color:var(--orange);}
+.kpi-ok .kpi-value{color:var(--vert);}.kpi-info .kpi-value{color:var(--bleu);}
+.filters-bar{background:#fff;border-radius:10px;border:1px solid var(--bordure);padding:8px 14px;display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:10px;}
+.search-input{flex:1;min-width:180px;border:1.5px solid var(--bordure);border-radius:7px;padding:7px 12px;font-family:inherit;font-size:13px;outline:none;}
+.search-input:focus{border-color:var(--bleu);}
+.select-filter{border:1.5px solid var(--bordure);border-radius:7px;padding:7px 10px;font-family:inherit;font-size:13px;outline:none;background:#fff;cursor:pointer;}
+.filter-badge{padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid transparent;transition:all .15s;}
+.filter-badge.all{border-color:var(--bleu);color:var(--bleu);background:var(--bleu-bg);}
+.filter-badge.urgent{border-color:var(--rouge);color:var(--rouge);}
+.filter-badge.warn{border-color:var(--orange);color:var(--orange);}
+.filter-badge.ok{border-color:var(--vert);color:var(--vert);}
+.filter-badge.all.active{background:var(--bleu);color:#fff;}
+.filter-badge.urgent.active{background:var(--rouge);color:#fff;}
+.filter-badge.warn.active{background:var(--orange);color:#fff;}
+.filter-badge.ok.active{background:var(--vert);color:#fff;}
+.table-wrap{background:#fff;border-radius:10px;border:1px solid var(--bordure);overflow:auto;max-height:calc(100vh - 220px);}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+thead th{position:sticky;top:0;z-index:10;background:var(--gris-bg);box-shadow:0 2px 0 var(--bordure);text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--texte2);text-transform:uppercase;letter-spacing:.8px;white-space:nowrap;cursor:pointer;user-select:none;}
+thead th:hover{color:var(--bleu);}
+td{padding:10px 14px;border-bottom:1px solid var(--bordure);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:#F8FBFF;}
+.col-client{font-weight:600;}
+.col-mono{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--texte2);}
+.col-comment{font-style:italic;color:var(--texte2);max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.badge{display:inline-block;padding:3px 9px;border-radius:5px;font-size:11px;font-weight:600;white-space:nowrap;}
+.badge-ok{background:var(--vert-bg);color:var(--vert);}
+.badge-urgent{background:#FFEBEE;color:var(--rouge);}
+.badge-info{background:var(--bleu-bg);color:var(--bleu);}
+.alerte-text{font-size:11px;font-weight:600;}
+.alerte-ok{color:var(--vert);}.alerte-rouge{color:var(--rouge);}
+.alerte-orange{color:var(--orange);}.alerte-jaune{color:#B7860B;}
+.action-btn{background:none;border:none;cursor:pointer;padding:4px 6px;border-radius:5px;font-size:15px;}
+.action-btn:hover{background:var(--gris-bg);}
+.scroll-hint{font-size:11px;color:var(--texte2);padding:8px 14px;border-top:1px solid var(--bordure);}
+.empty-state{text-align:center;padding:48px 24px;color:var(--texte2);}
+.overlay{display:none;position:fixed;inset:0;background:rgba(10,20,40,.45);z-index:200;align-items:center;justify-content:center;}
+.overlay.open{display:flex;}
+.modal{background:#fff;border-radius:14px;width:640px;max-width:96vw;max-height:92vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2);animation:fadeUp .2s ease;}
+@keyframes fadeUp{from{transform:translateY(16px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:22px 28px 16px;border-bottom:1px solid var(--bordure);}
+.modal-header h3{font-size:17px;font-weight:700;}
+.modal-close{width:30px;height:30px;border-radius:8px;border:none;background:var(--gris-bg);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;}
+.modal-body{padding:22px 28px;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.form-group{display:flex;flex-direction:column;gap:5px;}
+.form-group.full{grid-column:1/-1;}
+label{font-size:11px;font-weight:600;color:var(--texte2);text-transform:uppercase;letter-spacing:.8px;}
+input,select,textarea{border:1.5px solid var(--bordure);border-radius:7px;padding:8px 11px;font-family:inherit;font-size:13px;outline:none;transition:border-color .15s;color:var(--texte);}
+input:focus,select:focus,textarea:focus{border-color:var(--bleu);}
+textarea{resize:vertical;min-height:70px;}
+.modal-footer{padding:16px 28px 22px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--bordure);}
+.saving-msg{font-size:12px;color:var(--texte2);display:none;}
+.saving-msg.active{display:block;}
+.alert-section{margin-bottom:22px;}
+.alert-section-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--texte2);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.dot-badge{width:8px;height:8px;border-radius:50%;display:inline-block;}
+.alert-card{background:#fff;border-radius:9px;border:1px solid var(--bordure);padding:14px 18px;margin-bottom:8px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;}
+.alert-card:hover{box-shadow:0 3px 12px rgba(0,0,0,.07);}
+.alert-card-client{font-weight:700;font-size:14px;margin-bottom:3px;}
+.alert-card-detail{font-size:12px;color:var(--texte2);}
+.alert-card-comment{font-size:12px;color:var(--bleu);font-style:italic;margin-top:4px;}
+.alert-pill{padding:4px 12px;border-radius:6px;font-size:11px;font-weight:700;white-space:nowrap;align-self:flex-start;}
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+.dash-card{background:#fff;border-radius:10px;border:1px solid var(--bordure);padding:20px;}
+.dash-card h4{font-size:13px;font-weight:600;color:var(--texte2);margin-bottom:14px;}
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:12px;}
+.bar-label{width:110px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.bar-track{flex:1;height:8px;background:var(--bordure);border-radius:4px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:4px;}
+.bar-count{width:24px;text-align:right;color:var(--texte2);font-weight:600;}
+.suivipose-card{background:#fff;border-radius:12px;border:1px solid var(--bordure);margin-bottom:14px;overflow:hidden;}
+.suivipose-header{padding:14px 18px;background:var(--gris-bg);display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bordure);}
+.suivipose-client{font-size:15px;font-weight:700;}
+.suivipose-meta{font-size:11px;color:var(--texte2);}
+.suivipose-body{padding:14px 18px;}
+.suivipose-poseur{margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--bordure);}
+.suivipose-poseur:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none;}
+.suivipose-poseur-name{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.suivipose-poseur-avatar{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;}
+.suivipose-poseur-label{font-size:13px;font-weight:700;}
+.suivipose-comment{font-size:12px;color:var(--texte);line-height:1.6;white-space:pre-wrap;padding:8px 12px;background:var(--gris-bg);border-radius:8px;border-left:3px solid var(--bleu);}
+.suivipose-empty{font-size:12px;color:var(--texte2);font-style:italic;padding:6px 0;}
+.suivipose-date{display:inline-block;padding:3px 10px;border-radius:6px;font-size:12px;font-weight:700;background:var(--bleu-bg);color:var(--bleu);}
+.toast{position:fixed;bottom:20px;right:20px;z-index:500;background:#fff;border-radius:10px;box-shadow:0 8px 28px rgba(0,0,0,.2);padding:14px 18px;display:flex;gap:12px;align-items:flex-start;max-width:380px;animation:slideIn .3s ease;border-left:4px solid var(--bleu);}
+.toast.urgent{border-left-color:var(--rouge);}
+.toast.warn{border-left-color:var(--orange);}
+.toast.ok{border-left-color:var(--vert);}
+.toast-icon{font-size:20px;flex-shrink:0;}
+.toast-title{font-size:13px;font-weight:700;margin-bottom:3px;}
+.toast-msg{font-size:12px;color:var(--texte2);}
+@keyframes slideIn{from{transform:translateX(120%);opacity:0}to{transform:translateX(0);opacity:1}}
+@media(max-width:900px){
+.sidebar{width:52px;}
+.sidebar .nav-item span,.sidebar-logo span,.sidebar-logo small,.sidebar-footer{display:none;}
+.sidebar-logo #version-info{display:none;}
+.main{margin-left:52px;}
+.sidebar-logo{padding:14px 8px;}
+.nav-item{padding:14px 8px;justify-content:center;}
+.nav-item .icon{font-size:20px;}
+.dash-grid{grid-template-columns:1fr;}
+.form-grid{grid-template-columns:1fr;}
+}
+@media(max-width:768px){
+.topbar{flex-wrap:wrap;gap:8px;padding:10px 12px;}
+.topbar-title{font-size:16px;width:100%;}
+.topbar-right{width:100%;justify-content:space-between;gap:6px;flex-wrap:wrap;}
+.topbar-right .btn{font-size:12px;padding:8px 10px;flex:1;min-width:80px;}
+.filters-bar{flex-direction:column;gap:8px;padding:10px;}
+.search-input,.select-filter{width:100%;}
+.filter-badge{flex:1;min-width:70px;text-align:center;font-size:12px;padding:6px 8px;}
+.kpi-grid{grid-template-columns:1fr 1fr;gap:8px;}
+.kpi-card{padding:12px;}
+.kpi-value{font-size:22px;}
+.table-wrap{overflow:visible;}
+table thead{display:none;}
+table, table tbody, table tr, table td{display:block;width:100%;}
+table tr{background:#fff;border-radius:12px;border:1px solid var(--bordure);margin-bottom:10px;padding:12px;box-shadow:0 1px 3px rgba(0,0,0,.05);}
+table td{border:none;padding:5px 0;text-align:left !important;display:flex;justify-content:space-between;align-items:center;gap:10px;}
+table td::before{content:attr(data-label);font-weight:700;font-size:11px;text-transform:uppercase;color:var(--texte2);flex-shrink:0;}
+table td:first-child{font-size:16px;font-weight:700;color:var(--bleu);border-bottom:1px solid var(--bordure);padding-bottom:8px;margin-bottom:4px;}
+table td:first-child::before{display:none;}
+.col-comment{max-width:none !important;white-space:normal !important;}
+.form-grid{grid-template-columns:1fr;}
+#planning-titre{font-size:14px;}
+}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
@@ -195,7 +185,7 @@
   <div class="sidebar-logo">
     <span>ECO OUEST</span>
     <small>Suivi Commandes</small>
-    <div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v3.1</div>
+    <div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v4.0</div>
   </div>
   <nav class="nav">
     <div class="nav-item active" id="nav-suivi" onclick="showView('suivi')"><span class="icon">📋</span><span>Commandes</span></div>
@@ -205,16 +195,16 @@
     <div class="nav-item" id="nav-planning" onclick="showView('planning')"><span class="icon">📅</span><span>Planning</span></div>
     <div class="nav-item" id="nav-config" onclick="showView('config')"><span class="icon">⚙️</span><span>Config</span></div>
   </nav>
-  <div class="sidebar-footer">v3.1 — Bugs corrigés</div>
+  <div class="sidebar-footer">v4.0</div>
 </aside>
 
 <div class="main">
   <div class="topbar">
     <span class="topbar-title" id="topbar-title">Suivi des commandes</span>
     <div class="topbar-right">
-            <span class="sync-info"><span class="sync-dot" id="sync-dot"></span><span id="sync-label">Chargement...</span></span>
-      <button class="btn btn-outline btn-sm" id="btn-notif" onclick="activerNotifications()" title="Activer les notifications">🔕 Notifs</button>
-      <button class="btn btn-outline btn-sm" onclick="viderCache();charger(true)" title="Forcer rechargement depuis Sheets">🔄 Actualiser</button>
+      <span class="sync-info"><span class="sync-dot" id="sync-dot"></span><span id="sync-label">Chargement...</span></span>
+      <button class="btn btn-outline btn-sm" id="btn-notif" onclick="activerNotifications()" title="Notifications">🔕 Notifs</button>
+      <button class="btn btn-outline btn-sm" onclick="viderCache();charger(true)">🔄 Actualiser</button>
       <button class="btn btn-outline btn-sm" onclick="exportCSV()">⬇ CSV</button>
       <button class="btn btn-primary btn-sm" onclick="openModal(-1)">+ Nouvelle commande</button>
     </div>
@@ -227,9 +217,7 @@
       <div class="kpi-grid" id="kpi-grid"></div>
       <div class="filters-bar">
         <input type="text" class="search-input" id="search" placeholder="🔍 Rechercher client, devis, ARC..." oninput="renderTable()">
-        <select class="select-filter" id="filter-fournisseur" onchange="renderTable()">
-          <option value="">Tous fournisseurs</option>
-        </select>
+        <select class="select-filter" id="filter-fournisseur" onchange="renderTable()"><option value="">Tous fournisseurs</option></select>
         <select class="select-filter" id="filter-statut" onchange="renderTable()">
           <option value="">Tous statuts</option>
           <option>A planifier</option><option>Livré</option><option>En cours</option><option>SAV</option><option>Terminé</option><option>Posé</option><option>Annulé</option><option>En attente</option><option>Bloqué</option>
@@ -288,21 +276,16 @@
       <div style="max-width:540px;">
         <div style="background:#fff;border-radius:12px;border:1px solid var(--bordure);padding:24px;">
           <h3 style="font-size:16px;font-weight:700;margin-bottom:6px;">⚙️ Configuration</h3>
-          <p style="font-size:13px;color:var(--texte2);margin-bottom:20px;">Changez l'URL de la Web App si vous utilisez un autre Google Sheets.</p>
+          <p style="font-size:13px;color:var(--texte2);margin-bottom:20px;">Changez l'URL de la Web App si nécessaire.</p>
           <div style="margin-bottom:14px;">
             <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--texte2);display:block;margin-bottom:6px;">URL Web App Google Apps Script</label>
-            <input type="text" id="config-url-input" style="width:100%;border:1.5px solid var(--bordure);border-radius:8px;padding:10px 12px;font-size:13px;font-family:inherit;outline:none;" placeholder="https://script.google.com/macros/s/.../exec">
+            <input type="text" id="config-url-input" style="width:100%;border:1.5px solid var(--bordure);border-radius:8px;padding:10px 12px;font-size:13px;font-family:inherit;outline:none;">
           </div>
           <button onclick="sauvegarderConfig()" class="btn btn-primary" style="width:100%;">💾 Enregistrer et reconnecter</button>
           <div id="config-status" style="margin-top:12px;font-size:12px;text-align:center;"></div>
           <div style="margin-top:20px;padding:14px;background:var(--gris-bg);border-radius:8px;">
             <p style="font-size:12px;color:var(--texte2);font-weight:600;margin-bottom:6px;">URL actuelle :</p>
             <p id="config-url-current" style="font-size:11px;color:var(--texte2);word-break:break-all;font-family:monospace;"></p>
-          </div>
-          <div style="margin-top:16px;padding:14px;background:#FFF3E0;border-radius:8px;border:1px solid #FFE0B2;">
-            <p style="font-size:12px;color:var(--orange);font-weight:700;margin-bottom:6px;">🔍 Diagnostic connexion :</p>
-            <button onclick="testerConnexion()" class="btn btn-outline btn-sm" style="width:100%;margin-top:6px;">🧪 Tester la connexion au WebApp</button>
-            <div id="diag-result" style="margin-top:10px;font-size:11px;font-family:monospace;line-height:1.5;"></div>
           </div>
         </div>
       </div>
@@ -320,13 +303,7 @@
       <div class="form-grid">
         <div class="form-group"><label>Client *</label><input id="f-client" type="text"></div>
         <div class="form-group"><label>Fournisseur</label>
-          <select id="f-fournisseur">
-            <option value="">— Choisir —</option>
-            <option>ATLANTEM</option><option>ATULAM</option><option>LALLEMANT</option>
-            <option>SOKO</option><option>ALUGLASS</option><option>FILTERSUN</option>
-            <option>DC PROD</option><option>KE FRANCE</option><option>SKYLUX</option>
-            <option>BVL SERRULAC</option><option>LEROY MERLIN</option><option>FOUSSIER</option><option>STOCK</option>
-          </select>
+          <select id="f-fournisseur"><option value="">— Choisir —</option></select>
         </div>
         <div class="form-group"><label>N° Devis</label><input id="f-devis" type="text"></div>
         <div class="form-group"><label>Devis TTC</label><input id="f-devisTTC" type="number"></div>
@@ -334,7 +311,7 @@
           <select id="f-commande"><option value="">—</option><option>OUI</option><option>NON</option></select>
         </div>
         <div class="form-group"><label>N° ARC</label><input id="f-arc" type="text"></div>
-        <div class="form-group full"><label>📦 Objet de la commande (note sur ARC)</label><textarea id="f-objetCommande" placeholder="Ex: 3 fenêtres PVC blanc..." style="width:100%;border:1.5px solid var(--bordure);border-radius:8px;padding:9px 12px;font-family:inherit;font-size:14px;outline:none;resize:vertical;min-height:50px;"></textarea></div>
+        <div class="form-group full"><label>📦 Objet de la commande</label><textarea id="f-objetCommande" placeholder="Ex: 3 fenêtres PVC blanc..." style="min-height:50px;"></textarea></div>
         <div class="form-group"><label>Validation ARC</label>
           <select id="f-commentaireARC"><option value="">—</option><option>Confirmer</option><option>Valide</option><option>En attente</option><option>ANNULER</option></select>
         </div>
@@ -345,22 +322,18 @@
         <div class="form-group"><label>Statut pose</label>
           <select id="f-statutPose"><option value="">—</option><option>A planifier</option><option>En cours</option><option>Posé</option><option>Terminé</option><option>SAV</option><option>Annulé</option></select>
         </div>
-        <div class="form-group">
-          <label>Date de pose (col. T)</label>
-          <input id="f-datePose" type="text" placeholder="Ex: S26 ou 23/06/2026">
-        </div>
-        <div class="form-group">
-          <label>PV fin de chantier</label>
+        <div class="form-group"><label>Date de pose</label><input id="f-datePose" type="text" placeholder="Ex: S26 ou 23/06/2026"></div>
+        <div class="form-group"><label>PV fin de chantier</label>
           <label style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--gris-bg);border-radius:8px;cursor:pointer;">
             <input type="checkbox" id="f-pvChantier" style="width:18px;height:18px;accent-color:var(--vert);cursor:pointer;">
             <span style="font-size:13px;font-weight:600;">PV effectué</span>
           </label>
         </div>
-        <div class="form-group full"><label>Historique des commentaires / remarques</label>
-          <textarea id="f-commentaire-historique" readonly style="background:#F5F7FA;color:var(--texte2);font-style:italic;min-height:90px;" placeholder="Aucun commentaire pour le moment."></textarea>
+        <div class="form-group full"><label>Historique des commentaires</label>
+          <textarea id="f-commentaire-historique" readonly style="background:#F5F7FA;color:var(--texte2);font-style:italic;min-height:90px;" placeholder="Aucun commentaire."></textarea>
         </div>
         <div class="form-group full"><label>Ajouter un nouveau commentaire</label>
-          <textarea id="f-commentaire-nouveau" placeholder="Écrire une nouvelle remarque... (elle sera ajoutée à la suite avec la date du jour)" style="width:100%;border:1.5px solid var(--bordure);border-radius:8px;padding:9px 12px;font-family:inherit;font-size:14px;outline:none;resize:vertical;min-height:60px;"></textarea>
+          <textarea id="f-commentaire-nouveau" placeholder="Nouvelle remarque (ajoutée avec date du jour)..." style="min-height:60px;"></textarea>
         </div>
       </div>
     </div>
@@ -375,14 +348,12 @@
     </div>
   </div>
 </div>
-
 <script>
 // ══════════════════════════════════════════════════════════
-//  CONFIGURATION
+//  CONFIG
 // ══════════════════════════════════════════════════════════
 var WEBAPP_DEFAULT = 'https://script.google.com/macros/s/AKfycbzcq9ChzAPdH1DWnH5H-cYBVC_8Ou4DVIy1sKES5PyFC0M3j80RrbnUU8fK8ojL013H/exec';
 var WEBAPP = localStorage.getItem('eco-webapp-url') || WEBAPP_DEFAULT;
-
 var FOU_COLORS = {'ATLANTEM':'#1565C0','ATULAM':'#6A1B9A','LALLEMANT':'#2E7D32','SOKO':'#00695C','ALUGLASS':'#E65100','FILTERSUN':'#C62828','DC PROD':'#37474F','KE FRANCE':'#0277BD','SKYLUX':'#558B2F','BVL SERRULAC':'#4527A0','LEROY MERLIN':'#1B5E20','FOUSSIER':'#6D4C41','STOCK':'#546E7A'};
 var TERMINES = ['LIVRE','LIVRÉ','TERMINE','TERMINÉ','POSE','POSÉ','Livré','Terminé','Posé','Livre','Termine'];
 var commandes = [];
@@ -390,7 +361,9 @@ var sortCol = 'ligne';
 var sortAsc = false;
 var alertFilter = 'all';
 var editLigne = -1;
-var jsonpCounter = 0;
+var CACHE_DUREE = 60 * 1000;
+var CACHE_KEY = 'eco-ouest-cache-v4';
+var CACHE_TIME_KEY = 'eco-ouest-cache-time-v4';
 
 // ── Utilitaires ──────────────────────────────────────────
 function h(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
@@ -401,7 +374,7 @@ function afficherToast(type, icon, titre, msg, duree) {
   duree = duree || 4000;
   var t = document.createElement('div');
   t.className = 'toast ' + type;
-  t.innerHTML = '<span class="toast-icon">'+icon+'</span><div style="flex:1"><div class="toast-title">'+titre+'</div><div class="toast-msg">'+msg+'</div></div>';
+  t.innerHTML = '<span class="toast-icon">'+icon+'</span><div style="flex:1"><div class="toast-title">'+titre+'</div><div class="toast-msg">'+(msg||'')+'</div></div>';
   document.body.appendChild(t);
   setTimeout(function(){ t.style.opacity='0'; t.style.transition='opacity .3s'; setTimeout(function(){t.remove();},300); }, duree);
 }
@@ -429,8 +402,7 @@ function pvBadge(val, ligne) {
     + ' onchange="togglePV('+ligne+', this.checked)"'
     + ' style="width:16px;height:16px;accent-color:var(--vert);cursor:pointer;">'
     + '<span style="font-size:11px;font-weight:600;color:'+(fait?'var(--vert)':'var(--texte2)')+';">'
-    + (fait ? '✓ Fait' : 'Non fait')
-    + '</span></label>';
+    + (fait ? '✓ Fait' : 'Non fait') + '</span></label>';
 }
 
 async function togglePV(ligne, checked) {
@@ -443,8 +415,6 @@ async function togglePV(ligne, checked) {
     var r = await apiPost({action:'modifier', ligne:ligne, champs:{16: val}});
     if (!r || !r.ok) throw new Error(r && r.error ? r.error : 'Pas de réponse');
     afficherToast('ok','✅','PV mis à jour','Ligne '+ligne+' → '+val, 2000);
-    // Rafraîchir depuis le serveur pour être sûr
-    await charger(true);
   } catch(e) {
     if (c) c.pvChantier = ancien;
     renderTable();
@@ -479,14 +449,14 @@ function getWeekNumber(d) {
 function aClass(n){return n===0?'alerte-ok':n===1?'alerte-jaune':n===2?'alerte-orange':n===3?'alerte-rouge':'';}
 
 // ══════════════════════════════════════════════════════════
-//  ⚡ API POST CORRIGÉE — avec retry et gestion d'erreur
+//  API POST — avec retry
 // ══════════════════════════════════════════════════════════
 async function apiPost(body, tentative) {
   tentative = tentative || 1;
   var MAX_TENTATIVES = 3;
   try {
     var controller = new AbortController();
-    var timeoutId = setTimeout(function(){ controller.abort(); }, 20000);
+    var timeoutId = setTimeout(function(){ controller.abort(); }, 30000);
     var r = await fetch(WEBAPP, {
       method:'POST',
       headers:{'Content-Type':'text/plain;charset=utf-8'},
@@ -495,32 +465,16 @@ async function apiPost(body, tentative) {
       signal: controller.signal
     });
     clearTimeout(timeoutId);
-
-    // ⚠️ Vérifier le statut HTTP
-    if (!r.ok) {
-      throw new Error('HTTP ' + r.status + ' ' + r.statusText);
-    }
-
-    // Lire en texte d'abord (au cas où ce n'est pas du JSON)
+    if (!r.ok) throw new Error('HTTP ' + r.status);
     var texte = await r.text();
-
-    // Gérer le cas où Apps Script renvoie du HTML (erreur 500)
     if (texte.trim().substring(0,1) === '<') {
-      console.error('Réponse HTML au lieu de JSON:', texte.substring(0, 300));
-      throw new Error('Le serveur a renvoyé une erreur. Vérifiez le déploiement Apps Script.');
+      throw new Error('Réponse HTML inattendue du serveur');
     }
-
-    try {
-      return JSON.parse(texte);
-    } catch(parseErr) {
-      console.error('JSON invalide:', texte.substring(0, 300));
-      throw new Error('Réponse serveur invalide');
-    }
+    try { return JSON.parse(texte); }
+    catch(parseErr) { throw new Error('Réponse JSON invalide'); }
   } catch(e) {
-    var msg = e.name === 'AbortError' ? 'Délai dépassé (20s)' : e.message;
-
+    var msg = e.name === 'AbortError' ? 'Délai dépassé (30s)' : e.message;
     if (tentative < MAX_TENTATIVES) {
-      console.warn('Tentative ' + tentative + ' échouée, retry dans 1s...', msg);
       await new Promise(function(res){ setTimeout(res, 1000); });
       return apiPost(body, tentative + 1);
     }
@@ -529,12 +483,8 @@ async function apiPost(body, tentative) {
 }
 
 // ══════════════════════════════════════════════════════════
-//  ⚡ CHARGEMENT JSONP CORRIGÉ — timeout 12s + retry
+//  CACHE
 // ══════════════════════════════════════════════════════════
-var CACHE_DUREE = 60 * 1000; // 1 minute
-var CACHE_KEY = 'eco-ouest-cache-v3';
-var CACHE_TIME_KEY = 'eco-ouest-cache-time-v3';
-
 function chargerDepuisCache() {
   try {
     var ts = parseInt(localStorage.getItem(CACHE_TIME_KEY) || '0');
@@ -569,23 +519,20 @@ function viderCache() {
   } catch(e) {}
 }
 
-// ⚡ Callback JSONP UNIQUE et GLOBAL (jamais supprimé)
+// ══════════════════════════════════════════════════════════
+//  JSONP — un seul callback global
+// ══════════════════════════════════════════════════════════
 window._jsonpCallback = function(d) {
-  var elapsed = Date.now() - (window._jsonpStart || Date.now());
-  console.log('📥 Réponse JSONP en ' + elapsed + 'ms');
   window._jsonpInProgress = false;
   if (window._jsonpTimeout) { clearTimeout(window._jsonpTimeout); window._jsonpTimeout = null; }
-
-  var oldScript = document.getElementById('jsonp-script');
-  if (oldScript) oldScript.remove();
+  var old = document.getElementById('jsonp-script');
+  if (old) old.remove();
 
   if (!d || !d.ok) {
-    console.error('Erreur serveur:', d);
     sync('error', (d && d.error) ? d.error : 'Erreur serveur');
     setLoader(false);
     return;
   }
-
   commandes = d.data || [];
   sauvegarderCache(commandes);
   var t = new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
@@ -597,85 +544,30 @@ window._jsonpCallback = function(d) {
 
 function charger(forceRefresh, tentative) {
   if (!forceRefresh && chargerDepuisCache()) return;
-
-  // Éviter les chargements multiples simultanés
-  if (window._jsonpInProgress && !tentative) {
-    console.log('⏳ Chargement déjà en cours');
-    return;
-  }
-
+  if (window._jsonpInProgress && !tentative) return;
   if (window._jsonpTimeout) { clearTimeout(window._jsonpTimeout); window._jsonpTimeout = null; }
 
   tentative = tentative || 1;
-  var MAX_TENT = 3;
-      var TIMEOUT_MS = 45000; // 45s : Apps Script peut être lent au démarrage
-
-  window._jsonpStart = Date.now();
-  window._jsonpInProgress = true;
-
-  setLoader(true);
-  sync('loading','Chargement...');
-
-  // Retirer l'ancien script
-  var old = document.getElementById('jsonp-script');
-  if (old) old.remove();
-
-  // Timeout avec retry
-  // Pré-chauffage : lance une requête silencieuse au démarrage
-function prechaufferWebApp() {
-  console.log('🔥 Pré-chauffage du WebApp...');
-  var t0 = Date.now();
-  fetch(WEBAPP + '?warmup=1&t=' + Date.now(), { method: 'GET', mode: 'no-cors' })
-    .then(function() { console.log('🔥 Pré-chauffage lancé'); })
-    .catch(function() {});
-}
-
-function charger(forceRefresh, tentative) {
-  if (!forceRefresh && chargerDepuisCache()) return;
-
-  // Éviter les chargements multiples simultanés (sauf si c'est un retry)
-  if (window._jsonpInProgress && !tentative) {
-    console.log('⏳ Chargement déjà en cours, ignoré');
-    return;
-  }
-
-  // Annuler le précédent timer si existant
-  if (window._jsonpTimeout) {
-    clearTimeout(window._jsonpTimeout);
-    window._jsonpTimeout = null;
-  }
-
-  tentative = tentative || 1;
-  var MAX_TENT = 2;              // 2 tentatives suffisent
-  var TIMEOUT_MS = 45000;        // 45s la 1ère fois, moins après
-
-  // Si c'est un retry, on attend plus longtemps
+  var MAX_TENT = 2;
+  var TIMEOUT_MS = 45000;
   if (tentative > 1) TIMEOUT_MS = 60000;
 
-  window._jsonpStart = Date.now();
   window._jsonpInProgress = true;
-
   setLoader(true);
   sync('loading', tentative > 1 ? 'Nouvelle tentative...' : 'Chargement...');
 
-  // Retirer l'ancien script
   var old = document.getElementById('jsonp-script');
   if (old) old.remove();
 
-  // Timeout avec retry
   window._jsonpTimeout = setTimeout(function() {
     if (!window._jsonpInProgress) return;
     window._jsonpInProgress = false;
-    console.warn('⏱️ Timeout tentative ' + tentative + '/' + MAX_TENT + ' (45s écoulées)');
-
     var s = document.getElementById('jsonp-script');
     if (s) s.remove();
 
     if (tentative < MAX_TENT) {
-      console.log('🔄 Retry ' + (tentative + 1));
       charger(true, tentative + 1);
     } else {
-      // Échec définitif → utiliser le cache
       var cached = localStorage.getItem(CACHE_KEY);
       if (cached) {
         commandes = JSON.parse(cached);
@@ -691,35 +583,18 @@ function charger(forceRefresh, tentative) {
     }
   }, TIMEOUT_MS);
 
-  // Créer le script JSONP
   var script = document.createElement('script');
   script.id = 'jsonp-script';
   script.src = WEBAPP + '?callback=_jsonpCallback&t=' + Date.now();
   document.head.appendChild(script);
 }
-    function setLoader(on){document.getElementById('loader').classList.toggle('active',on);}
+
+function setLoader(on){document.getElementById('loader').classList.toggle('active',on);}
 function sync(state,label){
   document.getElementById('sync-label').textContent=label;
   var d=document.getElementById('sync-dot');
   d.className='sync-dot'+(state==='loading'?' loading':'');
   d.style.background=state==='ok'?'#2E7D32':state==='error'?'#D32F2F':'#E65100';
-}
-
-// ══════════════════════════════════════════════════════════
-//  DIAGNOSTIC
-// ══════════════════════════════════════════════════════════
-function testerConnexion() {
-  var res = document.getElementById('diag-result');
-  res.innerHTML = '⏳ Test en cours...';
-  var start = Date.now();
-
-  apiPost({action:'ping'}).then(function(r) {
-    var ms = Date.now() - start;
-    res.innerHTML = '✅ <b style="color:#2E7D32;">Connexion OK</b> (' + ms + 'ms)<br>Réponse : ' + JSON.stringify(r).substring(0,150);
-  }).catch(function(e) {
-    var ms = Date.now() - start;
-    res.innerHTML = '❌ <b style="color:#D32F2F;">Échec</b> (' + ms + 'ms)<br>' + e.message;
-  });
 }
 
 // ══════════════════════════════════════════════════════════
@@ -783,9 +658,7 @@ function renderTable() {
     return LIVRES.indexOf(sL)===-1;
   });
   rows.sort(function(a,b){
-    if(sortCol==='ligne'){
-      return sortAsc ? (a.ligne-b.ligne) : (b.ligne-a.ligne);
-    }
+    if(sortCol==='ligne'){return sortAsc ? (a.ligne-b.ligne) : (b.ligne-a.ligne);}
     var va=(a[sortCol]||'').toString().toLowerCase(),vb=(b[sortCol]||'').toString().toLowerCase();
     return sortAsc?va.localeCompare(vb):vb.localeCompare(va);
   });
@@ -846,7 +719,7 @@ function closeModal(){document.getElementById('overlay').classList.remove('open'
 function closeOut(e){if(e.target.id==='overlay')closeModal();}
 
 // ══════════════════════════════════════════════════════════
-//  SAUVEGARDE — corrigée avec gestion d'erreur + feedback
+//  SAUVEGARDE
 // ══════════════════════════════════════════════════════════
 async function sauvegarder() {
   var c={};
@@ -893,21 +766,18 @@ async function sauvegarder() {
       res = await apiPost({action:'ajouter',commande:c});
     }
 
-    if (!res || !res.ok) {
-      throw new Error(res && res.error ? res.error : 'Réponse invalide du serveur');
-    }
+    if (!res || !res.ok) throw new Error(res && res.error ? res.error : 'Réponse invalide du serveur');
 
     closeModal();
     afficherToast('ok','✅','Enregistré', editLigne>0?'Commande modifiée':'Nouvelle commande créée', 2500);
 
-    // Recharger immédiatement (nouveau cache forcé)
     viderCache();
     await charger(true);
 
   } catch(e) {
     console.error('Erreur sauvegarde:', e);
     afficherToast('urgent','❌','Erreur enregistrement', e.message, 8000);
-    alert('❌ Impossible d\'enregistrer.\n\nDétail : ' + e.message + '\n\nVérifiez votre connexion Internet, puis réessayez.');
+    alert('❌ Impossible d\'enregistrer.\n\nDétail : ' + e.message + '\n\nVérifiez votre connexion, puis réessayez.');
   } finally {
     if (btnSave) { btnSave.disabled = false; btnSave.textContent = oldTxt; }
     document.getElementById('saving-msg').classList.remove('active');
@@ -915,12 +785,11 @@ async function sauvegarder() {
 }
 
 // ══════════════════════════════════════════════════════════
-//  SUPPRESSION — corrigée
+//  SUPPRESSION
 // ══════════════════════════════════════════════════════════
 async function supprimerCommande() {
   var c=commandes.find(function(x){return x.ligne===editLigne;});
   if(!confirm('⚠️ Supprimer définitivement "'+( c?c.client:'')+'" ?'))return;
-
   document.getElementById('saving-msg').classList.add('active');
   try{
     var r = await apiPost({action:'supprimer',ligne:editLigne});
@@ -946,7 +815,7 @@ function renderAlertes() {
   var sec=[
     {n:3,lb:'Urgentes - Action immédiate',dot:'#D32F2F',pBg:'#FFEBEE',pC:'#D32F2F'},
     {n:2,lb:'Attention - À traiter rapidement',dot:'#E65100',pBg:'#FFF3E0',pC:'#E65100'},
-    {n:1,lb:'Information - À surveiller',dot:'#F9A825',pBg:'#FFFDE7',pC:'#B7860B'},
+    {n:1,lb:'Information - À surveiller',dot:'#F9A825',pBg:'#FFFDE7',pC:'#B7860B'}
   ];
   var html='';
   sec.forEach(function(s){
@@ -1206,7 +1075,7 @@ function cleanDate(s) {
 function sauvegarderConfig() {
   var url = document.getElementById('config-url-input').value.trim();
   if (!url || !url.startsWith('https://')) {
-    document.getElementById('config-status').innerHTML = '<span style="color:var(--rouge);">❌ URL invalide (doit commencer par https://)</span>';
+    document.getElementById('config-status').innerHTML = '<span style="color:var(--rouge);">❌ URL invalide (https:// requis)</span>';
     return;
   }
   localStorage.setItem('eco-webapp-url', url);
@@ -1230,13 +1099,11 @@ async function traduireTexte(texte) {
     var d = await r.json();
     var traduit = d[0].map(function(x){return x[0];}).join('');
     return traduit + ' <span style="font-size:10px;color:#90CAF9;font-style:italic;">[trad. auto]</span>';
-  } catch(e) {
-    return texte;
-  }
+  } catch(e) { return texte; }
 }
 
 async function traduireCommentairesPoseurs() {
-  var elements = document.querySelectorAll('.suivipose-comment, .poseur-card-comment');
+  var elements = document.querySelectorAll('.suivipose-comment');
   for (var i = 0; i < elements.length; i++) {
     var el = elements[i];
     var texte = el.textContent.trim();
@@ -1362,11 +1229,9 @@ async function genererRapportChantier() {
   if (editLigne === null || editLigne < 0) { alert('Enregistrez d\'abord la commande.'); return; }
   var c = commandes.find(function(x){return x.ligne===editLigne;});
   if (!c) return;
-
   try {
     var jspdf = window.jspdf;
     var doc = new jspdf.jsPDF({orientation:'portrait', unit:'mm', format:'a4'});
-
     doc.setFillColor(21,101,192);
     doc.rect(0, 0, 210, 30, 'F');
     doc.setTextColor(255,255,255);
@@ -1374,15 +1239,12 @@ async function genererRapportChantier() {
     doc.text('FICHE CHANTIER', 105, 13, {align:'center'});
     doc.setFontSize(10); doc.setFont('helvetica','normal');
     doc.text('ECO OUEST - Suivi de commande', 105, 22, {align:'center'});
-
     var y = 42;
     doc.setFontSize(16); doc.setFont('helvetica','bold'); doc.setTextColor(21,101,192);
     doc.text(c.client || '—', 14, y);
     y += 10;
-
     doc.setDrawColor(220,220,220);
     doc.setFontSize(10); doc.setTextColor(60,60,60); doc.setFont('helvetica','normal');
-
     function ligne(label, val) {
       doc.setFont('helvetica','bold');
       doc.text(label, 14, y);
@@ -1390,7 +1252,6 @@ async function genererRapportChantier() {
       doc.text(String(val || '—'), 70, y);
       y += 7;
     }
-
     ligne('Fournisseur :', c.fournisseur);
     ligne('N° Devis :', c.devis);
     ligne('N° Commande :', c.commande);
@@ -1400,12 +1261,10 @@ async function genererRapportChantier() {
     ligne('Statut pose :', c.statutPose);
     ligne('Date de pose :', c.datePose);
     ligne('PV chantier :', (c.pvChantier||'').toUpperCase()==='OUI' ? 'FAIT' : 'MANQUANT');
-
     y += 4;
     doc.setDrawColor(21,101,192); doc.setLineWidth(0.5);
     doc.line(14, y, 196, y);
     y += 8;
-
     doc.setFillColor(255,243,224);
     doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(230,81,0);
     doc.text('NOTE BUREAU', 14, y);
@@ -1418,13 +1277,11 @@ async function genererRapportChantier() {
     } else {
       doc.text('Aucune note.', 14, y); y += 8;
     }
-
     var poseurs = [
       {nom:'ANATOLE', key:'poseur_ANATOLE'},{nom:'ARTIOM', key:'poseur_ARTIOM'},
       {nom:'ANTONIO', key:'poseur_ANTONIO'},{nom:'VINCENT', key:'poseur_VINCENT'},
       {nom:'LAMRI', key:'poseur_LAMRI'}
     ];
-
     poseurs.forEach(function(p) {
       if (!c[p.key] || !c[p.key].trim()) return;
       if (y > 250) { doc.addPage(); y = 20; }
@@ -1436,17 +1293,13 @@ async function genererRapportChantier() {
       doc.text(lignesP, 14, y);
       y += lignesP.length * 5 + 6;
     });
-
     doc.setFillColor(21,101,192);
     doc.rect(0, 285, 210, 12, 'F');
     doc.setTextColor(255,255,255); doc.setFontSize(8); doc.setFont('helvetica','normal');
     doc.text('ECO OUEST - Généré le ' + new Date().toLocaleDateString('fr-FR'), 105, 292, {align:'center'});
-
     var fn = 'Fiche_' + (c.client||'chantier').replace(/\s/g,'_') + '.pdf';
     doc.save(fn);
-  } catch(e) {
-    alert('Erreur PDF : ' + e.message);
-  }
+  } catch(e) { alert('Erreur PDF : ' + e.message); }
 }
 
 // ══════════════════════════════════════════════════════════
@@ -1459,7 +1312,6 @@ function fillFournisseur() {
     if(c.fournisseur && fous.indexOf(c.fournisseur) === -1) fous.push(c.fournisseur);
   });
   fous.sort();
-
   var sel = document.getElementById('filter-fournisseur');
   if (sel) {
     var curFilter = sel.value;
@@ -1471,7 +1323,6 @@ function fillFournisseur() {
     });
     sel.value = curFilter;
   }
-
   var selModal = document.getElementById('f-fournisseur');
   if (selModal) {
     var current = selModal.value;
@@ -1486,7 +1337,7 @@ function fillFournisseur() {
 }
 
 // ══════════════════════════════════════════════════════════
-//  COMMENTAIRES POSEURS — corrigé
+//  COMMENTAIRES POSEURS
 // ══════════════════════════════════════════════════════════
 function modifierCommentaire(ligne, key, idx) {
   var c = commandes.find(function(x){return x.ligne===ligne;});
@@ -1559,28 +1410,8 @@ function exportCSV() {
 }
 
 // ══════════════════════════════════════════════════════════
-//  INITIALISATION
+//  NOTIFICATIONS PUSH
 // ══════════════════════════════════════════════════════════
-function renderAll(){renderKPI();renderTable();}
-
-charger();
-setInterval(function(){charger();}, 5*60*1000);
-
-// Recharger au retour sur l'onglet
-var lastVisibility = Date.now();
-document.addEventListener('visibilitychange', function() {
-  if (!document.hidden) {
-    var elapsed = Date.now() - lastVisibility;
-    if (elapsed > 5 * 60 * 1000) charger(true);
-    lastVisibility = Date.now();
-  }
-});
-
-
-// ══════════════════════════════════════════════════════════
-//  🔔 NOTIFICATIONS PUSH (commandes urgentes)
-// ══════════════════════════════════════════════════════════
-
 var NOTIF_KEY = 'eco-ouest-notif-urgents';
 var notifActive = false;
 var knownUrgents = [];
@@ -1596,10 +1427,7 @@ function chargerPrefsNotif() {
 
 function sauvegarderPrefsNotif() {
   try {
-    localStorage.setItem(NOTIF_KEY, JSON.stringify({
-      active: notifActive,
-      known: knownUrgents
-    }));
+    localStorage.setItem(NOTIF_KEY, JSON.stringify({ active: notifActive, known: knownUrgents }));
   } catch(e) {}
 }
 
@@ -1607,28 +1435,22 @@ function majBoutonNotif() {
   var btn = document.getElementById('btn-notif');
   if (!btn) return;
   if (!('Notification' in window)) {
-    btn.textContent = '🔕 N/A';
-    btn.disabled = true;
-    btn.title = 'Notifications non supportées par ce navigateur';
-    return;
+    btn.textContent = '🔕 N/A'; btn.disabled = true; return;
   }
   if (Notification.permission === 'denied') {
     btn.textContent = '🔕 Bloqué';
     btn.style.borderColor = 'var(--rouge)';
     btn.style.color = 'var(--rouge)';
-    btn.title = 'Notifications bloquées - cliquez pour instructions';
     return;
   }
   if (notifActive && Notification.permission === 'granted') {
     btn.textContent = '🔔 Actives';
     btn.style.borderColor = 'var(--vert)';
     btn.style.color = 'var(--vert)';
-    btn.title = 'Notifications activées - cliquer pour désactiver';
   } else {
     btn.textContent = '🔕 Notifs';
     btn.style.borderColor = '';
     btn.style.color = '';
-    btn.title = 'Activer les notifications';
   }
 }
 
@@ -1638,40 +1460,29 @@ async function activerNotifications() {
     return;
   }
   if (Notification.permission === 'denied') {
-    alert('❌ Les notifications sont BLOQUÉES pour ce site.\n\nPour les réactiver :\n1. Cliquez sur le cadenas 🔒 dans la barre d\'adresse\n2. Autorisez les notifications\n3. Rechargez la page');
+    alert('❌ Notifications BLOQUÉES.\n\n1. Cliquez sur le cadenas 🔒 dans la barre d\'adresse\n2. Autorisez les notifications\n3. Rechargez la page');
     return;
   }
-
-  // Si déjà actives : on désactive
   if (notifActive && Notification.permission === 'granted') {
     notifActive = false;
     sauvegarderPrefsNotif();
     majBoutonNotif();
-    afficherToast('warn','🔕','Notifications désactivées','Vous ne recevrez plus d\'alertes urgentes', 3000);
+    afficherToast('warn','🔕','Notifications désactivées','',3000);
     return;
   }
-
-  // Sinon : on demande la permission
   try {
     var perm = await Notification.requestPermission();
     if (perm === 'granted') {
       notifActive = true;
       sauvegarderPrefsNotif();
       majBoutonNotif();
-      afficherToast('ok','🔔','Notifications activées','Vous serez prévenu à chaque nouvelle urgence', 4000);
-      // Notification de test
-      envoyerNotification(
-        '🔔 Notifications activées',
-        'Vous recevrez une alerte dès qu\'une commande devient urgente.'
-      );
+      afficherToast('ok','🔔','Notifications activées','',4000);
+      envoyerNotification('🔔 Notifications activées','Vous recevrez une alerte pour chaque commande urgente.');
     } else {
-      afficherToast('urgent','❌','Permission refusée','Vous ne recevrez pas d\'alertes', 4000);
+      afficherToast('urgent','❌','Permission refusée','',4000);
       majBoutonNotif();
     }
-  } catch(e) {
-    console.error('Erreur permission notif:', e);
-    alert('Erreur : ' + e.message);
-  }
+  } catch(e) { alert('Erreur : ' + e.message); }
 }
 
 function envoyerNotification(titre, corps, options) {
@@ -1686,45 +1497,23 @@ function envoyerNotification(titre, corps, options) {
     });
     n.onclick = function() {
       window.focus();
-      if (options.view && typeof showView === 'function') {
-        showView(options.view);
-      }
+      if (options.view && typeof showView === 'function') showView(options.view);
       n.close();
     };
     return n;
-  } catch(e) {
-    console.warn('Notification échouée:', e.message);
-    return null;
-  }
+  } catch(e) { return null; }
 }
 
-// ── Détection des nouvelles urgences ──
 function detecterUrgences() {
   if (!notifActive || Notification.permission !== 'granted') return;
   if (!commandes || !commandes.length) return;
-
-  // 1. Trouver toutes les urgences actuelles
-  var urgents = commandes.filter(function(c) {
-    return alerte(c).n === 3;
+  var urgents = commandes.filter(function(c) { return alerte(c).n === 3; });
+  var nouvelles = urgents.filter(function(c) { return knownUrgents.indexOf(c.ligne) === -1; });
+  knownUrgents = knownUrgents.filter(function(lg) {
+    return urgents.some(function(c) { return c.ligne === lg; });
   });
-
-  // 2. Trouver les nouvelles (pas dans knownUrgents)
-  var nouvelles = urgents.filter(function(c) {
-    return knownUrgents.indexOf(c.ligne) === -1;
-  });
-
-  // 3. Nettoyer les anciennes urgences qui ne le sont plus
-  knownUrgents = knownUrgents.filter(function(ligne) {
-    return urgents.some(function(c) { return c.ligne === ligne; });
-  });
-
-  // 4. Si nouvelles urgences → notifier
   if (nouvelles.length > 0) {
-    console.log('🔔 Nouvelles urgences détectées:', nouvelles.length);
-
-    // Limiter à 3 notifs max pour éviter le spam
-    var aNotifier = nouvelles.slice(0, 3);
-    aNotifier.forEach(function(c, i) {
+    nouvelles.slice(0, 3).forEach(function(c, i) {
       setTimeout(function() {
         var a = alerte(c);
         envoyerNotification(
@@ -1732,41 +1521,41 @@ function detecterUrgences() {
           a.t + (c.fournisseur ? ' · ' + c.fournisseur : ''),
           { tag: 'urgent-' + c.ligne, requireInteraction: true, view: 'alertes' }
         );
-      }, i * 400); // 400ms de décalage entre chaque notif
+      }, i * 400);
     });
-
-    // Si plus de 3 nouvelles, un résumé
     if (nouvelles.length > 3) {
       setTimeout(function() {
-        envoyerNotification(
-          '⚠️ ' + (nouvelles.length - 3) + ' autre(s) urgence(s)',
-          'Ouvrez l\'app pour voir toutes les alertes.',
-          { view: 'alertes' }
-        );
+        envoyerNotification('⚠️ ' + (nouvelles.length - 3) + ' autre(s) urgence(s)','Ouvrez l\'app pour voir toutes les alertes.',{ view: 'alertes' });
       }, 1500);
     }
-
-    // Ajouter les nouvelles au mémor
     nouvelles.forEach(function(c) {
-      if (knownUrgents.indexOf(c.ligne) === -1) {
-        knownUrgents.push(c.ligne);
-      }
+      if (knownUrgents.indexOf(c.ligne) === -1) knownUrgents.push(c.ligne);
     });
     sauvegarderPrefsNotif();
   }
 }
 
-// ── Hook dans le chargement : détecter urgences après chaque update ──
-// On wrappe renderAll pour que la détection se déclenche après chaque rendu
-var _renderAllOriginal = renderAll;
-renderAll = function() {
-  _renderAllOriginal();
-  // Détecter les urgences après un petit délai
+// ══════════════════════════════════════════════════════════
+//  INITIALISATION
+// ══════════════════════════════════════════════════════════
+function renderAll(){
+  renderKPI();
+  renderTable();
   setTimeout(detecterUrgences, 500);
-};
+}
 
-// ── Init ──
 chargerPrefsNotif();
+charger();
+setInterval(function(){charger();}, 5*60*1000);
+
+var lastVisibility = Date.now();
+document.addEventListener('visibilitychange', function() {
+  if (!document.hidden) {
+    var elapsed = Date.now() - lastVisibility;
+    if (elapsed > 5 * 60 * 1000) charger(true);
+    lastVisibility = Date.now();
+  }
+});
 </script>
 
 </body>
