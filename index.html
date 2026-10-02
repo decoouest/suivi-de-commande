@@ -1528,6 +1528,198 @@ document.addEventListener('visibilitychange', function() {
     lastVisibility = Date.now();
   }
 });
+
+
+// ══════════════════════════════════════════════════════════
+//  🔔 NOTIFICATIONS PUSH (commandes urgentes)
+// ══════════════════════════════════════════════════════════
+
+var NOTIF_KEY = 'eco-ouest-notif-urgents';
+var notifActive = false;
+var knownUrgents = [];
+
+function chargerPrefsNotif() {
+  try {
+    var saved = JSON.parse(localStorage.getItem(NOTIF_KEY) || '{}');
+    notifActive = saved.active === true;
+    knownUrgents = saved.known || [];
+  } catch(e) { notifActive = false; knownUrgents = []; }
+  majBoutonNotif();
+}
+
+function sauvegarderPrefsNotif() {
+  try {
+    localStorage.setItem(NOTIF_KEY, JSON.stringify({
+      active: notifActive,
+      known: knownUrgents
+    }));
+  } catch(e) {}
+}
+
+function majBoutonNotif() {
+  var btn = document.getElementById('btn-notif');
+  if (!btn) return;
+  if (!('Notification' in window)) {
+    btn.textContent = '🔕 N/A';
+    btn.disabled = true;
+    btn.title = 'Notifications non supportées par ce navigateur';
+    return;
+  }
+  if (Notification.permission === 'denied') {
+    btn.textContent = '🔕 Bloqué';
+    btn.style.borderColor = 'var(--rouge)';
+    btn.style.color = 'var(--rouge)';
+    btn.title = 'Notifications bloquées - cliquez pour instructions';
+    return;
+  }
+  if (notifActive && Notification.permission === 'granted') {
+    btn.textContent = '🔔 Actives';
+    btn.style.borderColor = 'var(--vert)';
+    btn.style.color = 'var(--vert)';
+    btn.title = 'Notifications activées - cliquer pour désactiver';
+  } else {
+    btn.textContent = '🔕 Notifs';
+    btn.style.borderColor = '';
+    btn.style.color = '';
+    btn.title = 'Activer les notifications';
+  }
+}
+
+async function activerNotifications() {
+  if (!('Notification' in window)) {
+    alert('Votre navigateur ne supporte pas les notifications.\n\nUtilisez Chrome, Edge ou Firefox récent.');
+    return;
+  }
+  if (Notification.permission === 'denied') {
+    alert('❌ Les notifications sont BLOQUÉES pour ce site.\n\nPour les réactiver :\n1. Cliquez sur le cadenas 🔒 dans la barre d\'adresse\n2. Autorisez les notifications\n3. Rechargez la page');
+    return;
+  }
+
+  // Si déjà actives : on désactive
+  if (notifActive && Notification.permission === 'granted') {
+    notifActive = false;
+    sauvegarderPrefsNotif();
+    majBoutonNotif();
+    afficherToast('warn','🔕','Notifications désactivées','Vous ne recevrez plus d\'alertes urgentes', 3000);
+    return;
+  }
+
+  // Sinon : on demande la permission
+  try {
+    var perm = await Notification.requestPermission();
+    if (perm === 'granted') {
+      notifActive = true;
+      sauvegarderPrefsNotif();
+      majBoutonNotif();
+      afficherToast('ok','🔔','Notifications activées','Vous serez prévenu à chaque nouvelle urgence', 4000);
+      // Notification de test
+      envoyerNotification(
+        '🔔 Notifications activées',
+        'Vous recevrez une alerte dès qu\'une commande devient urgente.'
+      );
+    } else {
+      afficherToast('urgent','❌','Permission refusée','Vous ne recevrez pas d\'alertes', 4000);
+      majBoutonNotif();
+    }
+  } catch(e) {
+    console.error('Erreur permission notif:', e);
+    alert('Erreur : ' + e.message);
+  }
+}
+
+function envoyerNotification(titre, corps, options) {
+  options = options || {};
+  if (!notifActive || Notification.permission !== 'granted') return null;
+  try {
+    var n = new Notification(titre, {
+      body: corps,
+      tag: options.tag || 'eco-' + Date.now(),
+      requireInteraction: options.requireInteraction === true,
+      silent: options.silent === true
+    });
+    n.onclick = function() {
+      window.focus();
+      if (options.view && typeof showView === 'function') {
+        showView(options.view);
+      }
+      n.close();
+    };
+    return n;
+  } catch(e) {
+    console.warn('Notification échouée:', e.message);
+    return null;
+  }
+}
+
+// ── Détection des nouvelles urgences ──
+function detecterUrgences() {
+  if (!notifActive || Notification.permission !== 'granted') return;
+  if (!commandes || !commandes.length) return;
+
+  // 1. Trouver toutes les urgences actuelles
+  var urgents = commandes.filter(function(c) {
+    return alerte(c).n === 3;
+  });
+
+  // 2. Trouver les nouvelles (pas dans knownUrgents)
+  var nouvelles = urgents.filter(function(c) {
+    return knownUrgents.indexOf(c.ligne) === -1;
+  });
+
+  // 3. Nettoyer les anciennes urgences qui ne le sont plus
+  knownUrgents = knownUrgents.filter(function(ligne) {
+    return urgents.some(function(c) { return c.ligne === ligne; });
+  });
+
+  // 4. Si nouvelles urgences → notifier
+  if (nouvelles.length > 0) {
+    console.log('🔔 Nouvelles urgences détectées:', nouvelles.length);
+
+    // Limiter à 3 notifs max pour éviter le spam
+    var aNotifier = nouvelles.slice(0, 3);
+    aNotifier.forEach(function(c, i) {
+      setTimeout(function() {
+        var a = alerte(c);
+        envoyerNotification(
+          '🔴 Commande urgente : ' + (c.client || 'Sans nom'),
+          a.t + (c.fournisseur ? ' · ' + c.fournisseur : ''),
+          { tag: 'urgent-' + c.ligne, requireInteraction: true, view: 'alertes' }
+        );
+      }, i * 400); // 400ms de décalage entre chaque notif
+    });
+
+    // Si plus de 3 nouvelles, un résumé
+    if (nouvelles.length > 3) {
+      setTimeout(function() {
+        envoyerNotification(
+          '⚠️ ' + (nouvelles.length - 3) + ' autre(s) urgence(s)',
+          'Ouvrez l\'app pour voir toutes les alertes.',
+          { view: 'alertes' }
+        );
+      }, 1500);
+    }
+
+    // Ajouter les nouvelles au mémor
+    nouvelles.forEach(function(c) {
+      if (knownUrgents.indexOf(c.ligne) === -1) {
+        knownUrgents.push(c.ligne);
+      }
+    });
+    sauvegarderPrefsNotif();
+  }
+}
+
+// ── Hook dans le chargement : détecter urgences après chaque update ──
+// On wrappe renderAll pour que la détection se déclenche après chaque rendu
+var _renderAllOriginal = renderAll;
+renderAll = function() {
+  _renderAllOriginal();
+  // Détecter les urgences après un petit délai
+  setTimeout(detecterUrgences, 500);
+};
+
+// ── Init ──
+chargerPrefsNotif();
 </script>
 
 </body>
