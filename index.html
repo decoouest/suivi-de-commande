@@ -608,7 +608,7 @@ function charger(forceRefresh, tentative) {
 
   tentative = tentative || 1;
   var MAX_TENT = 3;
-  var TIMEOUT_MS = 12000;
+      var TIMEOUT_MS = 45000; // 45s : Apps Script peut être lent au démarrage
 
   window._jsonpStart = Date.now();
   window._jsonpInProgress = true;
@@ -621,10 +621,52 @@ function charger(forceRefresh, tentative) {
   if (old) old.remove();
 
   // Timeout avec retry
+  // Pré-chauffage : lance une requête silencieuse au démarrage
+function prechaufferWebApp() {
+  console.log('🔥 Pré-chauffage du WebApp...');
+  var t0 = Date.now();
+  fetch(WEBAPP + '?warmup=1&t=' + Date.now(), { method: 'GET', mode: 'no-cors' })
+    .then(function() { console.log('🔥 Pré-chauffage lancé'); })
+    .catch(function() {});
+}
+
+function charger(forceRefresh, tentative) {
+  if (!forceRefresh && chargerDepuisCache()) return;
+
+  // Éviter les chargements multiples simultanés (sauf si c'est un retry)
+  if (window._jsonpInProgress && !tentative) {
+    console.log('⏳ Chargement déjà en cours, ignoré');
+    return;
+  }
+
+  // Annuler le précédent timer si existant
+  if (window._jsonpTimeout) {
+    clearTimeout(window._jsonpTimeout);
+    window._jsonpTimeout = null;
+  }
+
+  tentative = tentative || 1;
+  var MAX_TENT = 2;              // 2 tentatives suffisent
+  var TIMEOUT_MS = 45000;        // 45s la 1ère fois, moins après
+
+  // Si c'est un retry, on attend plus longtemps
+  if (tentative > 1) TIMEOUT_MS = 60000;
+
+  window._jsonpStart = Date.now();
+  window._jsonpInProgress = true;
+
+  setLoader(true);
+  sync('loading', tentative > 1 ? 'Nouvelle tentative...' : 'Chargement...');
+
+  // Retirer l'ancien script
+  var old = document.getElementById('jsonp-script');
+  if (old) old.remove();
+
+  // Timeout avec retry
   window._jsonpTimeout = setTimeout(function() {
     if (!window._jsonpInProgress) return;
     window._jsonpInProgress = false;
-    console.warn('⏱️ Timeout tentative ' + tentative + '/' + MAX_TENT);
+    console.warn('⏱️ Timeout tentative ' + tentative + '/' + MAX_TENT + ' (45s écoulées)');
 
     var s = document.getElementById('jsonp-script');
     if (s) s.remove();
@@ -637,13 +679,24 @@ function charger(forceRefresh, tentative) {
       var cached = localStorage.getItem(CACHE_KEY);
       if (cached) {
         commandes = JSON.parse(cached);
-        sync('warn','Hors ligne - cache');
-        afficherToast('warn','📴','Connexion lente','Affichage des données en cache');
-        fillFournisseur(); renderAll();
+        sync('warn', 'Serveur lent - cache affiché');
+        afficherToast('warn', '⏰', 'Serveur lent', 'Affichage en cache. Réessayez dans 1 min.', 6000);
+        fillFournisseur();
+        renderAll();
       } else {
-        sync('error','Connexion impossible');
-        document.getElementById('table-body').innerHTML = '<tr><td colspan="13"><div class="empty-state"><p>❌ Impossible de contacter le serveur.<br><br>Cliquez sur 🔄 Actualiser.</p></div></td></tr>';
+        sync('error', 'Connexion impossible');
+        document.getElementById('table-body').innerHTML = '<tr><td colspan="13"><div class="empty-state"><p>❌ Serveur trop lent.<br><br>Réessayez dans 30 secondes.<br>Cliquez sur 🔄 Actualiser.</p></div></td></tr>';
       }
+      setLoader(false);
+    }
+  }, TIMEOUT_MS);
+
+  // Créer le script JSONP
+  var script = document.createElement('script');
+  script.id = 'jsonp-script';
+  script.src = WEBAPP + '?callback=_jsonpCallback&t=' + Date.now();
+  document.head.appendChild(script);
+}
       setLoader(false);
     }
   }, TIMEOUT_MS);
