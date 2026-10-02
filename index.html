@@ -697,18 +697,7 @@ function charger(forceRefresh, tentative) {
   script.src = WEBAPP + '?callback=_jsonpCallback&t=' + Date.now();
   document.head.appendChild(script);
 }
-      setLoader(false);
-    }
-  }, TIMEOUT_MS);
-
-  // Créer le script JSONP avec callback UNIQUE
-  var script = document.createElement('script');
-  script.id = 'jsonp-script';
-  script.src = WEBAPP + '?callback=_jsonpCallback&t=' + Date.now();
-  document.head.appendChild(script);
-}
-
-function setLoader(on){document.getElementById('loader').classList.toggle('active',on);}
+    function setLoader(on){document.getElementById('loader').classList.toggle('active',on);}
 function sync(state,label){
   document.getElementById('sync-label').textContent=label;
   var d=document.getElementById('sync-dot');
