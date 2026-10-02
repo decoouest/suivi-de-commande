@@ -569,84 +569,89 @@ function viderCache() {
   } catch(e) {}
 }
 
+// ⚡ Callback JSONP UNIQUE et GLOBAL (jamais supprimé)
+window._jsonpCallback = function(d) {
+  var elapsed = Date.now() - (window._jsonpStart || Date.now());
+  console.log('📥 Réponse JSONP en ' + elapsed + 'ms');
+  window._jsonpInProgress = false;
+  if (window._jsonpTimeout) { clearTimeout(window._jsonpTimeout); window._jsonpTimeout = null; }
+
+  var oldScript = document.getElementById('jsonp-script');
+  if (oldScript) oldScript.remove();
+
+  if (!d || !d.ok) {
+    console.error('Erreur serveur:', d);
+    sync('error', (d && d.error) ? d.error : 'Erreur serveur');
+    setLoader(false);
+    return;
+  }
+
+  commandes = d.data || [];
+  sauvegarderCache(commandes);
+  var t = new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+  sync('ok','Mis à jour ' + t);
+  fillFournisseur();
+  renderAll();
+  setLoader(false);
+};
+
 function charger(forceRefresh, tentative) {
   if (!forceRefresh && chargerDepuisCache()) return;
+
+  // Éviter les chargements multiples simultanés
+  if (window._jsonpInProgress && !tentative) {
+    console.log('⏳ Chargement déjà en cours');
+    return;
+  }
+
+  if (window._jsonpTimeout) { clearTimeout(window._jsonpTimeout); window._jsonpTimeout = null; }
+
   tentative = tentative || 1;
   var MAX_TENT = 3;
+  var TIMEOUT_MS = 12000;
 
-  setLoader(true); sync('loading','Chargement...');
+  window._jsonpStart = Date.now();
+  window._jsonpInProgress = true;
 
+  setLoader(true);
+  sync('loading','Chargement...');
+
+  // Retirer l'ancien script
   var old = document.getElementById('jsonp-script');
-  if (old) old.parentNode.removeChild(old);
+  if (old) old.remove();
 
-  jsonpCounter++;
-  var cbName = '_jsonpCb_' + jsonpCounter;
-  var timeoutMs = 12000; // 12 secondes
-  var dejaRepondu = false;
+  // Timeout avec retry
+  window._jsonpTimeout = setTimeout(function() {
+    if (!window._jsonpInProgress) return;
+    window._jsonpInProgress = false;
+    console.warn('⏱️ Timeout tentative ' + tentative + '/' + MAX_TENT);
 
-  var timeoutId = setTimeout(function() {
-    if (dejaRepondu) return;
-    dejaRepondu = true;
-    console.warn('JSONP timeout tentative ' + tentative);
-    try { delete window[cbName]; } catch(e) {}
+    var s = document.getElementById('jsonp-script');
+    if (s) s.remove();
 
     if (tentative < MAX_TENT) {
-      console.log('Retry ' + (tentative+1) + '/' + MAX_TENT);
+      console.log('🔄 Retry ' + (tentative + 1));
       charger(true, tentative + 1);
     } else {
-      // Échec total après 3 tentatives
+      // Échec définitif → utiliser le cache
       var cached = localStorage.getItem(CACHE_KEY);
       if (cached) {
         commandes = JSON.parse(cached);
         sync('warn','Hors ligne - cache');
         afficherToast('warn','📴','Connexion lente','Affichage des données en cache');
-        fillFournisseur(); renderAll(); setLoader(false);
+        fillFournisseur(); renderAll();
       } else {
         sync('error','Connexion impossible');
-        document.getElementById('table-body').innerHTML = '<tr><td colspan="13"><div class="empty-state"><p>❌ Impossible de contacter le serveur.<br><br>Vérifiez votre connexion Internet.<br>Puis cliquez sur 🔄 Actualiser.</p></div></td></tr>';
-        setLoader(false);
+        document.getElementById('table-body').innerHTML = '<tr><td colspan="13"><div class="empty-state"><p>❌ Impossible de contacter le serveur.<br><br>Cliquez sur 🔄 Actualiser.</p></div></td></tr>';
       }
-    }
-  }, timeoutMs);
-
-  window[cbName] = function(d) {
-    if (dejaRepondu) return;
-    dejaRepondu = true;
-    clearTimeout(timeoutId);
-    try { delete window[cbName]; } catch(e) {}
-
-    if (!d || !d.ok) {
-      sync('error', (d && d.error) ? d.error : 'Erreur serveur');
       setLoader(false);
-      if (tentative < MAX_TENT) {
-        setTimeout(function(){ charger(true, tentative + 1); }, 1000);
-      }
-      return;
     }
-    commandes = d.data || [];
-    sauvegarderCache(commandes);
-    var t = new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
-    sync('ok','Mis à jour ' + t);
-    fillFournisseur();
-    renderAll();
-    setLoader(false);
-  };
+  }, TIMEOUT_MS);
 
+  // Créer le script JSONP avec callback UNIQUE
   var script = document.createElement('script');
   script.id = 'jsonp-script';
-  script.src = WEBAPP + '?callback=' + cbName + '&t=' + Date.now();
-  script.onerror = function() {
-    if (dejaRepondu) return;
-    dejaRepondu = true;
-    clearTimeout(timeoutId);
-    console.warn('JSONP erreur réseau tentative ' + tentative);
-    if (tentative < MAX_TENT) {
-      setTimeout(function(){ charger(true, tentative + 1); }, 1000);
-    } else {
-      sync('error','Erreur réseau');
-      setLoader(false);
-    }
-  };
+  script.src = WEBAPP + '?callback=_jsonpCallback&t=' + Date.now();
   document.head.appendChild(script);
 }
 
