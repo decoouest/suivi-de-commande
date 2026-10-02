@@ -185,7 +185,7 @@ table td:first-child::before{display:none;}
   <div class="sidebar-logo">
     <span>ECO OUEST</span>
     <small>Suivi Commandes</small>
-    <div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v5.0</div>
+    <div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v6.0</div>
   </div>
   <nav class="nav">
     <div class="nav-item active" id="nav-suivi" onclick="showView('suivi')"><span class="icon">📋</span><span>Commandes</span></div>
@@ -196,7 +196,7 @@ table td:first-child::before{display:none;}
     <div class="nav-item" id="nav-planning" onclick="showView('planning')"><span class="icon">📅</span><span>Planning</span></div>
     <div class="nav-item" id="nav-config" onclick="showView('config')"><span class="icon">⚙️</span><span>Config</span></div>
   </nav>
-  <div class="sidebar-footer">v5.0</div>
+  <div class="sidebar-footer">v6.0</div>
 </aside>
 
 <div class="main">
@@ -336,7 +336,7 @@ table td:first-child::before{display:none;}
         <div class="form-group"><label>Fournisseur</label>
           <select id="f-fournisseur"><option value="">— Choisir —</option></select>
         </div>
-        <div class="form-group"><label>📅 Date métré (col. B)</label><input id="f-metres" type="text" placeholder="Ex: lundi 31 août ou 31/08/2026"></div>
+        <div class="form-group"><label>📅 Date métré (col. B)</label><input id="f-metres" type="text" placeholder="Ex: 31/08/2026 ou lundi 31 août"></div>
         <div class="form-group"><label>N° Devis</label><input id="f-devis" type="text"></div>
         <div class="form-group"><label>Devis TTC</label><input id="f-devisTTC" type="number"></div>
         <div class="form-group"><label>Commande envoyée</label>
@@ -394,8 +394,8 @@ var sortAsc = false;
 var alertFilter = 'all';
 var editLigne = -1;
 var CACHE_DUREE = 60 * 1000;
-var CACHE_KEY = 'eco-ouest-cache-v5';
-var CACHE_TIME_KEY = 'eco-ouest-cache-time-v5';
+var CACHE_KEY = 'eco-ouest-cache-v6';
+var CACHE_TIME_KEY = 'eco-ouest-cache-time-v6';
 
 // ── Utilitaires ──────────────────────────────────────────
 function h(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
@@ -409,6 +409,46 @@ function afficherToast(type, icon, titre, msg, duree) {
   t.innerHTML = '<span class="toast-icon">'+icon+'</span><div style="flex:1"><div class="toast-title">'+titre+'</div><div class="toast-msg">'+(msg||'')+'</div></div>';
   document.body.appendChild(t);
   setTimeout(function(){ t.style.opacity='0'; t.style.transition='opacity .3s'; setTimeout(function(){t.remove();},300); }, duree);
+}
+
+// ── Conversion date métré ↔ ISO ──────────────────────────
+function formatDateMetre(val) {
+  if (!val) return '';
+  if (typeof val === 'string' && !/GMT|T\d{2}:/.test(val)) return val.trim();
+  try {
+    var d = new Date(val);
+    if (isNaN(d)) return String(val).trim();
+    return d.toLocaleDateString('fr-FR', {weekday:'long', day:'numeric', month:'long'});
+  } catch(e) { return String(val).trim(); }
+}
+
+function convertirEnDateISO(str) {
+  if (!str || !str.trim()) return '';
+  str = str.trim();
+  if (/^\d{4}-\d{2}-\d{2}$/.test(str)) return str;
+  var m1 = str.match(/^(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{2,4})$/);
+  if (m1) {
+    var d = m1[1].padStart(2,'0');
+    var mo = m1[2].padStart(2,'0');
+    var y = m1[3].length === 2 ? '20' + m1[3] : m1[3];
+    return y + '-' + mo + '-' + d;
+  }
+  var moisFR = {
+    'janvier':'01','fevrier':'02','février':'02','mars':'03','avril':'04',
+    'mai':'05','juin':'06','juillet':'07','aout':'08','août':'08',
+    'septembre':'09','octobre':'10','novembre':'11','decembre':'12','décembre':'12'
+  };
+  var m3 = str.toLowerCase().match(/(\d{1,2})[,\s]+([a-zéû]+)/);
+  if (m3) {
+    var jour = m3[1].padStart(2,'0');
+    var mois = moisFR[m3[2]];
+    if (mois) {
+      var annee = new Date().getFullYear();
+      if (parseInt(mois, 10) < (new Date().getMonth() + 1)) annee += 1;
+      return annee + '-' + mois + '-' + jour;
+    }
+  }
+  return '';
 }
 
 // ── Alerte ───────────────────────────────────────────────
@@ -480,19 +520,8 @@ function getWeekNumber(d) {
 }
 function aClass(n){return n===0?'alerte-ok':n===1?'alerte-jaune':n===2?'alerte-orange':n===3?'alerte-rouge':'';}
 
-// ── Formatage date métré ─────────────────────────────────
-function formatDateMetre(val) {
-  if (!val) return '';
-  if (typeof val === 'string' && !/GMT|T\d{2}:/.test(val)) return val.trim();
-  try {
-    var d = new Date(val);
-    if (isNaN(d)) return String(val).trim();
-    return d.toLocaleDateString('fr-FR', {weekday:'long', day:'numeric', month:'long'});
-  } catch(e) { return String(val).trim(); }
-}
-
 // ══════════════════════════════════════════════════════════
-//  API POST — avec retry
+//  API POST
 // ══════════════════════════════════════════════════════════
 async function apiPost(body, tentative) {
   tentative = tentative || 1;
@@ -561,14 +590,13 @@ function viderCache() {
 }
 
 // ══════════════════════════════════════════════════════════
-//  JSONP — un seul callback global
+//  JSONP
 // ══════════════════════════════════════════════════════════
 window._jsonpCallback = function(d) {
   window._jsonpInProgress = false;
   if (window._jsonpTimeout) { clearTimeout(window._jsonpTimeout); window._jsonpTimeout = null; }
   var old = document.getElementById('jsonp-script');
   if (old) old.remove();
-
   if (!d || !d.ok) {
     sync('error', (d && d.error) ? d.error : 'Erreur serveur');
     setLoader(false);
@@ -587,25 +615,20 @@ function charger(forceRefresh, tentative) {
   if (!forceRefresh && chargerDepuisCache()) return;
   if (window._jsonpInProgress && !tentative) return;
   if (window._jsonpTimeout) { clearTimeout(window._jsonpTimeout); window._jsonpTimeout = null; }
-
   tentative = tentative || 1;
   var MAX_TENT = 2;
   var TIMEOUT_MS = 45000;
   if (tentative > 1) TIMEOUT_MS = 60000;
-
   window._jsonpInProgress = true;
   setLoader(true);
   sync('loading', tentative > 1 ? 'Nouvelle tentative...' : 'Chargement...');
-
   var old = document.getElementById('jsonp-script');
   if (old) old.remove();
-
   window._jsonpTimeout = setTimeout(function() {
     if (!window._jsonpInProgress) return;
     window._jsonpInProgress = false;
     var s = document.getElementById('jsonp-script');
     if (s) s.remove();
-
     if (tentative < MAX_TENT) {
       charger(true, tentative + 1);
     } else {
@@ -623,7 +646,6 @@ function charger(forceRefresh, tentative) {
       setLoader(false);
     }
   }, TIMEOUT_MS);
-
   var script = document.createElement('script');
   script.id = 'jsonp-script';
   script.src = WEBAPP + '?callback=_jsonpCallback&t=' + Date.now();
@@ -735,12 +757,11 @@ function sortBy(col){if(sortCol===col)sortAsc=!sortAsc;else{sortCol=col;sortAsc=
 function setFilter(f){alertFilter=f;['all','urgent','warn','ok'].forEach(function(k){document.getElementById('fb-'+k).classList.toggle('active',k===f);});renderTable();}
 
 // ══════════════════════════════════════════════════════════
-//  MÉTRÉ (Dates colonne B)
+//  MÉTRÉ
 // ══════════════════════════════════════════════════════════
 function renderMetre() {
   var q = (document.getElementById('metre-search').value||'').toLowerCase();
   var fFilt = document.getElementById('metre-filter').value;
-
   var rows = commandes.map(function(c,i){
     return Object.assign({}, c, {
       _i: i,
@@ -748,7 +769,6 @@ function renderMetre() {
       _dateMetre: formatDateMetre(c.metres)
     });
   });
-
   if(q) rows = rows.filter(function(c){
     return (c.client||'').toLowerCase().indexOf(q)!==-1
         || (c.devis||'').toLowerCase().indexOf(q)!==-1
@@ -756,30 +776,25 @@ function renderMetre() {
   });
   if (fFilt === 'rempli') rows = rows.filter(function(c){ return c._dateMetre !== ''; });
   if (fFilt === 'vide')   rows = rows.filter(function(c){ return c._dateMetre === ''; });
-
   var total = commandes.length;
   var remplis = commandes.filter(function(c){ return formatDateMetre(c.metres) !== ''; }).length;
   var vides = total - remplis;
   var pct = total > 0 ? Math.round(remplis / total * 100) : 0;
-
   var stats = document.getElementById('metre-stats');
   stats.innerHTML =
     '<div class="kpi-card kpi-info"><span class="kpi-label">Total</span><span class="kpi-value">'+total+'</span><span class="kpi-sub">commandes</span></div>' +
     '<div class="kpi-card kpi-ok"><span class="kpi-label">Datées</span><span class="kpi-value">'+remplis+'</span><span class="kpi-sub">'+pct+'% complété</span></div>' +
     '<div class="kpi-card kpi-urgent"><span class="kpi-label">Manquantes</span><span class="kpi-value">'+vides+'</span><span class="kpi-sub">à planifier</span></div>';
-
   rows.sort(function(a,b){
     if ((a._dateMetre === '') !== (b._dateMetre === '')) return a._dateMetre === '' ? -1 : 1;
     return b.ligne - a.ligne;
   });
-
   var tb = document.getElementById('metre-table-body');
   if (!rows.length) {
     tb.innerHTML = '<tr><td colspan="9"><div class="empty-state"><p>Aucune commande trouvée.</p></div></td></tr>';
     document.getElementById('metre-scroll-hint').textContent = '';
     return;
   }
-
   tb.innerHTML = rows.map(function(c){
     var a = c._a;
     var fc = FOU_COLORS[c.fournisseur] || '#546E7A';
@@ -800,7 +815,6 @@ function renderMetre() {
       '<td><button class="action-btn" onclick="openModal('+c._i+')">✏️</button></td>'+
     '</tr>';
   }).join('');
-
   document.getElementById('metre-scroll-hint').textContent = rows.length + ' commande(s) affichée(s) sur ' + total;
 }
 
@@ -813,13 +827,18 @@ function openModal(idx) {
   if(idx>=0)editLigne=c.ligne;
   document.getElementById('modal-title').textContent=idx>=0?'Modifier - '+c.client:'Nouvelle commande';
   document.getElementById('btn-suppr').style.display=idx>=0?'inline-flex':'none';
-  ['client','metres','devis','devisTTC','fournisseur','commande','arc','commentaireARC','prevLivraison','statutLivraison','statutPose'].forEach(function(f){
+  ['client','devis','devisTTC','fournisseur','commande','arc','commentaireARC','prevLivraison','statutLivraison','statutPose'].forEach(function(f){
     var el=document.getElementById('f-'+f);if(el)el.value=c[f]||'';
   });
-  // Formater la date métré si c'est un objet Date
+  // Date métré : afficher en clair
   var metEl = document.getElementById('f-metres');
-  if (metEl && c.metres) metEl.value = formatDateMetre(c.metres);
-
+  if (metEl) {
+    if (c.metres) {
+      metEl.value = formatDateMetre(c.metres);
+    } else {
+      metEl.value = '';
+    }
+  }
   var pvEl = document.getElementById('f-pvChantier');
   if (pvEl) pvEl.checked = (c.pvChantier||'').toUpperCase() === 'OUI';
   var dpEl = document.getElementById('f-datePose');
@@ -838,16 +857,25 @@ function closeOut(e){if(e.target.id==='overlay')closeModal();}
 // ══════════════════════════════════════════════════════════
 async function sauvegarder() {
   var c={};
-  ['client','metres','devis','devisTTC','fournisseur','commande','arc','commentaireARC','prevLivraison','statutLivraison','statutPose'].forEach(function(f){
+  ['client','devis','devisTTC','fournisseur','commande','arc','commentaireARC','prevLivraison','statutLivraison','statutPose'].forEach(function(f){
     var el=document.getElementById('f-'+f);if(el)c[f]=el.value.trim();
   });
+  // Convertir la date métré en format ISO pour Google Sheets
+  var metresRaw = document.getElementById('f-metres');
+  if (metresRaw) {
+    var valSaisie = metresRaw.value.trim();
+    if (valSaisie) {
+      var dateISO = convertirEnDateISO(valSaisie);
+      c.metres = dateISO || valSaisie;
+    } else {
+      c.metres = '';
+    }
+  }
   var pvEl = document.getElementById('f-pvChantier');
   c.pvChantier = pvEl && pvEl.checked ? 'OUI' : 'NON';
   var dpEl2 = document.getElementById('f-datePose');
   c.datePose = dpEl2 ? dpEl2.value.trim() : '';
-
   if(!c.client){alert('⚠️ Le nom du client est obligatoire.');return;}
-
   var nouveauTexte = document.getElementById('f-commentaire-nouveau').value.trim();
   var historique = document.getElementById('f-commentaire-historique').value || '';
   var commentaireFinal = historique;
@@ -857,12 +885,10 @@ async function sauvegarder() {
     commentaireFinal = historique ? historique + '\n' + ligneAjout : ligneAjout;
   }
   c.commentaire = commentaireFinal;
-
   var btnSave = document.querySelector('.modal-footer .btn-primary');
   var oldTxt = btnSave ? btnSave.textContent : '';
   if (btnSave) { btnSave.disabled = true; btnSave.textContent = '⏳ Enregistrement...'; }
   document.getElementById('saving-msg').classList.add('active');
-
   try {
     var res;
     if(editLigne>0){
@@ -880,15 +906,11 @@ async function sauvegarder() {
     } else {
       res = await apiPost({action:'ajouter',commande:c});
     }
-
     if (!res || !res.ok) throw new Error(res && res.error ? res.error : 'Réponse invalide du serveur');
-
     closeModal();
     afficherToast('ok','✅','Enregistré', editLigne>0?'Commande modifiée':'Nouvelle commande créée', 2500);
-
     viderCache();
     await charger(true);
-
   } catch(e) {
     console.error('Erreur sauvegarde:', e);
     afficherToast('urgent','❌','Erreur enregistrement', e.message, 8000);
@@ -954,7 +976,7 @@ function renderAlertes() {
 }
 
 // ══════════════════════════════════════════════════════════
-//  DASHBOARD
+//  DASHBOARD — avec date métré
 // ══════════════════════════════════════════════════════════
 function renderDashboard() {
   var byFou={}, ac={u:0,w:0,o:0};
@@ -1009,6 +1031,8 @@ function renderDashboard() {
       hC += '<div><span style="font-weight:700;font-size:14px;">' + h(c.client) + '</span>';
       if(c.fournisseur) hC += ' <span style="font-size:11px;color:var(--texte2);">· ' + h(c.fournisseur) + '</span>';
       hC += '</div><div style="display:flex;gap:6px;flex-wrap:wrap;">';
+      // DATE MÉTRÉ (AJOUTÉE)
+      if(c.metres) hC += '<span style="background:#FFF3E0;color:var(--orange);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;">📋 Métré : ' + h(formatDateMetre(c.metres)) + '</span>';
       if(c.datePose) hC += '<span style="background:var(--bleu-bg);color:var(--bleu);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;">📅 ' + h(c.datePose) + '</span>';
       hC += pvFait ? '<span style="background:var(--vert-bg);color:var(--vert);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;">✓ PV Fait</span>' : '<span style="background:#FFEBEE;color:var(--rouge);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;">✗ PV Manquant</span>';
       hC += '</div></div><div style="padding:10px 14px;">';
@@ -1048,7 +1072,7 @@ function renderDashboard() {
     '<div style="text-align:center;padding:14px;background:var(--vert-bg);border-radius:8px;"><div style="font-size:28px;font-weight:700;color:var(--vert);">' + pvFaits + '</div><div style="font-size:11px;color:var(--texte2);">PV Faits</div></div>' +
     '<div style="text-align:center;padding:14px;background:#FFF3E0;border-radius:8px;"><div style="font-size:28px;font-weight:700;color:var(--orange);">' + pvManquants + '</div><div style="font-size:11px;color:var(--texte2);">PV Manquants</div></div>' +
     '</div></div>' +
-    '<div class="dash-card" style="grid-column:1/-1;"><h4>📋 Suivi chantiers</h4>' + hC + '</div>';
+    '<div class="dash-card" style="grid-column:1/-1;"><h4>📋 Suivi chantiers — Date métré · Date pose · Remarques · PV</h4>' + hC + '</div>';
 }
 
 // ══════════════════════════════════════════════════════════
@@ -1100,7 +1124,6 @@ function renderSuiviPose() {
     if (!isNaN(d)) return getSemaine(d) === sem;
     return false;
   }
-
   var POSES_FINIES = ['Terminé','Termine','Posé','Pose','TERMINE','POSE'];
   var items = commandes.filter(function(c){
     if ((c.commentaireARC||'').toUpperCase() === 'ANNULER') return false;
@@ -1109,12 +1132,10 @@ function renderSuiviPose() {
   }).slice().sort(function(a,b){
     return (b.datePose||'').localeCompare(a.datePose||'');
   });
-
   if (!items.length) {
     document.getElementById('suivipose-content').innerHTML = '<div class="empty-state"><p>Aucun chantier actif cette semaine.</p></div>';
     return;
   }
-
   var html = '';
   items.forEach(function(c) {
     var pvFait = (c.pvChantier||'').toUpperCase() === 'OUI';
@@ -1133,6 +1154,11 @@ function renderSuiviPose() {
     html += '<br><span style="font-size:11px;font-weight:700;background:'+(pvFait?'var(--vert-bg)':'#FFEBEE')+';color:'+(pvFait?'var(--vert)':'var(--rouge)')+';padding:2px 8px;border-radius:5px;display:inline-block;margin-top:4px;">'+(pvFait?'✓ PV Fait':'✗ PV Manquant')+'</span>';
     html += '</div></div>';
     html += '<div class="suivipose-body">';
+    if (c.metres) {
+      html += '<div style="margin-bottom:10px;padding:8px 12px;background:#FFF3E0;border-radius:8px;border-left:3px solid var(--orange);">';
+      html += '<div style="font-size:11px;font-weight:700;color:var(--orange);margin-bottom:4px;">📋 DATE MÉTRÉ</div>';
+      html += '<div style="font-size:12px;">'+h(formatDateMetre(c.metres))+'</div></div>';
+    }
     if (c.commentaire) {
       html += '<div style="margin-bottom:10px;padding:8px 12px;background:#FFF3E0;border-radius:8px;border-left:3px solid var(--orange);">';
       html += '<div style="font-size:11px;font-weight:700;color:var(--orange);margin-bottom:4px;">📋 NOTE BUREAU</div>';
@@ -1280,7 +1306,6 @@ function renderPlanning() {
   if (planningSemActuelle === null) planningSemActuelle = getSemNum(new Date());
   var sem = planningSemActuelle;
   document.getElementById('planning-titre').textContent = 'Semaine S' + sem;
-
   var poseurs = [
     {nom:'ANATOLE', key:'poseur_ANATOLE', couleur:'#1565C0'},
     {nom:'ARTIOM',  key:'poseur_ARTIOM',  couleur:'#2E7D32'},
@@ -1288,7 +1313,6 @@ function renderPlanning() {
     {nom:'VINCENT', key:'poseur_VINCENT', couleur:'#6A1B9A'},
     {nom:'LAMRI',   key:'poseur_LAMRI',   couleur:'#00695C'}
   ];
-
   var chantiers = commandes.filter(function(c) {
     var dp = (c.datePose||'').trim();
     if (!dp) return false;
@@ -1298,12 +1322,10 @@ function renderPlanning() {
     if (!isNaN(d)) return getSemNum(d) === sem;
     return false;
   });
-
   if (!chantiers.length) {
     document.getElementById('planning-content').innerHTML = '<div style="text-align:center;padding:48px;color:var(--texte2);"><div style="font-size:48px;margin-bottom:12px;">📅</div><p>Aucune pose planifiée pour la semaine S' + sem + '</p></div>';
     return;
   }
-
   var html = '<div style="display:grid;gap:12px;">';
   chantiers.forEach(function(c) {
     var pvFait = (c.pvChantier||'').toUpperCase() === 'OUI';
@@ -1316,6 +1338,7 @@ function renderPlanning() {
     html += '<div><span style="font-size:16px;font-weight:700;">' + h(c.client) + '</span>';
     if (c.fournisseur) html += ' <span style="font-size:12px;color:var(--texte2);">· ' + h(c.fournisseur) + '</span>';
     html += '</div><div style="display:flex;gap:6px;flex-wrap:wrap;">';
+    if (c.metres) html += '<span style="background:#FFF3E0;color:var(--orange);padding:3px 10px;border-radius:6px;font-size:12px;font-weight:700;">📋 ' + h(formatDateMetre(c.metres)) + '</span>';
     html += '<span style="background:var(--bleu-bg);color:var(--bleu);padding:3px 10px;border-radius:6px;font-size:12px;font-weight:700;">📅 ' + h(c.datePose) + '</span>';
     if (sP) html += '<span style="background:' + sBg + ';color:' + sC + ';padding:3px 10px;border-radius:6px;font-size:12px;font-weight:700;">' + h(sP) + '</span>';
     html += '<span style="background:' + (pvFait?'#E8F5E9':'#FFEBEE') + ';color:' + (pvFait?'#2E7D32':'#D32F2F') + ';padding:3px 10px;border-radius:6px;font-size:12px;font-weight:700;">' + (pvFait?'✓ PV':'✗ PV') + '</span>';
@@ -1553,9 +1576,7 @@ function sauvegarderPrefsNotif() {
 function majBoutonNotif() {
   var btn = document.getElementById('btn-notif');
   if (!btn) return;
-  if (!('Notification' in window)) {
-    btn.textContent = '🔕 N/A'; btn.disabled = true; return;
-  }
+  if (!('Notification' in window)) { btn.textContent = '🔕 N/A'; btn.disabled = true; return; }
   if (Notification.permission === 'denied') {
     btn.textContent = '🔕 Bloqué';
     btn.style.borderColor = 'var(--rouge)';
