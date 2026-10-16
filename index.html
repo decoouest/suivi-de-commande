@@ -181,6 +181,18 @@ textarea{resize:vertical;min-height:70px;}
 .agent-card-actions{display:flex;gap:8px;flex-shrink:0;align-self:flex-start;}
 .agent-card-btn{background:var(--bleu);color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;}
 .agent-card-btn:hover{background:var(--bleu-clair);}
+/* ── MENU MOBILE ─────────────────────────── */
+.menu-burger{display:none;background:none;border:none;font-size:24px;cursor:pointer;color:var(--bleu);padding:6px 10px;border-radius:6px;line-height:1;}
+.menu-burger:hover{background:var(--bleu-bg);}
+.menu-mobile-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:400;animation:fadeIn .2s ease;}
+.menu-mobile-overlay.open{display:flex;}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.menu-mobile-panel{background:#fff;width:280px;max-width:85vw;height:100%;overflow-y:auto;animation:slideInLeft .25s ease;}
+@keyframes slideInLeft{from{transform:translateX(-100%)}to{transform:translateX(0)}}
+.menu-mobile-header{background:var(--bleu);color:#fff;padding:20px 22px;font-size:16px;font-weight:700;display:flex;align-items:center;justify-content:space-between;}
+.menu-mobile-item{display:flex;align-items:center;gap:12px;padding:16px 22px;cursor:pointer;font-size:15px;font-weight:500;border-bottom:1px solid var(--bordure);transition:background .15s;color:var(--texte);}
+.menu-mobile-item:hover{background:var(--bleu-bg);}
+.menu-mobile-item .icon{font-size:22px;width:28px;text-align:center;}
 @media(max-width:900px){
 .sidebar{width:52px;}
 .sidebar .nav-item span,.sidebar-logo span,.sidebar-logo small,.sidebar-footer{display:none;}
@@ -195,10 +207,14 @@ textarea{resize:vertical;min-height:70px;}
 .agent-header-info h2{font-size:16px;}
 }
 @media(max-width:768px){
-.topbar{flex-wrap:wrap;gap:8px;padding:10px 12px;}
-.topbar-title{font-size:16px;width:100%;}
+.sidebar{display:none !important;}
+.main{margin-left:0 !important;}
+.menu-burger{display:inline-flex;align-items:center;justify-content:center;}
+.topbar{flex-wrap:wrap;gap:8px;padding:8px 12px;}
+.topbar-title{flex:1;font-size:15px;}
 .topbar-right{width:100%;justify-content:space-between;gap:6px;flex-wrap:wrap;}
 .topbar-right .btn{font-size:12px;padding:8px 10px;flex:1;min-width:80px;}
+.content{padding:10px 12px;}
 .filters-bar{flex-direction:column;gap:8px;padding:10px;}
 .search-input,.select-filter{width:100%;}
 .filter-badge{flex:1;min-width:70px;text-align:center;font-size:12px;padding:6px 8px;}
@@ -216,17 +232,38 @@ table td:first-child::before{display:none;}
 .col-comment{max-width:none !important;white-space:normal !important;}
 .form-grid{grid-template-columns:1fr;}
 #planning-titre{font-size:14px;}
+.agent-card{flex-direction:column;gap:10px;}
+.agent-card-actions{width:100%;}
+.agent-card-btn{width:100%;}
 }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
 
+<!-- MENU MOBILE (visible uniquement sur téléphone) -->
+<div class="menu-mobile-overlay" id="menu-mobile" onclick="fermerMenuMobile(event)">
+  <div class="menu-mobile-panel" onclick="event.stopPropagation()">
+    <div class="menu-mobile-header">
+      <span>📋 Navigation</span>
+      <button onclick="fermerMenuMobile()" style="background:none;border:none;font-size:22px;cursor:pointer;color:#fff;">✕</button>
+    </div>
+    <div class="menu-mobile-item" onclick="menuMobileGo('suivi')"><span class="icon">📋</span> Commandes</div>
+    <div class="menu-mobile-item" onclick="menuMobileGo('alertes')"><span class="icon">🔔</span> Alertes</div>
+    <div class="menu-mobile-item" onclick="menuMobileGo('agent')"><span class="icon">🤖</span> Agent IA</div>
+    <div class="menu-mobile-item" onclick="menuMobileGo('metre')"><span class="icon">📅</span> Dates Métré</div>
+    <div class="menu-mobile-item" onclick="menuMobileGo('dashboard')"><span class="icon">📊</span> Dashboard</div>
+    <div class="menu-mobile-item" onclick="menuMobileGo('suivipose')"><span class="icon">🔨</span> Suivi Pose</div>
+    <div class="menu-mobile-item" onclick="menuMobileGo('planning')"><span class="icon">📅</span> Planning</div>
+    <div class="menu-mobile-item" onclick="menuMobileGo('config')"><span class="icon">⚙️</span> Config</div>
+  </div>
+</div>
+
 <aside class="sidebar">
   <div class="sidebar-logo">
     <span>ECO OUEST</span>
     <small>Suivi Commandes</small>
-    <div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v6.5</div>
+    <div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v6.6</div>
   </div>
   <nav class="nav">
     <div class="nav-item active" id="nav-suivi" onclick="showView('suivi')"><span class="icon">📋</span><span>Commandes</span></div>
@@ -238,11 +275,12 @@ table td:first-child::before{display:none;}
     <div class="nav-item" id="nav-planning" onclick="showView('planning')"><span class="icon">📅</span><span>Planning</span></div>
     <div class="nav-item" id="nav-config" onclick="showView('config')"><span class="icon">⚙️</span><span>Config</span></div>
   </nav>
-  <div class="sidebar-footer">v6.5</div>
+  <div class="sidebar-footer">v6.6</div>
 </aside>
 
 <div class="main">
   <div class="topbar">
+    <button class="menu-burger" id="menu-burger" onclick="ouvrirMenuMobile()" title="Menu">☰</button>
     <span class="topbar-title" id="topbar-title">Suivi des commandes</span>
     <div class="topbar-right">
       <span class="sync-info"><span class="sync-dot" id="sync-dot"></span><span id="sync-label">Chargement...</span></span>
@@ -360,9 +398,9 @@ table td:first-child::before{display:none;}
       <div id="suivipose-content"></div>
     </div>
     <div id="view-planning" class="view">
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
         <button onclick="planningSemaine(-1)" style="background:var(--bleu);color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:14px;font-weight:600;cursor:pointer;">← Sem. préc.</button>
-        <div id="planning-titre" style="font-size:16px;font-weight:700;flex:1;text-align:center;"></div>
+        <div id="planning-titre" style="font-size:16px;font-weight:700;flex:1;text-align:center;min-width:100px;"></div>
         <button onclick="planningSemaine(1)" style="background:var(--bleu);color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:14px;font-weight:600;cursor:pointer;">Sem. suiv. →</button>
         <button onclick="planningSemaine(0)" style="background:var(--gris-bg);color:var(--texte);border:1px solid var(--bordure);border-radius:8px;padding:8px 14px;font-size:14px;font-weight:600;cursor:pointer;">Aujourd'hui</button>
       </div>
@@ -459,8 +497,8 @@ var sortAsc = false;
 var alertFilter = 'all';
 var editLigne = -1;
 var CACHE_DUREE = 60 * 1000;
-var CACHE_KEY = 'eco-ouest-cache-v65';
-var CACHE_TIME_KEY = 'eco-ouest-cache-time-v65';
+var CACHE_KEY = 'eco-ouest-cache-v66';
+var CACHE_TIME_KEY = 'eco-ouest-cache-time-v66';
 var dernierRapportAgent = null;
 
 // ══════════════════════════════════════════════════════════
@@ -555,6 +593,23 @@ function parseDatePose(dp) {
 }
 
 // ══════════════════════════════════════════════════════════
+//  MENU MOBILE
+// ══════════════════════════════════════════════════════════
+function ouvrirMenuMobile() {
+  var m = document.getElementById('menu-mobile');
+  if (m) m.classList.add('open');
+}
+function fermerMenuMobile(e) {
+  if (e && e.stopPropagation) e.stopPropagation();
+  var m = document.getElementById('menu-mobile');
+  if (m) m.classList.remove('open');
+}
+function menuMobileGo(v) {
+  fermerMenuMobile();
+  showView(v);
+}
+
+// ══════════════════════════════════════════════════════════
 //  ALERTE
 // ══════════════════════════════════════════════════════════
 function alerte(c) {
@@ -632,7 +687,7 @@ function getWeekNumber(d) {
 function aClass(n){return n===0?'alerte-ok':n===1?'alerte-jaune':n===2?'alerte-orange':n===3?'alerte-rouge':'';}
 
 // ══════════════════════════════════════════════════════════
-//  API POST — TIMEOUT AUGMENTÉ À 180s (3 min) pour l'Agent IA
+//  API POST — Timeout 180s pour l'Agent IA
 // ══════════════════════════════════════════════════════════
 async function apiPost(body, tentative) {
   tentative = tentative || 1;
@@ -640,7 +695,6 @@ async function apiPost(body, tentative) {
   var requeteEnvoyee = false;
   try {
     var controller = new AbortController();
-    // ⭐ TIMEOUT 180 SECONDES (3 minutes) pour l'Agent IA
     var timeoutId = setTimeout(function(){ controller.abort(); }, 180000);
     requeteEnvoyee = true;
     var r = await fetch(WEBAPP, {
@@ -667,7 +721,6 @@ async function apiPost(body, tentative) {
                           e.name === 'TypeError' ||
                           e.message.indexOf('Failed to fetch') !== -1;
     var nePasRetenter = msg.indexOf('ne pas retenter') !== -1;
-    // Ne PAS retry pour analyserAgent (analyse IA coûteuse)
     if (body && body.action === 'analyserAgent') nePasRetenter = true;
 
     if (estErreurReseau && !nePasRetenter && tentative < MAX_TENTATIVES) {
@@ -921,7 +974,6 @@ async function lancerAnalyse() {
   icon.textContent = '⏳';
   text.textContent = 'Analyse en cours...';
 
-  // Afficher le loader avec estimation de temps
   content.innerHTML =
     '<div class="agent-loader">' +
       '<div class="spinner"></div>' +
@@ -968,7 +1020,6 @@ function afficherRapportAgent(rapport, dureeSecondes) {
   var dateEl = document.getElementById('agent-date');
   if (dateEl && rapport.date) dateEl.textContent = 'Dernière analyse : ' + rapport.date;
 
-  // Pas de dossiers
   if (!rapport.phrases || rapport.phrases.length === 0) {
     content.innerHTML =
       '<div class="empty-state">' +
@@ -979,17 +1030,14 @@ function afficherRapportAgent(rapport, dureeSecondes) {
     return;
   }
 
-  // Compter par sévérité
   var nbU = rapport.nbUrgents || 0;
   var nbA = rapport.nbAttention || 0;
   var nbI = rapport.nbInfo || 0;
 
-  // Trier les phrases par sévérité
   var phrasesTriees = rapport.phrases.slice().sort(function(a,b){ return (b.severite||0) - (a.severite||0); });
 
   var html = '';
 
-  // Stats
   html += '<div class="agent-stats">';
   html += '<div class="agent-stat"><div class="agent-stat-value" style="color:var(--rouge);">' + nbU + '</div><div class="agent-stat-label">🔴 Urgents</div></div>';
   html += '<div class="agent-stat"><div class="agent-stat-value" style="color:var(--orange);">' + nbA + '</div><div class="agent-stat-label">🟠 Attention</div></div>';
@@ -997,20 +1045,17 @@ function afficherRapportAgent(rapport, dureeSecondes) {
   html += '<div class="agent-stat"><div class="agent-stat-value" style="color:var(--bleu);">' + rapport.nbTotal + '</div><div class="agent-stat-label">📋 Total</div></div>';
   html += '</div>';
 
-  // Résumé global (généré par l'IA)
   if (rapport.resumeGlobal && rapport.resumeGlobal.indexOf('⚠️') !== 0) {
     html += '<div class="agent-resume"><strong>💡 Synthèse de l\'IA :</strong><br>' + h(rapport.resumeGlobal) + '</div>';
   } else if (rapport.resumeGlobal) {
     html += '<div class="agent-resume" style="border-left-color:var(--orange);background:#FFF3E0;">' + h(rapport.resumeGlobal) + '</div>';
   }
 
-  // Info source
   var sourceInfo = rapport.source === 'gemini'
     ? '✨ Analyse générée par Gemini IA (' + (rapport.modeleUtilise || 'gemini') + ') · ' + dureeSecondes + 's'
     : '⚠️ Analyse par règles (IA indisponible) · ' + dureeSecondes + 's';
   html += '<div style="font-size:11px;color:var(--texte2);margin-bottom:18px;font-style:italic;">' + h(sourceInfo) + '</div>';
 
-  // Section URGENT
   var urgentes = phrasesTriees.filter(function(p){ return p.severite === 3; });
   if (urgentes.length) {
     html += '<div class="agent-section"><div class="agent-section-title" style="color:var(--rouge);">🔴 Action immédiate (' + urgentes.length + ')</div>';
@@ -1018,7 +1063,6 @@ function afficherRapportAgent(rapport, dureeSecondes) {
     html += '</div>';
   }
 
-  // Section ATTENTION
   var attentions = phrasesTriees.filter(function(p){ return p.severite === 2; });
   if (attentions.length) {
     html += '<div class="agent-section"><div class="agent-section-title" style="color:var(--orange);">🟠 À traiter rapidement (' + attentions.length + ')</div>';
@@ -1026,7 +1070,6 @@ function afficherRapportAgent(rapport, dureeSecondes) {
     html += '</div>';
   }
 
-  // Section INFO
   var infos = phrasesTriees.filter(function(p){ return p.severite === 1; });
   if (infos.length) {
     html += '<div class="agent-section"><div class="agent-section-title" style="color:#B7860B;">🟡 À surveiller (' + infos.length + ')</div>';
@@ -1431,7 +1474,6 @@ function showView(v) {
   if (v === 'dashboard')  renderDashboard();
   if (v === 'suivipose')  { renderSuiviPose(); setTimeout(traduireCommentairesPoseurs, 500); }
   if (v === 'planning')   renderPlanning();
-  if (v === 'agent')      { /* rien à faire : le contenu reste */ }
 }
 
 // ══════════════════════════════════════════════════════════
