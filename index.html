@@ -35,6 +35,7 @@ body{font-family:"Inter",sans-serif;background:#F0F4F8;color:var(--texte);min-he
 .btn-outline{background:#fff;color:var(--bleu);border:1.5px solid var(--bleu);}.btn-outline:hover{background:var(--bleu-bg);}
 .btn-danger{background:var(--rouge);color:#fff;}
 .btn-sm{padding:5px 11px;font-size:12px;}
+.btn:disabled{opacity:.5;cursor:not-allowed;}
 .content{padding:12px 28px;flex:1;}
 .view{display:none;}.view.active{display:block;}
 .loader-bar{height:3px;background:var(--bleu-bg);margin-bottom:12px;border-radius:2px;overflow:hidden;display:none;}
@@ -145,6 +146,41 @@ textarea{resize:vertical;min-height:70px;}
 .toast-title{font-size:13px;font-weight:700;margin-bottom:3px;}
 .toast-msg{font-size:12px;color:var(--texte2);}
 @keyframes slideIn{from{transform:translateX(120%);opacity:0}to{transform:translateX(0);opacity:1}}
+/* AGENT */
+.agent-header{background:linear-gradient(135deg,#1565C0,#0D47A1);color:#fff;border-radius:12px;padding:22px 28px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;}
+.agent-header-info h2{font-size:20px;font-weight:800;margin-bottom:4px;display:flex;align-items:center;gap:10px;}
+.agent-header-info p{font-size:13px;opacity:.85;}
+.agent-header-date{font-size:12px;opacity:.7;margin-top:4px;}
+.agent-btn{background:#fff;color:var(--bleu);border:none;border-radius:8px;padding:10px 20px;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:8px;font-family:inherit;}
+.agent-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,0,0,.2);}
+.agent-btn:disabled{opacity:.6;cursor:wait;transform:none;}
+.agent-loader{text-align:center;padding:60px 20px;color:var(--texte2);}
+.agent-loader .spinner{display:inline-block;width:60px;height:60px;border:4px solid var(--bordure);border-top-color:var(--bleu);border-radius:50%;animation:spin 1s linear infinite;margin-bottom:16px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.agent-loader .loader-msg{font-size:15px;font-weight:600;color:var(--bleu);}
+.agent-loader .loader-sub{font-size:12px;margin-top:6px;}
+.agent-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:16px;}
+.agent-stat{background:#fff;border-radius:10px;padding:14px 16px;border:1px solid var(--bordure);text-align:center;}
+.agent-stat-value{font-size:26px;font-weight:800;line-height:1;}
+.agent-stat-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--texte2);margin-top:4px;}
+.agent-resume{background:#F5F7FA;border-left:4px solid var(--bleu);border-radius:8px;padding:14px 18px;margin-bottom:18px;font-size:14px;line-height:1.6;color:var(--texte);}
+.agent-resume strong{color:var(--bleu);}
+.agent-section{margin-bottom:24px;}
+.agent-section-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.agent-card{background:#fff;border-radius:10px;border:1px solid var(--bordure);border-left:4px solid;padding:16px 20px;margin-bottom:10px;display:flex;align-items:flex-start;gap:16px;transition:box-shadow .15s;}
+.agent-card:hover{box-shadow:0 4px 14px rgba(0,0,0,.08);}
+.agent-card.sev-3{border-left-color:var(--rouge);}
+.agent-card.sev-2{border-left-color:var(--orange);}
+.agent-card.sev-1{border-left-color:var(--jaune);}
+.agent-card-icon{font-size:22px;flex-shrink:0;margin-top:2px;}
+.agent-card-content{flex:1;}
+.agent-card-client{font-weight:700;font-size:15px;color:var(--texte);margin-bottom:6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.agent-card-ligne{font-size:11px;font-weight:700;color:var(--texte2);background:var(--gris-bg);padding:2px 8px;border-radius:4px;}
+.agent-card-texte{font-size:13px;line-height:1.6;color:var(--texte);margin-bottom:8px;}
+.agent-card-action{display:inline-block;background:var(--bleu-bg);color:var(--bleu);padding:4px 12px;border-radius:6px;font-size:12px;font-weight:700;}
+.agent-card-actions{display:flex;gap:8px;flex-shrink:0;align-self:flex-start;}
+.agent-card-btn{background:var(--bleu);color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;}
+.agent-card-btn:hover{background:var(--bleu-clair);}
 @media(max-width:900px){
 .sidebar{width:52px;}
 .sidebar .nav-item span,.sidebar-logo span,.sidebar-logo small,.sidebar-footer{display:none;}
@@ -155,6 +191,8 @@ textarea{resize:vertical;min-height:70px;}
 .nav-item .icon{font-size:20px;}
 .dash-grid{grid-template-columns:1fr;}
 .form-grid{grid-template-columns:1fr;}
+.agent-header{padding:16px 18px;}
+.agent-header-info h2{font-size:16px;}
 }
 @media(max-width:768px){
 .topbar{flex-wrap:wrap;gap:8px;padding:10px 12px;}
@@ -188,18 +226,19 @@ table td:first-child::before{display:none;}
   <div class="sidebar-logo">
     <span>ECO OUEST</span>
     <small>Suivi Commandes</small>
-    <div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v6.3</div>
+    <div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v6.5</div>
   </div>
   <nav class="nav">
     <div class="nav-item active" id="nav-suivi" onclick="showView('suivi')"><span class="icon">📋</span><span>Commandes</span></div>
     <div class="nav-item" id="nav-alertes" onclick="showView('alertes')"><span class="icon">🔔</span><span>Alertes</span></div>
+    <div class="nav-item" id="nav-agent" onclick="showView('agent')"><span class="icon">🤖</span><span>Agent IA</span></div>
     <div class="nav-item" id="nav-metre" onclick="showView('metre')"><span class="icon">📅</span><span>Dates Métré</span></div>
     <div class="nav-item" id="nav-dashboard" onclick="showView('dashboard')"><span class="icon">📊</span><span>Dashboard</span></div>
     <div class="nav-item" id="nav-suivipose" onclick="showView('suivipose')"><span class="icon">🔨</span><span>Suivi Pose</span></div>
     <div class="nav-item" id="nav-planning" onclick="showView('planning')"><span class="icon">📅</span><span>Planning</span></div>
     <div class="nav-item" id="nav-config" onclick="showView('config')"><span class="icon">⚙️</span><span>Config</span></div>
   </nav>
-  <div class="sidebar-footer">v6.3</div>
+  <div class="sidebar-footer">v6.5</div>
 </aside>
 
 <div class="main">
@@ -261,6 +300,28 @@ table td:first-child::before{display:none;}
     </div>
 
     <div id="view-alertes" class="view"><div id="alertes-content"></div></div>
+
+    <div id="view-agent" class="view">
+      <div class="agent-header">
+        <div class="agent-header-info">
+          <h2>🤖 Agent IA de suivi</h2>
+          <p>Analyse intelligente de vos dossiers bloqués et SAV</p>
+          <div class="agent-header-date" id="agent-date">Dernière analyse : —</div>
+        </div>
+        <button class="agent-btn" id="btn-analyser" onclick="lancerAnalyse()">
+          <span id="btn-analyser-icon">✨</span>
+          <span id="btn-analyser-text">Analyser maintenant</span>
+        </button>
+      </div>
+      <div id="agent-content">
+        <div class="empty-state">
+          <div style="font-size:64px;margin-bottom:16px;">🤖</div>
+          <h3 style="font-size:18px;font-weight:700;margin-bottom:8px;color:var(--texte);">Agent IA prêt</h3>
+          <p style="font-size:14px;line-height:1.7;max-width:560px;margin:0 auto;">Cliquez sur <strong>« Analyser maintenant »</strong> pour lancer l'analyse intelligente de vos dossiers.</p>
+          <p style="font-size:13px;line-height:1.7;max-width:560px;margin:16px auto 0;color:var(--orange);">⏱️ L'analyse peut prendre de 10 secondes à 2 minutes selon la charge de l'IA.</p>
+        </div>
+      </div>
+    </div>
 
     <div id="view-metre" class="view">
       <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
@@ -398,20 +459,17 @@ var sortAsc = false;
 var alertFilter = 'all';
 var editLigne = -1;
 var CACHE_DUREE = 60 * 1000;
-var CACHE_KEY = 'eco-ouest-cache-v63';
-var CACHE_TIME_KEY = 'eco-ouest-cache-time-v63';
+var CACHE_KEY = 'eco-ouest-cache-v65';
+var CACHE_TIME_KEY = 'eco-ouest-cache-time-v65';
+var dernierRapportAgent = null;
 
 // ══════════════════════════════════════════════════════════
-//  HELPERS — CORRECTION BUG #4 (str) + #7 (échappement ")
+//  HELPERS
 // ══════════════════════════════════════════════════════════
-
-// Convertit tout en string sans planter (nombres, null, undefined)
 function str(s) {
   if (s === null || s === undefined) return '';
   return String(s);
 }
-
-// Échappe pour HTML (y compris guillemets doubles)
 function h(s) {
   return str(s)
     .replace(/&/g,'&amp;')
@@ -419,8 +477,6 @@ function h(s) {
     .replace(/>/g,'&gt;')
     .replace(/"/g,'&quot;');
 }
-
-// Échappe pour attribut HTML (équivalent h)
 function escAttr(s) { return h(s); }
 
 function afficherToast(type, icon, titre, msg, duree) {
@@ -435,12 +491,10 @@ function afficherToast(type, icon, titre, msg, duree) {
 }
 
 // ══════════════════════════════════════════════════════════
-//  DATES MÉTRÉ — CORRECTION BUG #2 (décalage d'un an) + #6 (parse date)
+//  DATES
 // ══════════════════════════════════════════════════════════
-
 function formatDateMetre(val) {
   if (!val) return '';
-  // Si c'est déjà une string non-date, la retourner telle quelle
   if (typeof val === 'string' && !/GMT|T\d{2}:/.test(val) && !/^\d{4}-\d{2}-\d{2}/.test(val)) {
     return str(val).trim();
   }
@@ -451,14 +505,11 @@ function formatDateMetre(val) {
   } catch(e) { return str(val).trim(); }
 }
 
-// Convertit une string en ISO (YYYY-MM-DD) SANS deviner l'année suivante
 function convertirEnDateISO(s) {
   if (!s) return '';
   s = str(s).trim();
   if (!s) return '';
-  // Déjà ISO
   if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
-  // DD/MM/YYYY, DD-MM-YYYY, DD.MM.YYYY
   var m1 = s.match(/^(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{2,4})$/);
   if (m1) {
     var d = m1[1].padStart(2,'0');
@@ -467,38 +518,28 @@ function convertirEnDateISO(s) {
     if (y.length === 2) y = '20' + y;
     return y + '-' + mo + '-' + d;
   }
-  // Date française "lundi 31 août" / "31 août" / "31 aout"
-  var moisFR = {
-    'janvier':'01','fevrier':'02','février':'02','mars':'03','avril':'04',
-    'mai':'05','juin':'06','juillet':'07','aout':'08','août':'08',
-    'septembre':'09','octobre':'10','novembre':'11','decembre':'12','décembre':'12'
-  };
+  var moisFR = {'janvier':'01','fevrier':'02','février':'02','mars':'03','avril':'04','mai':'05','juin':'06','juillet':'07','aout':'08','août':'08','septembre':'09','octobre':'10','novembre':'11','decembre':'12','décembre':'12'};
   var m3 = s.toLowerCase().match(/(\d{1,2})[,\s]+([a-zéèû]+)/);
   if (m3) {
     var jour = m3[1].padStart(2,'0');
     var mois = moisFR[m3[2]];
     if (mois) {
-      // CORRECTION BUG #2 : TOUJOURS utiliser l'année en cours (pas de deviner)
       var annee = new Date().getFullYear();
       return annee + '-' + mois + '-' + jour;
     }
   }
-  // Si on n'a pas pu parser, retourner vide
   return '';
 }
 
-// Parse une date de pose (S26, DD/MM/YYYY, etc.) — CORRECTION BUG #6
 function parseDatePose(dp) {
   if (!dp) return null;
   dp = str(dp).trim();
   if (!dp) return null;
-  // Format "S26" ou "S 26" → retourner un objet {type:'semaine', num:26}
   var mSem = dp.match(/^S\s*0*(\d{1,2})$/i);
   if (mSem) {
     var num = parseInt(mSem[1], 10);
     if (num >= 1 && num <= 53) return { type:'semaine', num: num };
   }
-  // Format DD/MM/YYYY ou DD-MM-YYYY
   var mDate = dp.match(/^(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{2,4})$/);
   if (mDate) {
     var d = parseInt(mDate[1], 10);
@@ -508,7 +549,6 @@ function parseDatePose(dp) {
     var date = new Date(y, mo, d);
     if (!isNaN(date.getTime())) return { type:'date', date: date };
   }
-  // Format ISO
   var dISO = new Date(dp);
   if (!isNaN(dISO.getTime())) return { type:'date', date: dISO };
   return null;
@@ -533,7 +573,7 @@ function alerte(c) {
 }
 
 // ══════════════════════════════════════════════════════════
-//  PV — CORRECTION BUG #11 (mise à jour cache)
+//  PV
 // ══════════════════════════════════════════════════════════
 function pvBadge(val, ligne) {
   var fait = val && str(val).toUpperCase() === 'OUI';
@@ -555,7 +595,6 @@ async function togglePV(ligne, checked) {
     var r = await apiPost({action:'modifier', ligne:ligne, champs:{16: val}});
     if (!r || !r.ok) throw new Error(r && r.error ? r.error : 'Pas de réponse');
     afficherToast('ok','✅','PV mis à jour','Ligne '+ligne+' → '+val, 2000);
-    // CORRECTION BUG #11 : mettre à jour le cache
     sauvegarderCache(commandes);
   } catch(e) {
     if (c) c.pvChantier = ancien;
@@ -565,7 +604,7 @@ async function togglePV(ligne, checked) {
 }
 
 // ══════════════════════════════════════════════════════════
-//  SEMAINE — CORRECTION BUG #14 (S52 → S1) + #6 (dates)
+//  SEMAINE
 // ══════════════════════════════════════════════════════════
 function semaineBadge(s) {
   if (!s || !str(s).trim()) return '<span style="color:#ccc">—</span>';
@@ -593,18 +632,16 @@ function getWeekNumber(d) {
 function aClass(n){return n===0?'alerte-ok':n===1?'alerte-jaune':n===2?'alerte-orange':n===3?'alerte-rouge':'';}
 
 // ══════════════════════════════════════════════════════════
-//  API POST — CORRECTION BUG #3 (retry sur doublon)
+//  API POST — TIMEOUT AUGMENTÉ À 180s (3 min) pour l'Agent IA
 // ══════════════════════════════════════════════════════════
-// Le retry n'est autorisé QUE si la requête n'a jamais été envoyée
-// (erreur réseau avant envoi). Si on a une réponse (même 500), on ne retry PAS.
 async function apiPost(body, tentative) {
   tentative = tentative || 1;
   var MAX_TENTATIVES = 2;
   var requeteEnvoyee = false;
   try {
     var controller = new AbortController();
-    var timeoutId = setTimeout(function(){ controller.abort(); }, 30000);
-    // Marquer comme envoyée avant le fetch
+    // ⭐ TIMEOUT 180 SECONDES (3 minutes) pour l'Agent IA
+    var timeoutId = setTimeout(function(){ controller.abort(); }, 180000);
     requeteEnvoyee = true;
     var r = await fetch(WEBAPP, {
       method:'POST',
@@ -614,7 +651,6 @@ async function apiPost(body, tentative) {
       signal: controller.signal
     });
     clearTimeout(timeoutId);
-    // Si on a une réponse (même erreur HTTP), on la traite SANS retry
     if (!r.ok) {
       var errText = await r.text().catch(function(){return '';});
       throw new Error('HTTP ' + r.status + ' — ne pas retenter');
@@ -626,14 +662,13 @@ async function apiPost(body, tentative) {
     try { return JSON.parse(texte); }
     catch(parseErr) { throw new Error('Réponse JSON invalide — ne pas retenter'); }
   } catch(e) {
-    var msg = e.name === 'AbortError' ? 'Délai dépassé (30s)' : e.message;
-    // CORRECTION BUG #3 : ne retenter QUE si erreur réseau avant envoi
+    var msg = e.name === 'AbortError' ? 'Délai dépassé (3 min)' : e.message;
     var estErreurReseau = !requeteEnvoyee ||
                           e.name === 'TypeError' ||
-                          e.message.indexOf('Failed to fetch') !== -1 ||
-                          e.message.indexOf('NetworkError') !== -1;
-    // Si le message contient "ne pas retenter", c'est une réponse du serveur → pas de retry
+                          e.message.indexOf('Failed to fetch') !== -1;
     var nePasRetenter = msg.indexOf('ne pas retenter') !== -1;
+    // Ne PAS retry pour analyserAgent (analyse IA coûteuse)
+    if (body && body.action === 'analyserAgent') nePasRetenter = true;
 
     if (estErreurReseau && !nePasRetenter && tentative < MAX_TENTATIVES) {
       await new Promise(function(res){ setTimeout(res, 1500); });
@@ -779,7 +814,6 @@ function renderKPI() {
 
 // ══════════════════════════════════════════════════════════
 //  TABLEAU PRINCIPAL
-//  CORRECTIONS : #4 (str), #5 (📦), #7 (échappement), #9 (SAV)
 // ══════════════════════════════════════════════════════════
 function renderTable() {
   var q=str(document.getElementById('search').value).toLowerCase();
@@ -800,7 +834,6 @@ function renderTable() {
   if(alertFilter==='warn')rows=rows.filter(function(c){return c._a.n>=1&&c._a.n<=2;});
   if(alertFilter==='ok')rows=rows.filter(function(c){return c._a.n===0;});
 
-  // CORRECTION BUG #9 : SAV uniquement sur les statuts, pas le nom client
   function estSAV(c) {
     var sP = str(c.statutPose).trim();
     var sL = str(c.statutLivraison).trim();
@@ -833,7 +866,6 @@ function renderTable() {
     var sL=c.statutLivraison?'<span class="badge '+(c.statutLivraison==='Livré'?'badge-ok':c.statutLivraison==='SAV'?'badge-urgent':'badge-info')+'">'+h(c.statutLivraison)+'</span>':'—';
     var sP=c.statutPose?'<span class="badge '+(c.statutPose==='Terminé'?'badge-ok':c.statutPose==='SAV'?'badge-urgent':'badge-info')+'">'+h(c.statutPose)+'</span>':'—';
     var extra=a.t.indexOf(' | ')!==-1?'<br><span style="font-size:10px;color:var(--texte2);">+'+(a.t.split(' | ').length-1)+' autre(s)</span>':'';
-    // CORRECTION BUG #5 : clic 📦 — on passe juste le numéro de ligne
     var objetBadge = c.objetCommande
       ? '<span style="border-bottom:2px dotted var(--bleu);cursor:pointer;" onclick="afficherObjetParLigne(event,'+c.ligne+')">'+h(c.arc||'—')+' 📦</span>'
       : h(c.arc||'—');
@@ -861,7 +893,6 @@ function renderTable() {
 
 function sortBy(col){if(sortCol===col)sortAsc=!sortAsc;else{sortCol=col;sortAsc=true;}renderTable();}
 
-// CORRECTION BUG #13 : surbrillance SAV / Non commandé
 function setFilter(f){
   alertFilter=f;
   ['all','urgent','warn','ok'].forEach(function(k){document.getElementById('fb-'+k).classList.toggle('active',k===f);});
@@ -870,12 +901,172 @@ function setFilter(f){
   renderTable();
 }
 
-// CORRECTION BUG #5 : ouverture objet via numéro de ligne
 function afficherObjetParLigne(e, ligne) {
   if (e) e.stopPropagation();
   var c = commandes.find(function(x){ return x.ligne === ligne; });
   if (!c || !c.objetCommande) return;
   afficherObjet(null, c.objetCommande);
+}
+
+// ══════════════════════════════════════════════════════════
+//  🤖 AGENT IA
+// ══════════════════════════════════════════════════════════
+async function lancerAnalyse() {
+  var btn = document.getElementById('btn-analyser');
+  var icon = document.getElementById('btn-analyser-icon');
+  var text = document.getElementById('btn-analyser-text');
+  var content = document.getElementById('agent-content');
+
+  btn.disabled = true;
+  icon.textContent = '⏳';
+  text.textContent = 'Analyse en cours...';
+
+  // Afficher le loader avec estimation de temps
+  content.innerHTML =
+    '<div class="agent-loader">' +
+      '<div class="spinner"></div>' +
+      '<div class="loader-msg">🤖 Analyse intelligente en cours...</div>' +
+      '<div class="loader-sub">L\'IA analyse vos ' + commandes.length + ' dossiers.<br>Cela peut prendre de 10 secondes à 2 minutes.</div>' +
+      '<div class="loader-sub" style="margin-top:20px;color:var(--orange);font-weight:600;">⏳ Merci de patienter, ne fermez pas cette page</div>' +
+    '</div>';
+
+  var debut = Date.now();
+
+  try {
+    var resultat = await apiPost({action:'analyserAgent'});
+    var duree = Math.round((Date.now() - debut) / 1000);
+
+    if (!resultat || !resultat.ok) {
+      throw new Error(resultat && resultat.error ? resultat.error : 'Réponse invalide');
+    }
+
+    dernierRapportAgent = resultat;
+    afficherRapportAgent(resultat, duree);
+
+    var sourceInfo = resultat.source === 'gemini' ? '✨ IA Gemini' : '⚠️ Règles (IA indisponible)';
+    afficherToast('ok','✅','Analyse terminée', duree + 's · ' + sourceInfo, 4000);
+
+  } catch(e) {
+    console.error('Erreur analyse agent:', e);
+    content.innerHTML =
+      '<div class="empty-state">' +
+        '<div style="font-size:64px;margin-bottom:16px;">❌</div>' +
+        '<h3 style="font-size:18px;font-weight:700;margin-bottom:8px;color:var(--rouge);">Erreur d\'analyse</h3>' +
+        '<p style="font-size:14px;line-height:1.7;max-width:560px;margin:0 auto;">' + h(e.message) + '</p>' +
+        '<p style="font-size:13px;margin-top:16px;color:var(--texte2);">Réessayez dans 1 minute.</p>' +
+      '</div>';
+    afficherToast('urgent','❌','Erreur analyse', e.message, 8000);
+  } finally {
+    btn.disabled = false;
+    icon.textContent = '✨';
+    text.textContent = 'Ré-analyser';
+  }
+}
+
+function afficherRapportAgent(rapport, dureeSecondes) {
+  var content = document.getElementById('agent-content');
+  var dateEl = document.getElementById('agent-date');
+  if (dateEl && rapport.date) dateEl.textContent = 'Dernière analyse : ' + rapport.date;
+
+  // Pas de dossiers
+  if (!rapport.phrases || rapport.phrases.length === 0) {
+    content.innerHTML =
+      '<div class="empty-state">' +
+        '<div style="font-size:64px;margin-bottom:16px;">✅</div>' +
+        '<h3 style="font-size:18px;font-weight:700;margin-bottom:8px;color:var(--vert);">Tout est à jour !</h3>' +
+        '<p style="font-size:14px;line-height:1.7;max-width:560px;margin:0 auto;">Aucun dossier bloqué détecté. Bravo !</p>' +
+      '</div>';
+    return;
+  }
+
+  // Compter par sévérité
+  var nbU = rapport.nbUrgents || 0;
+  var nbA = rapport.nbAttention || 0;
+  var nbI = rapport.nbInfo || 0;
+
+  // Trier les phrases par sévérité
+  var phrasesTriees = rapport.phrases.slice().sort(function(a,b){ return (b.severite||0) - (a.severite||0); });
+
+  var html = '';
+
+  // Stats
+  html += '<div class="agent-stats">';
+  html += '<div class="agent-stat"><div class="agent-stat-value" style="color:var(--rouge);">' + nbU + '</div><div class="agent-stat-label">🔴 Urgents</div></div>';
+  html += '<div class="agent-stat"><div class="agent-stat-value" style="color:var(--orange);">' + nbA + '</div><div class="agent-stat-label">🟠 Attention</div></div>';
+  html += '<div class="agent-stat"><div class="agent-stat-value" style="color:var(--jaune);">' + nbI + '</div><div class="agent-stat-label">🟡 Info</div></div>';
+  html += '<div class="agent-stat"><div class="agent-stat-value" style="color:var(--bleu);">' + rapport.nbTotal + '</div><div class="agent-stat-label">📋 Total</div></div>';
+  html += '</div>';
+
+  // Résumé global (généré par l'IA)
+  if (rapport.resumeGlobal && rapport.resumeGlobal.indexOf('⚠️') !== 0) {
+    html += '<div class="agent-resume"><strong>💡 Synthèse de l\'IA :</strong><br>' + h(rapport.resumeGlobal) + '</div>';
+  } else if (rapport.resumeGlobal) {
+    html += '<div class="agent-resume" style="border-left-color:var(--orange);background:#FFF3E0;">' + h(rapport.resumeGlobal) + '</div>';
+  }
+
+  // Info source
+  var sourceInfo = rapport.source === 'gemini'
+    ? '✨ Analyse générée par Gemini IA (' + (rapport.modeleUtilise || 'gemini') + ') · ' + dureeSecondes + 's'
+    : '⚠️ Analyse par règles (IA indisponible) · ' + dureeSecondes + 's';
+  html += '<div style="font-size:11px;color:var(--texte2);margin-bottom:18px;font-style:italic;">' + h(sourceInfo) + '</div>';
+
+  // Section URGENT
+  var urgentes = phrasesTriees.filter(function(p){ return p.severite === 3; });
+  if (urgentes.length) {
+    html += '<div class="agent-section"><div class="agent-section-title" style="color:var(--rouge);">🔴 Action immédiate (' + urgentes.length + ')</div>';
+    urgentes.forEach(function(p) { html += renderAgentCard(p); });
+    html += '</div>';
+  }
+
+  // Section ATTENTION
+  var attentions = phrasesTriees.filter(function(p){ return p.severite === 2; });
+  if (attentions.length) {
+    html += '<div class="agent-section"><div class="agent-section-title" style="color:var(--orange);">🟠 À traiter rapidement (' + attentions.length + ')</div>';
+    attentions.forEach(function(p) { html += renderAgentCard(p); });
+    html += '</div>';
+  }
+
+  // Section INFO
+  var infos = phrasesTriees.filter(function(p){ return p.severite === 1; });
+  if (infos.length) {
+    html += '<div class="agent-section"><div class="agent-section-title" style="color:#B7860B;">🟡 À surveiller (' + infos.length + ')</div>';
+    infos.forEach(function(p) { html += renderAgentCard(p); });
+    html += '</div>';
+  }
+
+  content.innerHTML = html;
+}
+
+function renderAgentCard(p) {
+  var sevClass = 'sev-' + (p.severite || 1);
+  var iconSev = p.severite === 3 ? '🔴' : (p.severite === 2 ? '🟠' : '🟡');
+  var nomClient = p.client || p.nomClient || '—';
+  var action = p.action || 'Ouvrir la commande';
+
+  return '<div class="agent-card ' + sevClass + '">' +
+    '<div class="agent-card-icon">' + iconSev + '</div>' +
+    '<div class="agent-card-content">' +
+      '<div class="agent-card-client">' +
+        h(nomClient) +
+        '<span class="agent-card-ligne">Ligne ' + (p.ligne || '?') + '</span>' +
+      '</div>' +
+      '<div class="agent-card-texte">' + h(p.texte || '') + '</div>' +
+      '<span class="agent-card-action">👉 ' + h(action) + '</span>' +
+    '</div>' +
+    '<div class="agent-card-actions">' +
+      '<button class="agent-card-btn" onclick="ouvrirDepuisAgent(' + (p.ligne || 0) + ')">✏️ Ouvrir</button>' +
+    '</div>' +
+  '</div>';
+}
+
+function ouvrirDepuisAgent(ligne) {
+  if (!ligne) return;
+  var idx = commandes.findIndex(function(x){ return x.ligne === ligne; });
+  if (idx >= 0) {
+    openModal(idx);
+  } else {
+    afficherToast('warn','⚠️','Commande introuvable','Ligne ' + ligne + ' non chargée.', 3000);
+  }
 }
 
 // ══════════════════════════════════════════════════════════
@@ -941,12 +1132,11 @@ function renderMetre() {
 }
 
 // ══════════════════════════════════════════════════════════
-//  MODAL — CORRECTION BUG #1 (statut hors liste)
+//  MODAL
 // ══════════════════════════════════════════════════════════
 function ajouterOptionHorsListe(selectEl, valeur) {
   if (!selectEl || !valeur) return;
   var v = str(valeur);
-  // Vérifier si l'option existe déjà
   var existe = false;
   for (var i = 0; i < selectEl.options.length; i++) {
     if (selectEl.options[i].value === v) { existe = true; break; }
@@ -968,13 +1158,11 @@ function openModal(idx) {
   ['client','devis','devisTTC','fournisseur','commande','arc','commentaireARC','prevLivraison','statutLivraison','statutPose'].forEach(function(f){
     var el=document.getElementById('f-'+f);if(el)el.value=str(c[f]);
   });
-  // CORRECTION BUG #1 : ajouter les valeurs hors liste avant de les sélectionner
   ajouterOptionHorsListe(document.getElementById('f-fournisseur'), c.fournisseur);
   ajouterOptionHorsListe(document.getElementById('f-commande'), c.commande);
   ajouterOptionHorsListe(document.getElementById('f-commentaireARC'), c.commentaireARC);
   ajouterOptionHorsListe(document.getElementById('f-statutLivraison'), c.statutLivraison);
   ajouterOptionHorsListe(document.getElementById('f-statutPose'), c.statutPose);
-  // Re-sélectionner après ajout
   if (c.fournisseur) document.getElementById('f-fournisseur').value = str(c.fournisseur);
   if (c.commande) document.getElementById('f-commande').value = str(c.commande);
   if (c.commentaireARC) document.getElementById('f-commentaireARC').value = str(c.commentaireARC);
@@ -1000,7 +1188,7 @@ function closeModal(){document.getElementById('overlay').classList.remove('open'
 function closeOut(e){if(e.target.id==='overlay')closeModal();}
 
 // ══════════════════════════════════════════════════════════
-//  SAUVEGARDE — CORRECTION BUG #1 et #2
+//  SAUVEGARDE
 // ══════════════════════════════════════════════════════════
 async function sauvegarder() {
   var c={};
@@ -1012,7 +1200,6 @@ async function sauvegarder() {
     var valSaisie = metresRaw.value.trim();
     if (valSaisie) {
       var dateISO = convertirEnDateISO(valSaisie);
-      // CORRECTION BUG #2 : si on n'a pas pu convertir en ISO valide, on garde tel quel
       c.metres = dateISO || valSaisie;
     } else {
       c.metres = '';
@@ -1123,7 +1310,7 @@ function renderAlertes() {
 }
 
 // ══════════════════════════════════════════════════════════
-//  DASHBOARD — CORRECTION BUG #10 (VINCENT + LAMRI)
+//  DASHBOARD
 // ══════════════════════════════════════════════════════════
 function renderDashboard() {
   var byFou={}, ac={u:0,w:0,o:0};
@@ -1151,7 +1338,6 @@ function renderDashboard() {
   var n=commandes.length||1;
 
   var TERMINES_D = ['Livré','Terminé','Posé','LIVRE','TERMINE','POSE','Livre','Termine'];
-  // CORRECTION BUG #10 : ajout VINCENT et LAMRI
   var poseurs = [
     {nom:'ANATOLE', key:'poseur_ANATOLE', couleur:'#1565C0'},
     {nom:'ARTIOM',  key:'poseur_ARTIOM',  couleur:'#2E7D32'},
@@ -1221,7 +1407,7 @@ function renderDashboard() {
     '<div style="text-align:center;padding:14px;background:var(--vert-bg);border-radius:8px;"><div style="font-size:28px;font-weight:700;color:var(--vert);">' + pvFaits + '</div><div style="font-size:11px;color:var(--texte2);">PV Faits</div></div>' +
     '<div style="text-align:center;padding:14px;background:#FFF3E0;border-radius:8px;"><div style="font-size:28px;font-weight:700;color:var(--orange);">' + pvManquants + '</div><div style="font-size:11px;color:var(--texte2);">PV Manquants</div></div>' +
     '</div></div>' +
-    '<div class="dash-card" style="grid-column:1/-1;"><h4>📋 Suivi chantiers — Date métré · Date pose · Remarques · PV</h4>' + hC + '</div>';
+    '<div class="dash-card" style="grid-column:1/-1;"><h4>📋 Suivi chantiers</h4>' + hC + '</div>';
 }
 
 // ══════════════════════════════════════════════════════════
@@ -1233,7 +1419,7 @@ function showView(v) {
   document.getElementById('view-'+v).classList.add('active');
   var navEl = document.getElementById('nav-' + v);
   if (navEl) navEl.classList.add('active');
-  var titles = {suivi:'Suivi des commandes', alertes:'Alertes actives', metre:'Dates de métré (colonne B)', dashboard:'Tableau de bord', suivipose:'Suivi de Pose', planning:'Planning des poses', config:'Configuration'};
+  var titles = {suivi:'Suivi des commandes', alertes:'Alertes actives', agent:'🤖 Agent IA', metre:'Dates de métré (colonne B)', dashboard:'Tableau de bord', suivipose:'Suivi de Pose', planning:'Planning des poses', config:'Configuration'};
   document.getElementById('topbar-title').textContent = titles[v] || v;
   if (v === 'config') {
     document.getElementById('config-url-input').value = WEBAPP;
@@ -1245,10 +1431,11 @@ function showView(v) {
   if (v === 'dashboard')  renderDashboard();
   if (v === 'suivipose')  { renderSuiviPose(); setTimeout(traduireCommentairesPoseurs, 500); }
   if (v === 'planning')   renderPlanning();
+  if (v === 'agent')      { /* rien à faire : le contenu reste */ }
 }
 
 // ══════════════════════════════════════════════════════════
-//  SUIVI POSE — CORRECTION BUG #6 (dates DD/MM/YYYY)
+//  SUIVI POSE
 // ══════════════════════════════════════════════════════════
 function renderSuiviPose() {
   var poseurs = [
@@ -1259,8 +1446,6 @@ function renderSuiviPose() {
     {nom:'LAMRI',   key:'poseur_LAMRI',   couleur:'#00695C'}
   ];
   var semActuelle = getWeekNumber(new Date());
-
-  // CORRECTION BUG #6 : utiliser parseDatePose
   function datePoseEnSemaine(dp, sem) {
     var parsed = parseDatePose(dp);
     if (!parsed) return false;
@@ -1268,7 +1453,6 @@ function renderSuiviPose() {
     if (parsed.type === 'date') return getWeekNumber(parsed.date) === sem;
     return false;
   }
-
   var POSES_FINIES = ['Terminé','Termine','Posé','Pose','TERMINE','POSE'];
   var items = commandes.filter(function(c){
     if (str(c.commentaireARC).toUpperCase() === 'ANNULER') return false;
@@ -1373,7 +1557,7 @@ function sauvegarderConfig() {
 }
 
 // ══════════════════════════════════════════════════════════
-//  TRADUCTION — CORRECTION BUG #8 (échappement)
+//  TRADUCTION
 // ══════════════════════════════════════════════════════════
 async function traduireTexte(texte) {
   if (!texte || !str(texte).trim()) return texte;
@@ -1385,7 +1569,6 @@ async function traduireTexte(texte) {
     if (!r.ok) throw new Error('HTTP ' + r.status);
     var d = await r.json();
     var traduit = d[0].map(function(x){return x[0];}).join('');
-    // CORRECTION BUG #8 : échapper le résultat avant injection HTML
     return h(traduit) + ' <span style="font-size:10px;color:#90CAF9;font-style:italic;">[trad. auto]</span>';
   } catch(e) { return h(texte); }
 }
@@ -1409,7 +1592,7 @@ async function traduireCommentairesPoseurs() {
 }
 
 // ══════════════════════════════════════════════════════════
-//  OBJET POPUP — CORRECTION BUG #5 et #7 (échappement)
+//  OBJET POPUP
 // ══════════════════════════════════════════════════════════
 function afficherObjet(e, objet) {
   if (e) e.stopPropagation();
@@ -1428,7 +1611,7 @@ function afficherObjet(e, objet) {
 }
 
 // ══════════════════════════════════════════════════════════
-//  PLANNING — CORRECTIONS BUG #6 (dates) + #14 (S52→S1)
+//  PLANNING
 // ══════════════════════════════════════════════════════════
 var planningSemActuelle = null;
 
@@ -1436,13 +1619,11 @@ function getSemNum(d) {
   return getWeekNumber(d);
 }
 
-// CORRECTION BUG #14 : bouclage S52 → S1
 function planningSemaine(delta) {
   if (planningSemActuelle === null || delta === 0) {
     planningSemActuelle = getSemNum(new Date());
   } else {
     planningSemActuelle += delta;
-    // Boucler : 1 → 53 → 1
     if (planningSemActuelle > 53) planningSemActuelle = 1;
     if (planningSemActuelle < 1) planningSemActuelle = 53;
   }
@@ -1460,7 +1641,6 @@ function renderPlanning() {
     {nom:'VINCENT', key:'poseur_VINCENT', couleur:'#6A1B9A'},
     {nom:'LAMRI',   key:'poseur_LAMRI',   couleur:'#00695C'}
   ];
-  // CORRECTION BUG #6 : parseDatePose
   var chantiers = commandes.filter(function(c) {
     var parsed = parseDatePose(c.datePose);
     if (!parsed) return false;
@@ -1508,7 +1688,7 @@ function renderPlanning() {
 }
 
 // ══════════════════════════════════════════════════════════
-//  RAPPORT PDF — CORRECTIONS BUG #15 (typo + pagination)
+//  RAPPORT PDF
 // ══════════════════════════════════════════════════════════
 async function genererRapportChantier() {
   if (editLigne === null || editLigne < 0) { alert('Enregistrez d\'abord la commande.'); return; }
@@ -1539,7 +1719,6 @@ async function genererRapportChantier() {
       y += 7;
     }
     ligne('Fournisseur :', c.fournisseur);
-    // CORRECTION BUG #15 : "Date meutre" → "Date métré"
     ligne('Date métré :', formatDateMetre(c.metres));
     ligne('N° Devis :', c.devis);
     ligne('N° Commande :', c.commande);
@@ -1553,8 +1732,6 @@ async function genererRapportChantier() {
     doc.setDrawColor(21,101,192); doc.setLineWidth(0.5);
     doc.line(14, y, 196, y);
     y += 8;
-
-    // NOTE BUREAU avec pagination
     if (y > 240) { doc.addPage(); y = 20; }
     doc.setFillColor(255,243,224);
     doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(230,81,0);
@@ -1563,7 +1740,6 @@ async function genererRapportChantier() {
     doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(60,60,60);
     if (c.commentaire) {
       var lignesC = doc.splitTextToSize(str(c.commentaire), 182);
-      // CORRECTION BUG #15 : vérifier la place pour CHAQUE ligne
       lignesC.forEach(function(l) {
         if (y > 280) { doc.addPage(); y = 20; }
         doc.text(l, 14, y);
@@ -1573,7 +1749,6 @@ async function genererRapportChantier() {
     } else {
       doc.text('Aucune note.', 14, y); y += 8;
     }
-
     var poseurs = [
       {nom:'ANATOLE', key:'poseur_ANATOLE'},{nom:'ARTIOM', key:'poseur_ARTIOM'},
       {nom:'ANTONIO', key:'poseur_ANTONIO'},{nom:'VINCENT', key:'poseur_VINCENT'},
@@ -1594,7 +1769,6 @@ async function genererRapportChantier() {
       });
       y += 4;
     });
-    // Footer sur la dernière page
     var totalPages = doc.internal.getNumberOfPages();
     for (var i = 1; i <= totalPages; i++) {
       doc.setPage(i);
@@ -1609,7 +1783,7 @@ async function genererRapportChantier() {
 }
 
 // ══════════════════════════════════════════════════════════
-//  FOURNISSEURS — CORRECTION BUG #8 (échappement)
+//  FOURNISSEURS
 // ══════════════════════════════════════════════════════════
 function fillFournisseur() {
   var baseFournisseurs = ['ATLANTEM','ATULAM','LALLEMANT','SOKO','ALUGLASS','FILTERSUN','DC PROD','KE FRANCE','SKYLUX','BVL SERRULAC','LEROY MERLIN','FOUSSIER','STOCK'];
@@ -1643,7 +1817,7 @@ function fillFournisseur() {
 }
 
 // ══════════════════════════════════════════════════════════
-//  COMMENTAIRES POSEURS — CORRECTION BUG #11 (cache)
+//  COMMENTAIRES POSEURS
 // ══════════════════════════════════════════════════════════
 function modifierCommentaire(ligne, key, idx) {
   var c = commandes.find(function(x){return x.ligne===ligne;});
@@ -1681,7 +1855,6 @@ async function sauvegarderCommentairePoseur(ligne, key, final, c) {
     var r = await apiPost({action:'modifier', ligne:ligne, champs:champs});
     if (!r || !r.ok) throw new Error(r && r.error ? r.error : 'Réponse invalide');
     c[key] = final;
-    // CORRECTION BUG #11 : mettre à jour le cache
     sauvegarderCache(commandes);
     renderSuiviPose();
     afficherToast('ok','✅','Commentaire enregistré','', 2000);
@@ -1845,7 +2018,6 @@ function detecterUrgences() {
 
 // ══════════════════════════════════════════════════════════
 //  INITIALISATION
-//  CORRECTION BUG #12 : rechargement différé à 15 min
 // ══════════════════════════════════════════════════════════
 function renderAll(){
   renderKPI();
@@ -1855,10 +2027,8 @@ function renderAll(){
 
 chargerPrefsNotif();
 charger();
-// Recharger toutes les 5 min en arrière-plan
 setInterval(function(){charger();}, 5*60*1000);
 
-// CORRECTION BUG #12 : rechargement au retour sur l'onglet après 15 min
 var lastVisibility = Date.now();
 document.addEventListener('visibilitychange', function() {
   if (!document.hidden) {
