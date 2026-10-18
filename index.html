@@ -254,7 +254,7 @@ table td:first-child::before{display:none;}
 </div>
 
 <aside class="sidebar">
-  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v8.2</div></div>
+  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v8.6</div></div>
   <nav class="nav">
     <div class="nav-item active" id="nav-suivi" onclick="showView('suivi')"><span class="icon">📋</span><span>Commandes</span></div>
     <div class="nav-item" id="nav-alertes" onclick="showView('alertes')"><span class="icon">🔔</span><span>Alertes</span></div>
@@ -265,7 +265,7 @@ table td:first-child::before{display:none;}
     <div class="nav-item" id="nav-planning" onclick="showView('planning')"><span class="icon">📅</span><span>Planning</span></div>
     <div class="nav-item" id="nav-config" onclick="showView('config')"><span class="icon">⚙️</span><span>Config</span></div>
   </nav>
-  <div class="sidebar-footer">v8.2</div>
+  <div class="sidebar-footer">v8.6</div>
 </aside>
 
 <div class="main">
@@ -594,7 +594,7 @@ function aClass(n){return n===0?'alerte-ok':n===1?'alerte-jaune':n===2?'alerte-o
 async function apiPost(body, tentative) {
   tentative = tentative || 1; var MAX_TENTATIVES = 2, requeteEnvoyee = false;
   try {
-    var controller = new AbortController(); var timeoutId = setTimeout(function(){ controller.abort(); }, 180000); requeteEnvoyee = true;
+    var controller = new AbortController(); var timeoutId = setTimeout(function(){ controller.abort(); }, 60000); requeteEnvoyee = true;
     var r = await fetch(WEBAPP, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify(body), redirect:'follow', signal: controller.signal});
     clearTimeout(timeoutId);
     if (!r.ok) throw new Error('HTTP ' + r.status);
@@ -602,7 +602,7 @@ async function apiPost(body, tentative) {
     if (texte.trim().substring(0,1) === '<') throw new Error('Réponse HTML');
     return JSON.parse(texte);
   } catch(e) {
-    var msg = e.name === 'AbortError' ? 'Délai dépassé (3 min)' : e.message;
+    var msg = e.name === 'AbortError' ? 'Délai dépassé (1 min)' : e.message;
     var nePasRetenter = msg.indexOf('HTTP') !== -1 || (body && (body.action === 'analyserAgent' || body.action === 'relancerFournisseur' || body.action === 'dicteeFiche' || body.action === 'assistantVocal' || body.action === 'assistantAction'));
     if (!requeteEnvoyee && !nePasRetenter && tentative < MAX_TENTATIVES) { await new Promise(function(res){ setTimeout(res, 1500); }); return apiPost(body, tentative + 1); }
     throw new Error(msg);
@@ -819,29 +819,42 @@ function lancerActionVocale() {
   recognitionAction.onerror = function(event) { status.textContent = "❌ Erreur : " + event.error; setTimeout(function(){ status.style.display = 'none'; }, 3000); };
   recognitionAction.start();
 }
+
 async function envoyerActionVocale() {
   var question = document.getElementById('action-question').value.trim(); if (!question) { alert("Dictez un ordre."); return; }
   var btn = document.getElementById('btn-envoyer-action'), repDiv = document.getElementById('action-reponse');
   btn.disabled = true; btn.textContent = "⏳ L'IA exécute..."; repDiv.style.display = 'none'; window.speechSynthesis.cancel();
+  
   try {
-    // ⚡ OPTIMISATION ICI : On n'envoie que le strict nécessaire à l'IA pour qu'elle trouve le client rapidement
     var contexteLeger = commandes.map(function(c){ 
       return { client: c.client, ligne: c.ligne, statutLivraison: c.statutLivraison, statutPose: c.statutPose, commande: c.commande, arc: c.arc }; 
     });
     var contexteJson = JSON.stringify(contexteLeger);
     
     var r = await apiPost({ action: 'assistantAction', texteDicte: question, contexte: contexteJson });
+    
     if (!r || !r.ok) {
        if (r && r.reponse_vocale) throw new Error(r.reponse_vocale);
        throw new Error(r.error || 'Erreur inconnue');
     }
+    
     repDiv.innerHTML = '<strong style="color:#2E7D32;">🤖 Action exécutée :</strong><br><br>' + h(r.reponse_vocale);
     repDiv.style.display = 'block';
-    viderCache(); await charger(true);
-    var msg = new SpeechSynthesisUtterance(r.reponse_vocale); msg.lang = 'fr-FR'; msg.rate = 1.05;
-    msg.onend = function() { btn.disabled = false; btn.textContent = "✨ Exécuter"; };
-    window.speechSynthesis.speak(msg);
-  } catch(e) { repDiv.innerHTML = '<span style="color:var(--rouge);">❌ ' + h(e.message) + '</span>'; repDiv.style.display = 'block'; btn.disabled = false; btn.textContent = "✨ Exécuter"; }
+    
+    try {
+      var msg = new SpeechSynthesisUtterance(r.reponse_vocale); 
+      msg.lang = 'fr-FR'; msg.rate = 1.05;
+      window.speechSynthesis.speak(msg);
+    } catch(e) { console.log('Erreur voix'); }
+    
+    // ⚡ Rechargement de la page après 2,5 secondes pour voir la modification
+    setTimeout(function() { window.location.reload(); }, 2500);
+    
+  } catch(e) { 
+    repDiv.innerHTML = '<span style="color:var(--rouge);">❌ ' + h(e.message) + '</span>'; 
+    repDiv.style.display = 'block'; 
+    btn.disabled = false; btn.textContent = "✨ Exécuter"; 
+  }
 }
 
 // DICTÉE FICHE
