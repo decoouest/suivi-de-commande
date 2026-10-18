@@ -254,7 +254,7 @@ table td:first-child::before{display:none;}
 </div>
 
 <aside class="sidebar">
-  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v8.0</div></div>
+  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v8.2</div></div>
   <nav class="nav">
     <div class="nav-item active" id="nav-suivi" onclick="showView('suivi')"><span class="icon">📋</span><span>Commandes</span></div>
     <div class="nav-item" id="nav-alertes" onclick="showView('alertes')"><span class="icon">🔔</span><span>Alertes</span></div>
@@ -265,7 +265,7 @@ table td:first-child::before{display:none;}
     <div class="nav-item" id="nav-planning" onclick="showView('planning')"><span class="icon">📅</span><span>Planning</span></div>
     <div class="nav-item" id="nav-config" onclick="showView('config')"><span class="icon">⚙️</span><span>Config</span></div>
   </nav>
-  <div class="sidebar-footer">v8.0</div>
+  <div class="sidebar-footer">v8.2</div>
 </aside>
 
 <div class="main">
@@ -824,7 +824,12 @@ async function envoyerActionVocale() {
   var btn = document.getElementById('btn-envoyer-action'), repDiv = document.getElementById('action-reponse');
   btn.disabled = true; btn.textContent = "⏳ L'IA exécute..."; repDiv.style.display = 'none'; window.speechSynthesis.cancel();
   try {
-    var contexteJson = JSON.stringify(commandes);
+    // ⚡ OPTIMISATION ICI : On n'envoie que le strict nécessaire à l'IA pour qu'elle trouve le client rapidement
+    var contexteLeger = commandes.map(function(c){ 
+      return { client: c.client, ligne: c.ligne, statutLivraison: c.statutLivraison, statutPose: c.statutPose, commande: c.commande, arc: c.arc }; 
+    });
+    var contexteJson = JSON.stringify(contexteLeger);
+    
     var r = await apiPost({ action: 'assistantAction', texteDicte: question, contexte: contexteJson });
     if (!r || !r.ok) {
        if (r && r.reponse_vocale) throw new Error(r.reponse_vocale);
