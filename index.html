@@ -254,24 +254,24 @@ table td:first-child::before{display:none;}
 </div>
 
 <aside class="sidebar">
-  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v9.9</div></div>
+  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v10.1</div></div>
   <nav class="nav">
-    <div class="nav-item active" id="nav-suivi" onclick="showView('suivi')"><span class="icon">📋</span><span>Commandes</span></div>
+    <div class="nav-item" id="nav-suivi" onclick="showView('suivi')"><span class="icon">📋</span><span>Commandes</span></div>
     <div class="nav-item" id="nav-alertes" onclick="showView('alertes')"><span class="icon">🔔</span><span>Alertes</span></div>
-    <div class="nav-item" id="nav-agent" onclick="showView('agent')"><span class="icon">🤖</span><span>Agent IA</span></div>
+    <div class="nav-item active" id="nav-agent" onclick="showView('agent')"><span class="icon">🤖</span><span>Agent IA</span></div>
     <div class="nav-item" id="nav-metre" onclick="showView('metre')"><span class="icon">📅</span><span>Dates Métré</span></div>
     <div class="nav-item" id="nav-dashboard" onclick="showView('dashboard')"><span class="icon">📊</span><span>Dashboard</span></div>
     <div class="nav-item" id="nav-suivipose" onclick="showView('suivipose')"><span class="icon">🔨</span><span>Suivi Pose</span></div>
     <div class="nav-item" id="nav-planning" onclick="showView('planning')"><span class="icon">📅</span><span>Planning</span></div>
     <div class="nav-item" id="nav-config" onclick="showView('config')"><span class="icon">⚙️</span><span>Config</span></div>
   </nav>
-  <div class="sidebar-footer">v9.9</div>
+  <div class="sidebar-footer">v10.1</div>
 </aside>
 
 <div class="main">
   <div class="topbar">
     <button class="menu-burger" id="menu-burger" onclick="ouvrirMenuMobile()" title="Menu">☰</button>
-    <span class="topbar-title" id="topbar-title">Suivi des commandes</span>
+    <span class="topbar-title" id="topbar-title">🤖 Agent IA</span>
     <div class="topbar-right">
       <span class="sync-info"><span class="sync-dot" id="sync-dot"></span><span id="sync-label">Chargement...</span></span>
       <button class="btn btn-outline btn-sm" id="btn-notif" onclick="activerNotifications()" title="Notifications">🔕 Notifs</button>
@@ -285,7 +285,7 @@ table td:first-child::before{display:none;}
   <div class="content">
     <div class="loader-bar" id="loader"><div class="loader-fill"></div></div>
 
-    <div id="view-suivi" class="view active">
+    <div id="view-suivi" class="view">
       <div class="kpi-grid" id="kpi-grid"></div>
       <div class="filters-bar">
         <input type="text" class="search-input" id="search" placeholder="🔍 Rechercher client, devis, ARC..." oninput="renderTable()">
@@ -317,7 +317,7 @@ table td:first-child::before{display:none;}
 
     <div id="view-alertes" class="view"><div id="alertes-content"></div></div>
 
-    <div id="view-agent" class="view">
+    <div id="view-agent" class="view active">
       <div class="agent-header">
         <div class="agent-header-info">
           <h2>🤖 Agent IA de suivi</h2>
@@ -502,7 +502,7 @@ var FOU_COLORS = {'ATLANTEM':'#1565C0','ATULAM':'#6A1B9A','LALLEMANT':'#2E7D32',
 var TERMINES = ['LIVRE','LIVRÉ','TERMINE','TERMINÉ','POSE','POSÉ','Livré','Terminé','Posé','Livre','Termine'];
 var commandes = [];
 var sortCol = 'ligne', sortAsc = false, alertFilter = 'all', editLigne = -1;
-var CACHE_DUREE = 60 * 1000, CACHE_KEY = 'eco-ouest-cache-v99', CACHE_TIME_KEY = 'eco-ouest-cache-time-v99';
+var CACHE_DUREE = 60 * 1000, CACHE_KEY = 'eco-ouest-cache-v101', CACHE_TIME_KEY = 'eco-ouest-cache-time-v101';
 var dernierRapportAgent = null;
 var recognition = null;
 var recognitionAssistant = null;
@@ -513,7 +513,6 @@ function str(s) { if (s === null || s === undefined) return ''; return String(s)
 function h(s) { return str(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function escAttr(s) { return h(s); }
 
-// ⚡ Helper d'annulation (I, L, M)
 function estAnnulee(c) {
   var ANN = ['ANNULER','ANNULE','ANNULÉ'];
   return ANN.indexOf(str(c.commentaireARC).trim().toUpperCase()) !== -1
@@ -845,7 +844,6 @@ function lancerActionVocale() {
     input.value = text; 
     status.textContent = "✅ Ordre enregistré. Cliquez sur Exécuter."; 
     setTimeout(function(){ status.style.display = 'none'; }, 3000); 
-    // ⚡ On ne lance plus l'exécution automatiquement (évite le blocage du confirm sur mobile)
   };
   recognitionAction.onerror = function(event) { status.textContent = "❌ Erreur : " + event.error; setTimeout(function(){ status.style.display = 'none'; }, 3000); };
   recognitionAction.start();
@@ -854,7 +852,6 @@ function lancerActionVocale() {
 async function envoyerActionVocale() {
   var question = document.getElementById('action-question').value.trim(); if (!question) { alert("Dictez un ordre."); return; }
   
-  // ⚡ Confirmation avant exécution
   if (!confirm("Exécuter l'ordre : \"" + question + "\" ?")) return;
   
   var btn = document.getElementById('btn-envoyer-action'), repDiv = document.getElementById('action-reponse');
@@ -1037,8 +1034,10 @@ function renderDashboard() {
   var byFou={}, ac={u:0,w:0,o:0}, caCommande=0, caPose=0, nbEnAttente=0, nbSAV=0; var POSES_FINIES=['Terminé','Termine','Posé','Pose'];
   function parseMontant(v){ if(!v) return 0; var s=str(v).replace(/[^0-9,.]/g,'').replace(/\s/g,'').replace(',','.'); var parts=s.split('.'); if(parts.length>2){ s=parts.slice(0,-1).join('')+'.'+parts[parts.length-1]; } var n=parseFloat(s); return isNaN(n)?0:n; }
   
+  var nbActives = commandes.filter(function(c){ return !estAnnulee(c); }).length;
+
   commandes.forEach(function(c){ 
-    if (estAnnulee(c)) return; // ⚡ Ignore les annulés
+    if (estAnnulee(c)) return; 
     
     if(c.fournisseur) byFou[c.fournisseur]=(byFou[c.fournisseur]||0)+1; 
     var a=alerte(c); if(a.n===3)ac.u++; else if(a.n>=1)ac.w++; else if(a.n===0)ac.o++; 
@@ -1050,11 +1049,10 @@ function renderDashboard() {
   });
   
   function fmtEuro(n){ return n.toLocaleString('fr-FR',{maximumFractionDigits:0})+' €'; }
-  var fS=Object.entries(byFou).sort(function(a,b){return b[1]-a[1];}), fM=fS[0]?fS[0][1]:1, n=commandes.length||1;
+  var fS=Object.entries(byFou).sort(function(a,b){return b[1]-a[1];}), fM=fS[0]?fS[0][1]:1, n=nbActives||1;
   var TERMINES_D = ['Livré','Terminé','Posé','LIVRE','TERMINE','POSE','Livre','Termine'];
   var poseurs = [{nom:'ANATOLE', key:'poseur_ANATOLE', couleur:'#1565C0'},{nom:'ARTIOM',  key:'poseur_ARTIOM',  couleur:'#2E7D32'},{nom:'ANTONIO', key:'poseur_ANTONIO', couleur:'#E65100'},{nom:'VINCENT', key:'poseur_VINCENT', couleur:'#6A1B9A'},{nom:'LAMRI',   key:'poseur_LAMRI',   couleur:'#00695C'}];
   
-  // ⚡ Utilisation de estAnnulee
   var actifs = commandes.filter(function(c){ return TERMINES_D.indexOf(str(c.statutLivraison).trim()) === -1 && !estAnnulee(c); }).slice().sort(function(a,b){ return str(b.datePose).localeCompare(str(a.datePose)); });
   
   var pvFaits = commandes.filter(function(c){ return str(c.pvChantier).toUpperCase()==='OUI' && !estAnnulee(c); }).length;
@@ -1074,7 +1072,7 @@ function renderDashboard() {
       if(!hasRemarque) hC += '<div style="font-size:12px;color:var(--texte2);font-style:italic;">Aucune remarque poseur.</div>';
       hC += '</div></div>'; });
   }
-  document.getElementById('dash-content').innerHTML = '<div class="dash-card" style="grid-column:1/-1;background:linear-gradient(135deg,#1565C0,#0D47A1);color:#fff;"><h4 style="color:#fff;">💰 Vue financière</h4><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;margin-top:8px;"><div><div style="font-size:24px;font-weight:800;">' + fmtEuro(caCommande) + '</div><div style="font-size:12px;opacity:.85;">CA commandé</div></div><div><div style="font-size:24px;font-weight:800;">' + fmtEuro(caPose) + '</div><div style="font-size:12px;opacity:.85;">CA posé</div></div><div><div style="font-size:24px;font-weight:800;">' + nbEnAttente + '</div><div style="font-size:12px;opacity:.85;">En attente commande</div></div><div><div style="font-size:24px;font-weight:800;">' + nbSAV + '</div><div style="font-size:12px;opacity:.85;">SAV ouverts</div></div></div></div><div class="dash-card"><h4>Par fournisseur</h4>' + fS.map(function(e){ return '<div class="bar-row"><span class="bar-label">' + h(e[0]) + '</span><div class="bar-track"><div class="bar-fill" style="width:' + Math.round(e[1]/fM*100) + '%;background:' + (FOU_COLORS[e[0]]||'#546E7A') + '"></div></div><span class="bar-count">' + e[1] + '</span></div>'; }).join('') + '</div><div class="dash-card"><h4>Alertes</h4>' + [['Urgentes',ac.u,'#D32F2F'],['Attention',ac.w,'#E65100'],['OK',ac.o,'#2E7D32']].map(function(x){ return '<div class="bar-row"><span class="bar-label">' + x[0] + '</span><div class="bar-track"><div class="bar-fill" style="width:' + Math.round(x[1]/n*100) + '%;background:' + x[2] + '"></div></div><span class="bar-count">' + x[1] + '</span></div>'; }).join('') + '</div><div class="dash-card"><h4>Résumé</h4><div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:4px;"><div style="text-align:center;padding:14px;background:var(--gris-bg);border-radius:8px;"><div style="font-size:28px;font-weight:700;color:var(--bleu);">' + commandes.length + '</div><div style="font-size:11px;color:var(--texte2);">Total</div></div><div style="text-align:center;padding:14px;background:#FFEBEE;border-radius:8px;"><div style="font-size:28px;font-weight:700;color:var(--rouge);">' + ac.u + '</div><div style="font-size:11px;color:var(--texte2);">Urgences</div></div><div style="text-align:center;padding:14px;background:var(--vert-bg);border-radius:8px;"><div style="font-size:28px;font-weight:700;color:var(--vert);">' + pvFaits + '</div><div style="font-size:11px;color:var(--texte2);">PV Faits</div></div><div style="text-align:center;padding:14px;background:#FFF3E0;border-radius:8px;"><div style="font-size:28px;font-weight:700;color:var(--orange);">' + pvManquants + '</div><div style="font-size:11px;color:var(--texte2);">PV Manquants</div></div></div></div><div class="dash-card" style="grid-column:1/-1;"><h4>📋 Suivi chantiers</h4>' + hC + '</div>';
+  document.getElementById('dash-content').innerHTML = '<div class="dash-card" style="grid-column:1/-1;background:linear-gradient(135deg,#1565C0,#0D47A1);color:#fff;"><h4 style="color:#fff;">💰 Vue financière</h4><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;margin-top:8px;"><div><div style="font-size:24px;font-weight:800;">' + fmtEuro(caCommande) + '</div><div style="font-size:12px;opacity:.85;">CA commandé</div></div><div><div style="font-size:24px;font-weight:800;">' + fmtEuro(caPose) + '</div><div style="font-size:12px;opacity:.85;">CA posé</div></div><div><div style="font-size:24px;font-weight:800;">' + nbEnAttente + '</div><div style="font-size:12px;opacity:.85;">En attente commande</div></div><div><div style="font-size:24px;font-weight:800;">' + nbSAV + '</div><div style="font-size:12px;opacity:.85;">SAV ouverts</div></div></div></div><div class="dash-card"><h4>Par fournisseur</h4>' + fS.map(function(e){ return '<div class="bar-row"><span class="bar-label">' + h(e[0]) + '</span><div class="bar-track"><div class="bar-fill" style="width:' + Math.round(e[1]/fM*100) + '%;background:' + (FOU_COLORS[e[0]]||'#546E7A') + '"></div></div><span class="bar-count">' + e[1] + '</span></div>'; }).join('') + '</div><div class="dash-card"><h4>Alertes</h4>' + [['Urgentes',ac.u,'#D32F2F'],['Attention',ac.w,'#E65100'],['OK',ac.o,'#2E7D32']].map(function(x){ return '<div class="bar-row"><span class="bar-label">' + x[0] + '</span><div class="bar-track"><div class="bar-fill" style="width:' + Math.round(x[1]/n*100) + '%;background:' + x[2] + '"></div></div><span class="bar-count">' + x[1] + '</span></div>'; }).join('') + '</div><div class="dash-card"><h4>Résumé</h4><div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:4px;"><div style="text-align:center;padding:14px;background:var(--gris-bg);border-radius:8px;"><div style="font-size:28px;font-weight:700;color:var(--bleu);">' + nbActives + '</div><div style="font-size:11px;color:var(--texte2);">Total (actifs)</div></div><div style="text-align:center;padding:14px;background:#FFEBEE;border-radius:8px;"><div style="font-size:28px;font-weight:700;color:var(--rouge);">' + ac.u + '</div><div style="font-size:11px;color:var(--texte2);">Urgences</div></div><div style="text-align:center;padding:14px;background:var(--vert-bg);border-radius:8px;"><div style="font-size:28px;font-weight:700;color:var(--vert);">' + pvFaits + '</div><div style="font-size:11px;color:var(--texte2);">PV Faits</div></div><div style="text-align:center;padding:14px;background:#FFF3E0;border-radius:8px;"><div style="font-size:28px;font-weight:700;color:var(--orange);">' + pvManquants + '</div><div style="font-size:11px;color:var(--texte2);">PV Manquants</div></div></div></div><div class="dash-card" style="grid-column:1/-1;"><h4>📋 Suivi chantiers</h4>' + hC + '</div>';
 }
 
 // NAVIGATION
@@ -1099,7 +1097,6 @@ function renderSuiviPose() {
   function datePoseEnSemaine(dp, sem) { var parsed = parseDatePose(dp); if (!parsed) return false; if (parsed.type === 'semaine') return parsed.num === sem; if (parsed.type === 'date') return getWeekNumber(parsed.date) === sem; return false; }
   var POSES_FINIES = ['Terminé','Termine','Posé','Pose','TERMINE','POSE'];
   
-  // ⚡ Utilisation de estAnnulee
   var items = commandes.filter(function(c){ 
     if (estAnnulee(c)) return false; 
     if (POSES_FINIES.indexOf(str(c.statutPose).trim()) !== -1) return false; 
@@ -1132,8 +1129,6 @@ function sauvegarderConfig() { var url = document.getElementById('config-url-inp
 async function traduireTexte(texte) { 
   if (!texte || !str(texte).trim()) return texte; 
   if (!/[\u0400-\u04FF]/.test(texte)) return texte; 
-  
-  // ⚡ Cache de traduction
   if (cacheTrad[texte]) return cacheTrad[texte];
   
   try { 
@@ -1159,7 +1154,16 @@ function renderPlanning() {
   if (planningSemActuelle === null) planningSemActuelle = getSemNum(new Date());
   var sem = planningSemActuelle; document.getElementById('planning-titre').textContent = 'Semaine S' + sem;
   var poseurs = [{nom:'ANATOLE', key:'poseur_ANATOLE', couleur:'#1565C0'},{nom:'ARTIOM', key:'poseur_ARTIOM', couleur:'#2E7D32'},{nom:'ANTONIO', key:'poseur_ANTONIO', couleur:'#E65100'},{nom:'VINCENT', key:'poseur_VINCENT', couleur:'#6A1B9A'},{nom:'LAMRI', key:'poseur_LAMRI', couleur:'#00695C'}];
-  var chantiers = commandes.filter(function(c) { var parsed = parseDatePose(c.datePose); if (!parsed) return false; if (parsed.type === 'semaine') return parsed.num === sem; if (parsed.type === 'date') return getSemNum(parsed.date) === sem; return false; });
+  
+  var chantiers = commandes.filter(function(c) { 
+    if (estAnnulee(c)) return false;
+    var parsed = parseDatePose(c.datePose); 
+    if (!parsed) return false; 
+    if (parsed.type === 'semaine') return parsed.num === sem; 
+    if (parsed.type === 'date') return getSemNum(parsed.date) === sem; 
+    return false; 
+  });
+  
   if (!chantiers.length) { document.getElementById('planning-content').innerHTML = '<div style="text-align:center;padding:48px;color:var(--texte2);"><div style="font-size:48px;margin-bottom:12px;">📅</div><p>Aucune pose planifiée pour la semaine S' + sem + '</p></div>'; return; }
   var html = '<div style="display:grid;gap:12px;">';
   chantiers.forEach(function(c) { var pvFait = str(c.pvChantier).toUpperCase() === 'OUI', sP = str(c.statutPose), sBg = sP==='SAV'?'#FFEBEE':sP.indexOf('Termin')!==-1?'#E8F5E9':'#FFF3E0', sC = sP==='SAV'?'#D32F2F':sP.indexOf('Termin')!==-1?'#2E7D32':'#E65100', poseursActifs = poseurs.filter(function(p){ return c[p.key] && str(c[p.key]).trim(); });
@@ -1248,6 +1252,10 @@ function detecterUrgences() { if (!notifActive || Notification.permission !== 'g
 function renderAll(){ renderKPI(); renderTable(); setTimeout(detecterUrgences, 500); }
 chargerPrefsNotif();
 charger();
+
+// ⚡ Forcer l'ouverture sur l'Agent IA au démarrage
+setTimeout(function() { showView('agent'); }, 100); 
+
 setInterval(function(){charger();}, 5*60*1000);
 var lastVisibility = Date.now();
 document.addEventListener('visibilitychange', function() { if (!document.hidden) { var elapsed = Date.now() - lastVisibility; if (elapsed > 15 * 60 * 1000) charger(true); lastVisibility = Date.now(); } });
