@@ -254,7 +254,7 @@ table td:first-child::before{display:none;}
 </div>
 
 <aside class="sidebar">
-  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v9.0</div></div>
+  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v9.7</div></div>
   <nav class="nav">
     <div class="nav-item active" id="nav-suivi" onclick="showView('suivi')"><span class="icon">📋</span><span>Commandes</span></div>
     <div class="nav-item" id="nav-alertes" onclick="showView('alertes')"><span class="icon">🔔</span><span>Alertes</span></div>
@@ -265,7 +265,7 @@ table td:first-child::before{display:none;}
     <div class="nav-item" id="nav-planning" onclick="showView('planning')"><span class="icon">📅</span><span>Planning</span></div>
     <div class="nav-item" id="nav-config" onclick="showView('config')"><span class="icon">⚙️</span><span>Config</span></div>
   </nav>
-  <div class="sidebar-footer">v9.0</div>
+  <div class="sidebar-footer">v9.7</div>
 </aside>
 
 <div class="main">
@@ -502,7 +502,7 @@ var FOU_COLORS = {'ATLANTEM':'#1565C0','ATULAM':'#6A1B9A','LALLEMANT':'#2E7D32',
 var TERMINES = ['LIVRE','LIVRÉ','TERMINE','TERMINÉ','POSE','POSÉ','Livré','Terminé','Posé','Livre','Termine'];
 var commandes = [];
 var sortCol = 'ligne', sortAsc = false, alertFilter = 'all', editLigne = -1;
-var CACHE_DUREE = 60 * 1000, CACHE_KEY = 'eco-ouest-cache-v90', CACHE_TIME_KEY = 'eco-ouest-cache-time-v90';
+var CACHE_DUREE = 60 * 1000, CACHE_KEY = 'eco-ouest-cache-v97', CACHE_TIME_KEY = 'eco-ouest-cache-time-v97';
 var dernierRapportAgent = null;
 var recognition = null;
 var recognitionAssistant = null;
@@ -666,7 +666,6 @@ function renderTable() {
   function estSAV(c) { var sP = str(c.statutPose).trim(), sL = str(c.statutLivraison).trim(); return sP === 'SAV' || sL === 'SAV'; }
   var savCount = commandes.filter(estSAV).length; var savEl = document.getElementById('sav-count'); if(savEl) savEl.textContent = savCount; if(alertFilter==='sav')rows=rows.filter(estSAV);
   
-  // Compteur Non commandé excluant annulés et terminés
   var noncmdCount = commandes.filter(function(c){
     var a = alerte(c);
     return str(c.commande).trim().toUpperCase()!=='OUI' && a.n > 0;
