@@ -833,12 +833,14 @@ async function envoyerActionVocale() {
     
     var r = await apiPost({ action: 'assistantAction', texteDicte: question, contexte: contexteJson });
     
+    console.log("Réponse serveur :", r);
+    
     if (!r || !r.ok) {
        if (r && r.reponse_vocale) throw new Error(r.reponse_vocale);
        throw new Error(r.error || 'Erreur inconnue');
     }
     
-    repDiv.innerHTML = '<strong style="color:#2E7D32;">🤖 Action exécutée :</strong><br><br>' + h(r.reponse_vocale);
+    repDiv.innerHTML = '<strong style="color:#2E7D32;">🤖 Action exécutée :</strong><br><br>' + h(r.reponse_vocale) + '<br><br><span style="font-size:11px;color:#777;">Ligne modifiée : ' + (r.ligne || '?') + '</span>';
     repDiv.style.display = 'block';
     
     try {
@@ -847,13 +849,17 @@ async function envoyerActionVocale() {
       window.speechSynthesis.speak(msg);
     } catch(e) { console.log('Erreur voix'); }
     
-    // ⚡ Rechargement de la page après 2,5 secondes pour voir la modification
-    setTimeout(function() { window.location.reload(); }, 2500);
+    // On vide le cache et on recharge les données en arrière-plan SANS recharger la page
+    viderCache(); 
+    await charger(true); 
     
   } catch(e) { 
+    console.error(e);
     repDiv.innerHTML = '<span style="color:var(--rouge);">❌ ' + h(e.message) + '</span>'; 
     repDiv.style.display = 'block'; 
-    btn.disabled = false; btn.textContent = "✨ Exécuter"; 
+  } finally {
+    btn.disabled = false; 
+    btn.textContent = "✨ Exécuter"; 
   }
 }
 
