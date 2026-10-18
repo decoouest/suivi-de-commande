@@ -108,45 +108,7 @@ textarea{resize:vertical;min-height:70px;}
 .modal-footer{padding:16px 28px 22px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--bordure);}
 .saving-msg{font-size:12px;color:var(--texte2);display:none;}
 .saving-msg.active{display:block;}
-.alert-section{margin-bottom:22px;}
-.alert-section-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--texte2);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
-.dot-badge{width:8px;height:8px;border-radius:50%;display:inline-block;}
-.alert-card{background:#fff;border-radius:9px;border:1px solid var(--bordure);padding:14px 18px;margin-bottom:8px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;}
-.alert-card:hover{box-shadow:0 3px 12px rgba(0,0,0,.07);}
-.alert-card-client{font-weight:700;font-size:14px;margin-bottom:3px;}
-.alert-card-detail{font-size:12px;color:var(--texte2);}
-.alert-card-comment{font-size:12px;color:var(--bleu);font-style:italic;margin-top:4px;}
-.alert-pill{padding:4px 12px;border-radius:6px;font-size:11px;font-weight:700;white-space:nowrap;align-self:flex-start;}
-.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
-.dash-card{background:#fff;border-radius:10px;border:1px solid var(--bordure);padding:20px;}
-.dash-card h4{font-size:13px;font-weight:600;color:var(--texte2);margin-bottom:14px;}
-.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:12px;}
-.bar-label{width:110px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.bar-track{flex:1;height:8px;background:var(--bordure);border-radius:4px;overflow:hidden;}
-.bar-fill{height:100%;border-radius:4px;}
-.bar-count{width:24px;text-align:right;color:var(--texte2);font-weight:600;}
-.suivipose-card{background:#fff;border-radius:12px;border:1px solid var(--bordure);margin-bottom:14px;overflow:hidden;}
-.suivipose-header{padding:14px 18px;background:var(--gris-bg);display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bordure);}
-.suivipose-client{font-size:15px;font-weight:700;}
-.suivipose-meta{font-size:11px;color:var(--texte2);}
-.suivipose-body{padding:14px 18px;}
-.suivipose-poseur{margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--bordure);}
-.suivipose-poseur:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none;}
-.suivipose-poseur-name{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
-.suivipose-poseur-avatar{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;}
-.suivipose-poseur-label{font-size:13px;font-weight:700;}
-.suivipose-comment{font-size:12px;color:var(--texte);line-height:1.6;white-space:pre-wrap;padding:8px 12px;background:var(--gris-bg);border-radius:8px;border-left:3px solid var(--bleu);}
-.suivipose-empty{font-size:12px;color:var(--texte2);font-style:italic;padding:6px 0;}
-.suivipose-date{display:inline-block;padding:3px 10px;border-radius:6px;font-size:12px;font-weight:700;background:var(--bleu-bg);color:var(--bleu);}
-.toast{position:fixed;bottom:20px;right:20px;z-index:500;background:#fff;border-radius:10px;box-shadow:0 8px 28px rgba(0,0,0,.2);padding:14px 18px;display:flex;gap:12px;align-items:flex-start;max-width:380px;animation:slideIn .3s ease;border-left:4px solid var(--bleu);}
-.toast.urgent{border-left-color:var(--rouge);}
-.toast.warn{border-left-color:var(--orange);}
-.toast.ok{border-left-color:var(--vert);}
-.toast-icon{font-size:20px;flex-shrink:0;}
-.toast-title{font-size:13px;font-weight:700;margin-bottom:3px;}
-.toast-msg{font-size:12px;color:var(--texte2);}
-@keyframes slideIn{from{transform:translateX(120%);opacity:0}to{transform:translateX(0);opacity:1}}
-/* AGENT */
+/* AGENT & DICTE */
 .agent-header{background:linear-gradient(135deg,#1565C0,#0D47A1);color:#fff;border-radius:12px;padding:22px 28px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;}
 .agent-header-info h2{font-size:20px;font-weight:800;margin-bottom:4px;display:flex;align-items:center;gap:10px;}
 .agent-header-info p{font-size:13px;opacity:.85;}
@@ -181,9 +143,7 @@ textarea{resize:vertical;min-height:70px;}
 .agent-card-actions{display:flex;flex-direction:column;gap:8px;flex-shrink:0;align-self:flex-start;}
 .agent-card-btn{background:var(--bleu);color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;}
 .agent-card-btn:hover{background:var(--bleu-clair);}
-/* ── MENU MOBILE ─────────────────────────── */
 .menu-burger{display:none;background:none;border:none;font-size:24px;cursor:pointer;color:var(--bleu);padding:6px 10px;border-radius:6px;line-height:1;}
-.menu-burger:hover{background:var(--bleu-bg);}
 .menu-mobile-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:400;animation:fadeIn .2s ease;}
 .menu-mobile-overlay.open{display:flex;}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
@@ -201,8 +161,6 @@ textarea{resize:vertical;min-height:70px;}
 .sidebar-logo{padding:14px 8px;}
 .nav-item{padding:14px 8px;justify-content:center;}
 .nav-item .icon{font-size:20px;}
-.dash-grid{grid-template-columns:1fr;}
-.form-grid{grid-template-columns:1fr;}
 .agent-header{padding:16px 18px;}
 .agent-header-info h2{font-size:16px;}
 }
@@ -241,7 +199,6 @@ table td:first-child::before{display:none;}
 </head>
 <body>
 
-<!-- MENU MOBILE -->
 <div class="menu-mobile-overlay" id="menu-mobile" onclick="fermerMenuMobile(event)">
   <div class="menu-mobile-panel" onclick="event.stopPropagation()">
     <div class="menu-mobile-header">
@@ -260,11 +217,7 @@ table td:first-child::before{display:none;}
 </div>
 
 <aside class="sidebar">
-  <div class="sidebar-logo">
-    <span>ECO OUEST</span>
-    <small>Suivi Commandes</small>
-    <div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v7.0</div>
-  </div>
+  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v7.2</div></div>
   <nav class="nav">
     <div class="nav-item active" id="nav-suivi" onclick="showView('suivi')"><span class="icon">📋</span><span>Commandes</span></div>
     <div class="nav-item" id="nav-alertes" onclick="showView('alertes')"><span class="icon">🔔</span><span>Alertes</span></div>
@@ -275,7 +228,7 @@ table td:first-child::before{display:none;}
     <div class="nav-item" id="nav-planning" onclick="showView('planning')"><span class="icon">📅</span><span>Planning</span></div>
     <div class="nav-item" id="nav-config" onclick="showView('config')"><span class="icon">⚙️</span><span>Config</span></div>
   </nav>
-  <div class="sidebar-footer">v7.0</div>
+  <div class="sidebar-footer">v7.2</div>
 </aside>
 
 <div class="main">
@@ -287,6 +240,7 @@ table td:first-child::before{display:none;}
       <button class="btn btn-outline btn-sm" id="btn-notif" onclick="activerNotifications()" title="Notifications">🔕 Notifs</button>
       <button class="btn btn-outline btn-sm" onclick="viderCache();charger(true)">🔄 Actualiser</button>
       <button class="btn btn-outline btn-sm" onclick="exportCSV()">⬇ CSV</button>
+      <button class="btn btn-outline btn-sm" onclick="ouvrirModalDictee()" style="border-color:#E65100;color:#E65100;">🎙️ Dicter</button>
       <button class="btn btn-primary btn-sm" onclick="openModal(-1)">+ Nouvelle commande</button>
     </div>
   </div>
@@ -294,7 +248,6 @@ table td:first-child::before{display:none;}
   <div class="content">
     <div class="loader-bar" id="loader"><div class="loader-fill"></div></div>
 
-    <!-- VUE SUIVI -->
     <div id="view-suivi" class="view active">
       <div class="kpi-grid" id="kpi-grid"></div>
       <div class="filters-bar">
@@ -338,10 +291,8 @@ table td:first-child::before{display:none;}
       </div>
     </div>
 
-    <!-- VUE ALERTES -->
     <div id="view-alertes" class="view"><div id="alertes-content"></div></div>
 
-    <!-- VUE AGENT -->
     <div id="view-agent" class="view">
       <div class="agent-header">
         <div class="agent-header-info">
@@ -364,7 +315,6 @@ table td:first-child::before{display:none;}
       </div>
     </div>
 
-    <!-- VUE METRE -->
     <div id="view-metre" class="view">
       <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
         <input type="text" id="metre-search" placeholder="🔍 Rechercher client, devis..." oninput="renderMetre()" class="search-input">
@@ -378,15 +328,7 @@ table td:first-child::before{display:none;}
       <div class="table-wrap">
         <table>
           <thead><tr>
-            <th>Ligne</th>
-            <th>Client</th>
-            <th>Fournisseur</th>
-            <th>N° Devis</th>
-            <th>📅 Date métré (col. B)</th>
-            <th>Statut livraison</th>
-            <th>Statut pose</th>
-            <th>Alerte</th>
-            <th></th>
+            <th>Ligne</th><th>Client</th><th>Fournisseur</th><th>N° Devis</th><th>📅 Date métré (col. B)</th><th>Statut livraison</th><th>Statut pose</th><th>Alerte</th><th></th>
           </tr></thead>
           <tbody id="metre-table-body"></tbody>
         </table>
@@ -394,7 +336,6 @@ table td:first-child::before{display:none;}
       </div>
     </div>
 
-    <!-- AUTRES VUES -->
     <div id="view-dashboard" class="view"><div class="dash-grid" id="dash-content"></div></div>
     <div id="view-suivipose" class="view">
       <div style="text-align:right;margin-bottom:10px;">
@@ -432,7 +373,6 @@ table td:first-child::before{display:none;}
   </div>
 </div>
 
-<!-- MODALE -->
 <div class="overlay" id="overlay" onclick="closeOut(event)">
   <div class="modal">
     <div class="modal-header">
@@ -442,40 +382,21 @@ table td:first-child::before{display:none;}
     <div class="modal-body">
       <div class="form-grid">
         <div class="form-group"><label>Client *</label><input id="f-client" type="text"></div>
-        <div class="form-group"><label>Fournisseur</label>
-          <select id="f-fournisseur"><option value="">— Choisir —</option></select>
-        </div>
+        <div class="form-group"><label>Fournisseur</label><select id="f-fournisseur"><option value="">— Choisir —</option></select></div>
         <div class="form-group"><label>📅 Date métré (col. B)</label><input id="f-metres" type="text" placeholder="Ex: 31/08/2026 ou lundi 31 août"></div>
         <div class="form-group"><label>N° Devis</label><input id="f-devis" type="text"></div>
         <div class="form-group"><label>Devis TTC</label><input id="f-devisTTC" type="number"></div>
-        <div class="form-group"><label>Commande envoyée</label>
-          <select id="f-commande"><option value="">—</option><option>OUI</option><option>NON</option></select>
-        </div>
+        <div class="form-group"><label>Commande envoyée</label><select id="f-commande"><option value="">—</option><option>OUI</option><option>NON</option></select></div>
         <div class="form-group"><label>N° ARC</label><input id="f-arc" type="text"></div>
         <div class="form-group full"><label>📦 Objet de la commande</label><textarea id="f-objetCommande" placeholder="Ex: 3 fenêtres PVC blanc..." style="min-height:50px;"></textarea></div>
-        <div class="form-group"><label>Validation ARC</label>
-          <select id="f-commentaireARC"><option value="">—</option><option>Confirmer</option><option>Valide</option><option>En attente</option><option>ANNULER</option></select>
-        </div>
+        <div class="form-group"><label>Validation ARC</label><select id="f-commentaireARC"><option value="">—</option><option>Confirmer</option><option>Valide</option><option>En attente</option><option>ANNULER</option></select></div>
         <div class="form-group"><label>Prévision livraison</label><input id="f-prevLivraison" type="text"></div>
-        <div class="form-group"><label>Statut livraison</label>
-          <select id="f-statutLivraison"><option value="">—</option><option>En cours</option><option>Livré</option><option>Terminé</option><option>En attente</option><option>Bloqué</option><option>SAV</option><option>Annulé</option><option>A PLANIFIER</option><option>A planifier</option></select>
-        </div>
-        <div class="form-group"><label>Statut pose</label>
-          <select id="f-statutPose"><option value="">—</option><option>A planifier</option><option>A PLANIFIER</option><option>En cours</option><option>Posé</option><option>Terminé</option><option>SAV</option><option>Annulé</option></select>
-        </div>
+        <div class="form-group"><label>Statut livraison</label><select id="f-statutLivraison"><option value="">—</option><option>En cours</option><option>Livré</option><option>Terminé</option><option>En attente</option><option>Bloqué</option><option>SAV</option><option>Annulé</option><option>A PLANIFIER</option><option>A planifier</option></select></div>
+        <div class="form-group"><label>Statut pose</label><select id="f-statutPose"><option value="">—</option><option>A planifier</option><option>A PLANIFIER</option><option>En cours</option><option>Posé</option><option>Terminé</option><option>SAV</option><option>Annulé</option></select></div>
         <div class="form-group"><label>Date de pose</label><input id="f-datePose" type="text" placeholder="Ex: S26 ou 23/06/2026"></div>
-        <div class="form-group"><label>PV fin de chantier</label>
-          <label style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--gris-bg);border-radius:8px;cursor:pointer;">
-            <input type="checkbox" id="f-pvChantier" style="width:18px;height:18px;accent-color:var(--vert);cursor:pointer;">
-            <span style="font-size:13px;font-weight:600;">PV effectué</span>
-          </label>
-        </div>
-        <div class="form-group full"><label>Historique des commentaires</label>
-          <textarea id="f-commentaire-historique" readonly style="background:#F5F7FA;color:var(--texte2);font-style:italic;min-height:90px;" placeholder="Aucun commentaire."></textarea>
-        </div>
-        <div class="form-group full"><label>Ajouter un nouveau commentaire</label>
-          <textarea id="f-commentaire-nouveau" placeholder="Nouvelle remarque (ajoutée avec date du jour)..." style="min-height:60px;"></textarea>
-        </div>
+        <div class="form-group"><label>PV fin de chantier</label><label style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--gris-bg);border-radius:8px;cursor:pointer;"><input type="checkbox" id="f-pvChantier" style="width:18px;height:18px;accent-color:var(--vert);cursor:pointer;"><span style="font-size:13px;font-weight:600;">PV effectué</span></label></div>
+        <div class="form-group full"><label>Historique des commentaires</label><textarea id="f-commentaire-historique" readonly style="background:#F5F7FA;color:var(--texte2);font-style:italic;min-height:90px;" placeholder="Aucun commentaire."></textarea></div>
+        <div class="form-group full"><label>Ajouter un nouveau commentaire</label><textarea id="f-commentaire-nouveau" placeholder="Nouvelle remarque (ajoutée avec date du jour)..." style="min-height:60px;"></textarea></div>
       </div>
     </div>
     <div class="modal-footer">
@@ -489,139 +410,84 @@ table td:first-child::before{display:none;}
     </div>
   </div>
 </div>
+
+<div class="overlay" id="overlay-dictee" onclick="fermerDictee(event)" style="display:none;">
+  <div class="modal" style="max-width:500px;width:100%;margin:20px;">
+    <div class="modal-header">
+      <h3>🎙️ Créer une fiche à la voix</h3>
+      <button class="modal-close" onclick="fermerDictee()">✕</button>
+    </div>
+    <div class="modal-body" style="padding:20px;">
+      <p style="font-size:13px;color:var(--texte2);margin-bottom:12px;">Appuyez sur le micro et dictez les informations, ou tapez directement.</p>
+      <div style="display:flex;gap:10px;margin-bottom:15px;">
+        <textarea id="dictee-texte" placeholder="Ex: Créer une fiche pour Monsieur Dupont, devis 4589, fournisseur Atlantem, commande passée..." style="flex:1;min-height:100px;font-size:14px;"></textarea>
+        <button class="btn btn-primary" onclick="lancerDicteeVocale()" style="width:60px;border-radius:8px;font-size:24px;" title="Dicter à la voix">🎤</button>
+      </div>
+      <div id="dictee-status" style="font-size:12px;color:var(--orange);margin-bottom:15px;display:none;">🎙️ Écoute en cours...</div>
+    </div>
+    <div class="modal-footer" style="padding:15px 20px;">
+      <button class="btn btn-outline" onclick="fermerDictee()">Annuler</button>
+      <button class="btn btn-primary" onclick="validerDictee()" id="btn-valider-dictee">✨ Analyser et Créer</button>
+    </div>
+  </div>
+</div>
 <script>
-// ══════════════════════════════════════════════════════════
-//  CONFIGURATION GLOBALE
-// ══════════════════════════════════════════════════════════
 var WEBAPP_DEFAULT = 'https://script.google.com/macros/s/AKfycbzcq9ChzAPdH1DWnH5H-cYBVC_8Ou4DVIy1sKES5PyFC0M3j80RrbnUU8fK8ojL013H/exec';
 var WEBAPP = localStorage.getItem('eco-webapp-url') || WEBAPP_DEFAULT;
 var FOU_COLORS = {'ATLANTEM':'#1565C0','ATULAM':'#6A1B9A','LALLEMANT':'#2E7D32','SOKO':'#00695C','ALUGLASS':'#E65100','FILTERSUN':'#C62828','DC PROD':'#37474F','KE FRANCE':'#0277BD','SKYLUX':'#558B2F','BVL SERRULAC':'#4527A0','LEROY MERLIN':'#1B5E20','FOUSSIER':'#6D4C41','STOCK':'#546E7A'};
 var TERMINES = ['LIVRE','LIVRÉ','TERMINE','TERMINÉ','POSE','POSÉ','Livré','Terminé','Posé','Livre','Termine'];
 var commandes = [];
-var sortCol = 'ligne';
-var sortAsc = false;
-var alertFilter = 'all';
-var editLigne = -1;
-var CACHE_DUREE = 60 * 1000;
-var CACHE_KEY = 'eco-ouest-cache-v70';
-var CACHE_TIME_KEY = 'eco-ouest-cache-time-v70';
+var sortCol = 'ligne', sortAsc = false, alertFilter = 'all', editLigne = -1;
+var CACHE_DUREE = 60 * 1000, CACHE_KEY = 'eco-ouest-cache-v72', CACHE_TIME_KEY = 'eco-ouest-cache-time-v72';
 var dernierRapportAgent = null;
+var recognition = null;
 
-// ══════════════════════════════════════════════════════════
-//  HELPERS
-// ══════════════════════════════════════════════════════════
-function str(s) {
-  if (s === null || s === undefined) return '';
-  return String(s);
-}
-
-function h(s) {
-  return str(s)
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;');
-}
+function str(s) { if (s === null || s === undefined) return ''; return String(s); }
+function h(s) { return str(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function escAttr(s) { return h(s); }
 
 function afficherToast(type, icon, titre, msg, duree) {
-  var existing = document.querySelector('.toast');
-  if (existing) existing.remove();
+  var existing = document.querySelector('.toast'); if (existing) existing.remove();
   duree = duree || 4000;
-  var t = document.createElement('div');
-  t.className = 'toast ' + type;
+  var t = document.createElement('div'); t.className = 'toast ' + type;
   t.innerHTML = '<span class="toast-icon">'+icon+'</span><div style="flex:1"><div class="toast-title">'+h(titre)+'</div><div class="toast-msg">'+h(msg||'')+'</div></div>';
   document.body.appendChild(t);
   setTimeout(function(){ t.style.opacity='0'; t.style.transition='opacity .3s'; setTimeout(function(){t.remove();},300); }, duree);
 }
 
-// ══════════════════════════════════════════════════════════
-//  MENU MOBILE
-// ══════════════════════════════════════════════════════════
-function ouvrirMenuMobile() {
-  var m = document.getElementById('menu-mobile');
-  if (m) m.classList.add('open');
-}
-function fermerMenuMobile(e) {
-  if (e && e.stopPropagation) e.stopPropagation();
-  var m = document.getElementById('menu-mobile');
-  if (m) m.classList.remove('open');
-}
-function menuMobileGo(v) {
-  fermerMenuMobile();
-  showView(v);
-}
+function ouvrirMenuMobile() { var m = document.getElementById('menu-mobile'); if (m) m.classList.add('open'); }
+function fermerMenuMobile(e) { if (e && e.stopPropagation) e.stopPropagation(); var m = document.getElementById('menu-mobile'); if (m) m.classList.remove('open'); }
+function menuMobileGo(v) { fermerMenuMobile(); showView(v); }
 
-// ══════════════════════════════════════════════════════════
-//  DATES
-// ══════════════════════════════════════════════════════════
 function formatDateMetre(val) {
   if (!val) return '';
-  if (typeof val === 'string' && !/GMT|T\d{2}:/.test(val) && !/^\d{4}-\d{2}-\d{2}/.test(val)) {
-    return str(val).trim();
-  }
-  try {
-    var d = (val instanceof Date) ? val : new Date(val);
-    if (isNaN(d.getTime())) return str(val).trim();
-    return d.toLocaleDateString('fr-FR', {weekday:'long', day:'numeric', month:'long'});
-  } catch(e) { return str(val).trim(); }
+  if (typeof val === 'string' && !/GMT|T\d{2}:/.test(val) && !/^\d{4}-\d{2}-\d{2}/.test(val)) return str(val).trim();
+  try { var d = (val instanceof Date) ? val : new Date(val); if (isNaN(d.getTime())) return str(val).trim(); return d.toLocaleDateString('fr-FR', {weekday:'long', day:'numeric', month:'long'}); } catch(e) { return str(val).trim(); }
 }
 
 function convertirEnDateISO(s) {
-  if (!s) return '';
-  s = str(s).trim();
-  if (!s) return '';
+  if (!s) return ''; s = str(s).trim(); if (!s) return '';
   if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
   var m1 = s.match(/^(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{2,4})$/);
-  if (m1) {
-    var d = m1[1].padStart(2,'0');
-    var mo = m1[2].padStart(2,'0');
-    var y = m1[3];
-    if (y.length === 2) y = '20' + y;
-    return y + '-' + mo + '-' + d;
-  }
+  if (m1) { var d = m1[1].padStart(2,'0'), mo = m1[2].padStart(2,'0'), y = m1[3]; if (y.length === 2) y = '20' + y; return y + '-' + mo + '-' + d; }
   var moisFR = {'janvier':'01','fevrier':'02','février':'02','mars':'03','avril':'04','mai':'05','juin':'06','juillet':'07','aout':'08','août':'08','septembre':'09','octobre':'10','novembre':'11','decembre':'12','décembre':'12'};
   var m3 = s.toLowerCase().match(/(\d{1,2})[,\s]+([a-zéèû]+)/);
-  if (m3) {
-    var jour = m3[1].padStart(2,'0');
-    var mois = moisFR[m3[2]];
-    if (mois) {
-      var annee = new Date().getFullYear();
-      return annee + '-' + mois + '-' + jour;
-    }
-  }
+  if (m3) { var jour = m3[1].padStart(2,'0'), mois = moisFR[m3[2]]; if (mois) return new Date().getFullYear() + '-' + mois + '-' + jour; }
   return '';
 }
 
 function parseDatePose(dp) {
-  if (!dp) return null;
-  dp = str(dp).trim();
-  if (!dp) return null;
+  if (!dp) return null; dp = str(dp).trim(); if (!dp) return null;
   var mSem = dp.match(/^S\s*0*(\d{1,2})$/i);
-  if (mSem) {
-    var num = parseInt(mSem[1], 10);
-    if (num >= 1 && num <= 53) return { type:'semaine', num: num };
-  }
+  if (mSem) { var num = parseInt(mSem[1], 10); if (num >= 1 && num <= 53) return { type:'semaine', num: num }; }
   var mDate = dp.match(/^(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{2,4})$/);
-  if (mDate) {
-    var d = parseInt(mDate[1], 10);
-    var mo = parseInt(mDate[2], 10) - 1;
-    var y = parseInt(mDate[3], 10);
-    if (y < 100) y += 2000;
-    var date = new Date(y, mo, d);
-    if (!isNaN(date.getTime())) return { type:'date', date: date };
-  }
-  var dISO = new Date(dp);
-  if (!isNaN(dISO.getTime())) return { type:'date', date: dISO };
+  if (mDate) { var d = parseInt(mDate[1], 10), mo = parseInt(mDate[2], 10) - 1, y = parseInt(mDate[3], 10); if (y < 100) y += 2000; var date = new Date(y, mo, d); if (!isNaN(date.getTime())) return { type:'date', date: date }; }
+  var dISO = new Date(dp); if (!isNaN(dISO.getTime())) return { type:'date', date: dISO };
   return null;
 }
 
-// ══════════════════════════════════════════════════════════
-//  ALERTE
-// ══════════════════════════════════════════════════════════
 function alerte(c) {
-  var sL = str(c.statutLivraison).trim();
-  var sP = str(c.statutPose).trim();
+  var sL = str(c.statutLivraison).trim(), sP = str(c.statutPose).trim();
   if (TERMINES.indexOf(sL)!==-1 || TERMINES.indexOf(sP)!==-1) return {t:'OK',n:0};
   if (str(c.commentaireARC).trim().toUpperCase()==='ANNULER') return {t:'Annulee',n:-1};
   var m=[], s=0;
@@ -634,17 +500,9 @@ function alerte(c) {
   return {t:m.join(' | '),n:s};
 }
 
-// ══════════════════════════════════════════════════════════
-//  PV
-// ══════════════════════════════════════════════════════════
 function pvBadge(val, ligne) {
   var fait = val && str(val).toUpperCase() === 'OUI';
-  return '<label style="display:flex;align-items:center;gap:6px;cursor:pointer;">'
-    + '<input type="checkbox" '+(fait?'checked':'')
-    + ' onchange="togglePV('+ligne+', this.checked)"'
-    + ' style="width:16px;height:16px;accent-color:var(--vert);cursor:pointer;">'
-    + '<span style="font-size:11px;font-weight:600;color:'+(fait?'var(--vert)':'var(--texte2)')+';">'
-    + (fait ? '✓ Fait' : 'Non fait') + '</span></label>';
+  return '<label style="display:flex;align-items:center;gap:6px;cursor:pointer;"><input type="checkbox" '+(fait?'checked':'')+' onchange="togglePV('+ligne+', this.checked)" style="width:16px;height:16px;accent-color:var(--vert);cursor:pointer;"><span style="font-size:11px;font-weight:600;color:'+(fait?'var(--vert)':'var(--texte2)')+';">'+(fait?'✓ Fait':'Non fait')+'</span></label>';
 }
 
 async function togglePV(ligne, checked) {
@@ -653,272 +511,97 @@ async function togglePV(ligne, checked) {
   var ancien = c ? c.pvChantier : '';
   if (c) c.pvChantier = val;
   renderTable();
-  try {
-    var r = await apiPost({action:'modifier', ligne:ligne, champs:{16: val}});
-    if (!r || !r.ok) throw new Error(r && r.error ? r.error : 'Pas de réponse');
-    afficherToast('ok','✅','PV mis à jour','Ligne '+ligne+' → '+val, 2000);
-    sauvegarderCache(commandes);
-  } catch(e) {
-    if (c) c.pvChantier = ancien;
-    renderTable();
-    afficherToast('urgent','⚠️','Erreur PV', e.message, 5000);
-  }
+  try { var r = await apiPost({action:'modifier', ligne:ligne, champs:{16: val}}); if (!r || !r.ok) throw new Error(r.error || 'Erreur'); afficherToast('ok','✅','PV mis à jour','',2000); sauvegarderCache(commandes); } catch(e) { if (c) c.pvChantier = ancien; renderTable(); afficherToast('urgent','⚠️','Erreur PV', e.message, 5000); }
 }
 
-// ══════════════════════════════════════════════════════════
-//  SEMAINE
-// ══════════════════════════════════════════════════════════
 function semaineBadge(s) {
   if (!s || !str(s).trim()) return '<span style="color:#ccc">—</span>';
-  var clean = str(s).trim();
-  var match = clean.match(/S\s*0*(\d{1,2})/i);
-  if (match) {
-    var num = parseInt(match[1], 10);
-    var now = new Date();
-    var curWeek = getWeekNumber(now);
-    var color = '#1565C0', bg = '#E3F2FD';
-    if (num < curWeek) { color = '#D32F2F'; bg = '#FFEBEE'; }
-    else if (num === curWeek) { color = '#E65100'; bg = '#FFF3E0'; }
-    else if (num <= curWeek + 2) { color = '#F9A825'; bg = '#FFFDE7'; }
-    else { color = '#2E7D32'; bg = '#E8F5E9'; }
-    return '<span class="badge" style="background:'+bg+';color:'+color+';font-weight:700;">S'+num+'</span>';
-  }
-  return '<span style="font-size:12px;color:var(--texte2);">'+h(clean)+'</span>';
+  var match = str(s).trim().match(/S\s*0*(\d{1,2})/i);
+  if (match) { var num = parseInt(match[1], 10), curWeek = getWeekNumber(new Date()), color = '#1565C0', bg = '#E3F2FD';
+    if (num < curWeek) { color = '#D32F2F'; bg = '#FFEBEE'; } else if (num === curWeek) { color = '#E65100'; bg = '#FFF3E0'; } else if (num <= curWeek + 2) { color = '#F9A825'; bg = '#FFFDE7'; } else { color = '#2E7D32'; bg = '#E8F5E9'; }
+    return '<span class="badge" style="background:'+bg+';color:'+color+';font-weight:700;">S'+num+'</span>'; }
+  return '<span style="font-size:12px;color:var(--texte2);">'+h(s)+'</span>';
 }
-function getWeekNumber(d) {
-  d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-  d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7));
-  var yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
-  return Math.ceil((((d-yearStart)/86400000)+1)/7);
-}
+function getWeekNumber(d) { d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())); d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7)); var yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1)); return Math.ceil((((d-yearStart)/86400000)+1)/7); }
 function aClass(n){return n===0?'alerte-ok':n===1?'alerte-jaune':n===2?'alerte-orange':n===3?'alerte-rouge':'';}
 
-// ══════════════════════════════════════════════════════════
-//  API POST (Timeout 180s pour l'IA)
-// ══════════════════════════════════════════════════════════
 async function apiPost(body, tentative) {
-  tentative = tentative || 1;
-  var MAX_TENTATIVES = 2;
-  var requeteEnvoyee = false;
+  tentative = tentative || 1; var MAX_TENTATIVES = 2, requeteEnvoyee = false;
   try {
-    var controller = new AbortController();
-    var timeoutId = setTimeout(function(){ controller.abort(); }, 180000);
-    requeteEnvoyee = true;
-    var r = await fetch(WEBAPP, {
-      method:'POST',
-      headers:{'Content-Type':'text/plain;charset=utf-8'},
-      body:JSON.stringify(body),
-      redirect:'follow',
-      signal: controller.signal
-    });
+    var controller = new AbortController(); var timeoutId = setTimeout(function(){ controller.abort(); }, 180000); requeteEnvoyee = true;
+    var r = await fetch(WEBAPP, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify(body), redirect:'follow', signal: controller.signal});
     clearTimeout(timeoutId);
-    if (!r.ok) {
-      var errText = await r.text().catch(function(){return '';});
-      throw new Error('HTTP ' + r.status + ' — ne pas retenter');
-    }
+    if (!r.ok) throw new Error('HTTP ' + r.status);
     var texte = await r.text();
-    if (texte.trim().substring(0,1) === '<') {
-      throw new Error('Réponse HTML inattendue du serveur — ne pas retenter');
-    }
-    try { return JSON.parse(texte); }
-    catch(parseErr) { throw new Error('Réponse JSON invalide — ne pas retenter'); }
+    if (texte.trim().substring(0,1) === '<') throw new Error('Réponse HTML');
+    return JSON.parse(texte);
   } catch(e) {
     var msg = e.name === 'AbortError' ? 'Délai dépassé (3 min)' : e.message;
-    var estErreurReseau = !requeteEnvoyee ||
-                          e.name === 'TypeError' ||
-                          e.message.indexOf('Failed to fetch') !== -1;
-    var nePasRetenter = msg.indexOf('ne pas retenter') !== -1;
-    if (body && (body.action === 'analyserAgent' || body.action === 'relancerFournisseur')) nePasRetenter = true;
-
-    if (estErreurReseau && !nePasRetenter && tentative < MAX_TENTATIVES) {
-      await new Promise(function(res){ setTimeout(res, 1500); });
-      return apiPost(body, tentative + 1);
-    }
+    var nePasRetenter = msg.indexOf('HTTP') !== -1 || (body && (body.action === 'analyserAgent' || body.action === 'relancerFournisseur' || body.action === 'dicteeFiche'));
+    if (!requeteEnvoyee && !nePasRetenter && tentative < MAX_TENTATIVES) { await new Promise(function(res){ setTimeout(res, 1500); }); return apiPost(body, tentative + 1); }
     throw new Error(msg);
   }
 }
 
-// ══════════════════════════════════════════════════════════
-//  CACHE
-// ══════════════════════════════════════════════════════════
 function chargerDepuisCache() {
-  try {
-    var ts = parseInt(localStorage.getItem(CACHE_TIME_KEY) || '0');
-    var age = Date.now() - ts;
-    if (age < CACHE_DUREE) {
-      var cached = localStorage.getItem(CACHE_KEY);
-      if (cached) {
-        commandes = JSON.parse(cached);
-        var t = new Date(ts).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
-        sync('ok', 'Cache · ' + t);
-        fillFournisseur();
-        renderAll();
-        setLoader(false);
-        return true;
-      }
-    }
-  } catch(e) {}
+  try { var ts = parseInt(localStorage.getItem(CACHE_TIME_KEY) || '0'), age = Date.now() - ts; if (age < CACHE_DUREE) { var cached = localStorage.getItem(CACHE_KEY); if (cached) { commandes = JSON.parse(cached); var t = new Date(ts).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}); sync('ok', 'Cache · ' + t); fillFournisseur(); renderAll(); setLoader(false); return true; } } } catch(e) {}
   return false;
 }
+function sauvegarderCache(data) { try { localStorage.setItem(CACHE_KEY, JSON.stringify(data)); localStorage.setItem(CACHE_TIME_KEY, String(Date.now())); } catch(e) {} }
+function viderCache() { try { localStorage.removeItem(CACHE_KEY); localStorage.removeItem(CACHE_TIME_KEY); } catch(e) {} }
 
-function sauvegarderCache(data) {
-  try {
-    localStorage.setItem(CACHE_KEY, JSON.stringify(data));
-    localStorage.setItem(CACHE_TIME_KEY, String(Date.now()));
-  } catch(e) {}
-}
-
-function viderCache() {
-  try {
-    localStorage.removeItem(CACHE_KEY);
-    localStorage.removeItem(CACHE_TIME_KEY);
-  } catch(e) {}
-}
-
-// ══════════════════════════════════════════════════════════
-//  JSONP LOADER
-// ══════════════════════════════════════════════════════════
 window._jsonpCallback = function(d) {
-  window._jsonpInProgress = false;
-  if (window._jsonpTimeout) { clearTimeout(window._jsonpTimeout); window._jsonpTimeout = null; }
-  var old = document.getElementById('jsonp-script');
-  if (old) old.remove();
-  if (!d || !d.ok) {
-    sync('error', (d && d.error) ? d.error : 'Erreur serveur');
-    setLoader(false);
-    return;
-  }
-  commandes = d.data || [];
-  sauvegarderCache(commandes);
-  var t = new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
-  sync('ok','Mis à jour ' + t);
-  fillFournisseur();
-  renderAll();
-  setLoader(false);
+  window._jsonpInProgress = false; if (window._jsonpTimeout) { clearTimeout(window._jsonpTimeout); window._jsonpTimeout = null; }
+  var old = document.getElementById('jsonp-script'); if (old) old.remove();
+  if (!d || !d.ok) { sync('error', (d && d.error) ? d.error : 'Erreur serveur'); setLoader(false); return; }
+  commandes = d.data || []; sauvegarderCache(commandes); sync('ok','Mis à jour ' + new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})); fillFournisseur(); renderAll(); setLoader(false);
 };
 
 function charger(forceRefresh, tentative) {
   if (!forceRefresh && chargerDepuisCache()) return;
   if (window._jsonpInProgress && !tentative) return;
   if (window._jsonpTimeout) { clearTimeout(window._jsonpTimeout); window._jsonpTimeout = null; }
-  tentative = tentative || 1;
-  var MAX_TENT = 2;
-  var TIMEOUT_MS = 45000;
-  if (tentative > 1) TIMEOUT_MS = 60000;
-  window._jsonpInProgress = true;
-  setLoader(true);
-  sync('loading', tentative > 1 ? 'Nouvelle tentative...' : 'Chargement...');
-  var old = document.getElementById('jsonp-script');
-  if (old) old.remove();
+  tentative = tentative || 1; var MAX_TENT = 2, TIMEOUT_MS = 45000; if (tentative > 1) TIMEOUT_MS = 60000;
+  window._jsonpInProgress = true; setLoader(true); sync('loading', tentative > 1 ? 'Nouvelle tentative...' : 'Chargement...');
+  var old = document.getElementById('jsonp-script'); if (old) old.remove();
   window._jsonpTimeout = setTimeout(function() {
-    if (!window._jsonpInProgress) return;
-    window._jsonpInProgress = false;
-    var s = document.getElementById('jsonp-script');
-    if (s) s.remove();
-    if (tentative < MAX_TENT) {
-      charger(true, tentative + 1);
-    } else {
-      var cached = localStorage.getItem(CACHE_KEY);
-      if (cached) {
-        commandes = JSON.parse(cached);
-        sync('warn', 'Serveur lent - cache affiché');
-        afficherToast('warn', '⏰', 'Serveur lent', 'Affichage en cache. Réessayez dans 1 min.', 6000);
-        fillFournisseur();
-        renderAll();
-      } else {
-        sync('error', 'Connexion impossible');
-        document.getElementById('table-body').innerHTML = '<tr><td colspan="14"><div class="empty-state"><p>❌ Serveur trop lent.<br><br>Réessayez dans 30 secondes.<br>Cliquez sur 🔄 Actualiser.</p></div></td></tr>';
-      }
-      setLoader(false);
-    }
+    if (!window._jsonpInProgress) return; window._jsonpInProgress = false;
+    var s = document.getElementById('jsonp-script'); if (s) s.remove();
+    if (tentative < MAX_TENT) charger(true, tentative + 1);
+    else { var cached = localStorage.getItem(CACHE_KEY); if (cached) { commandes = JSON.parse(cached); sync('warn', 'Serveur lent'); fillFournisseur(); renderAll(); } else { document.getElementById('table-body').innerHTML = '<tr><td colspan="14"><div class="empty-state"><p>❌ Serveur trop lent.</p></div></td></tr>'; } setLoader(false); }
   }, TIMEOUT_MS);
-  var script = document.createElement('script');
-  script.id = 'jsonp-script';
-  script.src = WEBAPP + '?callback=_jsonpCallback&t=' + Date.now();
-  document.head.appendChild(script);
+  var script = document.createElement('script'); script.id = 'jsonp-script'; script.src = WEBAPP + '?callback=_jsonpCallback&t=' + Date.now(); document.head.appendChild(script);
 }
 
 function setLoader(on){document.getElementById('loader').classList.toggle('active',on);}
-function sync(state,label){
-  document.getElementById('sync-label').textContent=label;
-  var d=document.getElementById('sync-dot');
-  d.className='sync-dot'+(state==='loading'?' loading':'');
-  d.style.background=state==='ok'?'#2E7D32':state==='error'?'#D32F2F':'#E65100';
-}
+function sync(state,label){document.getElementById('sync-label').textContent=label; var d=document.getElementById('sync-dot'); d.className='sync-dot'+(state==='loading'?' loading':''); d.style.background=state==='ok'?'#2E7D32':state==='error'?'#D32F2F':'#E65100';}
 
-// ══════════════════════════════════════════════════════════
-//  KPI
-// ══════════════════════════════════════════════════════════
 function renderKPI() {
-  var grid = document.getElementById('kpi-grid');
-  grid.innerHTML = '';
-  var al=commandes.map(function(c){return alerte(c);});
-  var tot=commandes.length,urg=0,warn=0,ok=0,enc=0;
+  var grid = document.getElementById('kpi-grid'); grid.innerHTML = '';
+  var al=commandes.map(function(c){return alerte(c);}); var tot=commandes.length,urg=0,warn=0,ok=0,enc=0;
   al.forEach(function(a){if(a.n===3)urg++;else if(a.n>=1)warn++;else if(a.n===0)ok++;});
   commandes.forEach(function(c){if(TERMINES.indexOf(str(c.statutLivraison).trim())===-1)enc++;});
-  var items=[
-    {cls:'kpi-info',  f:'all',    lb:'Total',    v:tot, sub:'commandes'},
-    {cls:'kpi-urgent',f:'urgent', lb:'Urgentes', v:urg, sub:'action requise'},
-    {cls:'kpi-warn',  f:'warn',   lb:'Attention',v:warn,sub:'surveiller'},
-    {cls:'kpi-ok',    f:'ok',     lb:'OK',       v:ok,  sub:'sans alerte'},
-    {cls:'kpi-info',  f:'encours', lb:'En cours', v:enc, sub:'non livrées'}
-  ];
-  items.forEach(function(it){
-    var d=document.createElement('div');
-    d.className='kpi-card '+it.cls;
-    if(it.f){(function(f){d.onclick=function(){setFilter(f);showView('suivi');}; d.style.cursor='pointer';})(it.f);}
-    d.innerHTML='<span class="kpi-label">'+it.lb+'</span><span class="kpi-value">'+it.v+'</span><span class="kpi-sub">'+it.sub+'</span>';
-    grid.appendChild(d);
-  });
+  var items=[{cls:'kpi-info',f:'all',lb:'Total',v:tot,sub:'commandes'},{cls:'kpi-urgent',f:'urgent',lb:'Urgentes',v:urg,sub:'action requise'},{cls:'kpi-warn',f:'warn',lb:'Attention',v:warn,sub:'surveiller'},{cls:'kpi-ok',f:'ok',lb:'OK',v:ok,sub:'sans alerte'},{cls:'kpi-info',f:'encours',lb:'En cours',v:enc,sub:'non livrées'}];
+  items.forEach(function(it){ var d=document.createElement('div'); d.className='kpi-card '+it.cls; if(it.f){(function(f){d.onclick=function(){setFilter(f);showView('suivi');}; d.style.cursor='pointer';})(it.f);} d.innerHTML='<span class="kpi-label">'+it.lb+'</span><span class="kpi-value">'+it.v+'</span><span class="kpi-sub">'+it.sub+'</span>'; grid.appendChild(d); });
 }
 
-// ══════════════════════════════════════════════════════════
-//  TABLEAU PRINCIPAL
-// ══════════════════════════════════════════════════════════
 function renderTable() {
-  var q=str(document.getElementById('search').value).toLowerCase();
-  var fF=document.getElementById('filter-fournisseur').value;
-  var fS=document.getElementById('filter-statut').value;
+  var q=str(document.getElementById('search').value).toLowerCase(), fF=document.getElementById('filter-fournisseur').value, fS=document.getElementById('filter-statut').value;
   var afficherTermines = document.getElementById('show-termines') && document.getElementById('show-termines').checked;
   var STATUTS_TERMINES = ['Terminé','Termine','Posé','Pose','TERMINE','POSE'];
   var rows=commandes.map(function(c,i){return Object.assign({},c,{_i:i,_a:alerte(c)});});
-  if (!afficherTermines) {
-    rows = rows.filter(function(c){
-      return STATUTS_TERMINES.indexOf(str(c.statutPose).trim()) === -1;
-    });
-  }
+  if (!afficherTermines) rows = rows.filter(function(c){return STATUTS_TERMINES.indexOf(str(c.statutPose).trim()) === -1;});
   if(q)rows=rows.filter(function(c){return str(c.client).toLowerCase().indexOf(q)!==-1||str(c.devis).toLowerCase().indexOf(q)!==-1||str(c.arc).toLowerCase().indexOf(q)!==-1||str(c.fournisseur).toLowerCase().indexOf(q)!==-1;});
   if(fF)rows=rows.filter(function(c){return c.fournisseur===fF;});
   if(fS)rows=rows.filter(function(c){var fSl=fS.toLowerCase();return str(c.statutLivraison).toLowerCase().indexOf(fSl)!==-1||str(c.statutPose).toLowerCase().indexOf(fSl)!==-1;});
   if(alertFilter==='urgent')rows=rows.filter(function(c){return c._a.n===3;});
   if(alertFilter==='warn')rows=rows.filter(function(c){return c._a.n>=1&&c._a.n<=2;});
   if(alertFilter==='ok')rows=rows.filter(function(c){return c._a.n===0;});
-
-  function estSAV(c) {
-    var sP = str(c.statutPose).trim();
-    var sL = str(c.statutLivraison).trim();
-    return sP === 'SAV' || sL === 'SAV';
-  }
-  var savCount = commandes.filter(estSAV).length;
-  var savEl = document.getElementById('sav-count');
-  if(savEl) savEl.textContent = savCount;
-  if(alertFilter==='sav')rows=rows.filter(estSAV);
-
-  var noncmdCount = commandes.filter(function(c){return str(c.commande).trim().toUpperCase()!=='OUI';}).length;
-  var noncmdEl = document.getElementById('noncmd-count');
-  if(noncmdEl) noncmdEl.textContent = noncmdCount;
-  if(alertFilter==='noncmd')rows=rows.filter(function(c){return str(c.commande).trim().toUpperCase()!=='OUI';});
-
-  if(alertFilter==='encours')rows=rows.filter(function(c){
-    var sL=str(c.statutLivraison).trim();
-    var LIVRES=['Livré','Livre','Terminé','Termine','LIVRE','TERMINE'];
-    return LIVRES.indexOf(sL)===-1;
-  });
-  rows.sort(function(a,b){
-    if(sortCol==='ligne'){return sortAsc ? (a.ligne-b.ligne) : (b.ligne-a.ligne);}
-    var va=str(a[sortCol]).toLowerCase(),vb=str(b[sortCol]).toLowerCase();
-    return sortAsc?va.localeCompare(vb):vb.localeCompare(va);
-  });
+  function estSAV(c) { var sP = str(c.statutPose).trim(), sL = str(c.statutLivraison).trim(); return sP === 'SAV' || sL === 'SAV'; }
+  var savCount = commandes.filter(estSAV).length; var savEl = document.getElementById('sav-count'); if(savEl) savEl.textContent = savCount; if(alertFilter==='sav')rows=rows.filter(estSAV);
+  var noncmdCount = commandes.filter(function(c){return str(c.commande).trim().toUpperCase()!=='OUI';}).length; var noncmdEl = document.getElementById('noncmd-count'); if(noncmdEl) noncmdEl.textContent = noncmdCount; if(alertFilter==='noncmd')rows=rows.filter(function(c){return str(c.commande).trim().toUpperCase()!=='OUI';});
+  if(alertFilter==='encours')rows=rows.filter(function(c){var sL=str(c.statutLivraison).trim(), LIVRES=['Livré','Livre','Terminé','Termine','LIVRE','TERMINE']; return LIVRES.indexOf(sL)===-1;});
+  rows.sort(function(a,b){ if(sortCol==='ligne'){return sortAsc ? (a.ligne-b.ligne) : (b.ligne-a.ligne);} var va=str(a[sortCol]).toLowerCase(),vb=str(b[sortCol]).toLowerCase(); return sortAsc?va.localeCompare(vb):vb.localeCompare(va); });
   var tb=document.getElementById('table-body');
   if(!rows.length){tb.innerHTML='<tr><td colspan="14"><div class="empty-state"><p>Aucune commande trouvée.</p></div></td></tr>';document.getElementById('scroll-hint').textContent='';return;}
   tb.innerHTML=rows.map(function(c){
@@ -926,12 +609,8 @@ function renderTable() {
     var sL=c.statutLivraison?'<span class="badge '+(c.statutLivraison==='Livré'?'badge-ok':c.statutLivraison==='SAV'?'badge-urgent':'badge-info')+'">'+h(c.statutLivraison)+'</span>':'—';
     var sP=c.statutPose?'<span class="badge '+(c.statutPose==='Terminé'?'badge-ok':c.statutPose==='SAV'?'badge-urgent':'badge-info')+'">'+h(c.statutPose)+'</span>':'—';
     var extra=a.t.indexOf(' | ')!==-1?'<br><span style="font-size:10px;color:var(--texte2);">+'+(a.t.split(' | ').length-1)+' autre(s)</span>':'';
-    var objetBadge = c.objetCommande
-      ? '<span style="border-bottom:2px dotted var(--bleu);cursor:pointer;" onclick="afficherObjetParLigne(event,'+c.ligne+')">'+h(c.arc||'—')+' 📦</span>'
-      : h(c.arc||'—');
-    var metreCell = c.metres
-      ? '<span style="background:#FFF3E0;color:var(--orange);padding:3px 9px;border-radius:5px;font-size:11px;font-weight:700;white-space:nowrap;">📅 '+h(formatDateMetre(c.metres))+'</span>'
-      : '<span style="color:#ccc;">—</span>';
+    var objetBadge = c.objetCommande ? '<span style="border-bottom:2px dotted var(--bleu);cursor:pointer;" onclick="afficherObjetParLigne(event,'+c.ligne+')">'+h(c.arc||'—')+' 📦</span>' : h(c.arc||'—');
+    var metreCell = c.metres ? '<span style="background:#FFF3E0;color:var(--orange);padding:3px 9px;border-radius:5px;font-size:11px;font-weight:700;white-space:nowrap;">📅 '+h(formatDateMetre(c.metres))+'</span>' : '<span style="color:#ccc;">—</span>';
     return '<tr>'+
       '<td class="col-client" data-label="Client"><span style="display:inline-block;background:var(--gris-bg);color:var(--texte2);font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px;margin-right:6px;">L'+c.ligne+'</span>'+h(c.client)+'</td>'+
       '<td data-label="Fournisseur"><span style="background:'+fc+'18;color:'+fc+';padding:3px 8px;border-radius:5px;font-size:11px;font-weight:700;">'+h(c.fournisseur||'—')+'</span></td>'+
@@ -952,355 +631,150 @@ function renderTable() {
 }
 
 function sortBy(col){if(sortCol===col)sortAsc=!sortAsc;else{sortCol=col;sortAsc=true;}renderTable();}
+function setFilter(f){ alertFilter=f; ['all','urgent','warn','ok'].forEach(function(k){document.getElementById('fb-'+k).classList.toggle('active',k===f);}); document.getElementById('fb-sav').classList.toggle('sav-active', f==='sav'); document.getElementById('fb-noncmd').classList.toggle('noncmd-active', f==='noncmd'); renderTable(); }
+function afficherObjetParLigne(e, ligne) { if (e) e.stopPropagation(); var c = commandes.find(function(x){ return x.ligne === ligne; }); if (!c || !c.objetCommande) return; afficherObjet(null, c.objetCommande); }
 
-function setFilter(f){
-  alertFilter=f;
-  ['all','urgent','warn','ok'].forEach(function(k){document.getElementById('fb-'+k).classList.toggle('active',k===f);});
-  document.getElementById('fb-sav').classList.toggle('sav-active', f==='sav');
-  document.getElementById('fb-noncmd').classList.toggle('noncmd-active', f==='noncmd');
-  renderTable();
-}
-
-function afficherObjetParLigne(e, ligne) {
-  if (e) e.stopPropagation();
-  var c = commandes.find(function(x){ return x.ligne === ligne; });
-  if (!c || !c.objetCommande) return;
-  afficherObjet(null, c.objetCommande);
-}
-
-// ══════════════════════════════════════════════════════════
-//  🤖 AGENT IA & RELANCE FOURNISSEUR
-// ══════════════════════════════════════════════════════════
+// AGENT IA
 async function chargerRapportAgent() {
-  var content = document.getElementById('agent-content');
-  var dateEl = document.getElementById('agent-date');
+  var content = document.getElementById('agent-content'), dateEl = document.getElementById('agent-date');
   if (dateEl) dateEl.textContent = '⏳ Chargement du rapport...';
-
   content.innerHTML = '<div class="agent-loader"><div class="spinner"></div><div class="loader-msg">📥 Chargement du dernier rapport...</div></div>';
-
   try {
     var resultat = await apiPost({action:'lireRapport'});
     if (!resultat || !resultat.ok) {
-      content.innerHTML =
-        '<div class="empty-state">' +
-          '<div style="font-size:64px;margin-bottom:16px;">🤖</div>' +
-          '<h3 style="font-size:18px;font-weight:700;margin-bottom:8px;color:var(--texte);">Aucun rapport disponible</h3>' +
-          '<p style="font-size:14px;line-height:1.7;max-width:560px;margin:0 auto;">Le rapport sera généré automatiquement chaque matin à 8h.</p>' +
-          '<p style="font-size:13px;line-height:1.7;max-width:560px;margin:16px auto 0;">En attendant, cliquez sur <strong>« Analyser maintenant »</strong>.</p>' +
-        '</div>';
-      if (dateEl) dateEl.textContent = 'Dernière analyse : aucune';
-      return;
+      content.innerHTML = '<div class="empty-state"><div style="font-size:64px;margin-bottom:16px;">🤖</div><h3 style="font-size:18px;font-weight:700;margin-bottom:8px;color:var(--texte);">Aucun rapport disponible</h3><p style="font-size:14px;line-height:1.7;max-width:560px;margin:0 auto;">Le rapport sera généré automatiquement chaque matin à 8h.</p><p style="font-size:13px;line-height:1.7;max-width:560px;margin:16px auto 0;">En attendant, cliquez sur <strong>« Analyser maintenant »</strong>.</p></div>';
+      if (dateEl) dateEl.textContent = 'Dernière analyse : aucune'; return;
     }
-
-    if (dateEl && resultat.dateRapport) {
-      dateEl.textContent = 'Dernière analyse : ' + resultat.dateRapport + ' (automatique)';
-    } else if (dateEl && resultat.date) {
-      dateEl.textContent = 'Dernière analyse : ' + resultat.date;
-    }
-
-    dernierRapportAgent = resultat;
-    afficherRapportAgent(resultat, 0);
-  } catch(e) {
-    console.error('Erreur chargement rapport:', e);
-    content.innerHTML = '<div class="empty-state"><div style="font-size:64px;">❌</div><h3 style="color:var(--rouge);">Erreur</h3><p>'+h(e.message)+'</p></div>';
-  }
+    if (dateEl && resultat.dateRapport) dateEl.textContent = 'Dernière analyse : ' + resultat.dateRapport + ' (auto)';
+    else if (dateEl && resultat.date) dateEl.textContent = 'Dernière analyse : ' + resultat.date;
+    dernierRapportAgent = resultat; afficherRapportAgent(resultat, 0);
+  } catch(e) { content.innerHTML = '<div class="empty-state"><div style="font-size:64px;">❌</div><h3 style="color:var(--rouge);">Erreur</h3><p>'+h(e.message)+'</p></div>'; }
 }
 
 async function lancerAnalyse() {
-  var btn = document.getElementById('btn-analyser');
-  var icon = document.getElementById('btn-analyser-icon');
-  var text = document.getElementById('btn-analyser-text');
-  var content = document.getElementById('agent-content');
-
-  btn.disabled = true;
-  icon.textContent = '⏳';
-  text.textContent = 'Analyse en cours...';
-
-  content.innerHTML =
-    '<div class="agent-loader">' +
-      '<div class="spinner"></div>' +
-      '<div class="loader-msg">🤖 Analyse intelligente en cours...</div>' +
-      '<div class="loader-sub">L\'IA analyse vos ' + commandes.length + ' dossiers.<br>Cela peut prendre de 10 secondes à 2 minutes.</div>' +
-      '<div class="loader-sub" style="margin-top:20px;color:var(--orange);font-weight:600;">⏳ Merci de patienter, ne fermez pas cette page</div>' +
-    '</div>';
-
+  var btn = document.getElementById('btn-analyser'), icon = document.getElementById('btn-analyser-icon'), text = document.getElementById('btn-analyser-text'), content = document.getElementById('agent-content');
+  btn.disabled = true; icon.textContent = '⏳'; text.textContent = 'Analyse en cours...';
+  content.innerHTML = '<div class="agent-loader"><div class="spinner"></div><div class="loader-msg">🤖 Analyse intelligente en cours...</div><div class="loader-sub">L\'IA analyse vos ' + commandes.length + ' dossiers.<br>Cela peut prendre de 10 secondes à 2 minutes.</div><div class="loader-sub" style="margin-top:20px;color:var(--orange);font-weight:600;">⏳ Merci de patienter, ne fermez pas cette page</div></div>';
   var debut = Date.now();
-
   try {
-    var resultat = await apiPost({action:'analyserAgent'});
-    var duree = Math.round((Date.now() - debut) / 1000);
-
-    if (!resultat || !resultat.ok) throw new Error(resultat && resultat.error ? resultat.error : 'Réponse invalide');
-
-    dernierRapportAgent = resultat;
-    afficherRapportAgent(resultat, duree);
-
-    if (document.getElementById('agent-date')) {
-      document.getElementById('agent-date').textContent = 'Dernière analyse : ' + (resultat.date || 'à l\'instant') + ' (manuelle)';
-    }
-
-    var sourceInfo = resultat.source === 'gemini' ? '✨ IA Gemini' : '⚠️ Règles';
-    afficherToast('ok','✅','Analyse terminée', duree + 's · ' + sourceInfo, 4000);
+    var resultat = await apiPost({action:'analyserAgent'}), duree = Math.round((Date.now() - debut) / 1000);
+    if (!resultat || !resultat.ok) throw new Error(resultat.error || 'Réponse invalide');
+    dernierRapportAgent = resultat; afficherRapportAgent(resultat, duree);
+    if (document.getElementById('agent-date')) document.getElementById('agent-date').textContent = 'Dernière analyse : ' + (resultat.date || 'à l\'instant') + ' (manuelle)';
+    afficherToast('ok','✅','Analyse terminée', duree + 's', 4000);
   } catch(e) {
-    console.error('Erreur analyse agent:', e);
-    var msgErreur = e.message;
-    content.innerHTML =
-      '<div class="empty-state">' +
-        '<div style="font-size:64px;margin-bottom:16px;">❌</div>' +
-        '<h3 style="font-size:18px;font-weight:700;margin-bottom:8px;color:var(--rouge);">Erreur d\'analyse</h3>' +
-        '<p style="font-size:14px;line-height:1.7;max-width:560px;margin:0 auto;">' + h(msgErreur) + '</p>' +
-        '<p style="font-size:13px;margin-top:16px;color:var(--texte2);">Le rapport automatique de 8h reste disponible.</p>' +
-      '</div>';
-    afficherToast('urgent','❌','Erreur analyse', msgErreur, 8000);
-  } finally {
-    btn.disabled = false;
-    icon.textContent = '✨';
-    text.textContent = 'Analyser maintenant';
-  }
+    content.innerHTML = '<div class="empty-state"><div style="font-size:64px;margin-bottom:16px;">❌</div><h3 style="font-size:18px;font-weight:700;margin-bottom:8px;color:var(--rouge);">Erreur d\'analyse</h3><p style="font-size:14px;line-height:1.7;max-width:560px;margin:0 auto;">' + h(e.message) + '</p><p style="font-size:13px;margin-top:16px;color:var(--texte2);">Le rapport automatique de 8h reste disponible.</p></div>';
+    afficherToast('urgent','❌','Erreur analyse', e.message, 8000);
+  } finally { btn.disabled = false; icon.textContent = '✨'; text.textContent = 'Analyser maintenant'; }
 }
 
 function afficherRapportAgent(rapport, dureeSecondes) {
   var content = document.getElementById('agent-content');
-  if (!rapport.phrases || rapport.phrases.length === 0) {
-    content.innerHTML = '<div class="empty-state"><div style="font-size:64px;margin-bottom:16px;">✅</div><h3 style="font-size:18px;font-weight:700;margin-bottom:8px;color:var(--vert);">Tout est à jour !</h3><p>Aucun dossier bloqué détecté.</p></div>';
-    return;
-  }
-
-  var nbU = rapport.nbUrgents || 0;
-  var nbA = rapport.nbAttention || 0;
-  var nbI = rapport.nbInfo || 0;
+  if (!rapport.phrases || rapport.phrases.length === 0) { content.innerHTML = '<div class="empty-state"><div style="font-size:64px;margin-bottom:16px;">✅</div><h3 style="font-size:18px;font-weight:700;margin-bottom:8px;color:var(--vert);">Tout est à jour !</h3><p>Aucun dossier bloqué détecté.</p></div>'; return; }
+  var nbU = rapport.nbUrgents || 0, nbA = rapport.nbAttention || 0, nbI = rapport.nbInfo || 0;
   var phrasesTriees = rapport.phrases.slice().sort(function(a,b){ return (b.severite||0) - (a.severite||0); });
-
-  var html = '';
-
-  html += '<div class="agent-stats">';
-  html += '<div class="agent-stat"><div class="agent-stat-value" style="color:var(--rouge);">' + nbU + '</div><div class="agent-stat-label">🔴 Urgents</div></div>';
-  html += '<div class="agent-stat"><div class="agent-stat-value" style="color:var(--orange);">' + nbA + '</div><div class="agent-stat-label">🟠 Attention</div></div>';
-  html += '<div class="agent-stat"><div class="agent-stat-value" style="color:var(--jaune);">' + nbI + '</div><div class="agent-stat-label">🟡 Info</div></div>';
-  html += '<div class="agent-stat"><div class="agent-stat-value" style="color:var(--bleu);">' + rapport.nbTotal + '</div><div class="agent-stat-label">📋 Total</div></div>';
-  html += '</div>';
-
-  if (rapport.resumeGlobal && rapport.resumeGlobal.indexOf('⚠️') !== 0) {
-    html += '<div class="agent-resume"><strong>💡 Synthèse de l\'IA :</strong><br>' + h(rapport.resumeGlobal) + '</div>';
-  } else if (rapport.resumeGlobal) {
-    html += '<div class="agent-resume" style="border-left-color:var(--orange);background:#FFF3E0;">' + h(rapport.resumeGlobal) + '</div>';
-  }
-
-  var sourceInfo = rapport.source === 'gemini' ? '✨ Analyse générée par Gemini IA (' + (rapport.modeleUtilise || 'gemini') + ')' : '⚠️ Analyse par règles (IA indisponible)';
+  var html = '<div class="agent-stats"><div class="agent-stat"><div class="agent-stat-value" style="color:var(--rouge);">' + nbU + '</div><div class="agent-stat-label">🔴 Urgents</div></div><div class="agent-stat"><div class="agent-stat-value" style="color:var(--orange);">' + nbA + '</div><div class="agent-stat-label">🟠 Attention</div></div><div class="agent-stat"><div class="agent-stat-value" style="color:var(--jaune);">' + nbI + '</div><div class="agent-stat-label">🟡 Info</div></div><div class="agent-stat"><div class="agent-stat-value" style="color:var(--bleu);">' + rapport.nbTotal + '</div><div class="agent-stat-label">📋 Total</div></div></div>';
+  if (rapport.resumeGlobal && rapport.resumeGlobal.indexOf('⚠️') !== 0) html += '<div class="agent-resume"><strong>💡 Synthèse de l\'IA :</strong><br>' + h(rapport.resumeGlobal) + '</div>';
+  else if (rapport.resumeGlobal) html += '<div class="agent-resume" style="border-left-color:var(--orange);background:#FFF3E0;">' + h(rapport.resumeGlobal) + '</div>';
+  var sourceInfo = rapport.source === 'gemini' ? '✨ Analyse générée par Gemini IA (' + (rapport.modeleUtilise || 'gemini') + ')' : '⚠️ Analyse par règles';
   if (dureeSecondes > 0) sourceInfo += ' · ' + dureeSecondes + 's';
   html += '<div style="font-size:11px;color:var(--texte2);margin-bottom:18px;font-style:italic;">' + h(sourceInfo) + '</div>';
-
-  var urgentes = phrasesTriees.filter(function(p){ return p.severite === 3; });
-  if (urgentes.length) {
-    html += '<div class="agent-section"><div class="agent-section-title" style="color:var(--rouge);">🔴 Action immédiate (' + urgentes.length + ')</div>';
-    urgentes.forEach(function(p) { html += renderAgentCard(p); });
-    html += '</div>';
-  }
-
-  var attentions = phrasesTriees.filter(function(p){ return p.severite === 2; });
-  if (attentions.length) {
-    html += '<div class="agent-section"><div class="agent-section-title" style="color:var(--orange);">🟠 À traiter rapidement (' + attentions.length + ')</div>';
-    attentions.forEach(function(p) { html += renderAgentCard(p); });
-    html += '</div>';
-  }
-
-  var infos = phrasesTriees.filter(function(p){ return p.severite === 1; });
-  if (infos.length) {
-    html += '<div class="agent-section"><div class="agent-section-title" style="color:#B7860B;">🟡 À surveiller (' + infos.length + ')</div>';
-    infos.forEach(function(p) { html += renderAgentCard(p); });
-    html += '</div>';
-  }
-
+  var urgentes = phrasesTriees.filter(function(p){ return p.severite === 3; }); if (urgentes.length) { html += '<div class="agent-section"><div class="agent-section-title" style="color:var(--rouge);">🔴 Action immédiate (' + urgentes.length + ')</div>'; urgentes.forEach(function(p) { html += renderAgentCard(p); }); html += '</div>'; }
+  var attentions = phrasesTriees.filter(function(p){ return p.severite === 2; }); if (attentions.length) { html += '<div class="agent-section"><div class="agent-section-title" style="color:var(--orange);">🟠 À traiter rapidement (' + attentions.length + ')</div>'; attentions.forEach(function(p) { html += renderAgentCard(p); }); html += '</div>'; }
+  var infos = phrasesTriees.filter(function(p){ return p.severite === 1; }); if (infos.length) { html += '<div class="agent-section"><div class="agent-section-title" style="color:#B7860B;">🟡 À surveiller (' + infos.length + ')</div>'; infos.forEach(function(p) { html += renderAgentCard(p); }); html += '</div>'; }
   content.innerHTML = html;
 }
 
 function renderAgentCard(p) {
-  var sevClass = 'sev-' + (p.severite || 1);
-  var iconSev = p.severite === 3 ? '🔴' : (p.severite === 2 ? '🟠' : '🟡');
-  var nomClient = p.client || p.nomClient || '—';
-  var action = p.action || 'Ouvrir la commande';
-
-  var motif = 'suivi';
-  var texteLower = (p.texte || '').toLowerCase();
+  var sevClass = 'sev-' + (p.severite || 1), iconSev = p.severite === 3 ? '🔴' : (p.severite === 2 ? '🟠' : '🟡'), nomClient = p.client || '—', action = p.action || 'Ouvrir la commande';
+  var motif = 'suivi', texteLower = (p.texte || '').toLowerCase();
   if (texteLower.indexOf('commande') !== -1 && (texteLower.indexOf('non envoy') !== -1 || texteLower.indexOf('pas encore') !== -1 || texteLower.indexOf('pas été') !== -1)) motif = 'commande';
   else if (texteLower.indexOf('accusé') !== -1 || texteLower.indexOf('arc ') !== -1 || texteLower.indexOf('arc,') !== -1) motif = 'arc';
   else if (texteLower.indexOf('livraison') !== -1) motif = 'livraison';
   else if (texteLower.indexOf('sav') !== -1) motif = 'sav';
-
-  return '<div class="agent-card ' + sevClass + '">' +
-    '<div class="agent-card-icon">' + iconSev + '</div>' +
-    '<div class="agent-card-content">' +
-      '<div class="agent-card-client">' +
-        h(nomClient) +
-        '<span class="agent-card-ligne">Ligne ' + (p.ligne || '?') + '</span>' +
-      '</div>' +
-      '<div class="agent-card-texte">' + h(p.texte || '') + '</div>' +
-      '<span class="agent-card-action">👉 ' + h(action) + '</span>' +
-    '</div>' +
-    '<div class="agent-card-actions">' +
-      '<button class="agent-card-btn" onclick="relancerFournisseurDepuisAgent(' + (p.ligne || 0) + ', \'' + motif + '\')" title="Créer un brouillon de relance Gmail">📧 Relancer</button>' +
-      '<button class="agent-card-btn" style="background:#546E7A;" onclick="ouvrirDepuisAgent(' + (p.ligne || 0) + ')">✏️ Ouvrir</button>' +
-    '</div>' +
-  '</div>';
+  return '<div class="agent-card ' + sevClass + '"><div class="agent-card-icon">' + iconSev + '</div><div class="agent-card-content"><div class="agent-card-client">' + h(nomClient) + '<span class="agent-card-ligne">Ligne ' + (p.ligne || '?') + '</span></div><div class="agent-card-texte">' + h(p.texte || '') + '</div><span class="agent-card-action">👉 ' + h(action) + '</span></div><div class="agent-card-actions"><button class="agent-card-btn" onclick="relancerFournisseurDepuisAgent(' + (p.ligne || 0) + ', \'' + motif + '\')" title="Créer un brouillon de relance Gmail">📧 Relancer</button><button class="agent-card-btn" style="background:#546E7A;" onclick="ouvrirDepuisAgent(' + (p.ligne || 0) + ')">✏️ Ouvrir</button></div></div>';
 }
-
-function ouvrirDepuisAgent(ligne) {
-  if (!ligne) return;
-  var idx = commandes.findIndex(function(x){ return x.ligne === ligne; });
-  if (idx >= 0) openModal(idx);
-  else afficherToast('warn','⚠️','Commande introuvable','Ligne ' + ligne + ' non chargée.', 3000);
-}
+function ouvrirDepuisAgent(ligne) { if (!ligne) return; var idx = commandes.findIndex(function(x){ return x.ligne === ligne; }); if (idx >= 0) openModal(idx); else afficherToast('warn','⚠️','Commande introuvable','', 3000); }
 
 async function relancerFournisseurDepuisAgent(ligne, motif) {
-  var c = commandes.find(function(x){ return x.ligne === ligne; });
-  if (!c) {
-    afficherToast('warn','⚠️','Commande introuvable','', 3000);
-    return;
-  }
-
-  if (!c.fournisseur || !c.fournisseur.trim()) {
-    alert('⚠️ Aucun fournisseur renseigné pour ce dossier.\n\nOuvrez la commande pour l\'ajouter.');
-    return;
-  }
-
+  var c = commandes.find(function(x){ return x.ligne === ligne; }); if (!c) return;
+  if (!c.fournisseur || !c.fournisseur.trim()) { alert('⚠️ Aucun fournisseur renseigné.'); return; }
   afficherToast('warn','⏳','Création du brouillon...','', 2000);
-
   try {
-    var resultat = await apiPost({
-      action: 'relancerFournisseur',
-      fournisseur: c.fournisseur,
-      client: c.client,
-      ligne: c.ligne,
-      devis: c.devis,
-      commande: c.commande,
-      arc: c.arc,
-      motif: motif,
-      commentaire: (c.commentaire || '').substring(0, 300)
-    });
-
-    if (!resultat || !resultat.ok) {
-      throw new Error(resultat && resultat.error ? resultat.error : 'Erreur inconnue');
-    }
-
-    afficherToast('ok','📧','Brouillon créé','Allez dans Gmail pour valider et envoyer.', 6000);
-
-    var msg = '📧 Brouillon Gmail créé !\n\n'
-      + '📬 À : ' + resultat.destinataire + '\n'
-      + '📤 De : ' + resultat.from + '\n'
-      + '✉️ Sujet : ' + resultat.sujet + '\n\n'
-      + '👉 Ouvrez Gmail → Dossiers → Brouillons → vérifiez → envoyez.';
-    alert(msg);
-
-  } catch(e) {
-    afficherToast('urgent','❌','Erreur relance', e.message, 8000);
-    alert('❌ Impossible de créer le brouillon.\n\nDétail : ' + e.message);
-  }
+    var resultat = await apiPost({action: 'relancerFournisseur', fournisseur: c.fournisseur, client: c.client, ligne: c.ligne, devis: c.devis, commande: c.commande, arc: c.arc, motif: motif, commentaire: (c.commentaire || '').substring(0, 300)});
+    if (!resultat || !resultat.ok) throw new Error(resultat.error || 'Erreur');
+    afficherToast('ok','📧','Brouillon créé','Allez dans Gmail.', 6000);
+    alert('📧 Brouillon Gmail créé !\n\nÀ : ' + resultat.destinataire + '\nSujet : ' + resultat.sujet + '\n\nOuvrez Gmail → Brouillons.');
+  } catch(e) { afficherToast('urgent','❌','Erreur relance', e.message, 8000); alert('❌ Erreur : ' + e.message); }
 }
 
-// ══════════════════════════════════════════════════════════
-//  MÉTRÉ
-// ══════════════════════════════════════════════════════════
+// DICTÉE
+function ouvrirModalDictee() { document.getElementById('overlay-dictee').style.display = 'flex'; document.getElementById('dictee-texte').value = ''; document.getElementById('dictee-status').style.display = 'none'; }
+function fermerDictee(e) { if (e && e.target.id !== 'overlay-dictee') return; document.getElementById('overlay-dictee').style.display = 'none'; if (recognition) recognition.stop(); }
+function lancerDicteeVocale() {
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) { alert("Votre navigateur ne supporte pas la dictée vocale."); return; }
+  var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  recognition = new SpeechRecognition(); recognition.lang = 'fr-FR'; recognition.interimResults = false; recognition.maxAlternatives = 1;
+  var status = document.getElementById('dictee-status'), textarea = document.getElementById('dictee-texte');
+  status.style.display = 'block'; status.textContent = "🎙️ Parlez maintenant..."; textarea.value = '';
+  recognition.onresult = function(event) { textarea.value = event.results[0][0].transcript; status.textContent = "✅ Dictée terminée."; setTimeout(function(){ status.style.display = 'none'; }, 2000); };
+  recognition.onerror = function(event) { status.textContent = "❌ Erreur : " + event.error; setTimeout(function(){ status.style.display = 'none'; }, 3000); };
+  recognition.start();
+}
+async function validerDictee() {
+  var texte = document.getElementById('dictee-texte').value.trim(); if (!texte) { alert("Veuillez dicter ou taper une phrase."); return; }
+  var btn = document.getElementById('btn-valider-dictee'); btn.disabled = true; btn.textContent = "⏳ Analyse par l'IA...";
+  try {
+    var r = await apiPost({ action: 'dicteeFiche', texteDicte: texte });
+    if (!r || !r.ok) throw new Error(r.error || 'Erreur');
+    fermerDictee(); afficherToast('ok', '✅', 'Fiche créée', 'Le client ' + r.client + ' a été ajouté (Ligne ' + r.ligne + ').', 5000);
+    viderCache(); await charger(true);
+  } catch(e) { alert("❌ L'IA n'a pas réussi à créer la fiche.\n\nDétail : " + e.message); } finally { btn.disabled = false; btn.textContent = "✨ Analyser et Créer"; }
+}
+
+// MÉTRÉ
 function renderMetre() {
-  var q = str(document.getElementById('metre-search').value).toLowerCase();
-  var fFilt = document.getElementById('metre-filter').value;
-  var rows = commandes.map(function(c,i){
-    return Object.assign({}, c, { _i: i, _a: alerte(c), _dateMetre: formatDateMetre(c.metres) });
-  });
-  if(q) rows = rows.filter(function(c){
-    return str(c.client).toLowerCase().indexOf(q)!==-1
-        || str(c.devis).toLowerCase().indexOf(q)!==-1
-        || str(c.fournisseur).toLowerCase().indexOf(q)!==-1;
-  });
+  var q = str(document.getElementById('metre-search').value).toLowerCase(), fFilt = document.getElementById('metre-filter').value;
+  var rows = commandes.map(function(c,i){ return Object.assign({}, c, { _i: i, _a: alerte(c), _dateMetre: formatDateMetre(c.metres) }); });
+  if(q) rows = rows.filter(function(c){ return str(c.client).toLowerCase().indexOf(q)!==-1 || str(c.devis).toLowerCase().indexOf(q)!==-1 || str(c.fournisseur).toLowerCase().indexOf(q)!==-1; });
   if (fFilt === 'rempli') rows = rows.filter(function(c){ return c._dateMetre !== ''; });
   if (fFilt === 'vide')   rows = rows.filter(function(c){ return c._dateMetre === ''; });
-  var total = commandes.length;
-  var remplis = commandes.filter(function(c){ return formatDateMetre(c.metres) !== ''; }).length;
-  var vides = total - remplis;
-  var pct = total > 0 ? Math.round(remplis / total * 100) : 0;
-  var stats = document.getElementById('metre-stats');
-  stats.innerHTML =
-    '<div class="kpi-card kpi-info"><span class="kpi-label">Total</span><span class="kpi-value">'+total+'</span><span class="kpi-sub">commandes</span></div>' +
-    '<div class="kpi-card kpi-ok"><span class="kpi-label">Datées</span><span class="kpi-value">'+remplis+'</span><span class="kpi-sub">'+pct+'% complété</span></div>' +
-    '<div class="kpi-card kpi-urgent"><span class="kpi-label">Manquantes</span><span class="kpi-value">'+vides+'</span><span class="kpi-sub">à planifier</span></div>';
-  rows.sort(function(a,b){
-    if ((a._dateMetre === '') !== (b._dateMetre === '')) return a._dateMetre === '' ? -1 : 1;
-    return b.ligne - a.ligne;
-  });
+  var total = commandes.length, remplis = commandes.filter(function(c){ return formatDateMetre(c.metres) !== ''; }).length, vides = total - remplis, pct = total > 0 ? Math.round(remplis / total * 100) : 0;
+  var stats = document.getElementById('metre-stats'); stats.innerHTML = '<div class="kpi-card kpi-info"><span class="kpi-label">Total</span><span class="kpi-value">'+total+'</span><span class="kpi-sub">commandes</span></div><div class="kpi-card kpi-ok"><span class="kpi-label">Datées</span><span class="kpi-value">'+remplis+'</span><span class="kpi-sub">'+pct+'% complété</span></div><div class="kpi-card kpi-urgent"><span class="kpi-label">Manquantes</span><span class="kpi-value">'+vides+'</span><span class="kpi-sub">à planifier</span></div>';
+  rows.sort(function(a,b){ if ((a._dateMetre === '') !== (b._dateMetre === '')) return a._dateMetre === '' ? -1 : 1; return b.ligne - a.ligne; });
   var tb = document.getElementById('metre-table-body');
-  if (!rows.length) {
-    tb.innerHTML = '<tr><td colspan="9"><div class="empty-state"><p>Aucune commande trouvée.</p></div></td></tr>';
-    document.getElementById('metre-scroll-hint').textContent = '';
-    return;
-  }
+  if (!rows.length) { tb.innerHTML = '<tr><td colspan="9"><div class="empty-state"><p>Aucune commande trouvée.</p></div></td></tr>'; document.getElementById('metre-scroll-hint').textContent = ''; return; }
   tb.innerHTML = rows.map(function(c){
-    var a = c._a;
-    var fc = FOU_COLORS[c.fournisseur] || '#546E7A';
+    var a = c._a, fc = FOU_COLORS[c.fournisseur] || '#546E7A';
     var sL = c.statutLivraison ? '<span class="badge '+(c.statutLivraison==='Livré'?'badge-ok':c.statutLivraison==='SAV'?'badge-urgent':'badge-info')+'">'+h(c.statutLivraison)+'</span>' : '—';
     var sP = c.statutPose ? '<span class="badge '+(c.statutPose==='Terminé'?'badge-ok':c.statutPose==='SAV'?'badge-urgent':'badge-info')+'">'+h(c.statutPose)+'</span>' : '—';
-    var dateCell = c._dateMetre
-      ? '<span style="background:var(--vert-bg);color:var(--vert);padding:3px 9px;border-radius:5px;font-size:12px;font-weight:700;">📅 '+h(c._dateMetre)+'</span>'
-      : '<span style="background:#FFEBEE;color:var(--rouge);padding:3px 9px;border-radius:5px;font-size:11px;font-weight:700;">⚠ Non datée</span>';
-    return '<tr>'+
-      '<td class="col-mono" data-label="Ligne">L'+c.ligne+'</td>'+
-      '<td class="col-client" data-label="Client">'+h(c.client)+'</td>'+
-      '<td data-label="Fournisseur"><span style="background:'+fc+'18;color:'+fc+';padding:3px 8px;border-radius:5px;font-size:11px;font-weight:700;">'+h(c.fournisseur||'—')+'</span></td>'+
-      '<td class="col-mono" data-label="Devis">'+h(c.devis||'—')+'</td>'+
-      '<td data-label="Date métré (col. B)">'+dateCell+'</td>'+
-      '<td data-label="Statut livr.">'+sL+'</td>'+
-      '<td data-label="Statut pose">'+sP+'</td>'+
-      '<td data-label="Alerte"><span class="alerte-text '+aClass(a.n)+'">'+(a.n===0?'OK':'⚠ '+h(a.t.split(' | ')[0]))+'</span></td>'+
-      '<td><button class="action-btn" onclick="openModal('+c._i+')">✏️</button></td>'+
-    '</tr>';
+    var dateCell = c._dateMetre ? '<span style="background:var(--vert-bg);color:var(--vert);padding:3px 9px;border-radius:5px;font-size:12px;font-weight:700;">📅 '+h(c._dateMetre)+'</span>' : '<span style="background:#FFEBEE;color:var(--rouge);padding:3px 9px;border-radius:5px;font-size:11px;font-weight:700;">⚠ Non datée</span>';
+    return '<tr><td class="col-mono" data-label="Ligne">L'+c.ligne+'</td><td class="col-client" data-label="Client">'+h(c.client)+'</td><td data-label="Fournisseur"><span style="background:'+fc+'18;color:'+fc+';padding:3px 8px;border-radius:5px;font-size:11px;font-weight:700;">'+h(c.fournisseur||'—')+'</span></td><td class="col-mono" data-label="Devis">'+h(c.devis||'—')+'</td><td data-label="Date métré (col. B)">'+dateCell+'</td><td data-label="Statut livr.">'+sL+'</td><td data-label="Statut pose">'+sP+'</td><td data-label="Alerte"><span class="alerte-text '+aClass(a.n)+'">'+(a.n===0?'OK':'⚠ '+h(a.t.split(' | ')[0]))+'</span></td><td><button class="action-btn" onclick="openModal('+c._i+')">✏️</button></td></tr>';
   }).join('');
   document.getElementById('metre-scroll-hint').textContent = rows.length + ' commande(s) affichée(s) sur ' + total;
 }
 
-// ══════════════════════════════════════════════════════════
-//  MODAL
-// ══════════════════════════════════════════════════════════
+// MODAL & SAUVEGARDE
 function ajouterOptionHorsListe(selectEl, valeur) {
-  if (!selectEl || !valeur) return;
-  var v = str(valeur);
-  var existe = false;
-  for (var i = 0; i < selectEl.options.length; i++) {
-    if (selectEl.options[i].value === v) { existe = true; break; }
-  }
-  if (!existe) {
-    var opt = document.createElement('option');
-    opt.value = v;
-    opt.textContent = v + ' (hors liste)';
-    selectEl.appendChild(opt);
-  }
+  if (!selectEl || !valeur) return; var v = str(valeur), existe = false;
+  for (var i = 0; i < selectEl.options.length; i++) { if (selectEl.options[i].value === v) { existe = true; break; } }
+  if (!existe) { var opt = document.createElement('option'); opt.value = v; opt.textContent = v + ' (hors liste)'; selectEl.appendChild(opt); }
 }
-
 function openModal(idx) {
-  editLigne=-1;
-  var c=idx>=0?commandes[idx]:{};
-  if(idx>=0)editLigne=c.ligne;
+  editLigne=-1; var c=idx>=0?commandes[idx]:{}; if(idx>=0)editLigne=c.ligne;
   document.getElementById('modal-title').textContent=idx>=0?'Modifier - '+str(c.client):'Nouvelle commande';
   document.getElementById('btn-suppr').style.display=idx>=0?'inline-flex':'none';
-  ['client','devis','devisTTC','fournisseur','commande','arc','commentaireARC','prevLivraison','statutLivraison','statutPose'].forEach(function(f){
-    var el=document.getElementById('f-'+f);if(el)el.value=str(c[f]);
-  });
-  ajouterOptionHorsListe(document.getElementById('f-fournisseur'), c.fournisseur);
-  ajouterOptionHorsListe(document.getElementById('f-commande'), c.commande);
-  ajouterOptionHorsListe(document.getElementById('f-commentaireARC'), c.commentaireARC);
-  ajouterOptionHorsListe(document.getElementById('f-statutLivraison'), c.statutLivraison);
-  ajouterOptionHorsListe(document.getElementById('f-statutPose'), c.statutPose);
+  ['client','devis','devisTTC','fournisseur','commande','arc','commentaireARC','prevLivraison','statutLivraison','statutPose'].forEach(function(f){ var el=document.getElementById('f-'+f);if(el)el.value=str(c[f]); });
+  ajouterOptionHorsListe(document.getElementById('f-fournisseur'), c.fournisseur); ajouterOptionHorsListe(document.getElementById('f-commande'), c.commande); ajouterOptionHorsListe(document.getElementById('f-commentaireARC'), c.commentaireARC); ajouterOptionHorsListe(document.getElementById('f-statutLivraison'), c.statutLivraison); ajouterOptionHorsListe(document.getElementById('f-statutPose'), c.statutPose);
   if (c.fournisseur) document.getElementById('f-fournisseur').value = str(c.fournisseur);
   if (c.commande) document.getElementById('f-commande').value = str(c.commande);
   if (c.commentaireARC) document.getElementById('f-commentaireARC').value = str(c.commentaireARC);
   if (c.statutLivraison) document.getElementById('f-statutLivraison').value = str(c.statutLivraison);
   if (c.statutPose) document.getElementById('f-statutPose').value = str(c.statutPose);
-
-  var metEl = document.getElementById('f-metres');
-  if (metEl) metEl.value = c.metres ? formatDateMetre(c.metres) : '';
-  var pvEl = document.getElementById('f-pvChantier');
-  if (pvEl) pvEl.checked = str(c.pvChantier).toUpperCase() === 'OUI';
-  var dpEl = document.getElementById('f-datePose');
-  if (dpEl) dpEl.value = str(c.datePose);
-  var objEl = document.getElementById('f-objetCommande');
-  if (objEl) objEl.value = str(c.objetCommande);
+  var metEl = document.getElementById('f-metres'); if (metEl) metEl.value = c.metres ? formatDateMetre(c.metres) : '';
+  var pvEl = document.getElementById('f-pvChantier'); if (pvEl) pvEl.checked = str(c.pvChantier).toUpperCase() === 'OUI';
+  var dpEl = document.getElementById('f-datePose'); if (dpEl) dpEl.value = str(c.datePose);
+  var objEl = document.getElementById('f-objetCommande'); if (objEl) objEl.value = str(c.objetCommande);
   document.getElementById('f-commentaire-historique').value = str(c.commentaire);
   var cmtNouv = document.getElementById('f-commentaire-nouveau'); if(cmtNouv) cmtNouv.value = '';
   document.getElementById('overlay').classList.add('open');
@@ -1308,241 +782,82 @@ function openModal(idx) {
 function closeModal(){document.getElementById('overlay').classList.remove('open');}
 function closeOut(e){if(e.target.id==='overlay')closeModal();}
 
-// ══════════════════════════════════════════════════════════
-//  SAUVEGARDE
-// ══════════════════════════════════════════════════════════
 async function sauvegarder() {
-  var c={};
-  ['client','devis','devisTTC','fournisseur','commande','arc','commentaireARC','prevLivraison','statutLivraison','statutPose'].forEach(function(f){
-    var el=document.getElementById('f-'+f);if(el)c[f]=el.value.trim();
-  });
+  var c={}; ['client','devis','devisTTC','fournisseur','commande','arc','commentaireARC','prevLivraison','statutLivraison','statutPose'].forEach(function(f){ var el=document.getElementById('f-'+f);if(el)c[f]=el.value.trim(); });
   var metresRaw = document.getElementById('f-metres');
-  if (metresRaw) {
-    var valSaisie = metresRaw.value.trim();
-    c.metres = valSaisie ? (convertirEnDateISO(valSaisie) || valSaisie) : '';
-  }
-  var pvEl = document.getElementById('f-pvChantier');
-  c.pvChantier = pvEl && pvEl.checked ? 'OUI' : 'NON';
-  var dpEl2 = document.getElementById('f-datePose');
-  c.datePose = dpEl2 ? dpEl2.value.trim() : '';
-  
-  if(!c.client){alert('⚠️ Le nom du client est obligatoire.');return;}
-
-  var nouveauTexte = document.getElementById('f-commentaire-nouveau').value.trim();
-  var historique = document.getElementById('f-commentaire-historique').value || '';
-  var commentaireFinal = historique;
-  if (nouveauTexte) {
-    var dateStr = new Date().toLocaleDateString('fr-FR', {day:'2-digit',month:'2-digit',year:'numeric'});
-    commentaireFinal = historique ? historique + '\n['+dateStr+'] '+nouveauTexte : '['+dateStr+'] '+nouveauTexte;
-  }
+  if (metresRaw) { var valSaisie = metresRaw.value.trim(); c.metres = valSaisie ? (convertirEnDateISO(valSaisie) || valSaisie) : ''; }
+  var pvEl = document.getElementById('f-pvChantier'); c.pvChantier = pvEl && pvEl.checked ? 'OUI' : 'NON';
+  var dpEl2 = document.getElementById('f-datePose'); c.datePose = dpEl2 ? dpEl2.value.trim() : '';
+  if(!c.client){alert('⚠️ Client obligatoire.');return;}
+  var nouveauTexte = document.getElementById('f-commentaire-nouveau').value.trim(), historique = document.getElementById('f-commentaire-historique').value || '', commentaireFinal = historique;
+  if (nouveauTexte) { var dateStr = new Date().toLocaleDateString('fr-FR', {day:'2-digit',month:'2-digit',year:'numeric'}); commentaireFinal = historique ? historique + '\n['+dateStr+'] '+nouveauTexte : '['+dateStr+'] '+nouveauTexte; }
   c.commentaire = commentaireFinal;
-
-  var btnSave = document.querySelector('.modal-footer .btn-primary');
-  var oldTxt = btnSave ? btnSave.textContent : '';
+  var btnSave = document.querySelector('.modal-footer .btn-primary'), oldTxt = btnSave ? btnSave.textContent : '';
   if (btnSave) { btnSave.disabled = true; btnSave.textContent = '⏳ Enregistrement...'; }
   document.getElementById('saving-msg').classList.add('active');
-
   try {
     var res;
-    if(editLigne>0){
-      res = await apiPost({
-        action:'modifier',
-        ligne:editLigne,
-        champs:{
-          1:c.client, 2:c.metres, 3:c.devis, 4:c.devisTTC, 5:c.fournisseur,
-          6:c.commande, 7:c.arc, 9:c.commentaireARC, 10:c.prevLivraison,
-          12:c.statutLivraison, 13:c.statutPose, 14:c.commentaire,
-          16:c.pvChantier, 20:c.datePose,
-          note_G:(document.getElementById('f-objetCommande')?document.getElementById('f-objetCommande').value.trim():'')
-        }
-      });
-    } else {
-      res = await apiPost({action:'ajouter',commande:c});
-    }
-    if (!res || !res.ok) throw new Error(res && res.error ? res.error : 'Réponse invalide');
-    closeModal();
-    afficherToast('ok','✅','Enregistré', editLigne>0?'Commande modifiée':'Nouvelle commande créée', 2500);
-    viderCache();
-    await charger(true);
-  } catch(e) {
-    afficherToast('urgent','❌','Erreur enregistrement', e.message, 8000);
-    alert('❌ Impossible d\'enregistrer.\n\nDétail : ' + e.message);
-  } finally {
-    if (btnSave) { btnSave.disabled = false; btnSave.textContent = oldTxt; }
-    document.getElementById('saving-msg').classList.remove('active');
-  }
+    if(editLigne>0){ res = await apiPost({action:'modifier',ligne:editLigne,champs:{1:c.client, 2:c.metres, 3:c.devis, 4:c.devisTTC, 5:c.fournisseur, 6:c.commande, 7:c.arc, 9:c.commentaireARC, 10:c.prevLivraison, 12:c.statutLivraison, 13:c.statutPose, 14:c.commentaire, 16:c.pvChantier, 20:c.datePose, note_G:(document.getElementById('f-objetCommande')?document.getElementById('f-objetCommande').value.trim():'')}}); } else { res = await apiPost({action:'ajouter',commande:c}); }
+    if (!res || !res.ok) throw new Error(res.error || 'Réponse invalide');
+    closeModal(); afficherToast('ok','✅','Enregistré', '', 2500); viderCache(); await charger(true);
+  } catch(e) { afficherToast('urgent','❌','Erreur', e.message, 8000); alert('❌ Impossible d\'enregistrer.\n\nDétail : ' + e.message); } finally { if (btnSave) { btnSave.disabled = false; btnSave.textContent = oldTxt; } document.getElementById('saving-msg').classList.remove('active'); }
 }
 
-// ══════════════════════════════════════════════════════════
-//  SUPPRESSION
-// ══════════════════════════════════════════════════════════
 async function supprimerCommande() {
   var c=commandes.find(function(x){return x.ligne===editLigne;});
-  if(!confirm('⚠️ Supprimer définitivement "'+str(c?c.client:'')+'" ?'))return;
+  if(!confirm('⚠️ Supprimer "'+str(c?c.client:'')+'" ?'))return;
   document.getElementById('saving-msg').classList.add('active');
-  try{
-    var r = await apiPost({action:'supprimer',ligne:editLigne});
-    if (!r || !r.ok) throw new Error(r && r.error ? r.error : 'Réponse invalide');
-    closeModal();
-    afficherToast('ok','🗑','Supprimé', 'Commande supprimée avec succès', 2500);
-    viderCache();
-    await charger(true);
-  }
-  catch(e){
-    afficherToast('urgent','❌','Erreur suppression', e.message, 8000);
-  }
+  try{ var r = await apiPost({action:'supprimer',ligne:editLigne}); if (!r || !r.ok) throw new Error(r.error || 'Erreur'); closeModal(); afficherToast('ok','🗑','Supprimé', '', 2500); viderCache(); await charger(true); } catch(e){ afficherToast('urgent','❌','Erreur', e.message, 8000); }
   document.getElementById('saving-msg').classList.remove('active');
 }
 
-// ══════════════════════════════════════════════════════════
-//  ALERTES
-// ══════════════════════════════════════════════════════════
+// ALERTES
 function renderAlertes() {
-  var g={3:[],2:[],1:[]};
-  commandes.forEach(function(c,i){var a=alerte(c);if(a.n>=1)g[a.n].push({c:c,i:i,a:a});});
-  var sec=[
-    {n:3,lb:'Urgentes - Action immédiate',dot:'#D32F2F',pBg:'#FFEBEE',pC:'#D32F2F'},
-    {n:2,lb:'Attention - À traiter rapidement',dot:'#E65100',pBg:'#FFF3E0',pC:'#E65100'},
-    {n:1,lb:'Information - À surveiller',dot:'#F9A825',pBg:'#FFFDE7',pC:'#B7860B'}
-  ];
+  var g={3:[],2:[],1:[]}; commandes.forEach(function(c,i){var a=alerte(c);if(a.n>=1)g[a.n].push({c:c,i:i,a:a});});
+  var sec=[{n:3,lb:'Urgentes',dot:'#D32F2F',pBg:'#FFEBEE',pC:'#D32F2F'},{n:2,lb:'Attention',dot:'#E65100',pBg:'#FFF3E0',pC:'#E65100'},{n:1,lb:'Information',dot:'#F9A825',pBg:'#FFFDE7',pC:'#B7860B'}];
   var html='';
-  sec.forEach(function(s){
-    var items=g[s.n];if(!items.length)return;
-    html+='<div class="alert-section"><div class="alert-section-title"><span class="dot-badge" style="background:'+s.dot+'"></span>'+s.lb+' ('+items.length+')</div>';
-    items.forEach(function(it){
-      var msgs=it.a.t.split(' | ');
-      html+='<div class="alert-card"><div style="flex:1">'+
-        '<div class="alert-card-client">'+h(it.c.client)+(it.c.fournisseur?' <span style="font-size:11px;font-weight:400;color:var(--texte2);">· '+h(it.c.fournisseur)+'</span>':'')+'</div>'+
-        '<div class="alert-card-detail">'+msgs.map(function(m){return '• '+h(m);}).join(' ')+'</div>'+
-        (it.c.commentaire?'<div class="alert-card-comment">💬 '+h(it.c.commentaire)+'</div>':'')+
-        '</div><div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;">'+
-        '<span class="alert-pill" style="background:'+s.pBg+';color:'+s.pC+';">'+msgs.length+' alerte(s)</span>'+
-        '<button class="btn btn-outline btn-sm" onclick="openModal('+it.i+')">✏️ Modifier</button>'+
-        '</div></div>';
-    });
-    html+='</div>';
-  });
+  sec.forEach(function(s){ var items=g[s.n];if(!items.length)return; html+='<div class="alert-section"><div class="alert-section-title"><span class="dot-badge" style="background:'+s.dot+'"></span>'+s.lb+' ('+items.length+')</div>'; items.forEach(function(it){ var msgs=it.a.t.split(' | '); html+='<div class="alert-card"><div style="flex:1"><div class="alert-card-client">'+h(it.c.client)+(it.c.fournisseur?' <span style="font-size:11px;font-weight:400;color:var(--texte2);">· '+h(it.c.fournisseur)+'</span>':'')+'</div><div class="alert-card-detail">'+msgs.map(function(m){return '• '+h(m);}).join(' ')+'</div>'+(it.c.commentaire?'<div class="alert-card-comment">💬 '+h(it.c.commentaire)+'</div>':'')+'</div><div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;"><span class="alert-pill" style="background:'+s.pBg+';color:'+s.pC+';">'+msgs.length+' alerte(s)</span><button class="btn btn-outline btn-sm" onclick="openModal('+it.i+')">✏️ Modifier</button></div></div>'; }); html+='</div>'; });
   if(!html)html='<div class="empty-state"><p>✅ Aucune alerte active.</p></div>';
   document.getElementById('alertes-content').innerHTML=html;
 }
 
-// ══════════════════════════════════════════════════════════
-//  DASHBOARD
-// ══════════════════════════════════════════════════════════
+// DASHBOARD
 function renderDashboard() {
-  var byFou={}, ac={u:0,w:0,o:0};
-  var caCommande=0, caPose=0, nbEnAttente=0, nbSAV=0;
-  var POSES_FINIES=['Terminé','Termine','Posé','Pose'];
-  function parseMontant(v){
-    if(!v) return 0;
-    var s=str(v).replace(/[^0-9,.]/g,'').replace(/\s/g,'').replace(',','.');
-    var parts=s.split('.');
-    if(parts.length>2){ s=parts.slice(0,-1).join('')+'.'+parts[parts.length-1]; }
-    var n=parseFloat(s);
-    return isNaN(n)?0:n;
-  }
-  commandes.forEach(function(c){
-    if(c.fournisseur) byFou[c.fournisseur]=(byFou[c.fournisseur]||0)+1;
-    var a=alerte(c); if(a.n===3)ac.u++; else if(a.n>=1)ac.w++; else if(a.n===0)ac.o++;
-    var montant=parseMontant(c.devisTTC);
-    if(str(c.commande).toUpperCase()==='OUI') caCommande+=montant;
-    if(POSES_FINIES.indexOf(str(c.statutPose).trim())!==-1) caPose+=montant;
-    if(str(c.commande).toUpperCase()!=='OUI') nbEnAttente++;
-    if(str(c.statutPose).trim()==='SAV'||str(c.statutLivraison).trim()==='SAV') nbSAV++;
-  });
+  var byFou={}, ac={u:0,w:0,o:0}, caCommande=0, caPose=0, nbEnAttente=0, nbSAV=0; var POSES_FINIES=['Terminé','Termine','Posé','Pose'];
+  function parseMontant(v){ if(!v) return 0; var s=str(v).replace(/[^0-9,.]/g,'').replace(/\s/g,'').replace(',','.'); var parts=s.split('.'); if(parts.length>2){ s=parts.slice(0,-1).join('')+'.'+parts[parts.length-1]; } var n=parseFloat(s); return isNaN(n)?0:n; }
+  commandes.forEach(function(c){ if(c.fournisseur) byFou[c.fournisseur]=(byFou[c.fournisseur]||0)+1; var a=alerte(c); if(a.n===3)ac.u++; else if(a.n>=1)ac.w++; else if(a.n===0)ac.o++; var montant=parseMontant(c.devisTTC); if(str(c.commande).toUpperCase()==='OUI') caCommande+=montant; if(POSES_FINIES.indexOf(str(c.statutPose).trim())!==-1) caPose+=montant; if(str(c.commande).toUpperCase()!=='OUI') nbEnAttente++; if(str(c.statutPose).trim()==='SAV'||str(c.statutLivraison).trim()==='SAV') nbSAV++; });
   function fmtEuro(n){ return n.toLocaleString('fr-FR',{maximumFractionDigits:0})+' €'; }
-  var fS=Object.entries(byFou).sort(function(a,b){return b[1]-a[1];}), fM=fS[0]?fS[0][1]:1;
-  var n=commandes.length||1;
-
+  var fS=Object.entries(byFou).sort(function(a,b){return b[1]-a[1];}), fM=fS[0]?fS[0][1]:1, n=commandes.length||1;
   var TERMINES_D = ['Livré','Terminé','Posé','LIVRE','TERMINE','POSE','Livre','Termine'];
-  var poseurs = [
-    {nom:'ANATOLE', key:'poseur_ANATOLE', couleur:'#1565C0'},
-    {nom:'ARTIOM',  key:'poseur_ARTIOM',  couleur:'#2E7D32'},
-    {nom:'ANTONIO', key:'poseur_ANTONIO', couleur:'#E65100'},
-    {nom:'VINCENT', key:'poseur_VINCENT', couleur:'#6A1B9A'},
-    {nom:'LAMRI',   key:'poseur_LAMRI',   couleur:'#00695C'}
-  ];
-
-  var actifs = commandes.filter(function(c){
-    return TERMINES_D.indexOf(str(c.statutLivraison).trim()) === -1
-        && str(c.commentaireARC).toUpperCase() !== 'ANNULER';
-  }).slice().sort(function(a,b){
-    return str(b.datePose).localeCompare(str(a.datePose));
-  });
-
+  var poseurs = [{nom:'ANATOLE', key:'poseur_ANATOLE', couleur:'#1565C0'},{nom:'ARTIOM',  key:'poseur_ARTIOM',  couleur:'#2E7D32'},{nom:'ANTONIO', key:'poseur_ANTONIO', couleur:'#E65100'},{nom:'VINCENT', key:'poseur_VINCENT', couleur:'#6A1B9A'},{nom:'LAMRI',   key:'poseur_LAMRI',   couleur:'#00695C'}];
+  var actifs = commandes.filter(function(c){ return TERMINES_D.indexOf(str(c.statutLivraison).trim()) === -1 && str(c.commentaireARC).toUpperCase() !== 'ANNULER'; }).slice().sort(function(a,b){ return str(b.datePose).localeCompare(str(a.datePose)); });
   var pvFaits = commandes.filter(function(c){ return str(c.pvChantier).toUpperCase()==='OUI'; }).length;
   var pvManquants = actifs.filter(function(c){ return str(c.pvChantier).toUpperCase()!=='OUI'; }).length;
-
   var hC = '';
-  if (!actifs.length) {
-    hC = '<div style="text-align:center;padding:24px;color:var(--texte2);">Aucun chantier actif.</div>';
-  } else {
-    actifs.forEach(function(c) {
-      var pvFait = str(c.pvChantier).toUpperCase() === 'OUI';
-      hC += '<div style="background:#fff;border-radius:10px;border:1px solid var(--bordure);margin-bottom:10px;overflow:hidden;">';
-      hC += '<div style="padding:10px 14px;background:var(--gris-bg);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;border-bottom:1px solid var(--bordure);">';
-      hC += '<div><span style="font-weight:700;font-size:14px;">' + h(c.client) + '</span>';
+  if (!actifs.length) { hC = '<div style="text-align:center;padding:24px;color:var(--texte2);">Aucun chantier actif.</div>'; } else {
+    actifs.forEach(function(c) { var pvFait = str(c.pvChantier).toUpperCase() === 'OUI';
+      hC += '<div style="background:#fff;border-radius:10px;border:1px solid var(--bordure);margin-bottom:10px;overflow:hidden;"><div style="padding:10px 14px;background:var(--gris-bg);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;border-bottom:1px solid var(--bordure);"><div><span style="font-weight:700;font-size:14px;">' + h(c.client) + '</span>';
       if(c.fournisseur) hC += ' <span style="font-size:11px;color:var(--texte2);">· ' + h(c.fournisseur) + '</span>';
       hC += '</div><div style="display:flex;gap:6px;flex-wrap:wrap;">';
       if(c.metres) hC += '<span style="background:#FFF3E0;color:var(--orange);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;">📋 Métré : ' + h(formatDateMetre(c.metres)) + '</span>';
       if(c.datePose) hC += '<span style="background:var(--bleu-bg);color:var(--bleu);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;">📅 ' + h(c.datePose) + '</span>';
       hC += pvFait ? '<span style="background:var(--vert-bg);color:var(--vert);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;">✓ PV Fait</span>' : '<span style="background:#FFEBEE;color:var(--rouge);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;">✗ PV Manquant</span>';
-      hC += '</div></div><div style="padding:10px 14px;">';
-      var hasRemarque = false;
-      poseurs.forEach(function(p) {
-        if(!c[p.key] || !str(c[p.key]).trim()) return;
-        hasRemarque = true;
-        var lignes = str(c[p.key]).split('\n');
-        var dernier = lignes[lignes.length-1];
-        hC += '<div style="margin-bottom:8px;"><div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">';
-        hC += '<div style="width:22px;height:22px;border-radius:50%;background:' + p.couleur + ';display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;">' + p.nom.slice(0,2) + '</div>';
-        hC += '<span style="font-size:12px;font-weight:700;color:' + p.couleur + ';">' + p.nom + '</span></div>';
-        hC += '<div style="font-size:11px;color:var(--texte);padding:6px 10px;background:var(--gris-bg);border-radius:6px;border-left:3px solid ' + p.couleur + ';">' + h(dernier) + '</div></div>';
-      });
+      hC += '</div></div><div style="padding:10px 14px;">'; var hasRemarque = false;
+      poseurs.forEach(function(p) { if(!c[p.key] || !str(c[p.key]).trim()) return; hasRemarque = true; var lignes = str(c[p.key]).split('\n'), dernier = lignes[lignes.length-1];
+        hC += '<div style="margin-bottom:8px;"><div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;"><div style="width:22px;height:22px;border-radius:50%;background:' + p.couleur + ';display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;">' + p.nom.slice(0,2) + '</div><span style="font-size:12px;font-weight:700;color:' + p.couleur + ';">' + p.nom + '</span></div><div style="font-size:11px;color:var(--texte);padding:6px 10px;background:var(--gris-bg);border-radius:6px;border-left:3px solid ' + p.couleur + ';">' + h(dernier) + '</div></div>'; });
       if(!hasRemarque) hC += '<div style="font-size:12px;color:var(--texte2);font-style:italic;">Aucune remarque poseur.</div>';
-      hC += '</div></div>';
-    });
+      hC += '</div></div>'; });
   }
-
-  document.getElementById('dash-content').innerHTML =
-    '<div class="dash-card" style="grid-column:1/-1;background:linear-gradient(135deg,#1565C0,#0D47A1);color:#fff;"><h4 style="color:#fff;">💰 Vue financière</h4>' +
-    '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;margin-top:8px;">' +
-    '<div><div style="font-size:24px;font-weight:800;">' + fmtEuro(caCommande) + '</div><div style="font-size:12px;opacity:.85;">CA commandé</div></div>' +
-    '<div><div style="font-size:24px;font-weight:800;">' + fmtEuro(caPose) + '</div><div style="font-size:12px;opacity:.85;">CA posé</div></div>' +
-    '<div><div style="font-size:24px;font-weight:800;">' + nbEnAttente + '</div><div style="font-size:12px;opacity:.85;">En attente commande</div></div>' +
-    '<div><div style="font-size:24px;font-weight:800;">' + nbSAV + '</div><div style="font-size:12px;opacity:.85;">SAV ouverts</div></div>' +
-    '</div></div>' +
-    '<div class="dash-card"><h4>Par fournisseur</h4>' +
-    fS.map(function(e){ return '<div class="bar-row"><span class="bar-label">' + h(e[0]) + '</span><div class="bar-track"><div class="bar-fill" style="width:' + Math.round(e[1]/fM*100) + '%;background:' + (FOU_COLORS[e[0]]||'#546E7A') + '"></div></div><span class="bar-count">' + e[1] + '</span></div>'; }).join('') + '</div>' +
-    '<div class="dash-card"><h4>Alertes</h4>' +
-    [['Urgentes',ac.u,'#D32F2F'],['Attention',ac.w,'#E65100'],['OK',ac.o,'#2E7D32']].map(function(x){
-      return '<div class="bar-row"><span class="bar-label">' + x[0] + '</span><div class="bar-track"><div class="bar-fill" style="width:' + Math.round(x[1]/n*100) + '%;background:' + x[2] + '"></div></div><span class="bar-count">' + x[1] + '</span></div>';
-    }).join('') + '</div>' +
-    '<div class="dash-card"><h4>Résumé</h4><div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:4px;">' +
-    '<div style="text-align:center;padding:14px;background:var(--gris-bg);border-radius:8px;"><div style="font-size:28px;font-weight:700;color:var(--bleu);">' + commandes.length + '</div><div style="font-size:11px;color:var(--texte2);">Total</div></div>' +
-    '<div style="text-align:center;padding:14px;background:#FFEBEE;border-radius:8px;"><div style="font-size:28px;font-weight:700;color:var(--rouge);">' + ac.u + '</div><div style="font-size:11px;color:var(--texte2);">Urgences</div></div>' +
-    '<div style="text-align:center;padding:14px;background:var(--vert-bg);border-radius:8px;"><div style="font-size:28px;font-weight:700;color:var(--vert);">' + pvFaits + '</div><div style="font-size:11px;color:var(--texte2);">PV Faits</div></div>' +
-    '<div style="text-align:center;padding:14px;background:#FFF3E0;border-radius:8px;"><div style="font-size:28px;font-weight:700;color:var(--orange);">' + pvManquants + '</div><div style="font-size:11px;color:var(--texte2);">PV Manquants</div></div>' +
-    '</div></div>' +
-    '<div class="dash-card" style="grid-column:1/-1;"><h4>📋 Suivi chantiers</h4>' + hC + '</div>';
+  document.getElementById('dash-content').innerHTML = '<div class="dash-card" style="grid-column:1/-1;background:linear-gradient(135deg,#1565C0,#0D47A1);color:#fff;"><h4 style="color:#fff;">💰 Vue financière</h4><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;margin-top:8px;"><div><div style="font-size:24px;font-weight:800;">' + fmtEuro(caCommande) + '</div><div style="font-size:12px;opacity:.85;">CA commandé</div></div><div><div style="font-size:24px;font-weight:800;">' + fmtEuro(caPose) + '</div><div style="font-size:12px;opacity:.85;">CA posé</div></div><div><div style="font-size:24px;font-weight:800;">' + nbEnAttente + '</div><div style="font-size:12px;opacity:.85;">En attente commande</div></div><div><div style="font-size:24px;font-weight:800;">' + nbSAV + '</div><div style="font-size:12px;opacity:.85;">SAV ouverts</div></div></div></div><div class="dash-card"><h4>Par fournisseur</h4>' + fS.map(function(e){ return '<div class="bar-row"><span class="bar-label">' + h(e[0]) + '</span><div class="bar-track"><div class="bar-fill" style="width:' + Math.round(e[1]/fM*100) + '%;background:' + (FOU_COLORS[e[0]]||'#546E7A') + '"></div></div><span class="bar-count">' + e[1] + '</span></div>'; }).join('') + '</div><div class="dash-card"><h4>Alertes</h4>' + [['Urgentes',ac.u,'#D32F2F'],['Attention',ac.w,'#E65100'],['OK',ac.o,'#2E7D32']].map(function(x){ return '<div class="bar-row"><span class="bar-label">' + x[0] + '</span><div class="bar-track"><div class="bar-fill" style="width:' + Math.round(x[1]/n*100) + '%;background:' + x[2] + '"></div></div><span class="bar-count">' + x[1] + '</span></div>'; }).join('') + '</div><div class="dash-card"><h4>Résumé</h4><div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:4px;"><div style="text-align:center;padding:14px;background:var(--gris-bg);border-radius:8px;"><div style="font-size:28px;font-weight:700;color:var(--bleu);">' + commandes.length + '</div><div style="font-size:11px;color:var(--texte2);">Total</div></div><div style="text-align:center;padding:14px;background:#FFEBEE;border-radius:8px;"><div style="font-size:28px;font-weight:700;color:var(--rouge);">' + ac.u + '</div><div style="font-size:11px;color:var(--texte2);">Urgences</div></div><div style="text-align:center;padding:14px;background:var(--vert-bg);border-radius:8px;"><div style="font-size:28px;font-weight:700;color:var(--vert);">' + pvFaits + '</div><div style="font-size:11px;color:var(--texte2);">PV Faits</div></div><div style="text-align:center;padding:14px;background:#FFF3E0;border-radius:8px;"><div style="font-size:28px;font-weight:700;color:var(--orange);">' + pvManquants + '</div><div style="font-size:11px;color:var(--texte2);">PV Manquants</div></div></div></div><div class="dash-card" style="grid-column:1/-1;"><h4>📋 Suivi chantiers</h4>' + hC + '</div>';
 }
 
-// ══════════════════════════════════════════════════════════
-//  NAVIGATION
-// ══════════════════════════════════════════════════════════
+// NAVIGATION
 function showView(v) {
-  document.querySelectorAll('.view').forEach(function(el){el.classList.remove('active');});
-  document.querySelectorAll('.nav-item').forEach(function(el){el.classList.remove('active');});
-  document.getElementById('view-'+v).classList.add('active');
-  var navEl = document.getElementById('nav-' + v);
-  if (navEl) navEl.classList.add('active');
-  var titles = {suivi:'Suivi des commandes', alertes:'Alertes actives', agent:'🤖 Agent IA', metre:'Dates de métré (colonne B)', dashboard:'Tableau de bord', suivipose:'Suivi de Pose', planning:'Planning des poses', config:'Configuration'};
+  document.querySelectorAll('.view').forEach(function(el){el.classList.remove('active');}); document.querySelectorAll('.nav-item').forEach(function(el){el.classList.remove('active');});
+  document.getElementById('view-'+v).classList.add('active'); var navEl = document.getElementById('nav-' + v); if (navEl) navEl.classList.add('active');
+  var titles = {suivi:'Suivi des commandes', alertes:'Alertes actives', agent:'🤖 Agent IA', metre:'Dates de métré', dashboard:'Tableau de bord', suivipose:'Suivi de Pose', planning:'Planning', config:'Configuration'};
   document.getElementById('topbar-title').textContent = titles[v] || v;
-  if (v === 'config') {
-    document.getElementById('config-url-input').value = WEBAPP;
-    document.getElementById('config-url-current').textContent = WEBAPP;
-    document.getElementById('config-status').innerHTML = '';
-  }
+  if (v === 'config') { document.getElementById('config-url-input').value = WEBAPP; document.getElementById('config-url-current').textContent = WEBAPP; document.getElementById('config-status').innerHTML = ''; }
   if (v === 'alertes')    renderAlertes();
   if (v === 'agent')      chargerRapportAgent();
   if (v === 'metre')      renderMetre();
@@ -1551,609 +866,142 @@ function showView(v) {
   if (v === 'planning')   renderPlanning();
 }
 
-// ══════════════════════════════════════════════════════════
-//  SUIVI POSE
-// ══════════════════════════════════════════════════════════
+// SUIVI POSE
 function renderSuiviPose() {
-  var poseurs = [
-    {nom:'ANATOLE', key:'poseur_ANATOLE', couleur:'#1565C0'},
-    {nom:'ARTIOM',  key:'poseur_ARTIOM',  couleur:'#2E7D32'},
-    {nom:'ANTONIO', key:'poseur_ANTONIO', couleur:'#E65100'},
-    {nom:'VINCENT', key:'poseur_VINCENT', couleur:'#6A1B9A'},
-    {nom:'LAMRI',   key:'poseur_LAMRI',   couleur:'#00695C'}
-  ];
+  var poseurs = [{nom:'ANATOLE', key:'poseur_ANATOLE', couleur:'#1565C0'},{nom:'ARTIOM', key:'poseur_ARTIOM', couleur:'#2E7D32'},{nom:'ANTONIO', key:'poseur_ANTONIO', couleur:'#E65100'},{nom:'VINCENT', key:'poseur_VINCENT', couleur:'#6A1B9A'},{nom:'LAMRI', key:'poseur_LAMRI', couleur:'#00695C'}];
   var semActuelle = getWeekNumber(new Date());
-  function datePoseEnSemaine(dp, sem) {
-    var parsed = parseDatePose(dp);
-    if (!parsed) return false;
-    if (parsed.type === 'semaine') return parsed.num === sem;
-    if (parsed.type === 'date') return getWeekNumber(parsed.date) === sem;
-    return false;
-  }
+  function datePoseEnSemaine(dp, sem) { var parsed = parseDatePose(dp); if (!parsed) return false; if (parsed.type === 'semaine') return parsed.num === sem; if (parsed.type === 'date') return getWeekNumber(parsed.date) === sem; return false; }
   var POSES_FINIES = ['Terminé','Termine','Posé','Pose','TERMINE','POSE'];
-  var items = commandes.filter(function(c){
-    if (str(c.commentaireARC).toUpperCase() === 'ANNULER') return false;
-    if (POSES_FINIES.indexOf(str(c.statutPose).trim()) !== -1) return false;
-    return datePoseEnSemaine(c.datePose, semActuelle);
-  }).slice().sort(function(a,b){
-    return str(b.datePose).localeCompare(str(a.datePose));
-  });
-  if (!items.length) {
-    document.getElementById('suivipose-content').innerHTML = '<div class="empty-state"><p>Aucun chantier actif cette semaine.</p></div>';
-    return;
-  }
+  var items = commandes.filter(function(c){ if (str(c.commentaireARC).toUpperCase() === 'ANNULER') return false; if (POSES_FINIES.indexOf(str(c.statutPose).trim()) !== -1) return false; return datePoseEnSemaine(c.datePose, semActuelle); }).slice().sort(function(a,b){ return str(b.datePose).localeCompare(str(a.datePose)); });
+  if (!items.length) { document.getElementById('suivipose-content').innerHTML = '<div class="empty-state"><p>Aucun chantier actif cette semaine.</p></div>'; return; }
   var html = '';
-  items.forEach(function(c) {
-    var pvFait = str(c.pvChantier).toUpperCase() === 'OUI';
-    html += '<div class="suivipose-card">';
-    html += '<div class="suivipose-header">';
-    html += '<div><div class="suivipose-client">'+h(c.client)+'</div>';
-    html += '<div class="suivipose-meta">'+h(c.fournisseur||'')+(c.devis?' · '+h(c.devis):'')+'</div></div>';
-    html += '<div style="text-align:right;">';
+  items.forEach(function(c) { var pvFait = str(c.pvChantier).toUpperCase() === 'OUI';
+    html += '<div class="suivipose-card"><div class="suivipose-header"><div><div class="suivipose-client">'+h(c.client)+'</div><div class="suivipose-meta">'+h(c.fournisseur||'')+(c.devis?' · '+h(c.devis):'')+'</div></div><div style="text-align:right;">';
     if (c.datePose) html += '<span class="suivipose-date">📅 '+h(cleanDate(c.datePose))+'</span>';
     var sP = str(c.statutPose);
-    if (sP) {
-      var sBg=sP==='SAV'?'#FFEBEE':sP.indexOf('Termin')!==-1?'var(--vert-bg)':'#FFF3E0';
-      var sC=sP==='SAV'?'#D32F2F':sP.indexOf('Termin')!==-1?'var(--vert)':'#E65100';
-      html += '<br><span style="font-size:11px;font-weight:700;background:'+sBg+';color:'+sC+';padding:2px 8px;border-radius:5px;display:inline-block;margin-top:4px;">'+h(sP)+'</span>';
-    }
-    html += '<br><span style="font-size:11px;font-weight:700;background:'+(pvFait?'var(--vert-bg)':'#FFEBEE')+';color:'+(pvFait?'var(--vert)':'var(--rouge)')+';padding:2px 8px;border-radius:5px;display:inline-block;margin-top:4px;">'+(pvFait?'✓ PV Fait':'✗ PV Manquant')+'</span>';
-    html += '</div></div>';
-    html += '<div class="suivipose-body">';
-    if (c.metres) {
-      html += '<div style="margin-bottom:10px;padding:8px 12px;background:#FFF3E0;border-radius:8px;border-left:3px solid var(--orange);">';
-      html += '<div style="font-size:11px;font-weight:700;color:var(--orange);margin-bottom:4px;">📋 DATE MÉTRÉ</div>';
-      html += '<div style="font-size:12px;">'+h(formatDateMetre(c.metres))+'</div></div>';
-    }
-    if (c.commentaire) {
-      html += '<div style="margin-bottom:10px;padding:8px 12px;background:#FFF3E0;border-radius:8px;border-left:3px solid var(--orange);">';
-      html += '<div style="font-size:11px;font-weight:700;color:var(--orange);margin-bottom:4px;">📋 NOTE BUREAU</div>';
-      html += '<div style="font-size:12px;white-space:pre-wrap;">'+h(c.commentaire)+'</div></div>';
-    }
-    poseurs.forEach(function(p) {
-      html += '<div class="suivipose-poseur">';
-      html += '<div class="suivipose-poseur-name">';
-      html += '<div class="suivipose-poseur-avatar" style="background:'+p.couleur+'">'+p.nom.slice(0,2)+'</div>';
-      html += '<span class="suivipose-poseur-label">'+p.nom+'</span></div>';
-      if (c[p.key] && str(c[p.key]).trim()) {
-        var lignes = str(c[p.key]).split('\n').filter(function(l){return l.trim();});
-        html += '<div class="suivipose-comment" id="cmt-'+c.ligne+'-'+p.key+'">';
-        lignes.forEach(function(l, li) {
-          html += '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid var(--bordure);">';
-          html += '<span style="flex:1;font-size:12px;">'+h(l)+'</span>';
-          html += '<div style="display:flex;gap:4px;flex-shrink:0;">';
-          html += '<button data-ligne="'+c.ligne+'" data-key="'+p.key+'" data-idx="'+li+'" class="btn-cmt-edit" style="background:var(--bleu-bg);color:var(--bleu);border:none;border-radius:5px;padding:3px 8px;font-size:11px;cursor:pointer;">✏️</button>';
-          html += '<button data-ligne="'+c.ligne+'" data-key="'+p.key+'" data-idx="'+li+'" class="btn-cmt-del" style="background:#FFEBEE;color:var(--rouge);border:none;border-radius:5px;padding:3px 8px;font-size:11px;cursor:pointer;">🗑</button>';
-          html += '</div></div>';
-        });
-        html += '</div>';
-      } else {
-        html += '<div class="suivipose-empty">Aucun suivi poseur.</div>';
-      }
-      html += '</div>';
-    });
-    html += '</div></div>';
-  });
+    if (sP) { var sBg=sP==='SAV'?'#FFEBEE':sP.indexOf('Termin')!==-1?'var(--vert-bg)':'#FFF3E0', sC=sP==='SAV'?'#D32F2F':sP.indexOf('Termin')!==-1?'var(--vert)':'#E65100'; html += '<br><span style="font-size:11px;font-weight:700;background:'+sBg+';color:'+sC+';padding:2px 8px;border-radius:5px;display:inline-block;margin-top:4px;">'+h(sP)+'</span>'; }
+    html += '<br><span style="font-size:11px;font-weight:700;background:'+(pvFait?'var(--vert-bg)':'#FFEBEE')+';color:'+(pvFait?'var(--vert)':'var(--rouge)')+';padding:2px 8px;border-radius:5px;display:inline-block;margin-top:4px;">'+(pvFait?'✓ PV Fait':'✗ PV Manquant')+'</span></div></div><div class="suivipose-body">';
+    if (c.metres) html += '<div style="margin-bottom:10px;padding:8px 12px;background:#FFF3E0;border-radius:8px;border-left:3px solid var(--orange);"><div style="font-size:11px;font-weight:700;color:var(--orange);margin-bottom:4px;">📋 DATE MÉTRÉ</div><div style="font-size:12px;">'+h(formatDateMetre(c.metres))+'</div></div>';
+    if (c.commentaire) html += '<div style="margin-bottom:10px;padding:8px 12px;background:#FFF3E0;border-radius:8px;border-left:3px solid var(--orange);"><div style="font-size:11px;font-weight:700;color:var(--orange);margin-bottom:4px;">📋 NOTE BUREAU</div><div style="font-size:12px;white-space:pre-wrap;">'+h(c.commentaire)+'</div></div>';
+    poseurs.forEach(function(p) { html += '<div class="suivipose-poseur"><div class="suivipose-poseur-name"><div class="suivipose-poseur-avatar" style="background:'+p.couleur+'">'+p.nom.slice(0,2)+'</div><span class="suivipose-poseur-label">'+p.nom+'</span></div>';
+      if (c[p.key] && str(c[p.key]).trim()) { var lignes = str(c[p.key]).split('\n').filter(function(l){return l.trim();}); html += '<div class="suivipose-comment" id="cmt-'+c.ligne+'-'+p.key+'">'; lignes.forEach(function(l, li) { html += '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid var(--bordure);"><span style="flex:1;font-size:12px;">'+h(l)+'</span><div style="display:flex;gap:4px;flex-shrink:0;"><button data-ligne="'+c.ligne+'" data-key="'+p.key+'" data-idx="'+li+'" class="btn-cmt-edit" style="background:var(--bleu-bg);color:var(--bleu);border:none;border-radius:5px;padding:3px 8px;font-size:11px;cursor:pointer;">✏️</button><button data-ligne="'+c.ligne+'" data-key="'+p.key+'" data-idx="'+li+'" class="btn-cmt-del" style="background:#FFEBEE;color:var(--rouge);border:none;border-radius:5px;padding:3px 8px;font-size:11px;cursor:pointer;">🗑</button></div></div>'; }); html += '</div>'; } else { html += '<div class="suivipose-empty">Aucun suivi poseur.</div>'; } html += '</div>'; });
+    html += '</div></div>'; });
   document.getElementById('suivipose-content').innerHTML = html;
-  document.getElementById('suivipose-content').querySelectorAll('.btn-cmt-edit').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      modifierCommentaire(parseInt(btn.getAttribute('data-ligne')), btn.getAttribute('data-key'), parseInt(btn.getAttribute('data-idx')));
-    });
-  });
-  document.getElementById('suivipose-content').querySelectorAll('.btn-cmt-del').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      supprimerCommentaire(parseInt(btn.getAttribute('data-ligne')), btn.getAttribute('data-key'), parseInt(btn.getAttribute('data-idx')));
-    });
-  });
+  document.getElementById('suivipose-content').querySelectorAll('.btn-cmt-edit').forEach(function(btn) { btn.addEventListener('click', function() { modifierCommentaire(parseInt(btn.getAttribute('data-ligne')), btn.getAttribute('data-key'), parseInt(btn.getAttribute('data-idx'))); }); });
+  document.getElementById('suivipose-content').querySelectorAll('.btn-cmt-del').forEach(function(btn) { btn.addEventListener('click', function() { supprimerCommentaire(parseInt(btn.getAttribute('data-ligne')), btn.getAttribute('data-key'), parseInt(btn.getAttribute('data-idx'))); }); });
 }
 
-function cleanDate(s) {
-  if (!s || !str(s).trim()) return '';
-  var m = str(s).match(/(\w+ \w+ \d+ \d{4})/);
-  if (m) {
-    var d = new Date(s);
-    if (!isNaN(d)) return d.toLocaleDateString('fr-FR', {day:'2-digit',month:'2-digit',year:'numeric'});
-  }
-  return str(s).trim();
-}
+function cleanDate(s) { if (!s || !str(s).trim()) return ''; var m = str(s).match(/(\w+ \w+ \d+ \d{4})/); if (m) { var d = new Date(s); if (!isNaN(d)) return d.toLocaleDateString('fr-FR', {day:'2-digit',month:'2-digit',year:'numeric'}); } return str(s).trim(); }
 
-// ══════════════════════════════════════════════════════════
-//  CONFIG
-// ══════════════════════════════════════════════════════════
-function sauvegarderConfig() {
-  var url = document.getElementById('config-url-input').value.trim();
-  if (!url || !url.startsWith('https://')) {
-    document.getElementById('config-status').innerHTML = '<span style="color:var(--rouge);">❌ URL invalide (https:// requis)</span>';
-    return;
-  }
-  localStorage.setItem('eco-webapp-url', url);
-  WEBAPP = url;
-  document.getElementById('config-status').innerHTML = '<span style="color:var(--vert);">✅ Enregistré ! Rechargement...</span>';
-  viderCache();
-  setTimeout(function() { charger(true); showView('suivi'); }, 1000);
-}
+// CONFIG & TRADUCTION
+function sauvegarderConfig() { var url = document.getElementById('config-url-input').value.trim(); if (!url || !url.startsWith('https://')) { document.getElementById('config-status').innerHTML = '<span style="color:var(--rouge);">❌ URL invalide</span>'; return; } localStorage.setItem('eco-webapp-url', url); WEBAPP = url; document.getElementById('config-status').innerHTML = '<span style="color:var(--vert);">✅ Enregistré !</span>'; viderCache(); setTimeout(function() { charger(true); showView('suivi'); }, 1000); }
 
-// ══════════════════════════════════════════════════════════
-//  TRADUCTION
-// ══════════════════════════════════════════════════════════
-async function traduireTexte(texte) {
-  if (!texte || !str(texte).trim()) return texte;
-  if (!/[\u0400-\u04FF]/.test(texte)) return texte;
-  try {
-    var target = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=ru&tl=fr&dt=t&q=' + encodeURIComponent(texte);
-    var url = 'https://corsproxy.io/?' + encodeURIComponent(target);
-    var r = await fetch(url);
-    if (!r.ok) throw new Error('HTTP ' + r.status);
-    var d = await r.json();
-    var traduit = d[0].map(function(x){return x[0];}).join('');
-    return h(traduit) + ' <span style="font-size:10px;color:#90CAF9;font-style:italic;">[trad. auto]</span>';
-  } catch(e) { return h(texte); }
-}
+async function traduireTexte(texte) { if (!texte || !str(texte).trim()) return texte; if (!/[\u0400-\u04FF]/.test(texte)) return texte; try { var target = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=ru&tl=fr&dt=t&q=' + encodeURIComponent(texte), url = 'https://corsproxy.io/?' + encodeURIComponent(target), r = await fetch(url); if (!r.ok) throw new Error('HTTP'); var d = await r.json(), traduit = d[0].map(function(x){return x[0];}).join(''); return h(traduit) + ' <span style="font-size:10px;color:#90CAF9;font-style:italic;">[trad. auto]</span>'; } catch(e) { return h(texte); } }
+async function traduireCommentairesPoseurs() { var elements = document.querySelectorAll('.suivipose-comment'); for (var i = 0; i < elements.length; i++) { var el = elements[i], texte = el.textContent.trim(); if (/[\u0400-\u04FF]/.test(texte) && !el.querySelector('.trad-flag')) { var traduit = await traduireTexte(texte); if (traduit !== texte && traduit !== h(texte)) { var div = document.createElement('div'); div.className = 'trad-flag'; div.style.cssText = 'background:#E3F2FD;border-radius:6px;padding:6px 10px;margin-top:6px;font-size:11px;color:#1565C0;'; div.innerHTML = '🇫🇷 ' + traduit; el.appendChild(div); } } } }
 
-async function traduireCommentairesPoseurs() {
-  var elements = document.querySelectorAll('.suivipose-comment');
-  for (var i = 0; i < elements.length; i++) {
-    var el = elements[i];
-    var texte = el.textContent.trim();
-    if (/[\u0400-\u04FF]/.test(texte) && !el.querySelector('.trad-flag')) {
-      var traduit = await traduireTexte(texte);
-      if (traduit !== texte && traduit !== h(texte)) {
-        var div = document.createElement('div');
-        div.className = 'trad-flag';
-        div.style.cssText = 'background:#E3F2FD;border-radius:6px;padding:6px 10px;margin-top:6px;font-size:11px;color:#1565C0;';
-        div.innerHTML = '🇫🇷 ' + traduit;
-        el.appendChild(div);
-      }
-    }
-  }
-}
+// POPUP OBJET
+function afficherObjet(e, objet) { if (e) e.stopPropagation(); var existing = document.getElementById('objet-popup'); if (existing) existing.remove(); var popup = document.createElement('div'); popup.id = 'objet-popup'; popup.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:400;display:flex;align-items:center;justify-content:center;padding:20px;'; popup.onclick = function() { popup.remove(); }; popup.innerHTML = '<div style="background:#fff;border-radius:14px;padding:24px;max-width:400px;width:100%;box-shadow:0 10px 40px rgba(0,0,0,.3);" onclick="event.stopPropagation()"><div style="font-size:14px;font-weight:700;color:var(--bleu);margin-bottom:12px;">📦 Objet de la commande</div><div style="font-size:14px;color:var(--texte);line-height:1.5;white-space:pre-wrap;">' + h(objet) + '</div><button onclick="document.getElementById(\'objet-popup\').remove()" style="margin-top:16px;width:100%;background:var(--bleu);color:#fff;border:none;border-radius:8px;padding:10px;font-size:14px;font-weight:600;cursor:pointer;">Fermer</button></div>'; document.body.appendChild(popup); }
 
-// ══════════════════════════════════════════════════════════
-//  OBJET POPUP
-// ══════════════════════════════════════════════════════════
-function afficherObjet(e, objet) {
-  if (e) e.stopPropagation();
-  var existing = document.getElementById('objet-popup');
-  if (existing) existing.remove();
-  var popup = document.createElement('div');
-  popup.id = 'objet-popup';
-  popup.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:400;display:flex;align-items:center;justify-content:center;padding:20px;';
-  popup.onclick = function() { popup.remove(); };
-  popup.innerHTML = '<div style="background:#fff;border-radius:14px;padding:24px;max-width:400px;width:100%;box-shadow:0 10px 40px rgba(0,0,0,.3);" onclick="event.stopPropagation()">' +
-    '<div style="font-size:14px;font-weight:700;color:var(--bleu);margin-bottom:12px;">📦 Objet de la commande</div>' +
-    '<div style="font-size:14px;color:var(--texte);line-height:1.5;white-space:pre-wrap;">' + h(objet) + '</div>' +
-    '<button onclick="document.getElementById(\'objet-popup\').remove()" style="margin-top:16px;width:100%;background:var(--bleu);color:#fff;border:none;border-radius:8px;padding:10px;font-size:14px;font-weight:600;cursor:pointer;">Fermer</button>' +
-    '</div>';
-  document.body.appendChild(popup);
-}
-
-// ══════════════════════════════════════════════════════════
-//  PLANNING
-// ══════════════════════════════════════════════════════════
+// PLANNING
 var planningSemActuelle = null;
-
-function getSemNum(d) {
-  return getWeekNumber(d);
-}
-
-function planningSemaine(delta) {
-  if (planningSemActuelle === null || delta === 0) {
-    planningSemActuelle = getSemNum(new Date());
-  } else {
-    planningSemActuelle += delta;
-    if (planningSemActuelle > 53) planningSemActuelle = 1;
-    if (planningSemActuelle < 1) planningSemActuelle = 53;
-  }
-  renderPlanning();
-}
-
+function getSemNum(d) { return getWeekNumber(d); }
+function planningSemaine(delta) { if (planningSemActuelle === null || delta === 0) planningSemActuelle = getSemNum(new Date()); else { planningSemActuelle += delta; if (planningSemActuelle > 53) planningSemActuelle = 1; if (planningSemActuelle < 1) planningSemActuelle = 53; } renderPlanning(); }
 function renderPlanning() {
   if (planningSemActuelle === null) planningSemActuelle = getSemNum(new Date());
-  var sem = planningSemActuelle;
-  document.getElementById('planning-titre').textContent = 'Semaine S' + sem;
-  var poseurs = [
-    {nom:'ANATOLE', key:'poseur_ANATOLE', couleur:'#1565C0'},
-    {nom:'ARTIOM',  key:'poseur_ARTIOM',  couleur:'#2E7D32'},
-    {nom:'ANTONIO', key:'poseur_ANTONIO', couleur:'#E65100'},
-    {nom:'VINCENT', key:'poseur_VINCENT', couleur:'#6A1B9A'},
-    {nom:'LAMRI',   key:'poseur_LAMRI',   couleur:'#00695C'}
-  ];
-  var chantiers = commandes.filter(function(c) {
-    var parsed = parseDatePose(c.datePose);
-    if (!parsed) return false;
-    if (parsed.type === 'semaine') return parsed.num === sem;
-    if (parsed.type === 'date') return getSemNum(parsed.date) === sem;
-    return false;
-  });
-  if (!chantiers.length) {
-    document.getElementById('planning-content').innerHTML = '<div style="text-align:center;padding:48px;color:var(--texte2);"><div style="font-size:48px;margin-bottom:12px;">📅</div><p>Aucune pose planifiée pour la semaine S' + sem + '</p></div>';
-    return;
-  }
+  var sem = planningSemActuelle; document.getElementById('planning-titre').textContent = 'Semaine S' + sem;
+  var poseurs = [{nom:'ANATOLE', key:'poseur_ANATOLE', couleur:'#1565C0'},{nom:'ARTIOM', key:'poseur_ARTIOM', couleur:'#2E7D32'},{nom:'ANTONIO', key:'poseur_ANTONIO', couleur:'#E65100'},{nom:'VINCENT', key:'poseur_VINCENT', couleur:'#6A1B9A'},{nom:'LAMRI', key:'poseur_LAMRI', couleur:'#00695C'}];
+  var chantiers = commandes.filter(function(c) { var parsed = parseDatePose(c.datePose); if (!parsed) return false; if (parsed.type === 'semaine') return parsed.num === sem; if (parsed.type === 'date') return getSemNum(parsed.date) === sem; return false; });
+  if (!chantiers.length) { document.getElementById('planning-content').innerHTML = '<div style="text-align:center;padding:48px;color:var(--texte2);"><div style="font-size:48px;margin-bottom:12px;">📅</div><p>Aucune pose planifiée pour la semaine S' + sem + '</p></div>'; return; }
   var html = '<div style="display:grid;gap:12px;">';
-  chantiers.forEach(function(c) {
-    var pvFait = str(c.pvChantier).toUpperCase() === 'OUI';
-    var sP = str(c.statutPose);
-    var sBg = sP==='SAV'?'#FFEBEE':sP.indexOf('Termin')!==-1?'#E8F5E9':'#FFF3E0';
-    var sC = sP==='SAV'?'#D32F2F':sP.indexOf('Termin')!==-1?'#2E7D32':'#E65100';
-    var poseursActifs = poseurs.filter(function(p){ return c[p.key] && str(c[p.key]).trim(); });
-    html += '<div style="background:#fff;border-radius:12px;border:1px solid var(--bordure);border-left:4px solid var(--bleu);padding:16px;">';
-    html += '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px;">';
-    html += '<div><span style="font-size:16px;font-weight:700;">' + h(c.client) + '</span>';
+  chantiers.forEach(function(c) { var pvFait = str(c.pvChantier).toUpperCase() === 'OUI', sP = str(c.statutPose), sBg = sP==='SAV'?'#FFEBEE':sP.indexOf('Termin')!==-1?'#E8F5E9':'#FFF3E0', sC = sP==='SAV'?'#D32F2F':sP.indexOf('Termin')!==-1?'#2E7D32':'#E65100', poseursActifs = poseurs.filter(function(p){ return c[p.key] && str(c[p.key]).trim(); });
+    html += '<div style="background:#fff;border-radius:12px;border:1px solid var(--bordure);border-left:4px solid var(--bleu);padding:16px;"><div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px;"><div><span style="font-size:16px;font-weight:700;">' + h(c.client) + '</span>';
     if (c.fournisseur) html += ' <span style="font-size:12px;color:var(--texte2);">· ' + h(c.fournisseur) + '</span>';
     html += '</div><div style="display:flex;gap:6px;flex-wrap:wrap;">';
     if (c.metres) html += '<span style="background:#FFF3E0;color:var(--orange);padding:3px 10px;border-radius:6px;font-size:12px;font-weight:700;">📋 ' + h(formatDateMetre(c.metres)) + '</span>';
     html += '<span style="background:var(--bleu-bg);color:var(--bleu);padding:3px 10px;border-radius:6px;font-size:12px;font-weight:700;">📅 ' + h(c.datePose) + '</span>';
     if (sP) html += '<span style="background:' + sBg + ';color:' + sC + ';padding:3px 10px;border-radius:6px;font-size:12px;font-weight:700;">' + h(sP) + '</span>';
-    html += '<span style="background:' + (pvFait?'#E8F5E9':'#FFEBEE') + ';color:' + (pvFait?'#2E7D32':'#D32F2F') + ';padding:3px 10px;border-radius:6px;font-size:12px;font-weight:700;">' + (pvFait?'✓ PV':'✗ PV') + '</span>';
-    html += '</div></div>';
-    if (poseursActifs.length) {
-      html += '<div style="display:flex;gap:8px;flex-wrap:wrap;">';
-      poseursActifs.forEach(function(p) {
-        html += '<span style="display:inline-flex;align-items:center;gap:5px;background:' + p.couleur + '18;color:' + p.couleur + ';padding:4px 10px;border-radius:20px;font-size:12px;font-weight:600;"><span style="width:18px;height:18px;border-radius:50%;background:' + p.couleur + ';color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:9px;">' + p.nom.slice(0,2) + '</span>' + p.nom + '</span>';
-      });
-      html += '</div>';
-    } else {
-      html += '<div style="font-size:12px;color:var(--texte2);font-style:italic;">Aucun poseur assigné</div>';
-    }
-    if (c.commentaire) {
-      html += '<div style="margin-top:8px;font-size:12px;color:var(--texte2);padding:6px 10px;background:var(--gris-bg);border-radius:6px;">📋 ' + h(c.commentaire) + '</div>';
-    }
-    html += '</div>';
-  });
-  html += '</div>';
-  document.getElementById('planning-content').innerHTML = html;
+    html += '<span style="background:' + (pvFait?'#E8F5E9':'#FFEBEE') + ';color:' + (pvFait?'#2E7D32':'#D32F2F') + ';padding:3px 10px;border-radius:6px;font-size:12px;font-weight:700;">' + (pvFait?'✓ PV':'✗ PV') + '</span></div></div>';
+    if (poseursActifs.length) { html += '<div style="display:flex;gap:8px;flex-wrap:wrap;">'; poseursActifs.forEach(function(p) { html += '<span style="display:inline-flex;align-items:center;gap:5px;background:' + p.couleur + '18;color:' + p.couleur + ';padding:4px 10px;border-radius:20px;font-size:12px;font-weight:600;"><span style="width:18px;height:18px;border-radius:50%;background:' + p.couleur + ';color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:9px;">' + p.nom.slice(0,2) + '</span>' + p.nom + '</span>'; }); html += '</div>'; } else { html += '<div style="font-size:12px;color:var(--texte2);font-style:italic;">Aucun poseur assigné</div>'; }
+    if (c.commentaire) html += '<div style="margin-top:8px;font-size:12px;color:var(--texte2);padding:6px 10px;background:var(--gris-bg);border-radius:6px;">📋 ' + h(c.commentaire) + '</div>';
+    html += '</div>'; });
+  html += '</div>'; document.getElementById('planning-content').innerHTML = html;
 }
 
-// ══════════════════════════════════════════════════════════
-//  RAPPORT PDF
-// ══════════════════════════════════════════════════════════
+// PDF
 async function genererRapportChantier() {
-  if (editLigne === null || editLigne < 0) { alert('Enregistrez d\'abord la commande.'); return; }
-  var c = commandes.find(function(x){return x.ligne===editLigne;});
-  if (!c) return;
-  try {
-    var jspdf = window.jspdf;
-    var doc = new jspdf.jsPDF({orientation:'portrait', unit:'mm', format:'a4'});
-    doc.setFillColor(21,101,192);
-    doc.rect(0, 0, 210, 30, 'F');
-    doc.setTextColor(255,255,255);
-    doc.setFontSize(18); doc.setFont('helvetica','bold');
-    doc.text('FICHE CHANTIER', 105, 13, {align:'center'});
-    doc.setFontSize(10); doc.setFont('helvetica','normal');
-    doc.text('ECO OUEST - Suivi de commande', 105, 22, {align:'center'});
-    var y = 42;
-    doc.setFontSize(16); doc.setFont('helvetica','bold'); doc.setTextColor(21,101,192);
-    doc.text(str(c.client) || '—', 14, y);
-    y += 10;
-    doc.setDrawColor(220,220,220);
-    doc.setFontSize(10); doc.setTextColor(60,60,60); doc.setFont('helvetica','normal');
-    function ligne(label, val) {
-      if (y > 270) { doc.addPage(); y = 20; }
-      doc.setFont('helvetica','bold');
-      doc.text(label, 14, y);
-      doc.setFont('helvetica','normal');
-      doc.text(str(val) || '—', 70, y);
-      y += 7;
-    }
-    ligne('Fournisseur :', c.fournisseur);
-    ligne('Date métré :', formatDateMetre(c.metres));
-    ligne('N° Devis :', c.devis);
-    ligne('N° Commande :', c.commande);
-    ligne('N° ARC :', c.arc);
-    ligne('Prev. livraison :', c.prevLivraison);
-    ligne('Statut livraison :', c.statutLivraison);
-    ligne('Statut pose :', c.statutPose);
-    ligne('Date de pose :', c.datePose);
-    ligne('PV chantier :', str(c.pvChantier).toUpperCase()==='OUI' ? 'FAIT' : 'MANQUANT');
-    y += 4;
-    doc.setDrawColor(21,101,192); doc.setLineWidth(0.5);
-    doc.line(14, y, 196, y);
-    y += 8;
-    if (y > 240) { doc.addPage(); y = 20; }
-    doc.setFillColor(255,243,224);
-    doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(230,81,0);
-    doc.text('NOTE BUREAU', 14, y);
-    y += 6;
-    doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(60,60,60);
-    if (c.commentaire) {
-      var lignesC = doc.splitTextToSize(str(c.commentaire), 182);
-      lignesC.forEach(function(l) {
-        if (y > 280) { doc.addPage(); y = 20; }
-        doc.text(l, 14, y);
-        y += 5;
-      });
-      y += 4;
-    } else {
-      doc.text('Aucune note.', 14, y); y += 8;
-    }
-    var poseurs = [
-      {nom:'ANATOLE', key:'poseur_ANATOLE'},{nom:'ARTIOM', key:'poseur_ARTIOM'},
-      {nom:'ANTONIO', key:'poseur_ANTONIO'},{nom:'VINCENT', key:'poseur_VINCENT'},
-      {nom:'LAMRI', key:'poseur_LAMRI'}
-    ];
-    poseurs.forEach(function(p) {
-      if (!c[p.key] || !str(c[p.key]).trim()) return;
-      if (y > 250) { doc.addPage(); y = 20; }
-      doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(21,101,192);
-      doc.text('POSEUR : ' + p.nom, 14, y);
-      y += 6;
-      doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(60,60,60);
-      var lignesP = doc.splitTextToSize(str(c[p.key]), 182);
-      lignesP.forEach(function(l) {
-        if (y > 280) { doc.addPage(); y = 20; }
-        doc.text(l, 14, y);
-        y += 5;
-      });
-      y += 4;
-    });
-    var totalPages = doc.internal.getNumberOfPages();
-    for (var i = 1; i <= totalPages; i++) {
-      doc.setPage(i);
-      doc.setFillColor(21,101,192);
-      doc.rect(0, 285, 210, 12, 'F');
-      doc.setTextColor(255,255,255); doc.setFontSize(8); doc.setFont('helvetica','normal');
-      doc.text('ECO OUEST - Généré le ' + new Date().toLocaleDateString('fr-FR') + ' — Page ' + i + '/' + totalPages, 105, 292, {align:'center'});
-    }
-    var fn = 'Fiche_' + (str(c.client)||'chantier').replace(/\s/g,'_') + '.pdf';
-    doc.save(fn);
+  if (editLigne === null || editLigne < 0) { alert('Enregistrez d\'abord.'); return; } var c = commandes.find(function(x){return x.ligne===editLigne;}); if (!c) return;
+  try { var jspdf = window.jspdf, doc = new jspdf.jsPDF({orientation:'portrait', unit:'mm', format:'a4'});
+    doc.setFillColor(21,101,192); doc.rect(0, 0, 210, 30, 'F'); doc.setTextColor(255,255,255); doc.setFontSize(18); doc.setFont('helvetica','bold'); doc.text('FICHE CHANTIER', 105, 13, {align:'center'}); doc.setFontSize(10); doc.setFont('helvetica','normal'); doc.text('ECO OUEST - Suivi de commande', 105, 22, {align:'center'});
+    var y = 42; doc.setFontSize(16); doc.setFont('helvetica','bold'); doc.setTextColor(21,101,192); doc.text(str(c.client) || '—', 14, y); y += 10; doc.setDrawColor(220,220,220); doc.setFontSize(10); doc.setTextColor(60,60,60); doc.setFont('helvetica','normal');
+    function ligne(label, val) { if (y > 270) { doc.addPage(); y = 20; } doc.setFont('helvetica','bold'); doc.text(label, 14, y); doc.setFont('helvetica','normal'); doc.text(str(val) || '—', 70, y); y += 7; }
+    ligne('Fournisseur :', c.fournisseur); ligne('Date métré :', formatDateMetre(c.metres)); ligne('N° Devis :', c.devis); ligne('N° Commande :', c.commande); ligne('N° ARC :', c.arc); ligne('Prev. livraison :', c.prevLivraison); ligne('Statut livraison :', c.statutLivraison); ligne('Statut pose :', c.statutPose); ligne('Date de pose :', c.datePose); ligne('PV chantier :', str(c.pvChantier).toUpperCase()==='OUI' ? 'FAIT' : 'MANQUANT');
+    y += 4; doc.setDrawColor(21,101,192); doc.setLineWidth(0.5); doc.line(14, y, 196, y); y += 8; if (y > 240) { doc.addPage(); y = 20; }
+    doc.setFillColor(255,243,224); doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(230,81,0); doc.text('NOTE BUREAU', 14, y); y += 6; doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(60,60,60);
+    if (c.commentaire) { var lignesC = doc.splitTextToSize(str(c.commentaire), 182); lignesC.forEach(function(l) { if (y > 280) { doc.addPage(); y = 20; } doc.text(l, 14, y); y += 5; }); y += 4; } else { doc.text('Aucune note.', 14, y); y += 8; }
+    var poseurs = [{nom:'ANATOLE', key:'poseur_ANATOLE'},{nom:'ARTIOM', key:'poseur_ARTIOM'},{nom:'ANTONIO', key:'poseur_ANTONIO'},{nom:'VINCENT', key:'poseur_VINCENT'},{nom:'LAMRI', key:'poseur_LAMRI'}];
+    poseurs.forEach(function(p) { if (!c[p.key] || !str(c[p.key]).trim()) return; if (y > 250) { doc.addPage(); y = 20; } doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(21,101,192); doc.text('POSEUR : ' + p.nom, 14, y); y += 6; doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(60,60,60); var lignesP = doc.splitTextToSize(str(c[p.key]), 182); lignesP.forEach(function(l) { if (y > 280) { doc.addPage(); y = 20; } doc.text(l, 14, y); y += 5; }); y += 4; });
+    var totalPages = doc.internal.getNumberOfPages(); for (var i = 1; i <= totalPages; i++) { doc.setPage(i); doc.setFillColor(21,101,192); doc.rect(0, 285, 210, 12, 'F'); doc.setTextColor(255,255,255); doc.setFontSize(8); doc.setFont('helvetica','normal'); doc.text('ECO OUEST - Généré le ' + new Date().toLocaleDateString('fr-FR') + ' — Page ' + i + '/' + totalPages, 105, 292, {align:'center'}); }
+    var fn = 'Fiche_' + (str(c.client)||'chantier').replace(/\s/g,'_') + '.pdf'; doc.save(fn);
   } catch(e) { alert('Erreur PDF : ' + e.message); }
 }
 
-// ══════════════════════════════════════════════════════════
-//  FOURNISSEURS
-// ══════════════════════════════════════════════════════════
+// FOURNISSEURS
 function fillFournisseur() {
   var baseFournisseurs = ['ATLANTEM','ATULAM','LALLEMANT','SOKO','ALUGLASS','FILTERSUN','DC PROD','KE FRANCE','SKYLUX','BVL SERRULAC','LEROY MERLIN','FOUSSIER','STOCK'];
   var fous = baseFournisseurs.slice();
-  commandes.forEach(function(c) {
-    if(c.fournisseur && fous.indexOf(c.fournisseur) === -1) fous.push(c.fournisseur);
-  });
+  commandes.forEach(function(c) { if(c.fournisseur && fous.indexOf(c.fournisseur) === -1) fous.push(c.fournisseur); });
   fous.sort();
   var sel = document.getElementById('filter-fournisseur');
-  if (sel) {
-    var curFilter = sel.value;
-    sel.innerHTML = '<option value="">Tous fournisseurs</option>';
-    fous.forEach(function(f) {
-      var o = document.createElement('option');
-      o.value = f; o.textContent = f;
-      sel.appendChild(o);
-    });
-    sel.value = curFilter;
-  }
+  if (sel) { var curFilter = sel.value; sel.innerHTML = '<option value="">Tous fournisseurs</option>'; fous.forEach(function(f) { var o = document.createElement('option'); o.value = f; o.textContent = f; sel.appendChild(o); }); sel.value = curFilter; }
   var selModal = document.getElementById('f-fournisseur');
-  if (selModal) {
-    var current = selModal.value;
-    selModal.innerHTML = '<option value="">— Choisir —</option>';
-    fous.forEach(function(f) {
-      var o = document.createElement('option');
-      o.value = f; o.textContent = f;
-      selModal.appendChild(o);
-    });
-    selModal.value = current;
-  }
+  if (selModal) { var current = selModal.value; selModal.innerHTML = '<option value="">— Choisir —</option>'; fous.forEach(function(f) { var o = document.createElement('option'); o.value = f; o.textContent = f; selModal.appendChild(o); }); selModal.value = current; }
 }
 
-// ══════════════════════════════════════════════════════════
-//  COMMENTAIRES POSEURS
-// ══════════════════════════════════════════════════════════
+// COMMENTAIRES POSEURS
 function modifierCommentaire(ligne, key, idx) {
-  var c = commandes.find(function(x){return x.ligne===ligne;});
-  if (!c) return;
-  var lignes = str(c[key]).split('\n').filter(function(l){return l.trim();});
-  var ancien = lignes[idx] || '';
-  var nouveau = prompt('Modifier ce commentaire :', ancien);
-  if (nouveau === null) return;
-  if (nouveau.trim()) {
-    lignes[idx] = nouveau.trim();
-  } else {
-    lignes.splice(idx, 1);
-  }
-  var final = lignes.filter(function(l){return l.trim();}).join('\n');
-  sauvegarderCommentairePoseur(ligne, key, final, c);
+  var c = commandes.find(function(x){return x.ligne===ligne;}); if (!c) return;
+  var lignes = str(c[key]).split('\n').filter(function(l){return l.trim();}), ancien = lignes[idx] || '', nouveau = prompt('Modifier ce commentaire :', ancien);
+  if (nouveau === null) return; if (nouveau.trim()) lignes[idx] = nouveau.trim(); else lignes.splice(idx, 1);
+  sauvegarderCommentairePoseur(ligne, key, lignes.filter(function(l){return l.trim();}).join('\n'), c);
 }
-
 async function supprimerCommentaire(ligne, key, idx) {
   if (!confirm('Supprimer ce commentaire ?')) return;
-  var c = commandes.find(function(x){return x.ligne===ligne;});
-  if (!c) return;
-  var lignes = str(c[key]).split('\n').filter(function(l){return l.trim();});
-  lignes.splice(idx, 1);
-  var final = lignes.join('\n');
-  sauvegarderCommentairePoseur(ligne, key, final, c);
+  var c = commandes.find(function(x){return x.ligne===ligne;}); if (!c) return;
+  var lignes = str(c[key]).split('\n').filter(function(l){return l.trim();}); lignes.splice(idx, 1);
+  sauvegarderCommentairePoseur(ligne, key, lignes.join('\n'), c);
 }
-
 async function sauvegarderCommentairePoseur(ligne, key, final, c) {
-  var colMap = {'poseur_ANATOLE':17,'poseur_ARTIOM':18,'poseur_ANTONIO':19,'poseur_VINCENT':21,'poseur_LAMRI':22};
-  var col = colMap[key];
-  if (!col) return;
-  try {
-    var champs = {};
-    champs[col] = final;
-    var r = await apiPost({action:'modifier', ligne:ligne, champs:champs});
-    if (!r || !r.ok) throw new Error(r && r.error ? r.error : 'Réponse invalide');
-    c[key] = final;
-    sauvegarderCache(commandes);
-    renderSuiviPose();
-    afficherToast('ok','✅','Commentaire enregistré','', 2000);
-  } catch(e) {
-    afficherToast('urgent','❌','Erreur', e.message, 6000);
-  }
+  var colMap = {'poseur_ANATOLE':17,'poseur_ARTIOM':18,'poseur_ANTONIO':19,'poseur_VINCENT':21,'poseur_LAMRI':22}, col = colMap[key]; if (!col) return;
+  try { var champs = {}; champs[col] = final; var r = await apiPost({action:'modifier', ligne:ligne, champs:champs}); if (!r || !r.ok) throw new Error(r.error || 'Erreur'); c[key] = final; sauvegarderCache(commandes); renderSuiviPose(); afficherToast('ok','✅','Commentaire enregistré','', 2000); } catch(e) { afficherToast('urgent','❌','Erreur', e.message, 6000); }
 }
 
-// ══════════════════════════════════════════════════════════
-//  EXPORT CSV
-// ══════════════════════════════════════════════════════════
+// CSV
 function exportCSV() {
-  if (!commandes.length) { alert('Aucune donnée à exporter.'); return; }
+  if (!commandes.length) { alert('Aucune donnée.'); return; }
   var cols = ['ligne','client','metres','fournisseur','devis','devisTTC','commande','arc','commentaireARC','prevLivraison','statutLivraison','statutPose','commentaire','pvChantier','datePose'];
   var entetes = ['Ligne','Client','Date métré','Fournisseur','Devis','Devis TTC','Commande','ARC','Validation ARC','Prev. Livraison','Statut Livraison','Statut Pose','Commentaire','PV','Date Pose'];
   var lignes = [entetes.join(';')];
-  commandes.forEach(function(c) {
-    var row = cols.map(function(k) {
-      var v;
-      if (k === 'metres') v = formatDateMetre(c.metres);
-      else v = c[k] == null ? '' : String(c[k]);
-      return '"' + v.replace(/"/g,'""').replace(/\n/g,' ').replace(/;/g,',') + '"';
-    });
-    lignes.push(row.join(';'));
-  });
-  var csv = '\uFEFF' + lignes.join('\n');
-  var blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
-  var url = URL.createObjectURL(blob);
-  var a = document.createElement('a');
-  a.href = url;
-  a.download = 'ECO_OUEST_export_' + new Date().toISOString().slice(0,10) + '.csv';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+  commandes.forEach(function(c) { var row = cols.map(function(k) { var v; if (k === 'metres') v = formatDateMetre(c.metres); else v = c[k] == null ? '' : String(c[k]); return '"' + v.replace(/"/g,'""').replace(/\n/g,' ').replace(/;/g,',') + '"'; }); lignes.push(row.join(';')); });
+  var csv = '\uFEFF' + lignes.join('\n'), blob = new Blob([csv], {type:'text/csv;charset=utf-8;'}), url = URL.createObjectURL(blob), a = document.createElement('a');
+  a.href = url; a.download = 'ECO_OUEST_export_' + new Date().toISOString().slice(0,10) + '.csv'; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
 }
 
-// ══════════════════════════════════════════════════════════
-//  NOTIFICATIONS PUSH
-// ══════════════════════════════════════════════════════════
-var NOTIF_KEY = 'eco-ouest-notif-urgents';
-var notifActive = false;
-var knownUrgents = [];
+// NOTIFICATIONS
+var NOTIF_KEY = 'eco-ouest-notif-urgents', notifActive = false, knownUrgents = [];
+function chargerPrefsNotif() { try { var saved = JSON.parse(localStorage.getItem(NOTIF_KEY) || '{}'); notifActive = saved.active === true; knownUrgents = saved.known || []; } catch(e) { notifActive = false; knownUrgents = []; } majBoutonNotif(); }
+function sauvegarderPrefsNotif() { try { localStorage.setItem(NOTIF_KEY, JSON.stringify({ active: notifActive, known: knownUrgents })); } catch(e) {} }
+function majBoutonNotif() { var btn = document.getElementById('btn-notif'); if (!btn) return; if (!('Notification' in window)) { btn.textContent = '🔕 N/A'; btn.disabled = true; return; } if (Notification.permission === 'denied') { btn.textContent = '🔕 Bloqué'; btn.style.borderColor = 'var(--rouge)'; btn.style.color = 'var(--rouge)'; return; } if (notifActive && Notification.permission === 'granted') { btn.textContent = '🔔 Actives'; btn.style.borderColor = 'var(--vert)'; btn.style.color = 'var(--vert)'; } else { btn.textContent = '🔕 Notifs'; btn.style.borderColor = ''; btn.style.color = ''; } }
+async function activerNotifications() { if (!('Notification' in window)) { alert('Notifications non supportées.'); return; } if (Notification.permission === 'denied') { alert('❌ Bloquées. Modifiez les paramètres.'); return; } if (notifActive && Notification.permission === 'granted') { notifActive = false; sauvegarderPrefsNotif(); majBoutonNotif(); afficherToast('warn','🔕','Désactivées','',3000); return; } try { var perm = await Notification.requestPermission(); if (perm === 'granted') { notifActive = true; sauvegarderPrefsNotif(); majBoutonNotif(); afficherToast('ok','🔔','Activées','',4000); envoyerNotification('🔔 Activées','Vous recevrez une alerte pour chaque commande urgente.'); } else { afficherToast('urgent','❌','Refusée','',4000); majBoutonNotif(); } } catch(e) { alert('Erreur : ' + e.message); } }
+function envoyerNotification(titre, corps, options) { options = options || {}; if (!notifActive || Notification.permission !== 'granted') return null; try { var n = new Notification(titre, { body: corps, tag: options.tag || 'eco-' + Date.now(), requireInteraction: options.requireInteraction === true, silent: options.silent === true }); n.onclick = function() { window.focus(); if (options.view && typeof showView === 'function') showView(options.view); n.close(); }; return n; } catch(e) { return null; } }
+function detecterUrgences() { if (!notifActive || Notification.permission !== 'granted') return; if (!commandes || !commandes.length) return; var urgents = commandes.filter(function(c) { return alerte(c).n === 3; }), nouvelles = urgents.filter(function(c) { return knownUrgents.indexOf(c.ligne) === -1; }); knownUrgents = knownUrgents.filter(function(lg) { return urgents.some(function(c) { return c.ligne === lg; }); }); if (nouvelles.length > 0) { nouvelles.slice(0, 3).forEach(function(c, i) { setTimeout(function() { var a = alerte(c); envoyerNotification('🔴 Commande urgente : ' + str(c.client || 'Sans nom'), a.t + (c.fournisseur ? ' · ' + c.fournisseur : ''), { tag: 'urgent-' + c.ligne, requireInteraction: true, view: 'alertes' }); }, i * 400); }); if (nouvelles.length > 3) { setTimeout(function() { envoyerNotification('⚠️ ' + (nouvelles.length - 3) + ' autre(s) urgence(s)','Ouvrez l\'app pour voir toutes les alertes.',{ view: 'alertes' }); }, 1500); } nouvelles.forEach(function(c) { if (knownUrgents.indexOf(c.ligne) === -1) knownUrgents.push(c.ligne); }); sauvegarderPrefsNotif(); } }
 
-function chargerPrefsNotif() {
-  try {
-    var saved = JSON.parse(localStorage.getItem(NOTIF_KEY) || '{}');
-    notifActive = saved.active === true;
-    knownUrgents = saved.known || [];
-  } catch(e) { notifActive = false; knownUrgents = []; }
-  majBoutonNotif();
-}
-
-function sauvegarderPrefsNotif() {
-  try {
-    localStorage.setItem(NOTIF_KEY, JSON.stringify({ active: notifActive, known: knownUrgents }));
-  } catch(e) {}
-}
-
-function majBoutonNotif() {
-  var btn = document.getElementById('btn-notif');
-  if (!btn) return;
-  if (!('Notification' in window)) { btn.textContent = '🔕 N/A'; btn.disabled = true; return; }
-  if (Notification.permission === 'denied') {
-    btn.textContent = '🔕 Bloqué';
-    btn.style.borderColor = 'var(--rouge)';
-    btn.style.color = 'var(--rouge)';
-    return;
-  }
-  if (notifActive && Notification.permission === 'granted') {
-    btn.textContent = '🔔 Actives';
-    btn.style.borderColor = 'var(--vert)';
-    btn.style.color = 'var(--vert)';
-  } else {
-    btn.textContent = '🔕 Notifs';
-    btn.style.borderColor = '';
-    btn.style.color = '';
-  }
-}
-
-async function activerNotifications() {
-  if (!('Notification' in window)) {
-    alert('Votre navigateur ne supporte pas les notifications.\n\nUtilisez Chrome, Edge ou Firefox récent.');
-    return;
-  }
-  if (Notification.permission === 'denied') {
-    alert('❌ Notifications BLOQUÉES.\n\n1. Cliquez sur le cadenas 🔒 dans la barre d\'adresse\n2. Autorisez les notifications\n3. Rechargez la page');
-    return;
-  }
-  if (notifActive && Notification.permission === 'granted') {
-    notifActive = false;
-    sauvegarderPrefsNotif();
-    majBoutonNotif();
-    afficherToast('warn','🔕','Notifications désactivées','',3000);
-    return;
-  }
-  try {
-    var perm = await Notification.requestPermission();
-    if (perm === 'granted') {
-      notifActive = true;
-      sauvegarderPrefsNotif();
-      majBoutonNotif();
-      afficherToast('ok','🔔','Notifications activées','',4000);
-      envoyerNotification('🔔 Notifications activées','Vous recevrez une alerte pour chaque commande urgente.');
-    } else {
-      afficherToast('urgent','❌','Permission refusée','',4000);
-      majBoutonNotif();
-    }
-  } catch(e) { alert('Erreur : ' + e.message); }
-}
-
-function envoyerNotification(titre, corps, options) {
-  options = options || {};
-  if (!notifActive || Notification.permission !== 'granted') return null;
-  try {
-    var n = new Notification(titre, {
-      body: corps,
-      tag: options.tag || 'eco-' + Date.now(),
-      requireInteraction: options.requireInteraction === true,
-      silent: options.silent === true
-    });
-    n.onclick = function() {
-      window.focus();
-      if (options.view && typeof showView === 'function') showView(options.view);
-      n.close();
-    };
-    return n;
-  } catch(e) { return null; }
-}
-
-function detecterUrgences() {
-  if (!notifActive || Notification.permission !== 'granted') return;
-  if (!commandes || !commandes.length) return;
-  var urgents = commandes.filter(function(c) { return alerte(c).n === 3; });
-  var nouvelles = urgents.filter(function(c) { return knownUrgents.indexOf(c.ligne) === -1; });
-  knownUrgents = knownUrgents.filter(function(lg) {
-    return urgents.some(function(c) { return c.ligne === lg; });
-  });
-  if (nouvelles.length > 0) {
-    nouvelles.slice(0, 3).forEach(function(c, i) {
-      setTimeout(function() {
-        var a = alerte(c);
-        envoyerNotification(
-          '🔴 Commande urgente : ' + str(c.client || 'Sans nom'),
-          a.t + (c.fournisseur ? ' · ' + c.fournisseur : ''),
-          { tag: 'urgent-' + c.ligne, requireInteraction: true, view: 'alertes' }
-        );
-      }, i * 400);
-    });
-    if (nouvelles.length > 3) {
-      setTimeout(function() {
-        envoyerNotification('⚠️ ' + (nouvelles.length - 3) + ' autre(s) urgence(s)','Ouvrez l\'app pour voir toutes les alertes.',{ view: 'alertes' });
-      }, 1500);
-    }
-    nouvelles.forEach(function(c) {
-      if (knownUrgents.indexOf(c.ligne) === -1) knownUrgents.push(c.ligne);
-    });
-    sauvegarderPrefsNotif();
-  }
-}
-
-// ══════════════════════════════════════════════════════════
-//  INITIALISATION
-// ══════════════════════════════════════════════════════════
-function renderAll(){
-  renderKPI();
-  renderTable();
-  setTimeout(detecterUrgences, 500);
-}
-
+// INIT
+function renderAll(){ renderKPI(); renderTable(); setTimeout(detecterUrgences, 500); }
 chargerPrefsNotif();
 charger();
 setInterval(function(){charger();}, 5*60*1000);
-
 var lastVisibility = Date.now();
-document.addEventListener('visibilitychange', function() {
-  if (!document.hidden) {
-    var elapsed = Date.now() - lastVisibility;
-    if (elapsed > 15 * 60 * 1000) charger(true);
-    lastVisibility = Date.now();
-  }
-});
+document.addEventListener('visibilitychange', function() { if (!document.hidden) { var elapsed = Date.now() - lastVisibility; if (elapsed > 15 * 60 * 1000) charger(true); lastVisibility = Date.now(); } });
 </script>
 
 </body>
