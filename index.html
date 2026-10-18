@@ -254,7 +254,7 @@ table td:first-child::before{display:none;}
 </div>
 
 <aside class="sidebar">
-  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v9.7</div></div>
+  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v9.8</div></div>
   <nav class="nav">
     <div class="nav-item active" id="nav-suivi" onclick="showView('suivi')"><span class="icon">📋</span><span>Commandes</span></div>
     <div class="nav-item" id="nav-alertes" onclick="showView('alertes')"><span class="icon">🔔</span><span>Alertes</span></div>
@@ -265,7 +265,7 @@ table td:first-child::before{display:none;}
     <div class="nav-item" id="nav-planning" onclick="showView('planning')"><span class="icon">📅</span><span>Planning</span></div>
     <div class="nav-item" id="nav-config" onclick="showView('config')"><span class="icon">⚙️</span><span>Config</span></div>
   </nav>
-  <div class="sidebar-footer">v9.7</div>
+  <div class="sidebar-footer">v9.8</div>
 </aside>
 
 <div class="main">
@@ -502,7 +502,7 @@ var FOU_COLORS = {'ATLANTEM':'#1565C0','ATULAM':'#6A1B9A','LALLEMANT':'#2E7D32',
 var TERMINES = ['LIVRE','LIVRÉ','TERMINE','TERMINÉ','POSE','POSÉ','Livré','Terminé','Posé','Livre','Termine'];
 var commandes = [];
 var sortCol = 'ligne', sortAsc = false, alertFilter = 'all', editLigne = -1;
-var CACHE_DUREE = 60 * 1000, CACHE_KEY = 'eco-ouest-cache-v97', CACHE_TIME_KEY = 'eco-ouest-cache-time-v97';
+var CACHE_DUREE = 60 * 1000, CACHE_KEY = 'eco-ouest-cache-v98', CACHE_TIME_KEY = 'eco-ouest-cache-time-v98';
 var dernierRapportAgent = null;
 var recognition = null;
 var recognitionAssistant = null;
@@ -555,7 +555,12 @@ function parseDatePose(dp) {
 function alerte(c) {
   var sL = str(c.statutLivraison).trim(), sP = str(c.statutPose).trim();
   if (TERMINES.indexOf(sL)!==-1 || TERMINES.indexOf(sP)!==-1) return {t:'OK',n:0};
-  if (str(c.commentaireARC).trim().toUpperCase()==='ANNULER') return {t:'Annulee',n:-1};
+  
+  var ANN = ['ANNULER','ANNULE','ANNULÉ'];
+  if (ANN.indexOf(str(c.commentaireARC).trim().toUpperCase()) !== -1 || ANN.indexOf(sL.toUpperCase()) !== -1 || ANN.indexOf(sP.toUpperCase()) !== -1) {
+    return {t:'Annulee',n:-1};
+  }
+  
   var m=[], s=0;
   if (!c.commande || str(c.commande).toUpperCase()==='NON'){m.push('Commande non envoyée - URGENT');s=3;}
   if (!c.arc || !str(c.arc).trim()){m.push('ARC non reçu');if(s<2)s=2;}
@@ -837,6 +842,10 @@ function lancerActionVocale() {
 
 async function envoyerActionVocale() {
   var question = document.getElementById('action-question').value.trim(); if (!question) { alert("Dictez un ordre."); return; }
+  
+  // ⚡ Confirmation avant exécution
+  if (!confirm("Exécuter l'ordre : \"" + question + "\" ?")) return;
+  
   var btn = document.getElementById('btn-envoyer-action'), repDiv = document.getElementById('action-reponse');
   btn.disabled = true; btn.textContent = "⏳ L'IA exécute..."; repDiv.style.display = 'none'; window.speechSynthesis.cancel();
   
@@ -951,8 +960,15 @@ function closeOut(e){if(e.target.id==='overlay')closeModal();}
 
 async function sauvegarder() {
   var c={}; ['client','devis','devisTTC','fournisseur','commande','arc','commentaireARC','prevLivraison','statutLivraison','statutPose'].forEach(function(f){ var el=document.getElementById('f-'+f);if(el)c[f]=el.value.trim(); });
+  
   var metresRaw = document.getElementById('f-metres');
-  if (metresRaw) { var valSaisie = metresRaw.value.trim(); c.metres = valSaisie ? (convertirEnDateISO(valSaisie) || valSaisie) : ''; }
+  if (metresRaw) {
+    var valSaisie = metresRaw.value.trim();
+    var o0 = commandes.find(function(x){ return x.ligne === editLigne; });
+    if (o0 && valSaisie === (o0.metres ? formatDateMetre(o0.metres) : '')) c.metres = o0.metres;
+    else c.metres = valSaisie ? (convertirEnDateISO(valSaisie) || valSaisie) : '';
+  }
+  
   var pvEl = document.getElementById('f-pvChantier'); c.pvChantier = pvEl && pvEl.checked ? 'OUI' : 'NON';
   var dpEl2 = document.getElementById('f-datePose'); c.datePose = dpEl2 ? dpEl2.value.trim() : '';
   if(!c.client){alert('⚠️ Client obligatoire.');return;}
@@ -967,11 +983,12 @@ async function sauvegarder() {
     var res;
     if(editLigne>0){ 
       var orig = commandes.find(function(x){ return x.ligne === editLigne; });
+      if (!orig) throw new Error('Commande introuvable, actualisez.');
+      
       var map = {1:'client',2:'metres',3:'devis',4:'devisTTC',5:'fournisseur',6:'commande',7:'arc',9:'commentaireARC',10:'prevLivraison',12:'statutLivraison',13:'statutPose',14:'commentaire',16:'pvChantier',20:'datePose'};
       var champs = {};
       Object.keys(map).forEach(function(col){
         var k = map[col], nouveau = str(c[k]).trim(), ancien = orig ? str(orig[k]).trim() : '';
-        if (k === 'metres' && orig && nouveau === formatDateMetre(orig.metres)) return; 
         if (nouveau !== ancien) champs[col] = c[k];
       });
       var objetNouveau = document.getElementById('f-objetCommande').value.trim();
