@@ -254,7 +254,7 @@ table td:first-child::before{display:none;}
 </div>
 
 <aside class="sidebar">
-  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v8.6</div></div>
+  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v9.0</div></div>
   <nav class="nav">
     <div class="nav-item active" id="nav-suivi" onclick="showView('suivi')"><span class="icon">📋</span><span>Commandes</span></div>
     <div class="nav-item" id="nav-alertes" onclick="showView('alertes')"><span class="icon">🔔</span><span>Alertes</span></div>
@@ -265,7 +265,7 @@ table td:first-child::before{display:none;}
     <div class="nav-item" id="nav-planning" onclick="showView('planning')"><span class="icon">📅</span><span>Planning</span></div>
     <div class="nav-item" id="nav-config" onclick="showView('config')"><span class="icon">⚙️</span><span>Config</span></div>
   </nav>
-  <div class="sidebar-footer">v8.6</div>
+  <div class="sidebar-footer">v9.0</div>
 </aside>
 
 <div class="main">
@@ -502,7 +502,7 @@ var FOU_COLORS = {'ATLANTEM':'#1565C0','ATULAM':'#6A1B9A','LALLEMANT':'#2E7D32',
 var TERMINES = ['LIVRE','LIVRÉ','TERMINE','TERMINÉ','POSE','POSÉ','Livré','Terminé','Posé','Livre','Termine'];
 var commandes = [];
 var sortCol = 'ligne', sortAsc = false, alertFilter = 'all', editLigne = -1;
-var CACHE_DUREE = 60 * 1000, CACHE_KEY = 'eco-ouest-cache-v80', CACHE_TIME_KEY = 'eco-ouest-cache-time-v80';
+var CACHE_DUREE = 60 * 1000, CACHE_KEY = 'eco-ouest-cache-v90', CACHE_TIME_KEY = 'eco-ouest-cache-time-v90';
 var dernierRapportAgent = null;
 var recognition = null;
 var recognitionAssistant = null;
@@ -577,7 +577,7 @@ async function togglePV(ligne, checked) {
   var ancien = c ? c.pvChantier : '';
   if (c) c.pvChantier = val;
   renderTable();
-  try { var r = await apiPost({action:'modifier', ligne:ligne, champs:{16: val}}); if (!r || !r.ok) throw new Error(r.error || 'Erreur'); afficherToast('ok','✅','PV mis à jour','',2000); sauvegarderCache(commandes); } catch(e) { if (c) c.pvChantier = ancien; renderTable(); afficherToast('urgent','⚠️','Erreur PV', e.message, 5000); }
+  try { var r = await apiPost({action:'modifier', ligne:ligne, clientAttendu: c ? c.client : undefined, champs:{16: val}}); if (!r || !r.ok) throw new Error(r.error || 'Erreur'); afficherToast('ok','✅','PV mis à jour','',2000); sauvegarderCache(commandes); } catch(e) { if (c) c.pvChantier = ancien; renderTable(); afficherToast('urgent','⚠️','Erreur PV', e.message, 5000); }
 }
 
 function semaineBadge(s) {
@@ -665,7 +665,15 @@ function renderTable() {
   if(alertFilter==='ok')rows=rows.filter(function(c){return c._a.n===0;});
   function estSAV(c) { var sP = str(c.statutPose).trim(), sL = str(c.statutLivraison).trim(); return sP === 'SAV' || sL === 'SAV'; }
   var savCount = commandes.filter(estSAV).length; var savEl = document.getElementById('sav-count'); if(savEl) savEl.textContent = savCount; if(alertFilter==='sav')rows=rows.filter(estSAV);
-  var noncmdCount = commandes.filter(function(c){return str(c.commande).trim().toUpperCase()!=='OUI';}).length; var noncmdEl = document.getElementById('noncmd-count'); if(noncmdEl) noncmdEl.textContent = noncmdCount; if(alertFilter==='noncmd')rows=rows.filter(function(c){return str(c.commande).trim().toUpperCase()!=='OUI';});
+  
+  // Compteur Non commandé excluant annulés et terminés
+  var noncmdCount = commandes.filter(function(c){
+    var a = alerte(c);
+    return str(c.commande).trim().toUpperCase()!=='OUI' && a.n > 0;
+  }).length; 
+  var noncmdEl = document.getElementById('noncmd-count'); if(noncmdEl) noncmdEl.textContent = noncmdCount; 
+  if(alertFilter==='noncmd')rows=rows.filter(function(c){return str(c.commande).trim().toUpperCase()!=='OUI' && c._a.n > 0;});
+
   if(alertFilter==='encours')rows=rows.filter(function(c){var sL=str(c.statutLivraison).trim(), LIVRES=['Livré','Livre','Terminé','Termine','LIVRE','TERMINE']; return LIVRES.indexOf(sL)===-1;});
   rows.sort(function(a,b){ if(sortCol==='ligne'){return sortAsc ? (a.ligne-b.ligne) : (b.ligne-a.ligne);} var va=str(a[sortCol]).toLowerCase(),vb=str(b[sortCol]).toLowerCase(); return sortAsc?va.localeCompare(vb):vb.localeCompare(va); });
   var tb=document.getElementById('table-body');
@@ -689,7 +697,7 @@ function renderTable() {
       '<td style="font-size:12px;font-weight:600;color:var(--bleu);" data-label="Date pose">'+h(c.datePose||'—')+'</td>'+
       '<td data-label="PV">'+pvBadge(c.pvChantier, c.ligne)+'</td>'+
       '<td class="col-comment" data-label="Commentaire" title="'+escAttr(c.commentaire)+'">'+h(c.commentaire||'')+'</td>'+
-      '<td data-label="Alerte"><span class="alerte-text '+aClass(a.n)+'">'+(a.n===0?'OK':'⚠ '+h(a.t.split(' | ')[0]))+'</span>'+extra+'</td>'+
+      '<td data-label="Alerte"><span class="alerte-text '+aClass(a.n)+'">'+(a.n===0?'OK':a.n===-1?'⏹ Annulée':'⚠ '+h(a.t.split(' | ')[0]))+'</span>'+extra+'</td>'+
       '<td><button class="action-btn" onclick="openModal('+c._i+')">✏️</button></td>'+
     '</tr>';
   }).join('');
@@ -791,17 +799,25 @@ async function envoyerQuestionVocal() {
   var question = document.getElementById('assistant-question').value.trim(); if (!question) { alert("Posez une question."); return; }
   var btn = document.getElementById('btn-envoyer-assistant'), repDiv = document.getElementById('assistant-reponse'), status = document.getElementById('assistant-status');
   btn.disabled = true; btn.textContent = "⏳ L'IA réfléchit..."; repDiv.style.display = 'none'; window.speechSynthesis.cancel();
+  
   try {
     var qLower = question.toLowerCase();
     var contexteTrouve = commandes.filter(function(c) { return qLower.indexOf(c.client.toLowerCase()) !== -1; });
-    var contexteJson = contexteTrouve.length > 0 ? JSON.stringify(contexteTrouve) : "Aucun dossier spécifique trouvé avec ce nom. Voici le nombre total de commandes : " + commandes.length;
+    
+    var contexteJson = contexteTrouve.length ? JSON.stringify(contexteTrouve)
+      : JSON.stringify(commandes.filter(function(c){ return alerte(c).n !== 0 || TERMINES.indexOf(str(c.statutLivraison).trim()) === -1; })
+          .map(function(c){ return {client:c.client, fournisseur:c.fournisseur, commande:c.commande, arc:c.arc?'reçu':'manquant', prevLiv:c.prevLivraison, statutLiv:c.statutLivraison, statutPose:c.statutPose, alerte:alerte(c).t}; }));
+          
     var r = await apiPost({ action: 'assistantVocal', question: question, contexte: contexteJson });
     if (!r || !r.ok) throw new Error(r.error || 'Erreur inconnue');
     if (!r.reponse) throw new Error('Pas de réponse de l\'IA');
+    
     repDiv.innerHTML = '<strong style="color:#E65100;">🤖 Réponse :</strong><br><br>' + h(r.reponse).replace(/\n/g, '<br>');
     repDiv.style.display = 'block';
+    
+    btn.disabled = false; btn.textContent = "✨ Envoyer la question";
+    
     var msg = new SpeechSynthesisUtterance(r.reponse); msg.lang = 'fr-FR'; msg.rate = 1.05;
-    msg.onend = function() { btn.disabled = false; btn.textContent = "✨ Envoyer la question"; };
     window.speechSynthesis.speak(msg);
   } catch(e) { repDiv.innerHTML = '<span style="color:var(--rouge);">❌ ' + h(e.message) + '</span>'; repDiv.style.display = 'block'; btn.disabled = false; btn.textContent = "✨ Envoyer la question"; }
 }
@@ -833,8 +849,6 @@ async function envoyerActionVocale() {
     
     var r = await apiPost({ action: 'assistantAction', texteDicte: question, contexte: contexteJson });
     
-    console.log("Réponse serveur :", r);
-    
     if (!r || !r.ok) {
        if (r && r.reponse_vocale) throw new Error(r.reponse_vocale);
        throw new Error(r.error || 'Erreur inconnue');
@@ -849,7 +863,6 @@ async function envoyerActionVocale() {
       window.speechSynthesis.speak(msg);
     } catch(e) { console.log('Erreur voix'); }
     
-    // On vide le cache et on recharge les données en arrière-plan SANS recharger la page
     viderCache(); 
     await charger(true); 
     
@@ -904,7 +917,7 @@ function renderMetre() {
     var sL = c.statutLivraison ? '<span class="badge '+(c.statutLivraison==='Livré'?'badge-ok':c.statutLivraison==='SAV'?'badge-urgent':'badge-info')+'">'+h(c.statutLivraison)+'</span>' : '—';
     var sP = c.statutPose ? '<span class="badge '+(c.statutPose==='Terminé'?'badge-ok':c.statutPose==='SAV'?'badge-urgent':'badge-info')+'">'+h(c.statutPose)+'</span>' : '—';
     var dateCell = c._dateMetre ? '<span style="background:var(--vert-bg);color:var(--vert);padding:3px 9px;border-radius:5px;font-size:12px;font-weight:700;">📅 '+h(c._dateMetre)+'</span>' : '<span style="background:#FFEBEE;color:var(--rouge);padding:3px 9px;border-radius:5px;font-size:11px;font-weight:700;">⚠ Non datée</span>';
-    return '<tr><td class="col-mono" data-label="Ligne">L'+c.ligne+'</td><td class="col-client" data-label="Client">'+h(c.client)+'</td><td data-label="Fournisseur"><span style="background:'+fc+'18;color:'+fc+';padding:3px 8px;border-radius:5px;font-size:11px;font-weight:700;">'+h(c.fournisseur||'—')+'</span></td><td class="col-mono" data-label="Devis">'+h(c.devis||'—')+'</td><td data-label="Date métré (col. B)">'+dateCell+'</td><td data-label="Statut livr.">'+sL+'</td><td data-label="Statut pose">'+sP+'</td><td data-label="Alerte"><span class="alerte-text '+aClass(a.n)+'">'+(a.n===0?'OK':'⚠ '+h(a.t.split(' | ')[0]))+'</span></td><td><button class="action-btn" onclick="openModal('+c._i+')">✏️</button></td></tr>';
+    return '<tr><td class="col-mono" data-label="Ligne">L'+c.ligne+'</td><td class="col-client" data-label="Client">'+h(c.client)+'</td><td data-label="Fournisseur"><span style="background:'+fc+'18;color:'+fc+';padding:3px 8px;border-radius:5px;font-size:11px;font-weight:700;">'+h(c.fournisseur||'—')+'</span></td><td class="col-mono" data-label="Devis">'+h(c.devis||'—')+'</td><td data-label="Date métré (col. B)">'+dateCell+'</td><td data-label="Statut livr.">'+sL+'</td><td data-label="Statut pose">'+sP+'</td><td data-label="Alerte"><span class="alerte-text '+aClass(a.n)+'">'+(a.n===0?'OK':a.n===-1?'⏹ Annulée':'⚠ '+h(a.t.split(' | ')[0]))+'</span></td><td><button class="action-btn" onclick="openModal('+c._i+')">✏️</button></td></tr>';
   }).join('');
   document.getElementById('metre-scroll-hint').textContent = rows.length + ' commande(s) affichée(s) sur ' + total;
 }
@@ -950,9 +963,25 @@ async function sauvegarder() {
   var btnSave = document.querySelector('.modal-footer .btn-primary'), oldTxt = btnSave ? btnSave.textContent : '';
   if (btnSave) { btnSave.disabled = true; btnSave.textContent = '⏳ Enregistrement...'; }
   document.getElementById('saving-msg').classList.add('active');
+  
   try {
     var res;
-    if(editLigne>0){ res = await apiPost({action:'modifier',ligne:editLigne,champs:{1:c.client, 2:c.metres, 3:c.devis, 4:c.devisTTC, 5:c.fournisseur, 6:c.commande, 7:c.arc, 9:c.commentaireARC, 10:c.prevLivraison, 12:c.statutLivraison, 13:c.statutPose, 14:c.commentaire, 16:c.pvChantier, 20:c.datePose, note_G:(document.getElementById('f-objetCommande')?document.getElementById('f-objetCommande').value.trim():'')}}); } else { res = await apiPost({action:'ajouter',commande:c}); }
+    if(editLigne>0){ 
+      var orig = commandes.find(function(x){ return x.ligne === editLigne; });
+      var map = {1:'client',2:'metres',3:'devis',4:'devisTTC',5:'fournisseur',6:'commande',7:'arc',9:'commentaireARC',10:'prevLivraison',12:'statutLivraison',13:'statutPose',14:'commentaire',16:'pvChantier',20:'datePose'};
+      var champs = {};
+      Object.keys(map).forEach(function(col){
+        var k = map[col], nouveau = str(c[k]).trim(), ancien = orig ? str(orig[k]).trim() : '';
+        if (k === 'metres' && orig && nouveau === formatDateMetre(orig.metres)) return; 
+        if (nouveau !== ancien) champs[col] = c[k];
+      });
+      var objetNouveau = document.getElementById('f-objetCommande').value.trim();
+      if (!orig || objetNouveau !== str(orig.objetCommande).trim()) champs.note_G = objetNouveau;
+      if (!Object.keys(champs).length) { closeModal(); return; }
+      res = await apiPost({action:'modifier', ligne:editLigne, clientAttendu: orig.client, champs:champs});
+    } else { 
+      res = await apiPost({action:'ajouter',commande:c}); 
+    }
     if (!res || !res.ok) throw new Error(res.error || 'Réponse invalide');
     closeModal(); afficherToast('ok','✅','Enregistré', '', 2500); viderCache(); await charger(true);
   } catch(e) { afficherToast('urgent','❌','Erreur', e.message, 8000); alert('❌ Impossible d\'enregistrer.\n\nDétail : ' + e.message); } finally { if (btnSave) { btnSave.disabled = false; btnSave.textContent = oldTxt; } document.getElementById('saving-msg').classList.remove('active'); }
@@ -962,7 +991,7 @@ async function supprimerCommande() {
   var c=commandes.find(function(x){return x.ligne===editLigne;});
   if(!confirm('⚠️ Supprimer "'+str(c?c.client:'')+'" ?'))return;
   document.getElementById('saving-msg').classList.add('active');
-  try{ var r = await apiPost({action:'supprimer',ligne:editLigne}); if (!r || !r.ok) throw new Error(r.error || 'Erreur'); closeModal(); afficherToast('ok','🗑','Supprimé', '', 2500); viderCache(); await charger(true); } catch(e){ afficherToast('urgent','❌','Erreur', e.message, 8000); }
+  try{ var r = await apiPost({action:'supprimer',ligne:editLigne, clientAttendu: c ? c.client : undefined}); if (!r || !r.ok) throw new Error(r.error || 'Erreur'); closeModal(); afficherToast('ok','🗑','Supprimé', '', 2500); viderCache(); await charger(true); } catch(e){ afficherToast('urgent','❌','Erreur', e.message, 8000); }
   document.getElementById('saving-msg').classList.remove('active');
 }
 
@@ -1051,7 +1080,17 @@ function cleanDate(s) { if (!s || !str(s).trim()) return ''; var m = str(s).matc
 // CONFIG & TRADUCTION
 function sauvegarderConfig() { var url = document.getElementById('config-url-input').value.trim(); if (!url || !url.startsWith('https://')) { document.getElementById('config-status').innerHTML = '<span style="color:var(--rouge);">❌ URL invalide</span>'; return; } localStorage.setItem('eco-webapp-url', url); WEBAPP = url; document.getElementById('config-status').innerHTML = '<span style="color:var(--vert);">✅ Enregistré !</span>'; viderCache(); setTimeout(function() { charger(true); showView('suivi'); }, 1000); }
 
-async function traduireTexte(texte) { if (!texte || !str(texte).trim()) return texte; if (!/[\u0400-\u04FF]/.test(texte)) return texte; try { var target = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=ru&tl=fr&dt=t&q=' + encodeURIComponent(texte), url = 'https://corsproxy.io/?' + encodeURIComponent(target), r = await fetch(url); if (!r.ok) throw new Error('HTTP'); var d = await r.json(), traduit = d[0].map(function(x){return x[0];}).join(''); return h(traduit) + ' <span style="font-size:10px;color:#90CAF9;font-style:italic;">[trad. auto]</span>'; } catch(e) { return h(texte); } }
+async function traduireTexte(texte) { 
+  if (!texte || !str(texte).trim()) return texte; 
+  if (!/[\u0400-\u04FF]/.test(texte)) return texte; 
+  try { 
+    var r = await apiPost({ action: 'traduire', texte: texte }); 
+    if (r && r.ok && r.texte) {
+      return h(r.texte) + ' <span style="font-size:10px;color:#90CAF9;font-style:italic;">[trad. auto]</span>'; 
+    }
+    throw new Error('Erreur trad');
+  } catch(e) { return h(texte); } 
+}
 async function traduireCommentairesPoseurs() { var elements = document.querySelectorAll('.suivipose-comment'); for (var i = 0; i < elements.length; i++) { var el = elements[i], texte = el.textContent.trim(); if (/[\u0400-\u04FF]/.test(texte) && !el.querySelector('.trad-flag')) { var traduit = await traduireTexte(texte); if (traduit !== texte && traduit !== h(texte)) { var div = document.createElement('div'); div.className = 'trad-flag'; div.style.cssText = 'background:#E3F2FD;border-radius:6px;padding:6px 10px;margin-top:6px;font-size:11px;color:#1565C0;'; div.innerHTML = '🇫🇷 ' + traduit; el.appendChild(div); } } } }
 
 // POPUP OBJET
@@ -1127,7 +1166,7 @@ async function supprimerCommentaire(ligne, key, idx) {
 }
 async function sauvegarderCommentairePoseur(ligne, key, final, c) {
   var colMap = {'poseur_ANATOLE':17,'poseur_ARTIOM':18,'poseur_ANTONIO':19,'poseur_VINCENT':21,'poseur_LAMRI':22}, col = colMap[key]; if (!col) return;
-  try { var champs = {}; champs[col] = final; var r = await apiPost({action:'modifier', ligne:ligne, champs:champs}); if (!r || !r.ok) throw new Error(r.error || 'Erreur'); c[key] = final; sauvegarderCache(commandes); renderSuiviPose(); afficherToast('ok','✅','Commentaire enregistré','', 2000); } catch(e) { afficherToast('urgent','❌','Erreur', e.message, 6000); }
+  try { var champs = {}; champs[col] = final; var r = await apiPost({action:'modifier', ligne:ligne, clientAttendu: c ? c.client : undefined, champs:champs}); if (!r || !r.ok) throw new Error(r.error || 'Erreur'); c[key] = final; sauvegarderCache(commandes); renderSuiviPose(); afficherToast('ok','✅','Commentaire enregistré','', 2000); } catch(e) { afficherToast('urgent','❌','Erreur', e.message, 6000); }
 }
 
 // CSV
