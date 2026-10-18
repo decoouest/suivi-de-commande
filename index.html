@@ -254,7 +254,7 @@ table td:first-child::before{display:none;}
 </div>
 
 <aside class="sidebar">
-  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v9.8</div></div>
+  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v9.9</div></div>
   <nav class="nav">
     <div class="nav-item active" id="nav-suivi" onclick="showView('suivi')"><span class="icon">📋</span><span>Commandes</span></div>
     <div class="nav-item" id="nav-alertes" onclick="showView('alertes')"><span class="icon">🔔</span><span>Alertes</span></div>
@@ -265,7 +265,7 @@ table td:first-child::before{display:none;}
     <div class="nav-item" id="nav-planning" onclick="showView('planning')"><span class="icon">📅</span><span>Planning</span></div>
     <div class="nav-item" id="nav-config" onclick="showView('config')"><span class="icon">⚙️</span><span>Config</span></div>
   </nav>
-  <div class="sidebar-footer">v9.8</div>
+  <div class="sidebar-footer">v9.9</div>
 </aside>
 
 <div class="main">
@@ -502,15 +502,24 @@ var FOU_COLORS = {'ATLANTEM':'#1565C0','ATULAM':'#6A1B9A','LALLEMANT':'#2E7D32',
 var TERMINES = ['LIVRE','LIVRÉ','TERMINE','TERMINÉ','POSE','POSÉ','Livré','Terminé','Posé','Livre','Termine'];
 var commandes = [];
 var sortCol = 'ligne', sortAsc = false, alertFilter = 'all', editLigne = -1;
-var CACHE_DUREE = 60 * 1000, CACHE_KEY = 'eco-ouest-cache-v98', CACHE_TIME_KEY = 'eco-ouest-cache-time-v98';
+var CACHE_DUREE = 60 * 1000, CACHE_KEY = 'eco-ouest-cache-v99', CACHE_TIME_KEY = 'eco-ouest-cache-time-v99';
 var dernierRapportAgent = null;
 var recognition = null;
 var recognitionAssistant = null;
 var recognitionAction = null;
+var cacheTrad = {};
 
 function str(s) { if (s === null || s === undefined) return ''; return String(s); }
 function h(s) { return str(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function escAttr(s) { return h(s); }
+
+// ⚡ Helper d'annulation (I, L, M)
+function estAnnulee(c) {
+  var ANN = ['ANNULER','ANNULE','ANNULÉ'];
+  return ANN.indexOf(str(c.commentaireARC).trim().toUpperCase()) !== -1
+      || ANN.indexOf(str(c.statutLivraison).trim().toUpperCase()) !== -1
+      || ANN.indexOf(str(c.statutPose).trim().toUpperCase()) !== -1;
+}
 
 function afficherToast(type, icon, titre, msg, duree) {
   var existing = document.querySelector('.toast'); if (existing) existing.remove();
@@ -555,11 +564,7 @@ function parseDatePose(dp) {
 function alerte(c) {
   var sL = str(c.statutLivraison).trim(), sP = str(c.statutPose).trim();
   if (TERMINES.indexOf(sL)!==-1 || TERMINES.indexOf(sP)!==-1) return {t:'OK',n:0};
-  
-  var ANN = ['ANNULER','ANNULE','ANNULÉ'];
-  if (ANN.indexOf(str(c.commentaireARC).trim().toUpperCase()) !== -1 || ANN.indexOf(sL.toUpperCase()) !== -1 || ANN.indexOf(sP.toUpperCase()) !== -1) {
-    return {t:'Annulee',n:-1};
-  }
+  if (estAnnulee(c)) return {t:'Annulee',n:-1};
   
   var m=[], s=0;
   if (!c.commande || str(c.commande).toUpperCase()==='NON'){m.push('Commande non envoyée - URGENT');s=3;}
@@ -835,7 +840,13 @@ function lancerActionVocale() {
   recognitionAction = new SpeechRecognition(); recognitionAction.lang = 'fr-FR'; recognitionAction.interimResults = false;
   var status = document.getElementById('action-status'), input = document.getElementById('action-question');
   status.style.display = 'block'; status.textContent = "🎙️ Parlez maintenant..."; input.value = '';
-  recognitionAction.onresult = function(event) { var text = event.results[0][0].transcript; input.value = text; status.textContent = "✅ Ordre enregistré."; setTimeout(function(){ status.style.display = 'none'; }, 2000); envoyerActionVocale(); };
+  recognitionAction.onresult = function(event) { 
+    var text = event.results[0][0].transcript; 
+    input.value = text; 
+    status.textContent = "✅ Ordre enregistré. Cliquez sur Exécuter."; 
+    setTimeout(function(){ status.style.display = 'none'; }, 3000); 
+    // ⚡ On ne lance plus l'exécution automatiquement (évite le blocage du confirm sur mobile)
+  };
   recognitionAction.onerror = function(event) { status.textContent = "❌ Erreur : " + event.error; setTimeout(function(){ status.style.display = 'none'; }, 3000); };
   recognitionAction.start();
 }
@@ -1025,13 +1036,28 @@ function renderAlertes() {
 function renderDashboard() {
   var byFou={}, ac={u:0,w:0,o:0}, caCommande=0, caPose=0, nbEnAttente=0, nbSAV=0; var POSES_FINIES=['Terminé','Termine','Posé','Pose'];
   function parseMontant(v){ if(!v) return 0; var s=str(v).replace(/[^0-9,.]/g,'').replace(/\s/g,'').replace(',','.'); var parts=s.split('.'); if(parts.length>2){ s=parts.slice(0,-1).join('')+'.'+parts[parts.length-1]; } var n=parseFloat(s); return isNaN(n)?0:n; }
-  commandes.forEach(function(c){ if(c.fournisseur) byFou[c.fournisseur]=(byFou[c.fournisseur]||0)+1; var a=alerte(c); if(a.n===3)ac.u++; else if(a.n>=1)ac.w++; else if(a.n===0)ac.o++; var montant=parseMontant(c.devisTTC); if(str(c.commande).toUpperCase()==='OUI') caCommande+=montant; if(POSES_FINIES.indexOf(str(c.statutPose).trim())!==-1) caPose+=montant; if(str(c.commande).toUpperCase()!=='OUI') nbEnAttente++; if(str(c.statutPose).trim()==='SAV'||str(c.statutLivraison).trim()==='SAV') nbSAV++; });
+  
+  commandes.forEach(function(c){ 
+    if (estAnnulee(c)) return; // ⚡ Ignore les annulés
+    
+    if(c.fournisseur) byFou[c.fournisseur]=(byFou[c.fournisseur]||0)+1; 
+    var a=alerte(c); if(a.n===3)ac.u++; else if(a.n>=1)ac.w++; else if(a.n===0)ac.o++; 
+    var montant=parseMontant(c.devisTTC); 
+    if(str(c.commande).toUpperCase()==='OUI') caCommande+=montant; 
+    if(POSES_FINIES.indexOf(str(c.statutPose).trim())!==-1) caPose+=montant; 
+    if(str(c.commande).toUpperCase()!=='OUI') nbEnAttente++; 
+    if(str(c.statutPose).trim()==='SAV'||str(c.statutLivraison).trim()==='SAV') nbSAV++; 
+  });
+  
   function fmtEuro(n){ return n.toLocaleString('fr-FR',{maximumFractionDigits:0})+' €'; }
   var fS=Object.entries(byFou).sort(function(a,b){return b[1]-a[1];}), fM=fS[0]?fS[0][1]:1, n=commandes.length||1;
   var TERMINES_D = ['Livré','Terminé','Posé','LIVRE','TERMINE','POSE','Livre','Termine'];
   var poseurs = [{nom:'ANATOLE', key:'poseur_ANATOLE', couleur:'#1565C0'},{nom:'ARTIOM',  key:'poseur_ARTIOM',  couleur:'#2E7D32'},{nom:'ANTONIO', key:'poseur_ANTONIO', couleur:'#E65100'},{nom:'VINCENT', key:'poseur_VINCENT', couleur:'#6A1B9A'},{nom:'LAMRI',   key:'poseur_LAMRI',   couleur:'#00695C'}];
-  var actifs = commandes.filter(function(c){ return TERMINES_D.indexOf(str(c.statutLivraison).trim()) === -1 && str(c.commentaireARC).toUpperCase() !== 'ANNULER'; }).slice().sort(function(a,b){ return str(b.datePose).localeCompare(str(a.datePose)); });
-  var pvFaits = commandes.filter(function(c){ return str(c.pvChantier).toUpperCase()==='OUI'; }).length;
+  
+  // ⚡ Utilisation de estAnnulee
+  var actifs = commandes.filter(function(c){ return TERMINES_D.indexOf(str(c.statutLivraison).trim()) === -1 && !estAnnulee(c); }).slice().sort(function(a,b){ return str(b.datePose).localeCompare(str(a.datePose)); });
+  
+  var pvFaits = commandes.filter(function(c){ return str(c.pvChantier).toUpperCase()==='OUI' && !estAnnulee(c); }).length;
   var pvManquants = actifs.filter(function(c){ return str(c.pvChantier).toUpperCase()!=='OUI'; }).length;
   var hC = '';
   if (!actifs.length) { hC = '<div style="text-align:center;padding:24px;color:var(--texte2);">Aucun chantier actif.</div>'; } else {
@@ -1072,7 +1098,14 @@ function renderSuiviPose() {
   var semActuelle = getWeekNumber(new Date());
   function datePoseEnSemaine(dp, sem) { var parsed = parseDatePose(dp); if (!parsed) return false; if (parsed.type === 'semaine') return parsed.num === sem; if (parsed.type === 'date') return getWeekNumber(parsed.date) === sem; return false; }
   var POSES_FINIES = ['Terminé','Termine','Posé','Pose','TERMINE','POSE'];
-  var items = commandes.filter(function(c){ if (str(c.commentaireARC).toUpperCase() === 'ANNULER') return false; if (POSES_FINIES.indexOf(str(c.statutPose).trim()) !== -1) return false; return datePoseEnSemaine(c.datePose, semActuelle); }).slice().sort(function(a,b){ return str(b.datePose).localeCompare(str(a.datePose)); });
+  
+  // ⚡ Utilisation de estAnnulee
+  var items = commandes.filter(function(c){ 
+    if (estAnnulee(c)) return false; 
+    if (POSES_FINIES.indexOf(str(c.statutPose).trim()) !== -1) return false; 
+    return datePoseEnSemaine(c.datePose, semActuelle); 
+  }).slice().sort(function(a,b){ return str(b.datePose).localeCompare(str(a.datePose)); });
+  
   if (!items.length) { document.getElementById('suivipose-content').innerHTML = '<div class="empty-state"><p>Aucun chantier actif cette semaine.</p></div>'; return; }
   var html = '';
   items.forEach(function(c) { var pvFait = str(c.pvChantier).toUpperCase() === 'OUI';
@@ -1099,10 +1132,16 @@ function sauvegarderConfig() { var url = document.getElementById('config-url-inp
 async function traduireTexte(texte) { 
   if (!texte || !str(texte).trim()) return texte; 
   if (!/[\u0400-\u04FF]/.test(texte)) return texte; 
+  
+  // ⚡ Cache de traduction
+  if (cacheTrad[texte]) return cacheTrad[texte];
+  
   try { 
     var r = await apiPost({ action: 'traduire', texte: texte }); 
     if (r && r.ok && r.texte) {
-      return h(r.texte) + ' <span style="font-size:10px;color:#90CAF9;font-style:italic;">[trad. auto]</span>'; 
+      var res = h(r.texte) + ' <span style="font-size:10px;color:#90CAF9;font-style:italic;">[trad. auto]</span>'; 
+      cacheTrad[texte] = res;
+      return res; 
     }
     throw new Error('Erreur trad');
   } catch(e) { return h(texte); } 
