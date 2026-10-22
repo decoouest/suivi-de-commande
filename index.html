@@ -254,7 +254,7 @@ table td:first-child::before{display:none;}
 </div>
 
 <aside class="sidebar">
-  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v10.1</div></div>
+  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v10.2</div></div>
   <nav class="nav">
     <div class="nav-item" id="nav-suivi" onclick="showView('suivi')"><span class="icon">📋</span><span>Commandes</span></div>
     <div class="nav-item" id="nav-alertes" onclick="showView('alertes')"><span class="icon">🔔</span><span>Alertes</span></div>
@@ -265,7 +265,7 @@ table td:first-child::before{display:none;}
     <div class="nav-item" id="nav-planning" onclick="showView('planning')"><span class="icon">📅</span><span>Planning</span></div>
     <div class="nav-item" id="nav-config" onclick="showView('config')"><span class="icon">⚙️</span><span>Config</span></div>
   </nav>
-  <div class="sidebar-footer">v10.1</div>
+  <div class="sidebar-footer">v10.2</div>
 </aside>
 
 <div class="main">
@@ -480,7 +480,7 @@ table td:first-child::before{display:none;}
       <button class="modal-close" onclick="fermerAction()" style="background:rgba(255,255,255,0.2);color:#fff;">✕</button>
     </div>
     <div class="modal-body" style="padding:20px;min-height:150px;">
-      <p style="font-size:13px;color:var(--texte2);margin-bottom:12px;">Dictez un ordre (ex: "Passe GRUN en livré", "Relance CHARLOT").</p>
+      <p style="font-size:13px;color:var(--texte2);margin-bottom:12px;">Dictez un ordre (ex: "Passe GRUN en livré", "Relance CHARLOT", "BELLE livré S48").</p>
       <div style="display:flex;gap:10px;margin-bottom:15px;">
         <button class="btn btn-primary" onclick="lancerActionVocale()" id="btn-micro-action" style="flex:1;background:#2E7D32;border:none;font-size:18px;padding:15px;">🎤 Appuyez pour parler</button>
       </div>
@@ -502,7 +502,7 @@ var FOU_COLORS = {'ATLANTEM':'#1565C0','ATULAM':'#6A1B9A','LALLEMANT':'#2E7D32',
 var TERMINES = ['LIVRE','LIVRÉ','TERMINE','TERMINÉ','POSE','POSÉ','Livré','Terminé','Posé','Livre','Termine'];
 var commandes = [];
 var sortCol = 'ligne', sortAsc = false, alertFilter = 'all', editLigne = -1;
-var CACHE_DUREE = 60 * 1000, CACHE_KEY = 'eco-ouest-cache-v101', CACHE_TIME_KEY = 'eco-ouest-cache-time-v101';
+var CACHE_DUREE = 60 * 1000, CACHE_KEY = 'eco-ouest-cache-v102', CACHE_TIME_KEY = 'eco-ouest-cache-time-v102';
 var dernierRapportAgent = null;
 var recognition = null;
 var recognitionAssistant = null;
@@ -758,7 +758,15 @@ function afficherRapportAgent(rapport, dureeSecondes) {
   var html = '<div class="agent-stats"><div class="agent-stat"><div class="agent-stat-value" style="color:var(--rouge);">' + nbU + '</div><div class="agent-stat-label">🔴 Urgents</div></div><div class="agent-stat"><div class="agent-stat-value" style="color:var(--orange);">' + nbA + '</div><div class="agent-stat-label">🟠 Attention</div></div><div class="agent-stat"><div class="agent-stat-value" style="color:var(--jaune);">' + nbI + '</div><div class="agent-stat-label">🟡 Info</div></div><div class="agent-stat"><div class="agent-stat-value" style="color:var(--bleu);">' + rapport.nbTotal + '</div><div class="agent-stat-label">📋 Total</div></div></div>';
   if (rapport.resumeGlobal && rapport.resumeGlobal.indexOf('⚠️') !== 0) html += '<div class="agent-resume"><strong>💡 Synthèse de l\'IA :</strong><br>' + h(rapport.resumeGlobal) + '</div>';
   else if (rapport.resumeGlobal) html += '<div class="agent-resume" style="border-left-color:var(--orange);background:#FFF3E0;">' + h(rapport.resumeGlobal) + '</div>';
-  var sourceInfo = rapport.source === 'gemini' ? '✨ Analyse générée par Gemini IA (' + (rapport.modeleUtilise || 'gemini') + ')' : '⚠️ Analyse par règles';
+  // ⚡ PATCH 5.2 — Badge secours explicite
+  var sourceInfo;
+  if (rapport.source === 'gemini') {
+    sourceInfo = '✨ Analyse générée par Gemini IA (' + (rapport.modeleUtilise || 'gemini') + ')';
+  } else if (rapport.statut === 'secours') {
+    sourceInfo = '⚠️ Analyse par règles (Gemini indisponible — relancez plus tard)';
+  } else {
+    sourceInfo = '⚠️ Analyse par règles';
+  }
   if (dureeSecondes > 0) sourceInfo += ' · ' + dureeSecondes + 's';
   html += '<div style="font-size:11px;color:var(--texte2);margin-bottom:18px;font-style:italic;">' + h(sourceInfo) + '</div>';
   var urgentes = phrasesTriees.filter(function(p){ return p.severite === 3; }); if (urgentes.length) { html += '<div class="agent-section"><div class="agent-section-title" style="color:var(--rouge);">🔴 Action immédiate (' + urgentes.length + ')</div>'; urgentes.forEach(function(p) { html += renderAgentCard(p); }); html += '</div>'; }
@@ -870,7 +878,11 @@ async function envoyerActionVocale() {
        throw new Error(r.error || 'Erreur inconnue');
     }
     
-    repDiv.innerHTML = '<strong style="color:#2E7D32;">🤖 Action exécutée :</strong><br><br>' + h(r.reponse_vocale) + '<br><br><span style="font-size:11px;color:#777;">Ligne modifiée : ' + (r.ligne || '?') + '</span>';
+    // ⚡ PATCH 5.1 — Support multi-actions (statut + commentaire)
+    var lignesTxt = r.lignes && r.lignes.length > 1
+      ? 'Lignes modifiées : ' + r.lignes.join(', ')
+      : 'Ligne modifiée : ' + (r.ligne || '?');
+    repDiv.innerHTML = '<strong style="color:#2E7D32;">🤖 Action exécutée :</strong><br><br>' + h(r.reponse_vocale) + '<br><br><span style="font-size:11px;color:#777;">' + lignesTxt + '</span>';
     repDiv.style.display = 'block';
     
     try {
@@ -1253,7 +1265,7 @@ function renderAll(){ renderKPI(); renderTable(); setTimeout(detecterUrgences, 5
 chargerPrefsNotif();
 charger();
 
-// ⚡ Forcer l'ouverture sur l'Agent IA au démarrage
+// Forcer l'ouverture sur l'Agent IA au démarrage
 setTimeout(function() { showView('agent'); }, 100); 
 
 setInterval(function(){charger();}, 5*60*1000);
