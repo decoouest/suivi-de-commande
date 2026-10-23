@@ -294,7 +294,8 @@ textarea.task-input{resize:vertical}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
-  <div class="menu-mobile-overlay" id="menu-mobile" onclick="fermerMenuMobile(event)">
+
+<div class="menu-mobile-overlay" id="menu-mobile" onclick="fermerMenuMobile(event)">
   <div class="menu-mobile-panel" onclick="event.stopPropagation()">
     <div class="menu-mobile-header"><span>📋 Navigation</span><button onclick="fermerMenuMobile()" style="background:none;border:none;font-size:22px;cursor:pointer;color:#fff;">✕</button></div>
     <div class="menu-mobile-item" onclick="menuMobileGo('suivi')"><span class="icon">📋</span> Commandes</div>
@@ -310,7 +311,7 @@ textarea.task-input{resize:vertical}
 </div>
 
 <aside class="sidebar">
-  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v10.10</div></div>
+  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v11.0</div></div>
   <nav class="nav">
     <div class="nav-item" id="nav-suivi" onclick="showView('suivi')"><span class="icon">📋</span><span>Commandes</span></div>
     <div class="nav-item" id="nav-alertes" onclick="showView('alertes')"><span class="icon">🔔</span><span>Alertes</span></div>
@@ -322,7 +323,7 @@ textarea.task-input{resize:vertical}
     <div class="nav-item" id="nav-planning" onclick="showView('planning')"><span class="icon">📅</span><span>Planning</span></div>
     <div class="nav-item" id="nav-config" onclick="showView('config')"><span class="icon">⚙️</span><span>Config</span></div>
   </nav>
-  <div class="sidebar-footer">v10.10</div>
+  <div class="sidebar-footer">v11.0</div>
 </aside>
 
 <div class="main">
@@ -367,14 +368,14 @@ textarea.task-input{resize:vertical}
       </div>
     </div>
 
-    <div id="view-alertes" class="view"><div style="background:#FFF8E1;border:1px solid #FFE082;border-radius:9px;padding:10px 14px;margin-bottom:12px;font-size:12px;color:#6D4C41;"><strong>Priorité bureau :</strong> traiter d’abord les SAV et commandes non envoyées, puis les livraisons dépassées et les ARC manquants.</div><div id="alertes-content"></div></div>
+    <div id="view-alertes" class="view"><div style="background:#FFF8E1;border:1px solid #FFE082;border-radius:9px;padding:10px 14px;margin-bottom:12px;font-size:12px;color:#6D4C41;"><strong>Priorité bureau :</strong> traiter d'abord les SAV et commandes non envoyées, puis les livraisons dépassées et les ARC manquants.</div><div id="alertes-content"></div></div>
 
     <div id="view-taches" class="view">
       <div class="stock-subtabs">
         <button type="button" id="tab-taches-notes" class="stock-subtab active" onclick="ouvrirSousModuleTaches('taches')">📝 Tâches & Notes</button>
         <button type="button" id="tab-achats-consommables" class="stock-subtab" onclick="ouvrirSousModuleTaches('achats')">🛒 Achats consommables <span id="achats-badge" class="task-nav-badge"></span></button>
       </div>
-      
+
       <div id="sousmodule-taches-notes">
         <div class="task-intro"><strong>📝 Tâches & notes du bureau</strong><span>Consignez un rappel, une relance fournisseur, une action SAV ou une note utile.</span></div>
         <div class="task-stats" id="taches-stats"></div>
@@ -384,7 +385,7 @@ textarea.task-input{resize:vertical}
             <form id="task-form" onsubmit="enregistrerTache(event)">
               <input type="hidden" id="task-id">
               <label for="task-type">Type</label><select id="task-type" class="task-input"><option value="tache">Tâche à faire</option><option value="note">Note / information</option></select>
-              <label for="task-title">Titre *</label><input id="task-title" class="task-input" maxlength="140" required placeholder="Ex. Relancer le fournisseur pour l’ARC">
+              <label for="task-title">Titre *</label><input id="task-title" class="task-input" maxlength="140" required placeholder="Ex. Relancer le fournisseur pour l'ARC">
               <label for="task-details">Détails</label><textarea id="task-details" class="task-input" rows="3" maxlength="3000"></textarea>
               <label for="task-order">Dossier / client associé (facultatif)</label><select id="task-order" class="task-input"><option value="">Aucun dossier associé</option></select>
               <div class="task-fields-row"><div><label for="task-due">Échéance</label><input id="task-due" class="task-input" type="date"></div><div><label for="task-priority">Priorité</label><select id="task-priority" class="task-input"><option value="haute">🔴 Haute</option><option value="normale" selected>🟠 Normale</option><option value="basse">🟢 Basse</option></select></div></div>
@@ -397,7 +398,7 @@ textarea.task-input{resize:vertical}
           </section>
         </div>
       </div>
-      
+
       <div id="sousmodule-achats-consommables" style="display:none">
         <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap;">
           <button type="button" class="btn btn-outline btn-sm" onclick="afficherInventaireComplet()" style="border-color:#1565C0;color:#1565C0;">📖 Voir l'inventaire complet (catalogue)</button>
@@ -535,7 +536,7 @@ textarea.task-input{resize:vertical}
 </div></div>
 
 <script>
-  var WEBAPP_DEFAULT = 'https://script.google.com/macros/s/AKfycbzcq9ChzAPdH1DWnH5H-cYBVC_8Ou4DVIy1sKES5PyFC0M3j80RrbnUU8fK8ojL013H/exec';
+var WEBAPP_DEFAULT = 'https://script.google.com/macros/s/AKfycbzcq9ChzAPdH1DWnH5H-cYBVC_8Ou4DVIy1sKES5PyFC0M3j80RrbnUU8fK8ojL013H/exec';
 var WEBAPP = localStorage.getItem('eco-webapp-url') || WEBAPP_DEFAULT;
 var FOU_COLORS = {'ATLANTEM':'#1565C0','ATULAM':'#6A1B9A','LALLEMANT':'#2E7D32','SOKO':'#00695C','ALUGLASS':'#E65100','FILTERSUN':'#C62828','DC PROD':'#37474F','KE FRANCE':'#0277BD','SKYLUX':'#558B2F','BVL SERRULAC':'#4527A0','LEROY MERLIN':'#1B5E20','FOUSSIER':'#6D4C41','STOCK':'#546E7A'};
 var TERMINES = ['livre','termine','pose'];
@@ -642,7 +643,8 @@ async function lancerAnalyse() { var btn=document.getElementById('btn-analyser')
 
 function afficherRapportAgent(r, duree) { var content=document.getElementById('agent-content'); if(!r.phrases||!r.phrases.length){content.innerHTML='<div class="empty-state"><div style="font-size:64px;">✅</div><h3>Tout est à jour !</h3></div>';return;} var nbU=r.nbUrgents||0,nbA=r.nbAttention||0,nbI=r.nbInfo||0; var phrases=r.phrases.slice().sort(function(a,b){return (b.severite||0)-(a.severite||0);}); var html='<div class="agent-stats"><div class="agent-stat"><div class="agent-stat-value" style="color:var(--rouge);">'+nbU+'</div><div class="agent-stat-label">🔴 Urgents</div></div><div class="agent-stat"><div class="agent-stat-value" style="color:var(--orange);">'+nbA+'</div><div class="agent-stat-label">🟠 Attention</div></div><div class="agent-stat"><div class="agent-stat-value" style="color:var(--jaune);">'+nbI+'</div><div class="agent-stat-label">🟡 Info</div></div><div class="agent-stat"><div class="agent-stat-value" style="color:var(--bleu);">'+r.nbTotal+'</div><div class="agent-stat-label">📋 Total</div></div></div>'; if(r.resumeGlobal&&r.resumeGlobal.indexOf('⚠️')!==0) html+='<div class="agent-resume"><strong>💡 Synthèse :</strong><br>'+h(r.resumeGlobal)+'</div>'; else if(r.resumeGlobal) html+='<div class="agent-resume" style="border-left-color:var(--orange);background:#FFF3E0;">'+h(r.resumeGlobal)+'</div>'; var src = r.source==='gemini'?'✨ Gemini ('+(r.modeleUtilise||'')+')':(r.statut==='secours'?'⚠️ Règles (Gemini indisponible)':'⚠️ Règles'); if(duree>0) src+=' · '+duree+'s'; html+='<div style="font-size:11px;color:var(--texte2);margin-bottom:18px;font-style:italic;">'+h(src)+'</div>'; [3,2,1].forEach(function(sev){ var arr=phrases.filter(function(p){return p.severite===sev;}); if(!arr.length)return; var ic=sev===3?'🔴':sev===2?'🟠':'🟡'; var tx=sev===3?'Action immédiate':sev===2?'À traiter rapidement':'À surveiller'; html+='<div class="agent-section"><div class="agent-section-title">'+ic+' '+tx+' ('+arr.length+')</div>'; arr.forEach(function(p){html+=renderAgentCard(p);}); html+='</div>'; }); content.innerHTML=html; }
 
-function renderAgentCard(p) { var sc='sev-'+(p.severite||1), ic=p.severite===3?'🔴':(p.severite===2?'🟠':'🟡'), nom=p.client||'—', act=p.action||'Ouvrir la commande'; var motif='suivi', t=(p.texte||'').toLowerCase(); if(t.indexOf('commande')!==-1&&(t.indexOf('non envoy')!==-1||t.indexOf('pas encore')!==-1)) motif='commande'; else if(t.indexOf('accusé')!==-1||t.indexOf('arc ')！==-1) motif='arc'; else if(t.indexOf('livraison')!==-1) motif='livraison'; else if(t.indexOf('sav')!==-1) motif='sav'; return '<div class="agent-card '+sc+'"><div class="agent-card-icon">'+ic+'</div><div class="agent-card-content"><div class="agent-card-client">'+h(nom)+'<span class="agent-card-ligne">Ligne '+(p.ligne||'?')+'</span></div><div class="agent-card-texte">'+h(p.texte||'')+'</div><span class="agent-card-action">👉 '+h(act)+'</span></div><div class="agent-card-actions"><button class="agent-card-btn" onclick="relancerFournisseurDepuisAgent('+(p.ligne||0)+',\''+motif+'\')">📧 Relancer</button><button class="agent-card-btn" style="background:#546E7A;" onclick="ouvrirDepuisAgent('+(p.ligne||0)+')">✏️ Ouvrir</button></div></div>'; }
+// ✅ CORRECTION CRITIQUE : remplacement du caractère U+FF01 (！) par U+0021 (!)
+function renderAgentCard(p) { var sc='sev-'+(p.severite||1), ic=p.severite===3?'🔴':(p.severite===2?'🟠':'🟡'), nom=p.client||'—', act=p.action||'Ouvrir la commande'; var motif='suivi', t=(p.texte||'').toLowerCase(); if(t.indexOf('commande')!==-1&&(t.indexOf('non envoy')!==-1||t.indexOf('pas encore')!==-1)) motif='commande'; else if(t.indexOf('accusé')!==-1||t.indexOf('arc ')!==-1) motif='arc'; else if(t.indexOf('livraison')!==-1) motif='livraison'; else if(t.indexOf('sav')!==-1) motif='sav'; return '<div class="agent-card '+sc+'"><div class="agent-card-icon">'+ic+'</div><div class="agent-card-content"><div class="agent-card-client">'+h(nom)+'<span class="agent-card-ligne">Ligne '+(p.ligne||'?')+'</span></div><div class="agent-card-texte">'+h(p.texte||'')+'</div><span class="agent-card-action">👉 '+h(act)+'</span></div><div class="agent-card-actions"><button class="agent-card-btn" onclick="relancerFournisseurDepuisAgent('+(p.ligne||0)+',\''+motif+'\')">📧 Relancer</button><button class="agent-card-btn" style="background:#546E7A;" onclick="ouvrirDepuisAgent('+(p.ligne||0)+')">✏️ Ouvrir</button></div></div>'; }
 
 function ouvrirDepuisAgent(ligne) { if (!ligne) return; var idx = commandes.findIndex(function(x){ return x.ligne === ligne; }); if (idx >= 0) openModal(idx); else afficherToast('warn','⚠️','Commande introuvable','', 3000); }
 
@@ -849,6 +851,7 @@ function renderAll(){renderKPI();renderTable();setTimeout(detecterUrgences,500);
 chargerPrefsNotif();
 charger();
 chargerAchatsConsommables();
+chargerTachesNotes();
 chargerCatalogueConsommables();
 setTimeout(function(){showView('agent');},100);
 setInterval(function(){charger();},5*60*1000);
@@ -891,7 +894,7 @@ async function enregistrerTache(e) {
     terminee: false
   };
   try {
-    var r = id ? await apiPost({action:'modifierTache', id: id, type: t.type, titre: t.titre, details: t.details, ligne: t.ligne, echeance: t.echeance, priorite: t.priorite, terminee: t.terminee}) 
+    var r = id ? await apiPost({action:'modifierTache', id: id, type: t.type, titre: t.titre, details: t.details, ligne: t.ligne, echeance: t.echeance, priorite: t.priorite, terminee: t.terminee})
                : await apiPost({action:'ajouterTache', type: t.type, titre: t.titre, details: t.details, ligne: t.ligne, echeance: t.echeance, priorite: t.priorite});
     if (!r || !r.ok) throw new Error(r.error || 'Erreur');
     reinitialiserFormTache(); await chargerTachesNotes(); renderTaches();
