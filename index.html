@@ -265,14 +265,13 @@ table td:first-child::before{display:none;}
 textarea.task-input{resize:vertical}
 .task-fields-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .task-form-actions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
-.task-local-warning{font-size:10px;line-height:1.5;color:#795548;background:#FFF8E1;border-radius:7px;padding:9px;margin-top:13px}
 .task-list-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
 .task-list-head h3{margin-bottom:0}
 .task-filters{display:flex;gap:7px;flex-wrap:wrap}
 .task-filters .task-input{width:auto;max-width:180px}
-.task-card{border:1px solid var(--bordure);border-left:4px solid #90A4AE;border-radius:9px;padding:12px;margin-top:10px;background:#fff}
+.task-card{border:1px solid var(--bordure);border-left:4px solid #1565C0;border-radius:9px;padding:12px;margin-top:10px;background:#fff}
+.task-card.task-note{border-left-color:#78909C}
 .task-card.task-overdue{border-left-color:#D32F2F;background:#FFF8F8}
-.task-card.task-today{border-left-color:#E65100;background:#FFFCF7}
 .task-card.task-done{opacity:.68}
 .task-card-top{display:flex;gap:10px;align-items:flex-start}
 .task-card-title{font-size:13px;font-weight:750;line-height:1.4;overflow-wrap:anywhere}
@@ -377,27 +376,47 @@ textarea.task-input{resize:vertical}
         <button type="button" id="tab-achats-consommables" class="stock-subtab" onclick="ouvrirSousModuleTaches('achats')">🛒 Achats consommables <span id="achats-badge" class="task-nav-badge"></span></button>
       </div>
       
+      <!-- ONGLET TÂCHES REFORMATÉ -->
       <div id="sousmodule-taches-notes">
         <div class="task-intro"><strong>📝 Tâches & notes du bureau</strong><span>Consignez un rappel, une relance fournisseur, une action SAV ou une note utile.</span></div>
-        <div class="task-stats" id="taches-stats"></div>
-        <div class="task-layout">
+        
+        <!-- Utilisation de buy-stats pour le design -->
+        <div class="buy-stats" id="taches-stats"></div>
+        
+        <div class="buy-layout">
           <section class="task-panel">
             <h3 id="task-form-title">＋ Ajouter une tâche ou une note</h3>
             <form id="task-form" onsubmit="enregistrerTache(event)">
               <input type="hidden" id="task-id">
-              <label for="task-type">Type</label><select id="task-type" class="task-input"><option value="tache">Tâche à faire</option><option value="note">Note / information</option></select>
-              <label for="task-title">Titre (ou contenu de la tâche) *</label><input id="task-title" class="task-input" maxlength="140" required placeholder="Ex. Relancer le fournisseur">
-              <label for="task-details">Détails (ou contenu de la note)</label><textarea id="task-details" class="task-input" rows="3" maxlength="3000"></textarea>
-              <div class="task-form-actions"><button class="btn btn-primary" type="submit">💾 Enregistrer</button><button class="btn btn-outline" type="button" onclick="reinitialiserFormTache()">Annuler</button></div>
+              <label for="task-type">Type</label>
+              <select id="task-type" class="task-input"><option value="tache">📝 Tâche à faire</option><option value="note">🗒️ Note / information</option></select>
+              
+              <label for="task-title">Titre (ou contenu de la tâche) *</label>
+              <input id="task-title" class="task-input" maxlength="140" required placeholder="Ex. Relancer le fournisseur">
+              
+              <label for="task-details">Détails (ou contenu de la note)</label>
+              <textarea id="task-details" class="task-input" rows="3" maxlength="3000" placeholder="Informations complémentaires..."></textarea>
+              
+              <div class="task-form-actions">
+                <button class="btn btn-primary" type="submit">💾 Enregistrer</button>
+                <button class="btn btn-outline" type="button" onclick="reinitialiserFormTache()">Annuler</button>
+              </div>
             </form>
           </section>
-          <section class="task-panel task-list-panel">
-            <div class="task-list-head"><h3>📌 Tâches et notes</h3><div class="task-filters"><select id="task-filter-type" class="task-input" onchange="renderTaches()"><option value="toutes">Tout afficher</option><option value="taches">Tâches uniquement</option><option value="notes">Notes uniquement</option></select></div></div>
+          
+          <section class="task-panel">
+            <div class="task-list-head">
+              <h3>📌 Tâches et notes</h3>
+              <div class="task-filters">
+                <select id="task-filter-type" class="task-input" onchange="renderTaches()"><option value="toutes">Tout afficher</option><option value="taches">Tâches uniquement</option><option value="notes">Notes uniquement</option></select>
+              </div>
+            </div>
             <div id="taches-list"></div>
           </section>
         </div>
       </div>
       
+      <!-- ONGLET ACHATS -->
       <div id="sousmodule-achats-consommables" style="display:none">
         <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap;">
           <button type="button" class="btn btn-outline btn-sm" onclick="afficherInventaireComplet()" style="border-color:#1565C0;color:#1565C0;">📖 Voir l'inventaire complet (catalogue)</button>
@@ -875,7 +894,11 @@ function renderTaches() {
   var actifs = tachesNotes.filter(function(t){ return t.type === 'tache' && !t.terminee; });
   var notes = tachesNotes.filter(function(t){ return t.type === 'note'; }).length;
   
-  stats.innerHTML = '<div class="task-stat"><strong>' + actifs.length + '</strong><span>À faire</span></div><div class="task-stat"><strong>' + notes + '</strong><span>Notes</span></div>';
+  // Harmonisation avec le design des Achats
+  stats.innerHTML = 
+    '<div class="task-stat"><strong>' + tachesNotes.length + '</strong><span>Total</span></div>' +
+    '<div class="task-stat" style="border-top:3px solid #1565C0"><strong style="color:#1565C0">' + actifs.length + '</strong><span>Tâches actives</span></div>' +
+    '<div class="task-stat" style="border-top:3px solid #78909C"><strong style="color:#78909C">' + notes + '</strong><span>Notes</span></div>';
   
   var ft = document.getElementById('task-filter-type') ? document.getElementById('task-filter-type').value : 'toutes';
   var arr = tachesNotes.filter(function(t){
@@ -886,10 +909,25 @@ function renderTaches() {
   
   if (!arr.length) { list.innerHTML = '<div class="task-empty">✨ Rien à afficher.</div>'; majBadgeTaches(); return; }
   
+  // Utilisation des classes "buy-card" pour le rendu identique
   list.innerHTML = arr.map(function(t){
     var isNote = t.type === 'note';
-    return '<article class="task-card"><div class="task-card-top">' + (isNote ? '<span class="task-note-icon">🗒️</span>' : '<span class="task-note-icon">📝</span>') + '<div style="flex:1;min-width:0"><div class="task-card-title">' + h(isNote ? 'Note' : t.titre) + '</div><div class="task-meta">' + (isNote ? '<span class="task-chip">NOTE</span>' : '<span class="task-chip">TÂCHE</span>') + '</div></div></div>' + ((t.details || (!isNote && t.titre)) ? '<div class="task-card-details">' + h(isNote ? t.titre + (t.details ? ' — ' + t.details : '') : t.details) + '</div>' : '') + '<div class="task-card-actions"><button class="task-action" onclick="modifierTache(\'' + t.id + '\')">✏️ Modifier</button><button class="task-action" onclick="supprimerTache(\'' + t.id + '\')">🗑️ Supprimer</button></div></article>';
+    var borderCol = isNote ? '#78909C' : '#1565C0';
+    var chipClass = isNote ? 'ordered' : 'alert';
+    var chipIcon = isNote ? '🗒️' : '📝';
+    
+    return '<article class="buy-card" style="border-left-color:' + borderCol + '">' +
+      '<div class="buy-card-title">' + h(isNote ? t.details : t.titre) + '</div>' +
+      '<div class="buy-card-meta">' +
+        '<span class="buy-chip ' + chipClass + '">' + chipIcon + ' ' + (isNote ? 'Note' : 'Tâche') + '</span>' +
+      '</div>' +
+      (!isNote && t.details ? '<div class="task-card-details">' + h(t.details) + '</div>' : '') +
+      '<div class="buy-card-actions">' +
+        '<button class="task-action" onclick="modifierTache(\'' + t.id + '\')">✏️ Modifier</button>' +
+        '<button class="task-action" onclick="supprimerTache(\'' + t.id + '\')">🗑️ Supprimer</button>' +
+      '</div></article>';
   }).join('');
+  
   majBadgeTaches();
 }
 
