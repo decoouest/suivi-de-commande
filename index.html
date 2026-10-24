@@ -13,30 +13,30 @@
 <title>ECO OUEST — Suivi Commandes</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
-:root{--bleu:#1565C0;--bleu-clair:#1976D2;--bleu-bg:#E3F2FD;--rouge:#D32F2F;--orange:#E65100;--jaune:#F9A825;--vert:#2E7D32;--vert-bg:#C8E6C9;--gris:#78909C;--gris-bg:#F5F7FA;--texte:#1A1A2E;--texte2:#546E7A;--bordure:#E0E7EF;--sidebar:100px;}
+:root{--bleu:#1565C0;--bleu-clair:#1976D2;--bleu-bg:#E3F2FD;--rouge:#D32F2F;--orange:#E65100;--jaune:#F9A825;--vert:#2E7D32;--vert-bg:#C8E6C9;--gris:#78909C;--gris-bg:#F5F7FA;--texte:#1A1A2E;--texte2:#546E7A;--bordure:#E0E7EF;--sidebar:110px;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:"Inter",sans-serif;background:#F0F4F8;color:var(--texte);min-height:100vh;display:flex;}
 .sidebar{width:var(--sidebar);background:var(--bleu);min-height:100vh;display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;}
-.sidebar-logo{padding:18px 16px 14px;border-bottom:1px solid rgba(255,255,255,.15);}
-.sidebar-logo span{display:block;font-size:18px;font-weight:700;color:#fff;}
-.sidebar-logo small{font-size:10px;color:#90CAF9;text-transform:uppercase;letter-spacing:1.5px;}
+.sidebar-logo{padding:18px 10px 14px;border-bottom:1px solid rgba(255,255,255,.15);text-align:center;}
+.sidebar-logo span{display:block;font-size:16px;font-weight:700;color:#fff;}
+.sidebar-logo small{font-size:9px;color:#90CAF9;text-transform:uppercase;letter-spacing:1px;}
 .nav{flex:1;padding:12px 0;overflow-y:auto;}
-.nav-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:12px 5px;color:rgba(255,255,255,.7);cursor:pointer;font-size:11px;font-weight:500;transition:all .15s;border-left:3px solid transparent;text-align:center;line-height:1.2;}
+.nav-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:12px 4px;color:rgba(255,255,255,.7);cursor:pointer;font-size:10px;font-weight:600;transition:all .15s;border-left:3px solid transparent;text-align:center;}
 .nav-item:hover{color:#fff;background:rgba(255,255,255,.08);}
 .nav-item.active{color:#fff;background:rgba(255,255,255,.12);border-left-color:#90CAF9;}
-.nav-item .icon{font-size:16px;width:20px;text-align:center;}
-.sidebar-footer{padding:14px 16px;border-top:1px solid rgba(255,255,255,.1);font-size:11px;color:rgba(255,255,255,.4);}
-.main{margin-left:var(--sidebar);flex:1;display:flex;flex-direction:column;min-height:100vh;}
-.topbar{background:#fff;border-bottom:1px solid var(--bordure);padding:8px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+.nav-item .icon{font-size:22px;}
+.sidebar-footer{padding:14px 10px;border-top:1px solid rgba(255,255,255,.1);font-size:10px;color:rgba(255,255,255,.4);text-align:center;}
+.main{margin-left:var(--sidebar);flex:1;display:flex;flex-direction:column;min-height:100vh;width:calc(100% - var(--sidebar));}
+.topbar{background:#fff;border-bottom:1px solid var(--bordure);padding:8px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
 .topbar-title{font-size:16px;font-weight:600;}
-.topbar-right{display:flex;align-items:center;gap:10px;}
-.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:7px;border:none;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;transition:all .15s;}
+.topbar-right{display:flex;align-items:center;gap:8px;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:7px;border:none;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;transition:all .15s;}
 .btn-primary{background:var(--bleu);color:#fff;}.btn-primary:hover{background:var(--bleu-clair);}
 .btn-outline{background:#fff;color:var(--bleu);border:1.5px solid var(--bleu);}.btn-outline:hover{background:var(--bleu-bg);}
 .btn-danger{background:var(--rouge);color:#fff;}
 .btn-sm{padding:5px 11px;font-size:12px;}
 .btn:disabled{opacity:.5;cursor:not-allowed;}
-.content{padding:12px 28px;flex:1;}
+.content{padding:12px 20px;flex:1;width:100%;max-width:100%;overflow-x:hidden;}
 .view{display:none;}.view.active{display:block;}
 .loader-bar{height:3px;background:var(--bleu-bg);margin-bottom:12px;border-radius:2px;overflow:hidden;display:none;}
 .loader-bar.active{display:block;}
@@ -46,14 +46,18 @@ body{font-family:"Inter",sans-serif;background:#F0F4F8;color:var(--texte);min-he
 .sync-dot{width:7px;height:7px;border-radius:50%;background:var(--vert);display:inline-block;}
 .sync-dot.loading{background:var(--orange);animation:pulse .8s infinite;}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:12px;}
-.kpi-card{background:#fff;border-radius:10px;padding:10px 16px;border:1px solid var(--bordure);display:flex;flex-direction:column;gap:4px;cursor:pointer;transition:box-shadow .15s;}
+
+/* ── KPI & RACCOURCIS ── */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:12px;}
+.kpi-card{background:#fff;border-radius:10px;padding:10px 14px;border:1px solid var(--bordure);display:flex;flex-direction:column;gap:4px;cursor:pointer;transition:box-shadow .15s;}
 .kpi-card:hover{box-shadow:0 4px 14px rgba(0,0,0,.08);}
-.kpi-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--texte2);}
+.kpi-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--texte2);}
 .kpi-value{font-size:22px;font-weight:700;line-height:1;}
-.kpi-sub{font-size:11px;color:var(--texte2);}
+.kpi-sub{font-size:10px;color:var(--texte2);}
 .kpi-urgent .kpi-value{color:var(--rouge);}.kpi-warn .kpi-value{color:var(--orange);}
 .kpi-ok .kpi-value{color:var(--vert);}.kpi-info .kpi-value{color:var(--bleu);}
+
+/* ── FILTRES ── */
 .filters-bar{background:#fff;border-radius:10px;border:1px solid var(--bordure);padding:8px 14px;display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:10px;}
 .search-input{flex:1;min-width:180px;border:1.5px solid var(--bordure);border-radius:7px;padding:7px 12px;font-family:inherit;font-size:13px;outline:none;}
 .search-input:focus{border-color:var(--bleu);}
@@ -69,26 +73,30 @@ body{font-family:"Inter",sans-serif;background:#F0F4F8;color:var(--texte);min-he
 .filter-badge.ok.active{background:var(--vert);color:#fff;}
 .filter-badge.sav-active{background:#D32F2F !important;color:#fff !important;}
 .filter-badge.noncmd-active{background:#E65100 !important;color:#fff !important;}
-.table-wrap{background:#fff;border-radius:10px;border:1px solid var(--bordure);overflow:auto;max-height:calc(100vh - 220px);}
-table{width:100%;border-collapse:collapse;font-size:13px;}
-thead th{position:sticky;top:0;z-index:10;background:var(--gris-bg);box-shadow:0 2px 0 var(--bordure);text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--texte2);text-transform:uppercase;letter-spacing:.8px;white-space:nowrap;cursor:pointer;user-select:none;}
+
+/* ── TABLEAU OPTIMISÉ ── */
+.table-wrap{background:#fff;border-radius:10px;border:1px solid var(--bordure);overflow:auto;max-height:calc(100vh - 220px);display:block;width:100%;}
+table{width:100%;border-collapse:collapse;font-size:12px;white-space:nowrap;}
+thead th{position:sticky;top:0;z-index:10;background:var(--gris-bg);box-shadow:0 2px 0 var(--bordure);text-align:left;padding:10px 8px;font-size:10px;font-weight:700;color:var(--texte2);text-transform:uppercase;letter-spacing:.5px;cursor:pointer;user-select:none;}
 thead th:hover{color:var(--bleu);}
-td{padding:10px 14px;border-bottom:1px solid var(--bordure);vertical-align:middle;}
+td{padding:10px 8px;border-bottom:1px solid var(--bordure);vertical-align:middle;}
 tr:last-child td{border-bottom:none;}
 tr:hover td{background:#F8FBFF;}
-.col-client{font-weight:600;}
+.col-client{font-weight:600;min-width:120px;}
 .col-mono{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--texte2);}
-.col-comment{font-style:italic;color:var(--texte2);max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.badge{display:inline-block;padding:3px 9px;border-radius:5px;font-size:11px;font-weight:600;white-space:nowrap;}
+.col-comment{font-style:italic;color:var(--texte2);white-space:normal;min-width:120px;max-width:200px;font-size:11px;line-height:1.3;}
+.badge{display:inline-block;padding:3px 8px;border-radius:5px;font-size:10px;font-weight:700;white-space:nowrap;}
 .badge-ok{background:var(--vert-bg);color:var(--vert);}
 .badge-urgent{background:#FFEBEE;color:var(--rouge);}
 .badge-info{background:var(--bleu-bg);color:var(--bleu);}
-.alerte-text{font-size:11px;font-weight:600;}
+.alerte-text{font-size:10px;font-weight:700;white-space:normal;min-width:120px;display:block;}
 .alerte-ok{color:var(--vert);}.alerte-rouge{color:var(--rouge);}
 .alerte-orange{color:var(--orange);}.alerte-jaune{color:#B7860B;}
 .action-btn{background:none;border:none;cursor:pointer;padding:4px 6px;border-radius:5px;font-size:15px;}
 .action-btn:hover{background:var(--gris-bg);}
 .scroll-hint{font-size:11px;color:var(--texte2);padding:8px 14px;border-top:1px solid var(--bordure);}
+
+/* ── AUTRES VUES ── */
 .empty-state{text-align:center;padding:48px 24px;color:var(--texte2);}
 .overlay{display:none;position:fixed;inset:0;background:rgba(10,20,40,.45);z-index:200;align-items:center;justify-content:center;}
 .overlay.open{display:flex;}
@@ -194,7 +202,7 @@ textarea{resize:vertical;min-height:70px;}
 .sidebar{width:52px;}
 .sidebar .nav-item span,.sidebar-logo span,.sidebar-logo small,.sidebar-footer{display:none;}
 .sidebar-logo #version-info{display:none;}
-.main{margin-left:52px;}
+.main{margin-left:52px;width:calc(100% - 52px);}
 .sidebar-logo{padding:14px 8px;}
 .nav-item{padding:14px 8px;justify-content:center;}
 .nav-item .icon{font-size:20px;}
@@ -203,7 +211,7 @@ textarea{resize:vertical;min-height:70px;}
 }
 @media(max-width:768px){
 .sidebar{display:none !important;}
-.main{margin-left:0 !important;}
+.main{margin-left:0 !important;width:100% !important;}
 .menu-burger{display:inline-flex;align-items:center;justify-content:center;}
 .topbar{flex-wrap:wrap;gap:8px;padding:8px 12px;}
 .topbar-title{flex:1;font-size:15px;}
@@ -220,7 +228,7 @@ textarea{resize:vertical;min-height:70px;}
 table thead{display:none;}
 table, table tbody, table tr, table td{display:block;width:100%;}
 table tr{background:#fff;border-radius:12px;border:1px solid var(--bordure);margin-bottom:10px;padding:12px;box-shadow:0 1px 3px rgba(0,0,0,.05);}
-table td{border:none;padding:5px 0;text-align:left !important;display:flex;justify-content:space-between;align-items:center;gap:10px;}
+table td{border:none;padding:5px 0;text-align:left !important;display:flex;justify-content:space-between;align-items:center;gap:10px;white-space:normal;}
 table td::before{content:attr(data-label);font-weight:700;font-size:11px;text-transform:uppercase;color:var(--texte2);flex-shrink:0;}
 table td:first-child{font-size:16px;font-weight:700;color:var(--bleu);border-bottom:1px solid var(--bordure);padding-bottom:8px;margin-bottom:4px;}
 table td:first-child::before{display:none;}
@@ -231,6 +239,7 @@ table td:first-child::before{display:none;}
 .agent-card-actions{width:100%;flex-direction:row;flex-wrap:wrap;}
 .agent-card-btn{flex:1;padding:8px;font-size:13px;}
 }
+/* ── SOUS-MODULES TACHES & ACHATS ── */
 .stock-subtabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}
 .stock-subtab{border:1px solid #CFD8DC;background:#fff;color:var(--texte);padding:9px 14px;border-radius:8px;font:inherit;font-size:12px;font-weight:750;cursor:pointer}
 .stock-subtab.active{background:var(--bleu);border-color:var(--bleu);color:#fff}
@@ -296,11 +305,11 @@ textarea.task-input{resize:vertical}
 </div>
 
 <aside class="sidebar">
-  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v13.7</div></div>
+  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v13.8</div></div>
   <nav class="nav">
     <div class="nav-item active" id="nav-suivi" onclick="showView('suivi')"><span class="icon">📋</span><span>Commandes</span></div>
     <div class="nav-item" id="nav-alertes" onclick="showView('alertes')"><span class="icon">🔔</span><span>Alertes</span></div>
-    <div class="nav-item" id="nav-taches" onclick="showView('taches')"><span class="icon">📝</span><span>Tâches & Notes</span><span id="taches-badge" class="task-nav-badge"></span></div>
+    <div class="nav-item" id="nav-taches" onclick="showView('taches')"><span class="icon">📝</span><span>Tâches & Notes</span></div>
     <div class="nav-item" id="nav-agent" onclick="showView('agent')"><span class="icon">🤖</span><span>Agent IA</span></div>
     <div class="nav-item" id="nav-metre" onclick="showView('metre')"><span class="icon">📅</span><span>Dates Métré</span></div>
     <div class="nav-item" id="nav-dashboard" onclick="showView('dashboard')"><span class="icon">📊</span><span>Dashboard</span></div>
@@ -308,7 +317,7 @@ textarea.task-input{resize:vertical}
     <div class="nav-item" id="nav-planning" onclick="showView('planning')"><span class="icon">📅</span><span>Planning</span></div>
     <div class="nav-item" id="nav-config" onclick="showView('config')"><span class="icon">⚙️</span><span>Config</span></div>
   </nav>
-  <div class="sidebar-footer">v13.7</div>
+  <div class="sidebar-footer">v13.8</div>
 </aside>
 
 <div class="main">
@@ -549,8 +558,7 @@ var FOU_COLORS = {'ATLANTEM':'#1565C0','ATULAM':'#6A1B9A','LALLEMANT':'#2E7D32',
 var TERMINES = ['livre','termine','pose'];
 var commandes = [];
 var sortCol = 'ligne', sortAsc = false, alertFilter = 'all', editLigne = -1;
-// [v13.7] Cache versionné v137
-var CACHE_DUREE = 60 * 1000, CACHE_KEY = 'eco-ouest-cache-v137', CACHE_TIME_KEY = 'eco-ouest-cache-time-v137';
+var CACHE_DUREE = 60 * 1000, CACHE_KEY = 'eco-ouest-cache-v138', CACHE_TIME_KEY = 'eco-ouest-cache-time-v138';
 var dernierRapportAgent = null;
 var recognition = null, recognitionAssistant = null, recognitionAction = null;
 var cacheTrad = {};
@@ -615,6 +623,7 @@ function renderKPI() {
   var tot=commandes.length,urg=0,warn=0,ok=0,enc=0; 
   al.forEach(function(a){if(a.n===3)urg++;else if(a.n>=1)warn++;else if(a.n===0)ok++;}); 
   commandes.forEach(function(c){if(!estTermineStatut(c.statutLivraison))enc++;}); 
+  
   var items=[
     {cls:'kpi-info',f:'all',lb:'Total',v:tot,sub:'commandes'},
     {cls:'kpi-urgent',f:'urgent',lb:'Urgentes',v:urg,sub:'action requise'},
@@ -622,6 +631,7 @@ function renderKPI() {
     {cls:'kpi-ok',f:'ok',lb:'OK',v:ok,sub:'sans alerte'},
     {cls:'kpi-info',f:'encours',lb:'En cours',v:enc,sub:'non livrées'}
   ]; 
+  
   items.forEach(function(it){ 
     var d=document.createElement('div'); 
     d.className='kpi-card '+it.cls; 
@@ -630,14 +640,18 @@ function renderKPI() {
     grid.appendChild(d); 
   }); 
   
+  var actifsTaches = tachesNotes.filter(function(t){ return t.type === 'tache' && !t.terminee; }).length;
+  var notesCount = tachesNotes.filter(function(t){ return t.type === 'note'; }).length;
+  var achatsEnCours = achatsConsommables.filter(function(a){ return a.statut !== 'recu'; }).length;
+
   var shortcuts = document.createElement('div');
   shortcuts.className = 'kpi-card';
-  shortcuts.style.cssText = 'grid-column: 1 / -1; display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 10px; padding: 10px; background: transparent; border: none; box-shadow: none; margin-top: 5px;';
+  shortcuts.style.cssText = 'grid-column: auto; cursor: default; justify-content: center; min-width: 200px;';
   shortcuts.innerHTML = '<span class="kpi-label">Raccourcis</span>' +
     '<div style="display:flex; gap:6px; margin-top:4px;">' +
-      '<button class="btn btn-outline" onclick="showView(\'taches\'); ouvrirSousModuleTaches(\'taches\'); document.getElementById(\'task-filter-type\').value=\'taches\'; renderTaches();" style="flex:1; padding:6px 4px; font-size:11px; border-color:#CFD8DC; color:#455A64; justify-content:center;">📝 Tâches</button>' +
-      '<button class="btn btn-outline" onclick="showView(\'taches\'); ouvrirSousModuleTaches(\'taches\'); document.getElementById(\'task-filter-type\').value=\'notes\'; renderTaches();" style="flex:1; padding:6px 4px; font-size:11px; border-color:#CFD8DC; color:#455A64; justify-content:center;">🗒️ Notes</button>' +
-      '<button class="btn btn-outline" onclick="showView(\'taches\'); ouvrirSousModuleTaches(\'achats\');" style="flex:1; padding:6px 4px; font-size:11px; border-color:#CFD8DC; color:#455A64; justify-content:center;">🛒 Achats</button>' +
+      '<button class="btn btn-outline" onclick="showView(\'taches\'); ouvrirSousModuleTaches(\'taches\'); document.getElementById(\'task-filter-type\').value=\'taches\'; renderTaches();" style="flex:1; padding:6px 4px; font-size:11px; border-color:#CFD8DC; color:#455A64; justify-content:center;">📝 Tâches (' + actifsTaches + ')</button>' +
+      '<button class="btn btn-outline" onclick="showView(\'taches\'); ouvrirSousModuleTaches(\'taches\'); document.getElementById(\'task-filter-type\').value=\'notes\'; renderTaches();" style="flex:1; padding:6px 4px; font-size:11px; border-color:#CFD8DC; color:#455A64; justify-content:center;">🗒️ Notes (' + notesCount + ')</button>' +
+      '<button class="btn btn-outline" onclick="showView(\'taches\'); ouvrirSousModuleTaches(\'achats\');" style="flex:1; padding:6px 4px; font-size:11px; border-color:#CFD8DC; color:#455A64; justify-content:center;">🛒 Achats (' + achatsEnCours + ')</button>' +
     '</div>';
   grid.appendChild(shortcuts);
 }
