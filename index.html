@@ -310,7 +310,7 @@ textarea.task-input{resize:vertical}
 </div>
 
 <aside class="sidebar">
-  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v13.2</div></div>
+  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v13.3</div></div>
   <nav class="nav">
     <div class="nav-item active" id="nav-suivi" onclick="showView('suivi')"><span class="icon">📋</span><span>Commandes</span></div>
     <div class="nav-item" id="nav-alertes" onclick="showView('alertes')"><span class="icon">🔔</span><span>Alertes</span></div>
@@ -322,7 +322,7 @@ textarea.task-input{resize:vertical}
     <div class="nav-item" id="nav-planning" onclick="showView('planning')"><span class="icon">📅</span><span>Planning</span></div>
     <div class="nav-item" id="nav-config" onclick="showView('config')"><span class="icon">⚙️</span><span>Config</span></div>
   </nav>
-  <div class="sidebar-footer">v13.2</div>
+  <div class="sidebar-footer">v13.3</div>
 </aside>
 
 <div class="main">
@@ -376,11 +376,9 @@ textarea.task-input{resize:vertical}
         <button type="button" id="tab-achats-consommables" class="stock-subtab" onclick="ouvrirSousModuleTaches('achats')">🛒 Achats consommables <span id="achats-badge" class="task-nav-badge"></span></button>
       </div>
       
-      <!-- ONGLET TÂCHES REFORMATÉ -->
       <div id="sousmodule-taches-notes">
         <div class="task-intro"><strong>📝 Tâches & notes du bureau</strong><span>Consignez un rappel, une relance fournisseur, une action SAV ou une note utile.</span></div>
         
-        <!-- Utilisation de buy-stats pour le design -->
         <div class="buy-stats" id="taches-stats"></div>
         
         <div class="buy-layout">
@@ -416,7 +414,6 @@ textarea.task-input{resize:vertical}
         </div>
       </div>
       
-      <!-- ONGLET ACHATS -->
       <div id="sousmodule-achats-consommables" style="display:none">
         <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap;">
           <button type="button" class="btn btn-outline btn-sm" onclick="afficherInventaireComplet()" style="border-color:#1565C0;color:#1565C0;">📖 Voir l'inventaire complet (catalogue)</button>
@@ -560,7 +557,7 @@ var FOU_COLORS = {'ATLANTEM':'#1565C0','ATULAM':'#6A1B9A','LALLEMANT':'#2E7D32',
 var TERMINES = ['livre','termine','pose'];
 var commandes = [];
 var sortCol = 'ligne', sortAsc = false, alertFilter = 'all', editLigne = -1;
-var CACHE_DUREE = 60 * 1000, CACHE_KEY = 'eco-ouest-cache-v132', CACHE_TIME_KEY = 'eco-ouest-cache-time-v132';
+var CACHE_DUREE = 60 * 1000, CACHE_KEY = 'eco-ouest-cache-v133', CACHE_TIME_KEY = 'eco-ouest-cache-time-v133';
 var dernierRapportAgent = null;
 var recognition = null, recognitionAssistant = null, recognitionAction = null;
 var cacheTrad = {};
@@ -891,10 +888,10 @@ function renderTaches() {
   var stats = document.getElementById('taches-stats'), list = document.getElementById('taches-list');
   if (!stats || !list) return;
   remplirSelectDossiers();
+  
   var actifs = tachesNotes.filter(function(t){ return t.type === 'tache' && !t.terminee; });
   var notes = tachesNotes.filter(function(t){ return t.type === 'note'; }).length;
   
-  // Harmonisation avec le design des Achats
   stats.innerHTML = 
     '<div class="task-stat"><strong>' + tachesNotes.length + '</strong><span>Total</span></div>' +
     '<div class="task-stat" style="border-top:3px solid #1565C0"><strong style="color:#1565C0">' + actifs.length + '</strong><span>Tâches actives</span></div>' +
@@ -909,7 +906,6 @@ function renderTaches() {
   
   if (!arr.length) { list.innerHTML = '<div class="task-empty">✨ Rien à afficher.</div>'; majBadgeTaches(); return; }
   
-  // Utilisation des classes "buy-card" pour le rendu identique
   list.innerHTML = arr.map(function(t){
     var isNote = t.type === 'note';
     var borderCol = isNote ? '#78909C' : '#1565C0';
