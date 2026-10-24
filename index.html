@@ -311,9 +311,8 @@ textarea.task-input{resize:vertical}
 </div>
 
 <aside class="sidebar">
-  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v12.2</div></div>
+  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v12.4</div></div>
   <nav class="nav">
-    <!-- L'onglet "Commandes" est maintenant actif par défaut -->
     <div class="nav-item active" id="nav-suivi" onclick="showView('suivi')"><span class="icon">📋</span><span>Commandes</span></div>
     <div class="nav-item" id="nav-alertes" onclick="showView('alertes')"><span class="icon">🔔</span><span>Alertes</span></div>
     <div class="nav-item" id="nav-taches" onclick="showView('taches')"><span class="icon">📝</span><span>Tâches & Notes</span><span id="taches-badge" class="task-nav-badge"></span></div>
@@ -324,13 +323,12 @@ textarea.task-input{resize:vertical}
     <div class="nav-item" id="nav-planning" onclick="showView('planning')"><span class="icon">📅</span><span>Planning</span></div>
     <div class="nav-item" id="nav-config" onclick="showView('config')"><span class="icon">⚙️</span><span>Config</span></div>
   </nav>
-  <div class="sidebar-footer">v12.2</div>
+  <div class="sidebar-footer">v12.4</div>
 </aside>
 
 <div class="main">
   <div class="topbar">
     <button class="menu-burger" id="menu-burger" onclick="ouvrirMenuMobile()" title="Menu">☰</button>
-    <!-- Titre mis à jour pour refléter l'onglet par défaut -->
     <span class="topbar-title" id="topbar-title">Suivi des commandes</span>
     <div class="topbar-right">
       <span class="sync-info"><span class="sync-dot" id="sync-dot"></span><span id="sync-label">Chargement...</span></span>
@@ -344,7 +342,6 @@ textarea.task-input{resize:vertical}
   <div class="content">
     <div class="loader-bar" id="loader"><div class="loader-fill"></div></div>
     
-    <!-- L'onglet "suivi" est maintenant actif par défaut -->
     <div id="view-suivi" class="view active">
       <div class="kpi-grid" id="kpi-grid"></div>
       <div class="filters-bar">
@@ -381,7 +378,7 @@ textarea.task-input{resize:vertical}
       </div>
       
       <div id="sousmodule-taches-notes">
-        <div class="task-intro"><strong>📝 Tâches & notes du bureau</strong><span>Les tâches iront dans la colonne A, les notes dans la colonne B de votre Google Sheet.</span></div>
+        <div class="task-intro"><strong>📝 Tâches & notes du bureau</strong><span>Consignez un rappel, une relance fournisseur, une action SAV ou une note utile.</span></div>
         <div class="task-stats" id="taches-stats"></div>
         <div class="task-layout">
           <section class="task-panel">
@@ -389,13 +386,15 @@ textarea.task-input{resize:vertical}
             <form id="task-form" onsubmit="enregistrerTache(event)">
               <input type="hidden" id="task-id">
               <label for="task-type">Type</label><select id="task-type" class="task-input"><option value="tache">Tâche à faire</option><option value="note">Note / information</option></select>
-              <label for="task-title">Titre (ou contenu de la tâche) *</label><input id="task-title" class="task-input" maxlength="140" required placeholder="Ex. Relancer le fournisseur">
-              <label for="task-details">Détails (ou contenu de la note)</label><textarea id="task-details" class="task-input" rows="3" maxlength="3000"></textarea>
+              <label for="task-title">Titre *</label><input id="task-title" class="task-input" maxlength="140" required placeholder="Ex. Relancer le fournisseur pour l'ARC">
+              <label for="task-details">Détails</label><textarea id="task-details" class="task-input" rows="3" maxlength="3000"></textarea>
+              <label for="task-order">Dossier / client associé (facultatif)</label><select id="task-order" class="task-input"><option value="">Aucun dossier associé</option></select>
+              <div class="task-fields-row"><div><label for="task-due">Échéance</label><input id="task-due" class="task-input" type="date"></div><div><label for="task-priority">Priorité</label><select id="task-priority" class="task-input"><option value="haute">🔴 Haute</option><option value="normale" selected>🟠 Normale</option><option value="basse">🟢 Basse</option></select></div></div>
               <div class="task-form-actions"><button class="btn btn-primary" type="submit">💾 Enregistrer</button><button class="btn btn-outline" type="button" onclick="reinitialiserFormTache()">Annuler</button></div>
             </form>
           </section>
           <section class="task-panel task-list-panel">
-            <div class="task-list-head"><h3>📌 Tâches et notes</h3><div class="task-filters"><select id="task-filter-type" class="task-input" onchange="renderTaches()"><option value="toutes">Tout afficher</option><option value="taches">Tâches uniquement</option><option value="notes">Notes uniquement</option></select></div></div>
+            <div class="task-list-head"><h3>📌 Tâches et notes</h3><div class="task-filters"><select id="task-filter-type" class="task-input" onchange="renderTaches()"><option value="actifs">À traiter / notes</option><option value="toutes">Tout afficher</option><option value="taches">Tâches uniquement</option><option value="notes">Notes uniquement</option><option value="terminees">Tâches terminées</option></select><select id="task-filter-priority" class="task-input" onchange="renderTaches()"><option value="">Toutes priorités</option><option value="haute">Haute</option><option value="normale">Normale</option><option value="basse">Basse</option></select></div></div>
             <div id="taches-list"></div>
           </section>
         </div>
@@ -544,7 +543,7 @@ var FOU_COLORS = {'ATLANTEM':'#1565C0','ATULAM':'#6A1B9A','LALLEMANT':'#2E7D32',
 var TERMINES = ['livre','termine','pose'];
 var commandes = [];
 var sortCol = 'ligne', sortAsc = false, alertFilter = 'all', editLigne = -1;
-var CACHE_DUREE = 60 * 1000, CACHE_KEY = 'eco-ouest-cache-v122', CACHE_TIME_KEY = 'eco-ouest-cache-time-v122';
+var CACHE_DUREE = 60 * 1000, CACHE_KEY = 'eco-ouest-cache-v124', CACHE_TIME_KEY = 'eco-ouest-cache-time-v124';
 var dernierRapportAgent = null;
 var recognition = null, recognitionAssistant = null, recognitionAction = null;
 var cacheTrad = {};
@@ -878,54 +877,75 @@ function dateLocaleISO(d) { return d.getFullYear() + '-' + String(d.getMonth()+1
 function formatEcheance(v) { if (!v) return 'Sans échéance'; var d = new Date(v+'T12:00:00'); return isNaN(d.getTime()) ? v : d.toLocaleDateString('fr-FR'); }
 function etatTache(t) { if (t.type === 'note') return 'note'; if (t.terminee) return 'terminee'; if (!t.echeance) return 'active'; var auj = dateLocaleISO(new Date()); if (t.echeance < auj) return 'retard'; if (t.echeance === auj) return 'aujourdhui'; return 'active'; }
 
+function remplirSelectDossiers() { var el = document.getElementById('task-order'); if (!el) return; var cur = el.value; el.innerHTML = '<option value="">Aucun dossier associé</option>'; (commandes||[]).forEach(function(c){ var o = document.createElement('option'); o.value = String(c.ligne); o.textContent = (c.client||'Client') + ' — ' + (c.devis||('Ligne '+c.ligne)); el.appendChild(o); }); if (cur) el.value = cur; }
+
 async function enregistrerTache(e) {
   if (e) e.preventDefault();
   var id = document.getElementById('task-id').value;
   var titre = document.getElementById('task-title').value.trim();
-  if (!titre) { alert('Veuillez saisir un titre ou une note.'); return; }
+  if (!titre) { alert('Veuillez saisir un titre.'); return; }
   var t = {
     id: id || '',
     type: document.getElementById('task-type').value,
     titre: titre,
-    details: document.getElementById('task-details').value.trim()
+    details: document.getElementById('task-details').value.trim(),
+    ligne: document.getElementById('task-order').value,
+    echeance: document.getElementById('task-due').value,
+    priorite: document.getElementById('task-priority').value,
+    terminee: false
   };
   try {
-    var r = id ? await apiPost({action:'modifierTache', id: id, type: t.type, titre: t.titre, details: t.details})
-               : await apiPost({action:'ajouterTache', type: t.type, titre: t.titre, details: t.details});
+    var r = id ? await apiPost({action:'modifierTache', id: id, type: t.type, titre: t.titre, details: t.details, ligne: t.ligne, echeance: t.echeance, priorite: t.priorite, terminee: t.terminee}) 
+               : await apiPost({action:'ajouterTache', type: t.type, titre: t.titre, details: t.details, ligne: t.ligne, echeance: t.echeance, priorite: t.priorite});
     if (!r || !r.ok) throw new Error(r.error || 'Erreur');
     reinitialiserFormTache(); await chargerTachesNotes(); renderTaches();
-    afficherToast('ok','✅', id ? 'Tâche/Note modifiée' : 'Tâche/Note enregistrée', t.titre, 2500);
+    afficherToast('ok','✅', id ? 'Tâche modifiée' : 'Tâche enregistrée', t.titre, 2500);
   } catch(err) { alert('❌ ' + err.message); }
 }
 
-function reinitialiserFormTache() { var f = document.getElementById('task-form'); if (!f) return; f.reset(); document.getElementById('task-id').value = ''; document.getElementById('task-type').value = 'tache'; document.getElementById('task-form-title').textContent = '＋ Ajouter une tâche ou une note'; }
+function reinitialiserFormTache() { var f = document.getElementById('task-form'); if (!f) return; f.reset(); document.getElementById('task-id').value = ''; document.getElementById('task-type').value = 'tache'; document.getElementById('task-priority').value = 'normale'; document.getElementById('task-form-title').textContent = '＋ Ajouter une tâche ou une note'; }
 
-function modifierTache(id) { var t = tachesNotes.find(function(x){return x.id===id;}); if (!t) return; document.getElementById('task-id').value = t.id; document.getElementById('task-type').value = t.type; document.getElementById('task-title').value = t.titre; document.getElementById('task-details').value = t.details || ''; document.getElementById('task-form-title').textContent = '✏️ Modifier : ' + t.titre; document.getElementById('task-title').focus(); }
+function modifierTache(id) { var t = tachesNotes.find(function(x){return x.id===id;}); if (!t) return; document.getElementById('task-id').value = t.id; document.getElementById('task-type').value = t.type; document.getElementById('task-title').value = t.titre; document.getElementById('task-details').value = t.details || ''; document.getElementById('task-order').value = t.ligne || ''; document.getElementById('task-due').value = t.echeance || ''; document.getElementById('task-priority').value = t.priorite || 'normale'; document.getElementById('task-form-title').textContent = '✏️ Modifier : ' + t.titre; document.getElementById('task-title').focus(); }
 
-async function basculerTache(id) { var t = tachesNotes.find(function(x){return x.id===id;}); if (!t || t.type !== 'tache') return; try { var r = await apiPost({action:'modifierTache', id: t.id, type: t.type, titre: t.titre, details: t.details, terminee: !t.terminee}); if (!r || !r.ok) throw new Error(r.error || 'Erreur'); await chargerTachesNotes(); renderTaches(); } catch(e) { alert('❌ ' + e.message); } }
+async function basculerTache(id) { var t = tachesNotes.find(function(x){return x.id===id;}); if (!t || t.type !== 'tache') return; try { var r = await apiPost({action:'modifierTache', id: t.id, type: t.type, titre: t.titre, details: t.details, ligne: t.ligne, echeance: t.echeance, priorite: t.priorite, terminee: !t.terminee}); if (!r || !r.ok) throw new Error(r.error || 'Erreur'); await chargerTachesNotes(); renderTaches(); } catch(e) { alert('❌ ' + e.message); } }
 
 async function supprimerTache(id) { var t = tachesNotes.find(function(x){return x.id===id;}); if (!t) return; if (!confirm('Supprimer « ' + t.titre + ' » ?')) return; try { var r = await apiPost({action:'supprimerTache', id: id}); if (!r || !r.ok) throw new Error(r.error || 'Erreur'); await chargerTachesNotes(); renderTaches(); afficherToast('warn','🗑️','Supprimé', t.titre, 2500); } catch(e) { alert('❌ ' + e.message); } }
+
+function ouvrirDossierTache(ligne) { if (!ligne) return; var i = (commandes||[]).findIndex(function(c){ return String(c.ligne) === String(ligne); }); if (i >= 0) { showView('suivi'); openModal(i); } else afficherToast('warn','⚠️','Dossier introuvable','', 3000); }
 
 function renderTaches() {
   var stats = document.getElementById('taches-stats'), list = document.getElementById('taches-list');
   if (!stats || !list) return;
-  var tachesActives = tachesNotes.filter(function(t){ return t.type === 'tache' && !t.terminee; });
+  remplirSelectDossiers();
+  var actifs = tachesNotes.filter(function(t){ return t.type === 'tache' && !t.terminee; });
+  var retard = actifs.filter(function(t){ return etatTache(t) === 'retard'; }).length;
+  var auj = actifs.filter(function(t){ return etatTache(t) === 'aujourdhui'; }).length;
   var notes = tachesNotes.filter(function(t){ return t.type === 'note'; }).length;
-  
-  stats.innerHTML = '<div class="task-stat"><strong>' + tachesActives.length + '</strong><span>Tâches actives</span></div><div class="task-stat"><strong>' + notes + '</strong><span>Notes</span></div>';
-  
-  var ft = document.getElementById('task-filter-type') ? document.getElementById('task-filter-type').value : 'toutes';
+  stats.innerHTML = '<div class="task-stat"><strong>' + actifs.length + '</strong><span>À faire</span></div><div class="task-stat" style="border-top:3px solid #D32F2F"><strong style="color:#D32F2F">' + retard + '</strong><span>En retard</span></div><div class="task-stat" style="border-top:3px solid #E65100"><strong style="color:#E65100">' + auj + '</strong><span>À faire aujourd\'hui</span></div><div class="task-stat"><strong>' + notes + '</strong><span>Notes</span></div>';
+  var ft = document.getElementById('task-filter-type') ? document.getElementById('task-filter-type').value : 'actifs';
+  var fp = document.getElementById('task-filter-priority') ? document.getElementById('task-filter-priority').value : '';
   var arr = tachesNotes.filter(function(t){
-    if (ft === 'taches') return t.type === 'tache';
+    if (fp && t.priorite !== fp) return false;
+    if (ft === 'actifs') return t.type === 'note' || (t.type === 'tache' && !t.terminee);
+    if (ft === 'taches') return t.type === 'tache' && !t.terminee;
     if (ft === 'notes') return t.type === 'note';
+    if (ft === 'terminees') return t.type === 'tache' && t.terminee;
     return true;
   });
-  
-  if (!arr.length) { list.innerHTML = '<div class="task-empty">✨ Rien à afficher.</div>'; majBadgeTaches(); return; }
-  
+  arr.sort(function(a,b){
+    var ea = etatTache(a), eb = etatTache(b), rk = {retard:0,aujourdhui:1,active:2,note:3,terminee:4};
+    if (rk[ea] !== rk[eb]) return rk[ea] - rk[eb];
+    var pa = {haute:0,normale:1,basse:2};
+    if (pa[a.priorite] !== pa[b.priorite]) return pa[a.priorite] - pa[b.priorite];
+    return (a.echeance||'9999').localeCompare(b.echeance||'9999');
+  });
+  if (!arr.length) { list.innerHTML = '<div class="task-empty">✨ Rien à afficher pour ce filtre.</div>'; majBadgeTaches(); return; }
   list.innerHTML = arr.map(function(t){
-    var isNote = t.type === 'note';
-    return '<article class="task-card"><div class="task-card-top">' + (isNote ? '<span class="task-note-icon">🗒️</span>' : '<span class="task-note-icon">📝</span>') + '<div style="flex:1;min-width:0"><div class="task-card-title">' + h(isNote ? 'Note' : t.titre) + '</div><div class="task-meta">' + (isNote ? '<span class="task-chip">NOTE</span>' : '<span class="task-chip">TÂCHE</span>') + '</div></div></div>' + ((t.details || (!isNote && t.titre)) ? '<div class="task-card-details">' + h(isNote ? t.titre + (t.details ? ' — ' + t.details : '') : t.details) + '</div>' : '') + '<div class="task-card-actions"><button class="task-action" onclick="modifierTache(\'' + t.id + '\')">✏️ Modifier</button><button class="task-action" onclick="supprimerTache(\'' + t.id + '\')">🗑️ Supprimer</button></div></article>';
+    var et = etatTache(t), c = commandes.find(function(x){ return String(x.ligne) === String(t.ligne); }), prior = t.priorite || 'normale';
+    var classes = 'task-card' + (et === 'retard' ? ' task-overdue' : et === 'aujourdhui' ? ' task-today' : et === 'terminee' ? ' task-done' : '');
+    var badge = et === 'retard' ? '<span class="task-chip due">⚠ EN RETARD</span>' : et === 'aujourdhui' ? '<span class="task-chip due">⏰ AUJOURD\'HUI</span>' : et === 'terminee' ? '<span class="task-chip">✓ TERMINÉE</span>' : t.type === 'note' ? '<span class="task-chip">NOTE</span>' : '<span class="task-chip">À FAIRE</span>';
+    var linked = c ? '<span class="task-chip">📁 ' + h(c.client||'Dossier') + '</span>' : '';
+    return '<article class="' + classes + '"><div class="task-card-top">' + (t.type === 'tache' ? '<input class="task-check" type="checkbox" ' + (t.terminee?'checked':'') + ' onchange="basculerTache(\'' + t.id + '\')">' : '<span class="task-note-icon">🗒️</span>') + '<div style="flex:1;min-width:0"><div class="task-card-title">' + h(t.titre) + '</div><div class="task-meta">' + badge + '<span class="task-chip ' + (prior==='haute'?'high':prior==='basse'?'low':'normal') + '">' + (prior==='haute'?'🔴':prior==='basse'?'🟢':'🟠') + ' ' + (prior==='haute'?'Haute':prior==='basse'?'Basse':'Normale') + '</span><span class="task-chip">📅 ' + h(formatEcheance(t.echeance)) + '</span>' + linked + '</div></div></div>' + (t.details ? '<div class="task-card-details">' + h(t.details) + '</div>' : '') + '<div class="task-card-actions">' + (t.type === 'tache' && t.ligne ? '<button class="task-action" onclick="ouvrirDossierTache(\'' + t.ligne + '\')">📂 Ouvrir dossier</button>' : '') + '<button class="task-action" onclick="modifierTache(\'' + t.id + '\')">✏️ Modifier</button><button class="task-action" onclick="supprimerTache(\'' + t.id + '\')">🗑️ Supprimer</button></div></article>';
   }).join('');
   majBadgeTaches();
 }
