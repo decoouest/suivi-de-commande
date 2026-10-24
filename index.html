@@ -311,7 +311,7 @@ textarea.task-input{resize:vertical}
 </div>
 
 <aside class="sidebar">
-  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v12.1</div></div>
+  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v12.2</div></div>
   <nav class="nav">
     <!-- L'onglet "Commandes" est maintenant actif par défaut -->
     <div class="nav-item active" id="nav-suivi" onclick="showView('suivi')"><span class="icon">📋</span><span>Commandes</span></div>
@@ -324,7 +324,7 @@ textarea.task-input{resize:vertical}
     <div class="nav-item" id="nav-planning" onclick="showView('planning')"><span class="icon">📅</span><span>Planning</span></div>
     <div class="nav-item" id="nav-config" onclick="showView('config')"><span class="icon">⚙️</span><span>Config</span></div>
   </nav>
-  <div class="sidebar-footer">v12.1</div>
+  <div class="sidebar-footer">v12.2</div>
 </aside>
 
 <div class="main">
@@ -544,7 +544,7 @@ var FOU_COLORS = {'ATLANTEM':'#1565C0','ATULAM':'#6A1B9A','LALLEMANT':'#2E7D32',
 var TERMINES = ['livre','termine','pose'];
 var commandes = [];
 var sortCol = 'ligne', sortAsc = false, alertFilter = 'all', editLigne = -1;
-var CACHE_DUREE = 60 * 1000, CACHE_KEY = 'eco-ouest-cache-v121', CACHE_TIME_KEY = 'eco-ouest-cache-time-v121';
+var CACHE_DUREE = 60 * 1000, CACHE_KEY = 'eco-ouest-cache-v122', CACHE_TIME_KEY = 'eco-ouest-cache-time-v122';
 var dernierRapportAgent = null;
 var recognition = null, recognitionAssistant = null, recognitionAction = null;
 var cacheTrad = {};
