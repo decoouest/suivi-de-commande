@@ -296,7 +296,7 @@ textarea.task-input{resize:vertical}
 </div>
 
 <aside class="sidebar">
-  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v13.6</div></div>
+  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v13.7</div></div>
   <nav class="nav">
     <div class="nav-item active" id="nav-suivi" onclick="showView('suivi')"><span class="icon">📋</span><span>Commandes</span></div>
     <div class="nav-item" id="nav-alertes" onclick="showView('alertes')"><span class="icon">🔔</span><span>Alertes</span></div>
@@ -308,7 +308,7 @@ textarea.task-input{resize:vertical}
     <div class="nav-item" id="nav-planning" onclick="showView('planning')"><span class="icon">📅</span><span>Planning</span></div>
     <div class="nav-item" id="nav-config" onclick="showView('config')"><span class="icon">⚙️</span><span>Config</span></div>
   </nav>
-  <div class="sidebar-footer">v13.6</div>
+  <div class="sidebar-footer">v13.7</div>
 </aside>
 
 <div class="main">
@@ -318,7 +318,7 @@ textarea.task-input{resize:vertical}
     <div class="topbar-right">
       <span class="sync-info"><span class="sync-dot" id="sync-dot"></span><span id="sync-label">Chargement...</span></span>
       <button class="btn btn-outline btn-sm" id="btn-notif" onclick="activerNotifications()" title="Notifications">🔕 Notifs</button>
-      <button class="btn btn-outline btn-sm" onclick="viderCache();charger(true)">🔄 Actualiser</button>
+      <button class="btn btn-outline btn-sm" onclick="actualiserTout()">🔄 Actualiser</button>
       <button class="btn btn-outline btn-sm" onclick="exportCSV()">⬇ CSV</button>
       <button class="btn btn-outline btn-sm" onclick="ouvrirModalDictee()" style="border-color:#E65100;color:#E65100;">🎙️ Dicter</button>
       <button class="btn btn-primary btn-sm" onclick="openModal(-1)">+ Nouvelle commande</button>
@@ -549,8 +549,8 @@ var FOU_COLORS = {'ATLANTEM':'#1565C0','ATULAM':'#6A1B9A','LALLEMANT':'#2E7D32',
 var TERMINES = ['livre','termine','pose'];
 var commandes = [];
 var sortCol = 'ligne', sortAsc = false, alertFilter = 'all', editLigne = -1;
-// [v13.6] Cache versionné v136 (force le rechargement au premier lancement)
-var CACHE_DUREE = 60 * 1000, CACHE_KEY = 'eco-ouest-cache-v136', CACHE_TIME_KEY = 'eco-ouest-cache-time-v136';
+// [v13.7] Cache versionné v137
+var CACHE_DUREE = 60 * 1000, CACHE_KEY = 'eco-ouest-cache-v137', CACHE_TIME_KEY = 'eco-ouest-cache-time-v137';
 var dernierRapportAgent = null;
 var recognition = null, recognitionAssistant = null, recognitionAction = null;
 var cacheTrad = {};
@@ -755,8 +755,7 @@ function afficherInventaireComplet() {
 
 // ── CAPTURE D'IMAGE ACHATS EN COURS ──
 function capturerAchatsEnCours() {
-  // [v13.6] Garde : message clair si html2canvas n'est pas chargé
-  if (typeof html2canvas === 'undefined') { alert('Bibliothèque de capture indisponible (vérifiez votre connexion ou un bloqueur de scripts).'); return; }
+  if (typeof html2canvas === 'undefined') { alert('Bibliothèque de capture indisponible (vérifiez votre connexion).'); return; }
   var items = achatsConsommables.filter(function(a){ return a.statut !== 'recu'; });
   if (!items.length) { alert('Aucun achat en cours à capturer.'); return; }
   
@@ -878,6 +877,15 @@ function detecterUrgences(){if(!notifActive||Notification.permission!=='granted'
 
 // ── INIT ──
 function renderAll(){renderKPI();renderTable();setTimeout(detecterUrgences,500);}
+
+function actualiserTout() {
+  viderCache();
+  charger(true);
+  chargerTachesNotes();
+  chargerAchatsConsommables();
+  chargerCatalogueConsommables();
+}
+
 chargerPrefsNotif();
 charger();
 chargerAchatsConsommables();
@@ -889,7 +897,28 @@ var lastVisibility=Date.now();
 document.addEventListener('visibilitychange',function(){if(!document.hidden){var e=Date.now()-lastVisibility;if(e>15*60*1000)charger(true);lastVisibility=Date.now();}});
 
 async function chargerTachesNotes() {
-  try { var r = await apiPost({action:'lireTaches'}); if (r && r.ok && Array.isArray(r.data)) { tachesNotes = r.data; majBadgeTaches(); } } catch(e) { console.warn('Tâches non chargées : ' + e.message); }
+  try { 
+    var r = await apiPost({action:'lireTaches'}); 
+    if (r && r.ok && Array.isArray(r.data)) { 
+      tachesNotes = r.data; 
+      majBadgeTaches(); 
+      if (document.getElementById('view-taches').classList.contains('active')) {
+        if (document.getElementById('sousmodule-taches-notes').style.display !== 'none') {
+          renderTaches();
+        }
+      }
+    } else {
+      console.warn('Réponse lireTaches invalide:', r);
+      if (document.getElementById('view-taches').classList.contains('active')) {
+        document.getElementById('taches-list').innerHTML = '<div class="task-empty" style="color:var(--rouge)">Erreur chargement : ' + (r && r.error ? r.error : 'inconnue') + '</div>';
+      }
+    }
+  } catch(e) { 
+    console.warn('Tâches non chargées : ' + e.message); 
+    if (document.getElementById('view-taches').classList.contains('active')) {
+      document.getElementById('taches-list').innerHTML = '<div class="task-empty" style="color:var(--rouge)">Erreur réseau : ' + e.message + '</div>';
+    }
+  }
 }
 
 function majBadgeTaches() {
@@ -919,7 +948,6 @@ async function enregistrerTache(e) {
     priorite: document.getElementById('task-priorite').value
   };
   try {
-    // [v13.6] Conserver l'état "terminée" lors d'une modification
     var ancien = id ? tachesNotes.find(function(x){ return x.id === id; }) : null;
     var r = id 
       ? await apiPost({action:'modifierTache', id: id, type: t.type, titre: t.titre, details: t.details, echeance: t.echeance, priorite: t.priorite, terminee: ancien ? !!ancien.terminee : false})
@@ -943,7 +971,6 @@ function ouvrirDossierTache(ligne) { if (!ligne) return; var i = (commandes||[])
 function renderTaches() {
   var stats = document.getElementById('taches-stats'), list = document.getElementById('taches-list');
   if (!stats || !list) return;
-  // [v13.6] Suppression de l'appel à remplirSelectDossiers() — champ #task-order inexistant
   
   var actifs = tachesNotes.filter(function(t){ return t.type === 'tache' && !t.terminee; });
   var retard = actifs.filter(function(t){ return etatTache(t) === 'retard'; }).length;
@@ -985,7 +1012,6 @@ function renderTaches() {
     var priorChip = '<span class="buy-chip ' + (prior==='haute'?'alert':prior==='basse'?'received':'normal') + '">' + (prior==='haute'?'🔴 Haute':prior==='basse'?'🟢 Basse':'🟠 Normale') + '</span>';
 
     return '<article class="buy-card" style="border-left-color:' + borderCol + '">' +
-      // [v13.6] Titre : fallback sur le titre si details vide (cas des notes titre-seul)
       '<div class="buy-card-title">' + h(isNote ? (t.details || t.titre) : t.titre) + '</div>' +
       '<div class="buy-card-meta">' +
         '<span class="buy-chip ' + chipClass + '">' + chipIcon + ' ' + (isNote ? 'Note' : 'Tâche') + '</span>' +
@@ -1003,7 +1029,28 @@ function renderTaches() {
 }
 
 async function chargerAchatsConsommables() {
-  try { var r = await apiPost({action:'lireAchats'}); if (r && r.ok && Array.isArray(r.data)) { achatsConsommables = r.data; majBadgeAchats(); } } catch(e) { console.warn('Achats non chargés : ' + e.message); }
+  try { 
+    var r = await apiPost({action:'lireAchats'}); 
+    if (r && r.ok && Array.isArray(r.data)) { 
+      achatsConsommables = r.data; 
+      majBadgeAchats(); 
+      if (document.getElementById('view-taches').classList.contains('active')) {
+        if (document.getElementById('sousmodule-achats-consommables').style.display !== 'none') {
+          renderAchatsConsommables();
+        }
+      }
+    } else {
+      console.warn('Réponse lireAchats invalide:', r);
+      if (document.getElementById('view-taches').classList.contains('active')) {
+        document.getElementById('achats-list').innerHTML = '<div class="task-empty" style="color:var(--rouge)">Erreur chargement : ' + (r && r.error ? r.error : 'inconnue') + '</div>';
+      }
+    }
+  } catch(e) { 
+    console.warn('Achats non chargés : ' + e.message); 
+    if (document.getElementById('view-taches').classList.contains('active')) {
+      document.getElementById('achats-list').innerHTML = '<div class="task-empty" style="color:var(--rouge)">Erreur réseau : ' + e.message + '</div>';
+    }
+  }
 }
 
 function majBadgeAchats() { var n = achatsConsommables.filter(function(a){ return a.statut !== 'recu'; }).length; var b = document.getElementById('achats-badge'); if (b) b.textContent = n ? String(n) : ''; }
