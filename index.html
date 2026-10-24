@@ -296,7 +296,7 @@ textarea.task-input{resize:vertical}
 </div>
 
 <aside class="sidebar">
-  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v13.5</div></div>
+  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v13.6</div></div>
   <nav class="nav">
     <div class="nav-item active" id="nav-suivi" onclick="showView('suivi')"><span class="icon">📋</span><span>Commandes</span></div>
     <div class="nav-item" id="nav-alertes" onclick="showView('alertes')"><span class="icon">🔔</span><span>Alertes</span></div>
@@ -308,7 +308,7 @@ textarea.task-input{resize:vertical}
     <div class="nav-item" id="nav-planning" onclick="showView('planning')"><span class="icon">📅</span><span>Planning</span></div>
     <div class="nav-item" id="nav-config" onclick="showView('config')"><span class="icon">⚙️</span><span>Config</span></div>
   </nav>
-  <div class="sidebar-footer">v13.5</div>
+  <div class="sidebar-footer">v13.6</div>
 </aside>
 
 <div class="main">
@@ -549,7 +549,8 @@ var FOU_COLORS = {'ATLANTEM':'#1565C0','ATULAM':'#6A1B9A','LALLEMANT':'#2E7D32',
 var TERMINES = ['livre','termine','pose'];
 var commandes = [];
 var sortCol = 'ligne', sortAsc = false, alertFilter = 'all', editLigne = -1;
-var CACHE_DUREE = 60 * 1000, CACHE_KEY = 'eco-ouest-cache-v135', CACHE_TIME_KEY = 'eco-ouest-cache-time-v135';
+// [v13.6] Cache versionné v136 (force le rechargement au premier lancement)
+var CACHE_DUREE = 60 * 1000, CACHE_KEY = 'eco-ouest-cache-v136', CACHE_TIME_KEY = 'eco-ouest-cache-time-v136';
 var dernierRapportAgent = null;
 var recognition = null, recognitionAssistant = null, recognitionAction = null;
 var cacheTrad = {};
@@ -692,7 +693,7 @@ async function relancerFournisseurDepuisAgent(ligne, motif) { var c = commandes.
 function ouvrirAssistantVocal() { document.getElementById('overlay-assistant').style.display = 'flex'; document.getElementById('assistant-question').value = ''; document.getElementById('assistant-reponse').style.display = 'none'; document.getElementById('assistant-status').style.display = 'none'; }
 function fermerAssistant(e) { if (e && e.target.id !== 'overlay-assistant') return; document.getElementById('overlay-assistant').style.display = 'none'; if (recognitionAssistant) recognitionAssistant.stop(); window.speechSynthesis.cancel(); }
 function lancerQuestionVocale() { if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) { alert("Dictée non supportée."); return; } var SR = window.SpeechRecognition || window.webkitSpeechRecognition; recognitionAssistant = new SR(); recognitionAssistant.lang='fr-FR'; recognitionAssistant.interimResults=false; var st=document.getElementById('assistant-status'), inp=document.getElementById('assistant-question'); st.style.display='block'; st.textContent="🎙️ Parlez..."; inp.value=''; recognitionAssistant.onresult=function(e){inp.value=e.results[0][0].transcript; st.textContent="✅ Enregistré."; setTimeout(function(){st.style.display='none';},2000); envoyerQuestionVocal();}; recognitionAssistant.onerror=function(e){st.textContent="❌ "+e.error; setTimeout(function(){st.style.display='none';},3000);}; recognitionAssistant.start(); }
-async function envoyerQuestionVocal() { var q = document.getElementById('assistant-question').value.trim(); if (!q) { alert("Posez une question."); return; } var btn = document.getElementById('btn-envoyer-assistant'), rep = document.getElementById('assistant-reponse'); btn.disabled = true; btn.textContent = "⏳..."; rep.style.display = 'none'; window.speechSynthesis.cancel(); try { var ql = q.toLowerCase(); var ctx = commandes.filter(function(c){return ql.indexOf(c.client.toLowerCase())!==-1;}); var ctxJson = JSON.stringify((ctx.length?ctx:commandes.slice(0,20)).map(function(c){return {client:c.client,date_metre:formatDateMetre(c.metres),numero_devis:c.devis,devis_ttc:c.devisTTC,fournisseur:c.fournisseur,commande_envoyee:c.commande,numero_arc:c.arc,validation_arc:c.commentaireARC,prevision_livraison:c.prevLivraison,statut_livraison:c.statutLivraison,statut_pose:c.statutPose,date_pose:c.datePose,pv_chantier:c.pvChantier,commentaires:c.commentaire,objet_commande:c.objetCommande};})); var r = await apiPost({action:'assistantVocal', question:q, contexte:ctxJson}); if (!r||!r.ok) throw new Error(r.error||'Erreur'); if (!r.reponse) throw new Error('Pas de réponse'); rep.innerHTML = '<strong style="color:#E65100;">🤖 Réponse :</strong><br><br>'+h(r.reponse).replace(/\*\*(.*?)\*\*/g,'<b>$1</b>').replace(/^\s*[\*\-]\s+/gm,'• ').replace(/\n/g,'<br>'); rep.style.display='block'; btn.disabled=false; btn.textContent="✨ Envoyer"; var msg = new SpeechSynthesisUtterance(nettoyerTextePourVoix(r.reponse)); msg.lang='fr-FR'; window.speechSynthesis.speak(msg); } catch(e) { rep.innerHTML='<span style="color:var(--rouge);">❌ '+h(e.message)+'</span>'; rep.style.display='block'; btn.disabled=false; btn.textContent="✨ Envoyer"; } }
+async function envoyerQuestionVocal() { var q = document.getElementById('assistant-question').value.trim(); if (!q) { alert("Posez une question."); return; } var btn = document.getElementById('btn-envoyer-assistant'), rep = document.getElementById('assistant-reponse'); btn.disabled = true; btn.textContent = "⏳..."; rep.style.display = 'none'; window.speechSynthesis.cancel(); try { var ql = q.toLowerCase(); var ctx = commandes.filter(function(c){return ql.indexOf(c.client.toLowerCase())!==-1;}); var ctxJson = JSON.stringify((ctx.length?ctx:commandes.slice(0,20)).map(function(c){return {client:c.client,date_metre:formatDateMetre(c.metres),numero_devis:c.devis,devis_ttc:c.devisTTC,fournisseur:c.fournisseur,commande_envoyee:c.commande,numero_arc:c.arc,validation_arc:c.commentaireARC,prevision_livraison:c.prevLivraison,statut_livraison:c.statutLivraison,statut_pose:c.statutPose,date_pose:c.datePose,pv_chantier:c.pvChantier,commentaires:c.commentaire,objet_commande:c.objetCommande};})); var r = await apiPost({action:'assistantVocal', question:q, contexte:ctxJson}); if (!r||!r.ok) throw new Error(r.error||'Erreur'); if (!r.reponse) throw new Error('Pas de réponse'); rep.innerHTML = '<strong style="color:#E65100;">🤖 Réponse :</strong><br><br>'+h(r.reponse).replace(/\*\*(.*?)\*\*/g,'<b>$1</b>').replace(/^\s*[\*\-]\s+/gm,'• ').replace(/\n/g,'<br>'); rep.style.display = 'block'; btn.disabled=false; btn.textContent="✨ Envoyer"; var msg = new SpeechSynthesisUtterance(nettoyerTextePourVoix(r.reponse)); msg.lang='fr-FR'; window.speechSynthesis.speak(msg); } catch(e) { rep.innerHTML='<span style="color:var(--rouge);">❌ '+h(e.message)+'</span>'; rep.style.display='block'; btn.disabled=false; btn.textContent="✨ Envoyer"; } }
 
 // ── COMMANDES D'ACTION ──
 function ouvrirActionVocale() { document.getElementById('overlay-action').style.display='flex'; document.getElementById('action-question').value=''; document.getElementById('action-reponse').style.display='none'; document.getElementById('action-status').style.display='none'; }
@@ -754,6 +755,8 @@ function afficherInventaireComplet() {
 
 // ── CAPTURE D'IMAGE ACHATS EN COURS ──
 function capturerAchatsEnCours() {
+  // [v13.6] Garde : message clair si html2canvas n'est pas chargé
+  if (typeof html2canvas === 'undefined') { alert('Bibliothèque de capture indisponible (vérifiez votre connexion ou un bloqueur de scripts).'); return; }
   var items = achatsConsommables.filter(function(a){ return a.statut !== 'recu'; });
   if (!items.length) { alert('Aucun achat en cours à capturer.'); return; }
   
@@ -902,8 +905,6 @@ function dateLocaleISO(d) { return d.getFullYear() + '-' + String(d.getMonth()+1
 function formatEcheance(v) { if (!v) return 'Sans échéance'; var d = new Date(v+'T12:00:00'); return isNaN(d.getTime()) ? v : d.toLocaleDateString('fr-FR'); }
 function etatTache(t) { if (t.type === 'note') return 'note'; if (t.terminee) return 'terminee'; if (!t.echeance) return 'active'; var auj = dateLocaleISO(new Date()); if (t.echeance < auj) return 'retard'; if (t.echeance === auj) return 'aujourdhui'; return 'active'; }
 
-function remplirSelectDossiers() { var el = document.getElementById('task-order'); if (!el) return; var cur = el.value; el.innerHTML = '<option value="">Aucun dossier associé</option>'; (commandes||[]).forEach(function(c){ var o = document.createElement('option'); o.value = String(c.ligne); o.textContent = (c.client||'Client') + ' — ' + (c.devis||('Ligne '+c.ligne)); el.appendChild(o); }); if (cur) el.value = cur; }
-
 async function enregistrerTache(e) {
   if (e) e.preventDefault();
   var id = document.getElementById('task-id').value;
@@ -918,8 +919,11 @@ async function enregistrerTache(e) {
     priorite: document.getElementById('task-priorite').value
   };
   try {
-    var r = id ? await apiPost({action:'modifierTache', id: id, type: t.type, titre: t.titre, details: t.details, echeance: t.echeance, priorite: t.priorite}) 
-               : await apiPost({action:'ajouterTache', type: t.type, titre: t.titre, details: t.details, echeance: t.echeance, priorite: t.priorite});
+    // [v13.6] Conserver l'état "terminée" lors d'une modification
+    var ancien = id ? tachesNotes.find(function(x){ return x.id === id; }) : null;
+    var r = id 
+      ? await apiPost({action:'modifierTache', id: id, type: t.type, titre: t.titre, details: t.details, echeance: t.echeance, priorite: t.priorite, terminee: ancien ? !!ancien.terminee : false})
+      : await apiPost({action:'ajouterTache', type: t.type, titre: t.titre, details: t.details, echeance: t.echeance, priorite: t.priorite});
     if (!r || !r.ok) throw new Error(r.error || 'Erreur');
     reinitialiserFormTache(); await chargerTachesNotes(); renderTaches();
     afficherToast('ok','✅', id ? 'Tâche/Note modifiée' : 'Tâche/Note enregistrée', t.titre, 2500);
@@ -939,7 +943,7 @@ function ouvrirDossierTache(ligne) { if (!ligne) return; var i = (commandes||[])
 function renderTaches() {
   var stats = document.getElementById('taches-stats'), list = document.getElementById('taches-list');
   if (!stats || !list) return;
-  remplirSelectDossiers();
+  // [v13.6] Suppression de l'appel à remplirSelectDossiers() — champ #task-order inexistant
   
   var actifs = tachesNotes.filter(function(t){ return t.type === 'tache' && !t.terminee; });
   var retard = actifs.filter(function(t){ return etatTache(t) === 'retard'; }).length;
@@ -981,7 +985,8 @@ function renderTaches() {
     var priorChip = '<span class="buy-chip ' + (prior==='haute'?'alert':prior==='basse'?'received':'normal') + '">' + (prior==='haute'?'🔴 Haute':prior==='basse'?'🟢 Basse':'🟠 Normale') + '</span>';
 
     return '<article class="buy-card" style="border-left-color:' + borderCol + '">' +
-      '<div class="buy-card-title">' + h(isNote ? t.details : t.titre) + '</div>' +
+      // [v13.6] Titre : fallback sur le titre si details vide (cas des notes titre-seul)
+      '<div class="buy-card-title">' + h(isNote ? (t.details || t.titre) : t.titre) + '</div>' +
       '<div class="buy-card-meta">' +
         '<span class="buy-chip ' + chipClass + '">' + chipIcon + ' ' + (isNote ? 'Note' : 'Tâche') + '</span>' +
         priorChip + dateChip +
