@@ -311,7 +311,7 @@ textarea.task-input{resize:vertical}
 </div>
 
 <aside class="sidebar">
-  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v12.4</div></div>
+  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v13.0</div></div>
   <nav class="nav">
     <div class="nav-item active" id="nav-suivi" onclick="showView('suivi')"><span class="icon">📋</span><span>Commandes</span></div>
     <div class="nav-item" id="nav-alertes" onclick="showView('alertes')"><span class="icon">🔔</span><span>Alertes</span></div>
@@ -323,7 +323,7 @@ textarea.task-input{resize:vertical}
     <div class="nav-item" id="nav-planning" onclick="showView('planning')"><span class="icon">📅</span><span>Planning</span></div>
     <div class="nav-item" id="nav-config" onclick="showView('config')"><span class="icon">⚙️</span><span>Config</span></div>
   </nav>
-  <div class="sidebar-footer">v12.4</div>
+  <div class="sidebar-footer">v13.0</div>
 </aside>
 
 <div class="main">
@@ -866,7 +866,7 @@ async function chargerTachesNotes() {
 
 function majBadgeTaches() {
   var auj = dateLocaleISO(new Date());
-  var a = tachesNotes.filter(function(t){ return t.type === 'tache' && !t.terminee; }).length;
+  var a = tachesNotes.filter(function(t){ return t.type === 'tache' && !t.terminee && t.echeance && t.echeance <= auj; }).length;
   ['taches-badge','taches-badge-mobile'].forEach(function(id){
     var el = document.getElementById(id);
     if (el) el.textContent = a ? String(a) : '';
@@ -895,7 +895,7 @@ async function enregistrerTache(e) {
     terminee: false
   };
   try {
-    var r = id ? await apiPost({action:'modifierTache', id: id, type: t.type, titre: t.titre, details: t.details, ligne: t.ligne, echeance: t.echeance, priorite: t.priorite, terminee: t.terminee}) 
+    var r = id ? await apiPost({action:'modifierTache', id: id, type: t.type, titre: t.titre, details: t.details, ligne: t.ligne, echeance: t.echeance, priorite: t.priorite, terminee: t.terminee})
                : await apiPost({action:'ajouterTache', type: t.type, titre: t.titre, details: t.details, ligne: t.ligne, echeance: t.echeance, priorite: t.priorite});
     if (!r || !r.ok) throw new Error(r.error || 'Erreur');
     reinitialiserFormTache(); await chargerTachesNotes(); renderTaches();
