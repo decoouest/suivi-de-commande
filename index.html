@@ -276,6 +276,7 @@ textarea.task-input{resize:vertical}
 @media(max-width:900px){.task-layout{grid-template-columns:1fr}.task-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.task-list-head{align-items:flex-start;flex-direction:column}.task-filters{width:100%}.task-filters .task-input{flex:1;max-width:none}}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
 
@@ -295,7 +296,7 @@ textarea.task-input{resize:vertical}
 </div>
 
 <aside class="sidebar">
-  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v13.4</div></div>
+  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v13.5</div></div>
   <nav class="nav">
     <div class="nav-item active" id="nav-suivi" onclick="showView('suivi')"><span class="icon">📋</span><span>Commandes</span></div>
     <div class="nav-item" id="nav-alertes" onclick="showView('alertes')"><span class="icon">🔔</span><span>Alertes</span></div>
@@ -307,7 +308,7 @@ textarea.task-input{resize:vertical}
     <div class="nav-item" id="nav-planning" onclick="showView('planning')"><span class="icon">📅</span><span>Planning</span></div>
     <div class="nav-item" id="nav-config" onclick="showView('config')"><span class="icon">⚙️</span><span>Config</span></div>
   </nav>
-  <div class="sidebar-footer">v13.4</div>
+  <div class="sidebar-footer">v13.5</div>
 </aside>
 
 <div class="main">
@@ -406,7 +407,8 @@ textarea.task-input{resize:vertical}
       
       <div id="sousmodule-achats-consommables" style="display:none">
         <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap;">
-          <button type="button" class="btn btn-outline btn-sm" onclick="afficherInventaireComplet()" style="border-color:#1565C0;color:#1565C0;">📖 Voir l'inventaire complet (catalogue)</button>
+          <button type="button" class="btn btn-outline btn-sm" onclick="afficherInventaireComplet()" style="border-color:#1565C0;color:#1565C0;">📖 Voir l'inventaire complet</button>
+          <button type="button" class="btn btn-outline btn-sm" onclick="capturerAchatsEnCours()" style="border-color:#E65100;color:#E65100;">📸 Capture (En cours)</button>
           <span id="catalogue-alerte" style="display:none;padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;"></span>
         </div>
         <div class="task-intro" style="background:#FFF8E1;border-color:#FFE082;color:#6D4C41"><strong>🛒 Achats consommables</strong><span>Listez les consommables à acheter. Utilisez l'inventaire pour pré-remplir les articles.</span></div>
@@ -547,7 +549,7 @@ var FOU_COLORS = {'ATLANTEM':'#1565C0','ATULAM':'#6A1B9A','LALLEMANT':'#2E7D32',
 var TERMINES = ['livre','termine','pose'];
 var commandes = [];
 var sortCol = 'ligne', sortAsc = false, alertFilter = 'all', editLigne = -1;
-var CACHE_DUREE = 60 * 1000, CACHE_KEY = 'eco-ouest-cache-v134', CACHE_TIME_KEY = 'eco-ouest-cache-time-v134';
+var CACHE_DUREE = 60 * 1000, CACHE_KEY = 'eco-ouest-cache-v135', CACHE_TIME_KEY = 'eco-ouest-cache-time-v135';
 var dernierRapportAgent = null;
 var recognition = null, recognitionAssistant = null, recognitionAction = null;
 var cacheTrad = {};
@@ -748,6 +750,64 @@ function afficherInventaireComplet() {
   }
   popup.innerHTML = '<div style="background:#fff;border-radius:14px;padding:24px;max-width:900px;width:100%;max-height:90vh;overflow:auto;box-shadow:0 20px 60px rgba(0,0,0,.3);" onclick="event.stopPropagation()"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;"><h3 style="font-size:16px;font-weight:700;">📖 Inventaire complet</h3><button onclick="document.getElementById(\'inventaire-popup\').remove()" style="background:#F5F7FA;border:none;border-radius:8px;width:30px;height:30px;cursor:pointer;font-size:16px;">✕</button></div><div style="margin-bottom:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;"><input type="text" id="inventaire-recherche" placeholder="🔍 Rechercher..." style="flex:1;min-width:200px;border:1.5px solid #E0E7EF;border-radius:7px;padding:8px 12px;font-size:13px;"><div id="inventaire-stats" style="font-size:11px;"></div></div><div style="max-height:60vh;overflow:auto;border:1px solid #E0E7EF;border-radius:8px;"><table style="width:100%;border-collapse:collapse;font-size:12px;"><thead style="position:sticky;top:0;background:#F5F7FA;"><tr><th style="padding:10px;text-align:left;font-size:11px;">Code</th><th style="padding:10px;text-align:left;font-size:11px;">Désignation</th><th style="padding:10px;text-align:left;font-size:11px;">Fournisseur</th><th style="padding:10px;text-align:center;font-size:11px;">Stock</th><th style="padding:10px;text-align:left;font-size:11px;">Alerte</th></tr></thead><tbody id="inventaire-table-body"></tbody></table></div></div>';
   document.body.appendChild(popup); document.getElementById('inventaire-recherche').addEventListener('input', function(e) { recherche = e.target.value; renderTable(); }); renderTable();
+}
+
+// ── CAPTURE D'IMAGE ACHATS EN COURS ──
+function capturerAchatsEnCours() {
+  var items = achatsConsommables.filter(function(a){ return a.statut !== 'recu'; });
+  if (!items.length) { alert('Aucun achat en cours à capturer.'); return; }
+  
+  var container = document.createElement('div');
+  container.style.cssText = 'position:absolute; left:-9999px; top:0; width:800px; background:#fff; padding:40px; font-family:Arial, sans-serif;';
+  
+  var today = new Date().toLocaleDateString('fr-FR');
+  var html = '<div style="text-align:center; margin-bottom:30px;">' +
+             '<h1 style="color:#1565C0; margin:0 0 10px 0; font-size:24px;">ECO OUEST - Achats en cours</h1>' +
+             '<p style="color:#666; margin:0; font-size:14px;">Généré le ' + today + '</p></div>';
+             
+  html += '<table style="width:100%; border-collapse:collapse; font-size:13px;">';
+  html += '<thead><tr style="background:#F5F7FA; color:#546E7A; text-align:left;">' +
+          '<th style="padding:12px; border-bottom:2px solid #E0E7EF;">Article</th>' +
+          '<th style="padding:12px; border-bottom:2px solid #E0E7EF;">Qté</th>' +
+          '<th style="padding:12px; border-bottom:2px solid #E0E7EF;">Catégorie</th>' +
+          '<th style="padding:12px; border-bottom:2px solid #E0E7EF;">Fournisseur</th>' +
+          '<th style="padding:12px; border-bottom:2px solid #E0E7EF;">Statut</th>' +
+          '<th style="padding:12px; border-bottom:2px solid #E0E7EF;">Échéance</th>' +
+          '<th style="padding:12px; border-bottom:2px solid #E0E7EF;">Priorité</th>' +
+          '</tr></thead><tbody>';
+          
+  items.forEach(function(a) {
+    var statut = a.statut === 'commande' ? 'Commandé' : 'À acheter';
+    var color = a.statut === 'commande' ? '#1565C0' : '#E65100';
+    var pColor = a.priorite === 'haute' ? '#D32F2F' : a.priorite === 'basse' ? '#2E7D32' : '#E65100';
+    html += '<tr>' +
+            '<td style="padding:12px; border-bottom:1px solid #E0E7EF; font-weight:bold;">' + h(a.nom) + '</td>' +
+            '<td style="padding:12px; border-bottom:1px solid #E0E7EF;">' + h(a.quantite) + '</td>' +
+            '<td style="padding:12px; border-bottom:1px solid #E0E7EF;">' + h(a.categorie) + '</td>' +
+            '<td style="padding:12px; border-bottom:1px solid #E0E7EF;">' + h(a.fournisseur || '—') + '</td>' +
+            '<td style="padding:12px; border-bottom:1px solid #E0E7EF; color:' + color + '; font-weight:bold;">' + statut + '</td>' +
+            '<td style="padding:12px; border-bottom:1px solid #E0E7EF;">' + (a.echeance ? formatEcheance(a.echeance) : '—') + '</td>' +
+            '<td style="padding:12px; border-bottom:1px solid #E0E7EF; color:' + pColor + '; font-weight:bold;">' + h(a.priorite) + '</td>' +
+            '</tr>';
+  });
+  html += '</tbody></table>';
+  
+  container.innerHTML = html;
+  document.body.appendChild(container);
+  
+  afficherToast('ok', '📸', 'Capture en cours...', 'Patientez', 2000);
+
+  html2canvas(container, { scale: 2, backgroundColor: '#ffffff' }).then(function(canvas) {
+    document.body.removeChild(container);
+    var link = document.createElement('a');
+    link.download = 'Achats_en_cours_' + new Date().toISOString().slice(0,10) + '.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    afficherToast('ok', '✅', 'Image enregistrée', 'Vérifiez vos téléchargements', 3000);
+  }).catch(function(e) {
+    document.body.removeChild(container);
+    alert('Erreur lors de la capture : ' + e.message);
+  });
 }
 
 // ── MÉTRÉ ──
