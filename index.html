@@ -269,25 +269,10 @@ textarea.task-input{resize:vertical}
 .task-list-head h3{margin-bottom:0}
 .task-filters{display:flex;gap:7px;flex-wrap:wrap}
 .task-filters .task-input{width:auto;max-width:180px}
-.task-card{border:1px solid var(--bordure);border-left:4px solid #1565C0;border-radius:9px;padding:12px;margin-top:10px;background:#fff}
-.task-card.task-note{border-left-color:#78909C}
-.task-card.task-overdue{border-left-color:#D32F2F;background:#FFF8F8}
-.task-card.task-done{opacity:.68}
-.task-card-top{display:flex;gap:10px;align-items:flex-start}
-.task-card-title{font-size:13px;font-weight:750;line-height:1.4;overflow-wrap:anywhere}
-.task-card-details{font-size:12px;line-height:1.55;color:var(--texte2);white-space:pre-wrap;margin-top:7px;overflow-wrap:anywhere}
-.task-meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
-.task-chip{display:inline-flex;align-items:center;padding:3px 7px;border-radius:20px;font-size:10px;font-weight:700;background:#ECEFF1;color:#455A64}
-.task-chip.high{background:#FFEBEE;color:#C62828}
-.task-chip.normal{background:#FFF3E0;color:#E65100}
-.task-chip.low{background:#E8F5E9;color:#2E7D32}
-.task-chip.due{background:#FFEBEE;color:#B71C1C}
-.task-card-actions{display:flex;gap:5px;flex-wrap:wrap;margin-top:10px}
 .task-action{border:1px solid #CFD8DC;border-radius:6px;background:#fff;padding:6px 8px;font-size:11px;font-weight:650;cursor:pointer}
 .task-action:hover{background:#F5F7FA}
 .task-empty{padding:28px 12px;text-align:center;color:var(--texte2);font-size:12px}
-.task-note-icon{font-size:18px;line-height:1}
-.task-check{width:18px;height:18px;flex:0 0 auto;margin-top:1px;cursor:pointer}
+.task-card-details{font-size:12px;line-height:1.55;color:var(--texte2);white-space:pre-wrap;margin-top:7px;overflow-wrap:anywhere}
 @media(max-width:900px){.task-layout{grid-template-columns:1fr}.task-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.task-list-head{align-items:flex-start;flex-direction:column}.task-filters{width:100%}.task-filters .task-input{flex:1;max-width:none}}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -310,7 +295,7 @@ textarea.task-input{resize:vertical}
 </div>
 
 <aside class="sidebar">
-  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v13.3</div></div>
+  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v13.4</div></div>
   <nav class="nav">
     <div class="nav-item active" id="nav-suivi" onclick="showView('suivi')"><span class="icon">📋</span><span>Commandes</span></div>
     <div class="nav-item" id="nav-alertes" onclick="showView('alertes')"><span class="icon">🔔</span><span>Alertes</span></div>
@@ -322,7 +307,7 @@ textarea.task-input{resize:vertical}
     <div class="nav-item" id="nav-planning" onclick="showView('planning')"><span class="icon">📅</span><span>Planning</span></div>
     <div class="nav-item" id="nav-config" onclick="showView('config')"><span class="icon">⚙️</span><span>Config</span></div>
   </nav>
-  <div class="sidebar-footer">v13.3</div>
+  <div class="sidebar-footer">v13.4</div>
 </aside>
 
 <div class="main">
@@ -395,6 +380,11 @@ textarea.task-input{resize:vertical}
               <label for="task-details">Détails (ou contenu de la note)</label>
               <textarea id="task-details" class="task-input" rows="3" maxlength="3000" placeholder="Informations complémentaires..."></textarea>
               
+              <div class="task-fields-row">
+                <div><label for="task-echeance">Échéance</label><input id="task-echeance" class="task-input" type="date"></div>
+                <div><label for="task-priorite">Priorité</label><select id="task-priorite" class="task-input"><option value="haute">🔴 Haute</option><option value="normale" selected>🟠 Normale</option><option value="basse">🟢 Basse</option></select></div>
+              </div>
+
               <div class="task-form-actions">
                 <button class="btn btn-primary" type="submit">💾 Enregistrer</button>
                 <button class="btn btn-outline" type="button" onclick="reinitialiserFormTache()">Annuler</button>
@@ -557,7 +547,7 @@ var FOU_COLORS = {'ATLANTEM':'#1565C0','ATULAM':'#6A1B9A','LALLEMANT':'#2E7D32',
 var TERMINES = ['livre','termine','pose'];
 var commandes = [];
 var sortCol = 'ligne', sortAsc = false, alertFilter = 'all', editLigne = -1;
-var CACHE_DUREE = 60 * 1000, CACHE_KEY = 'eco-ouest-cache-v133', CACHE_TIME_KEY = 'eco-ouest-cache-time-v133';
+var CACHE_DUREE = 60 * 1000, CACHE_KEY = 'eco-ouest-cache-v134', CACHE_TIME_KEY = 'eco-ouest-cache-time-v134';
 var dernierRapportAgent = null;
 var recognition = null, recognitionAssistant = null, recognitionAction = null;
 var cacheTrad = {};
@@ -841,7 +831,7 @@ async function chargerTachesNotes() {
 
 function majBadgeTaches() {
   var auj = dateLocaleISO(new Date());
-  var a = tachesNotes.filter(function(t){ return t.type === 'tache' && !t.terminee; }).length;
+  var a = tachesNotes.filter(function(t){ return t.type === 'tache' && !t.terminee && t.echeance && t.echeance <= auj; }).length;
   ['taches-badge','taches-badge-mobile'].forEach(function(id){
     var el = document.getElementById(id);
     if (el) el.textContent = a ? String(a) : '';
@@ -850,7 +840,7 @@ function majBadgeTaches() {
 
 function dateLocaleISO(d) { return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
 function formatEcheance(v) { if (!v) return 'Sans échéance'; var d = new Date(v+'T12:00:00'); return isNaN(d.getTime()) ? v : d.toLocaleDateString('fr-FR'); }
-function etatTache(t) { if (t.type === 'note') return 'note'; if (t.terminee) return 'terminee'; return 'active'; }
+function etatTache(t) { if (t.type === 'note') return 'note'; if (t.terminee) return 'terminee'; if (!t.echeance) return 'active'; var auj = dateLocaleISO(new Date()); if (t.echeance < auj) return 'retard'; if (t.echeance === auj) return 'aujourdhui'; return 'active'; }
 
 function remplirSelectDossiers() { var el = document.getElementById('task-order'); if (!el) return; var cur = el.value; el.innerHTML = '<option value="">Aucun dossier associé</option>'; (commandes||[]).forEach(function(c){ var o = document.createElement('option'); o.value = String(c.ligne); o.textContent = (c.client||'Client') + ' — ' + (c.devis||('Ligne '+c.ligne)); el.appendChild(o); }); if (cur) el.value = cur; }
 
@@ -863,22 +853,24 @@ async function enregistrerTache(e) {
     id: id || '',
     type: document.getElementById('task-type').value,
     titre: titre,
-    details: document.getElementById('task-details').value.trim()
+    details: document.getElementById('task-details').value.trim(),
+    echeance: document.getElementById('task-echeance').value,
+    priorite: document.getElementById('task-priorite').value
   };
   try {
-    var r = id ? await apiPost({action:'modifierTache', id: id, type: t.type, titre: t.titre, details: t.details}) 
-               : await apiPost({action:'ajouterTache', type: t.type, titre: t.titre, details: t.details});
+    var r = id ? await apiPost({action:'modifierTache', id: id, type: t.type, titre: t.titre, details: t.details, echeance: t.echeance, priorite: t.priorite}) 
+               : await apiPost({action:'ajouterTache', type: t.type, titre: t.titre, details: t.details, echeance: t.echeance, priorite: t.priorite});
     if (!r || !r.ok) throw new Error(r.error || 'Erreur');
     reinitialiserFormTache(); await chargerTachesNotes(); renderTaches();
     afficherToast('ok','✅', id ? 'Tâche/Note modifiée' : 'Tâche/Note enregistrée', t.titre, 2500);
   } catch(err) { alert('❌ ' + err.message); }
 }
 
-function reinitialiserFormTache() { var f = document.getElementById('task-form'); if (!f) return; f.reset(); document.getElementById('task-id').value = ''; document.getElementById('task-type').value = 'tache'; document.getElementById('task-form-title').textContent = '＋ Ajouter une tâche ou une note'; }
+function reinitialiserFormTache() { var f = document.getElementById('task-form'); if (!f) return; f.reset(); document.getElementById('task-id').value = ''; document.getElementById('task-type').value = 'tache'; document.getElementById('task-priorite').value = 'normale'; document.getElementById('task-form-title').textContent = '＋ Ajouter une tâche ou une note'; }
 
-function modifierTache(id) { var t = tachesNotes.find(function(x){return x.id===id;}); if (!t) return; document.getElementById('task-id').value = t.id; document.getElementById('task-type').value = t.type; document.getElementById('task-title').value = t.titre; document.getElementById('task-details').value = t.details || ''; document.getElementById('task-form-title').textContent = '✏️ Modifier : ' + t.titre; document.getElementById('task-title').focus(); }
+function modifierTache(id) { var t = tachesNotes.find(function(x){return x.id===id;}); if (!t) return; document.getElementById('task-id').value = t.id; document.getElementById('task-type').value = t.type; document.getElementById('task-title').value = t.titre; document.getElementById('task-details').value = t.details || ''; document.getElementById('task-echeance').value = t.echeance || ''; document.getElementById('task-priorite').value = t.priorite || 'normale'; document.getElementById('task-form-title').textContent = '✏️ Modifier : ' + t.titre; document.getElementById('task-title').focus(); }
 
-async function basculerTache(id) { var t = tachesNotes.find(function(x){return x.id===id;}); if (!t || t.type !== 'tache') return; try { var r = await apiPost({action:'modifierTache', id: t.id, type: t.type, titre: t.titre, details: t.details, terminee: !t.terminee}); if (!r || !r.ok) throw new Error(r.error || 'Erreur'); await chargerTachesNotes(); renderTaches(); } catch(e) { alert('❌ ' + e.message); } }
+async function basculerTache(id) { var t = tachesNotes.find(function(x){return x.id===id;}); if (!t || t.type !== 'tache') return; try { var r = await apiPost({action:'modifierTache', id: t.id, type: t.type, titre: t.titre, details: t.details, echeance: t.echeance, priorite: t.priorite, terminee: !t.terminee}); if (!r || !r.ok) throw new Error(r.error || 'Erreur'); await chargerTachesNotes(); renderTaches(); } catch(e) { alert('❌ ' + e.message); } }
 
 async function supprimerTache(id) { var t = tachesNotes.find(function(x){return x.id===id;}); if (!t) return; if (!confirm('Supprimer « ' + t.titre + ' » ?')) return; try { var r = await apiPost({action:'supprimerTache', id: id}); if (!r || !r.ok) throw new Error(r.error || 'Erreur'); await chargerTachesNotes(); renderTaches(); afficherToast('warn','🗑️','Supprimé', t.titre, 2500); } catch(e) { alert('❌ ' + e.message); } }
 
@@ -890,11 +882,14 @@ function renderTaches() {
   remplirSelectDossiers();
   
   var actifs = tachesNotes.filter(function(t){ return t.type === 'tache' && !t.terminee; });
+  var retard = actifs.filter(function(t){ return etatTache(t) === 'retard'; }).length;
+  var auj = actifs.filter(function(t){ return etatTache(t) === 'aujourdhui'; }).length;
   var notes = tachesNotes.filter(function(t){ return t.type === 'note'; }).length;
   
   stats.innerHTML = 
     '<div class="task-stat"><strong>' + tachesNotes.length + '</strong><span>Total</span></div>' +
     '<div class="task-stat" style="border-top:3px solid #1565C0"><strong style="color:#1565C0">' + actifs.length + '</strong><span>Tâches actives</span></div>' +
+    '<div class="task-stat" style="border-top:3px solid #D32F2F"><strong style="color:#D32F2F">' + retard + '</strong><span>En retard</span></div>' +
     '<div class="task-stat" style="border-top:3px solid #78909C"><strong style="color:#78909C">' + notes + '</strong><span>Notes</span></div>';
   
   var ft = document.getElementById('task-filter-type') ? document.getElementById('task-filter-type').value : 'toutes';
@@ -908,17 +903,32 @@ function renderTaches() {
   
   list.innerHTML = arr.map(function(t){
     var isNote = t.type === 'note';
-    var borderCol = isNote ? '#78909C' : '#1565C0';
-    var chipClass = isNote ? 'ordered' : 'alert';
-    var chipIcon = isNote ? '🗒️' : '📝';
+    var isLate = !t.terminee && t.echeance && t.echeance < dateLocaleISO(new Date());
+    var isToday = !t.terminee && t.echeance && t.echeance === dateLocaleISO(new Date());
     
+    var borderCol = isNote ? '#78909C' : (isLate ? '#D32F2F' : '#1565C0');
+    var chipClass = isNote ? 'ordered' : (isLate ? 'alert' : 'normal');
+    var chipIcon = isNote ? '🗒️' : (t.terminee ? '✓' : '📝');
+    
+    var dateChip = '';
+    if (t.echeance) {
+      var dateBg = isLate ? '#FFEBEE' : (isToday ? '#FFF3E0' : '#F5F7FA');
+      var dateCol = isLate ? '#D32F2F' : (isToday ? '#E65100' : '#455A64');
+      dateChip = '<span class="buy-chip" style="background:'+dateBg+';color:'+dateCol+';">📅 ' + (isLate ? 'RETARD · ' : (isToday ? 'AUJ. · ' : '')) + formatEcheance(t.echeance) + '</span>';
+    }
+    
+    var prior = t.priorite || 'normale';
+    var priorChip = '<span class="buy-chip ' + (prior==='haute'?'alert':prior==='basse'?'received':'normal') + '">' + (prior==='haute'?'🔴 Haute':prior==='basse'?'🟢 Basse':'🟠 Normale') + '</span>';
+
     return '<article class="buy-card" style="border-left-color:' + borderCol + '">' +
       '<div class="buy-card-title">' + h(isNote ? t.details : t.titre) + '</div>' +
       '<div class="buy-card-meta">' +
         '<span class="buy-chip ' + chipClass + '">' + chipIcon + ' ' + (isNote ? 'Note' : 'Tâche') + '</span>' +
+        priorChip + dateChip +
       '</div>' +
       (!isNote && t.details ? '<div class="task-card-details">' + h(t.details) + '</div>' : '') +
       '<div class="buy-card-actions">' +
+        (t.type === 'tache' ? '<button class="task-action" onclick="basculerTache(\'' + t.id + '\')">' + (t.terminee ? '↩ Rouvrir' : '✓ Terminer') + '</button>' : '') +
         '<button class="task-action" onclick="modifierTache(\'' + t.id + '\')">✏️ Modifier</button>' +
         '<button class="task-action" onclick="supprimerTache(\'' + t.id + '\')">🗑️ Supprimer</button>' +
       '</div></article>';
