@@ -647,7 +647,7 @@ function renderKPI() {
   var shortcuts = document.createElement('div');
   shortcuts.className = 'kpi-card';
   shortcuts.style.cssText = 'grid-column: auto; cursor: default; justify-content: center; min-width: 200px;';
-  shortcuts.innerHTML = '<span class="kpi-label">Raccourcis</span>' +
+  shortcuts.innerHTML =+
     '<div style="display:flex; gap:6px; margin-top:4px;">' +
       '<button class="btn btn-outline" onclick="showView(\'taches\'); ouvrirSousModuleTaches(\'taches\'); document.getElementById(\'task-filter-type\').value=\'taches\'; renderTaches();" style="flex:1; padding:6px 4px; font-size:11px; border-color:#CFD8DC; color:#455A64; justify-content:center;">📝 Tâches (' + actifsTaches + ')</button>' +
       '<button class="btn btn-outline" onclick="showView(\'taches\'); ouvrirSousModuleTaches(\'taches\'); document.getElementById(\'task-filter-type\').value=\'notes\'; renderTaches();" style="flex:1; padding:6px 4px; font-size:11px; border-color:#CFD8DC; color:#455A64; justify-content:center;">🗒️ Notes (' + notesCount + ')</button>' +
