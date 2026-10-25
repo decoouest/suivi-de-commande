@@ -385,11 +385,16 @@ textarea.task-input{resize:vertical}
               <select id="task-type" class="task-input"><option value="tache">📝 Tâche à faire</option><option value="note">🗒️ Note / information</option></select>
               
               <label for="task-title">Titre (ou contenu de la tâche) *</label>
-              <input id="task-title" class="task-input" maxlength="140" required placeholder="Ex. Relancer le fournisseur">
-              
-              <label for="task-details">Détails (ou contenu de la note)</label>
-              <textarea id="task-details" class="task-input" rows="3" maxlength="3000" placeholder="Informations complémentaires..."></textarea>
-              
+<div style="display:flex; gap:6px;">
+  <input id="task-title" class="task-input" maxlength="140" required placeholder="Ex. Relancer le fournisseur">
+  <button type="button" class="btn btn-outline" onclick="dicterPourChamp('task-title')" title="Dicter le titre" style="padding:0 10px; border-color:#E65100; color:#E65100;">🎤</button>
+</div>
+
+<label for="task-details">Détails (ou contenu de la note)</label>
+<div style="display:flex; gap:6px; align-items:flex-start;">
+  <textarea id="task-details" class="task-input" rows="3" maxlength="3000" placeholder="Informations complémentaires..."></textarea>
+  <button type="button" class="btn btn-outline" onclick="dicterPourChamp('task-details')" title="Dicter les détails" style="padding:8px 10px; border-color:#E65100; color:#E65100;">🎤</button>
+</div>
               <div class="task-fields-row">
                 <div><label for="task-echeance">Échéance</label><input id="task-echeance" class="task-input" type="date"></div>
                 <div><label for="task-priorite">Priorité</label><select id="task-priorite" class="task-input"><option value="haute">🔴 Haute</option><option value="normale" selected>🟠 Normale</option><option value="basse">🟢 Basse</option></select></div>
@@ -1166,7 +1171,47 @@ function renderAchatsConsommables() {
     return '<article class="buy-card' + (enRetard ? ' buy-late' : '') + (a.statut === 'recu' ? ' buy-received' : '') + '"><div class="buy-card-title">' + h(a.nom) + '</div><div class="buy-card-meta"><span class="buy-chip">📦 ' + h(a.quantite) + '</span><span class="buy-chip">' + h(a.categorie) + '</span><span class="buy-chip ' + cl + '">' + (enRetard ? '⚠ EN RETARD · ' : '') + st + '</span><span class="buy-chip">' + (a.priorite==='haute'?'🔴 Haute':a.priorite==='basse'?'🟢 Basse':'🟠 Normale') + '</span>' + (a.echeance ? '<span class="buy-chip">📅 ' + h(formatEcheance(a.echeance)) + '</span>' : '') + (a.fournisseur ? '<span class="buy-chip">🏪 ' + h(a.fournisseur) + '</span>' : '') + (a.reference ? '<span class="buy-chip">🔖 ' + h(a.reference) + '</span>' : '') + '</div>' + (a.notes ? '<div class="task-card-details">' + h(a.notes) + '</div>' : '') + '<div class="buy-card-actions">' + (a.statut === 'a-acheter' ? '<button class="task-action" onclick="changerStatutAchat(\'' + a.id + '\',\'commande\')">📨 Marquer commandé</button>' : '') + (a.statut !== 'recu' ? '<button class="task-action" onclick="changerStatutAchat(\'' + a.id + '\',\'recu\')">✓ Marquer reçu</button>' : '<button class="task-action" onclick="changerStatutAchat(\'' + a.id + '\',\'a-acheter\')">↩ Remettre à acheter</button>') + '<button class="task-action" onclick="modifierAchatConsommable(\'' + a.id + '\')">✏️ Modifier</button><button class="task-action" onclick="supprimerAchatConsommable(\'' + a.id + '\')">🗑️ Supprimer</button></div></article>';
   }).join('');
 }
-
+// ── DICTÉE POUR LES CHAMPS DE TEXTE ──
+function dicterPourChamp(idChamp) {
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    alert("La dictée vocale n'est pas supportée par ce navigateur.");
+    return;
+  }
+  
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  var rec = new SR();
+  rec.lang = 'fr-FR';
+  rec.interimResults = false;
+  
+  var champ = document.getElementById(idChamp);
+  var ancienTexte = champ.value;
+  var ancienPlaceholder = champ.placeholder;
+  
+  // Effet visuel pendant l'écoute
+  champ.placeholder = "🎙️ Écoute en cours... Parlez maintenant.";
+  champ.style.borderColor = "#E65100";
+  champ.style.backgroundColor = "#FFF3E0";
+  
+  rec.onresult = function(e) {
+    var texteDicte = e.results[0][0].transcript;
+    // On ajoute le texte dicté à la suite de ce qui était déjà écrit
+    champ.value = ancienTexte ? ancienTexte + ' ' + texteDicte : texteDicte;
+  };
+  
+  rec.onerror = function(e) {
+    console.warn("Erreur dictée :", e.error);
+  };
+  
+  rec.onend = function() {
+    // On remet l'apparence normale
+    champ.placeholder = ancienPlaceholder;
+    champ.style.borderColor = "";
+    champ.style.backgroundColor = "";
+    champ.focus();
+  };
+  
+  rec.start();
+}
 </script>
 </body>
 </html>
