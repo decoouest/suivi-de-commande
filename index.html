@@ -203,47 +203,62 @@ textarea{resize:vertical;min-height:70px;}
 .menu-mobile-item{display:flex;align-items:center;gap:12px;padding:16px 22px;cursor:pointer;font-size:15px;font-weight:500;border-bottom:1px solid var(--bordure);transition:background .15s;color:var(--texte);}
 .menu-mobile-item:hover{background:var(--bleu-bg);}
 .menu-mobile-item .icon{font-size:22px;width:28px;text-align:center;}
+
+/* ── RESPONSIVE MOBILE ── */
 @media(max-width:900px){
-.sidebar{width:52px;}
-.sidebar .nav-item span,.sidebar-logo span,.sidebar-logo small,.sidebar-footer{display:none;}
-.sidebar-logo #version-info{display:none;}
-.main{margin-left:52px;width:calc(100% - 52px);}
-.sidebar-logo{padding:14px 8px;}
-.nav-item{padding:14px 8px;justify-content:center;}
-.nav-item .icon{font-size:20px;}
-.agent-header{padding:16px 18px;}
-.agent-header-info h2{font-size:16px;}
+  .sidebar{width:52px;}
+  .sidebar .nav-item span,.sidebar-logo span,.sidebar-logo small,.sidebar-footer{display:none;}
+  .sidebar-logo #version-info{display:none;}
+  .main{margin-left:52px;width:calc(100% - 52px);}
+  .sidebar-logo{padding:14px 8px;}
+  .nav-item{padding:14px 8px;justify-content:center;}
+  .nav-item .icon{font-size:20px;}
+  .agent-header{padding:16px 18px;}
+  .agent-header-info h2{font-size:16px;}
 }
 @media(max-width:768px){
-.sidebar{display:none !important;}
-.main{margin-left:0 !important;width:100% !important;}
-.menu-burger{display:inline-flex;align-items:center;justify-content:center;}
-.topbar{flex-wrap:wrap;gap:8px;padding:8px 12px;}
-.topbar-title{flex:1;font-size:15px;}
-.topbar-right{width:100%;justify-content:space-between;gap:6px;flex-wrap:wrap;}
-.topbar-right .btn{font-size:12px;padding:8px 10px;flex:1;min-width:80px;}
-.content{padding:10px 12px;}
-.filters-bar{flex-direction:column;gap:8px;padding:10px;}
-.search-input,.select-filter{width:100%;}
-.filter-badge{flex:1;min-width:70px;text-align:center;font-size:12px;padding:6px 8px;}
-.kpi-grid{grid-template-columns:repeat(3, 1fr);gap:8px;}
-.kpi-card{padding:12px;}
-.kpi-value{font-size:22px;}
-.table-wrap{overflow:visible;}
-table thead{display:none;}
-table, table tbody, table tr, table td{display:block;width:100%;}
-table tr{background:#fff;border-radius:12px;border:1px solid var(--bordure);margin-bottom:10px;padding:12px;box-shadow:0 1px 3px rgba(0,0,0,.05);}
-table td{border:none;padding:5px 0;text-align:left !important;display:flex;justify-content:space-between;align-items:center;gap:10px;white-space:normal;}
-table td::before{content:attr(data-label);font-weight:700;font-size:11px;text-transform:uppercase;color:var(--texte2);flex-shrink:0;}
-table td:first-child{font-size:16px;font-weight:700;color:var(--bleu);border-bottom:1px solid var(--bordure);padding-bottom:8px;margin-bottom:4px;}
-table td:first-child::before{display:none;}
-.col-comment{max-width:none !important;white-space:normal !important;}
-.form-grid{grid-template-columns:1fr;}
-#planning-titre{font-size:14px;}
-.agent-card{flex-direction:column;gap:10px;}
-.agent-card-actions{width:100%;flex-direction:row;flex-wrap:wrap;}
-.agent-card-btn{flex:1;padding:8px;font-size:13px;}
+  .sidebar{display:none !important;}
+  .main{margin-left:0 !important;width:100% !important;}
+  .menu-burger{display:inline-flex;align-items:center;justify-content:center;}
+  .topbar{flex-wrap:wrap;gap:8px;padding:8px 12px;}
+  .topbar-title{flex:1;font-size:15px;}
+  .topbar-right{width:100%;justify-content:space-between;gap:6px;flex-wrap:wrap;}
+  .topbar-right .btn{font-size:12px;padding:8px 10px;flex:1;min-width:80px;}
+  .content{padding:10px 12px;}
+  .filters-bar{flex-direction:column;gap:8px;padding:10px;}
+  .search-input,.select-filter{width:100%;}
+  .filter-badge{flex:1;min-width:70px;text-align:center;font-size:12px;padding:6px 8px;}
+  .kpi-grid{grid-template-columns:repeat(3, 1fr);gap:8px;}
+  .kpi-card{padding:12px;}
+  .kpi-value{font-size:22px;}
+  .table-wrap{overflow:visible;}
+  
+  /* Transforme les tableaux classiques en cartes sur mobile */
+  table:not(.no-responsive) thead{display:none;}
+  table:not(.no-responsive), table:not(.no-responsive) tbody, table:not(.no-responsive) tr, table:not(.no-responsive) td{display:block;width:100%;}
+  table:not(.no-responsive) tr{background:#fff;border-radius:12px;border:1px solid var(--bordure);margin-bottom:10px;padding:12px;box-shadow:0 1px 3px rgba(0,0,0,.05);}
+  table:not(.no-responsive) td{border:none;padding:5px 0;text-align:left !important;display:flex;justify-content:space-between;align-items:center;gap:10px;white-space:normal;}
+  table:not(.no-responsive) td::before{content:attr(data-label);font-weight:700;font-size:11px;text-transform:uppercase;color:var(--texte2);flex-shrink:0;}
+  table:not(.no-responsive) td:first-child{font-size:16px;font-weight:700;color:var(--bleu);border-bottom:1px solid var(--bordure);padding-bottom:8px;margin-bottom:4px;}
+  table:not(.no-responsive) td:first-child::before{display:none;}
+  .col-comment{max-width:none !important;white-space:normal !important;}
+  
+  /* Force le tableau de la flotte à rester un tableau classique */
+  table.no-responsive { display: table !important; width: 100% !important; }
+  table.no-responsive thead { display: table-header-group !important; }
+  table.no-responsive tbody { display: table-row-group !important; }
+  table.no-responsive tr { display: table-row !important; margin-bottom: 0 !important; padding: 0 !important; border-radius: 0 !important; background: transparent !important; box-shadow: none !important; border: none !important; }
+  table.no-responsive th, table.no-responsive td { display: table-cell !important; text-align: center !important; border: 1px solid var(--bordure) !important; padding: 6px 4px !important; font-size: 11px !important; white-space: nowrap !important; }
+  table.no-responsive td::before { display: none !important; }
+  table.no-responsive td:first-child { font-size: 11px !important; font-weight: bold !important; color: var(--texte) !important; border-bottom: 1px solid var(--bordure) !important; background: transparent !important; }
+  
+  .form-grid{grid-template-columns:1fr;}
+  #planning-titre{font-size:14px;}
+  .agent-card{flex-direction:column;gap:10px;}
+  .agent-card-actions{width:100%;flex-direction:row;flex-wrap:wrap;}
+  .agent-card-btn{flex:1;padding:8px;font-size:13px;}
 }
+
 /* ── SOUS-MODULES TACHES & ACHATS ── */
 .stock-subtabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}
 .stock-subtab{border:1px solid #CFD8DC;background:#fff;color:var(--texte);padding:9px 14px;border-radius:8px;font:inherit;font-size:12px;font-weight:750;cursor:pointer}
@@ -311,7 +326,7 @@ textarea.task-input{resize:vertical}
 </div>
 
 <aside class="sidebar">
-  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v14.0</div></div>
+  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v14.1</div></div>
   <nav class="nav">
     <div class="nav-item active" id="nav-suivi" onclick="showView('suivi')"><span class="icon">📋</span><span>Commandes</span></div>
     <div class="nav-item" id="nav-alertes" onclick="showView('alertes')"><span class="icon">🔔</span><span>Alertes</span></div>
@@ -324,7 +339,7 @@ textarea.task-input{resize:vertical}
     <div class="nav-item" id="nav-planning" onclick="showView('planning')"><span class="icon">📅</span><span>Planning</span></div>
     <div class="nav-item" id="nav-config" onclick="showView('config')"><span class="icon">⚙️</span><span>Config</span></div>
   </nav>
-  <div class="sidebar-footer">v14.0</div>
+  <div class="sidebar-footer">v14.1</div>
 </aside>
 
 <div class="main">
@@ -408,14 +423,7 @@ textarea.task-input{resize:vertical}
                 <div><label for="task-priorite">Priorité</label><select id="task-priorite" class="task-input"><option value="haute">🔴 Haute</option><option value="normale" selected>🟠 Normale</option><option value="basse">🟢 Basse</option></select></div>
               </div>
 
-              <button 
-                type="button" 
-                class="btn btn-outline" 
-                onclick="dicterPourChamp('task-details')" 
-                style="width: 100%; margin-top: 15px; padding: 12px; border-color: #E65100; color: #E65100; justify-content: center; font-weight: 700; font-size: 14px;"
-              >
-                🎤 Dicter la note / les détails à la voix
-              </button>
+              <button type="button" class="btn btn-outline" onclick="dicterPourChamp('task-details')" style="width: 100%; margin-top: 15px; padding: 12px; border-color: #E65100; color: #E65100; justify-content: center; font-weight: 700; font-size: 14px;">🎤 Dicter la note / les détails à la voix</button>
 
               <div class="task-form-actions" style="margin-top: 15px;">
                 <button class="btn btn-primary" type="submit">💾 Enregistrer</button>
@@ -489,7 +497,7 @@ textarea.task-input{resize:vertical}
 
     <div id="view-dashboard" class="view"><div class="dash-grid" id="dash-content"></div></div>
 
-        <div id="view-flotte" class="view">
+    <div id="view-flotte" class="view">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
         <h3 style="font-size:16px; margin:0; color:var(--bleu);">Tableau de bord – Flotte</h3>
         <button class="btn btn-primary btn-sm" onclick="ouvrirModalVehicule()">+ Ajouter / Modifier</button>
@@ -511,19 +519,6 @@ textarea.task-input{resize:vertical}
       <h3 style="font-size:14px; margin:20px 0 10px 0; color:var(--bleu);">Coût TTC par type d'intervention et par véhicule (€)</h3>
       <div class="table-wrap">
         <table class="flotte-table no-responsive">
-          <thead>
-            <tr>
-              <th>Type</th><th>V1</th><th>V2</th><th>V3</th><th>V4</th><th>Total</th>
-            </tr>
-          </thead>
-          <tbody id="flotte-couts-body"></tbody>
-        </table>
-      </div>
-    </div>
-
-      <h3 style="font-size:14px; margin:20px 0 10px 0; color:var(--bleu);">Coût TTC par type d'intervention et par véhicule (€)</h3>
-      <div class="table-wrap">
-        <table class="flotte-table">
           <thead>
             <tr>
               <th>Type</th><th>V1</th><th>V2</th><th>V3</th><th>V4</th><th>Total</th>
@@ -627,7 +622,7 @@ var FOU_COLORS = {'ATLANTEM':'#1565C0','ATULAM':'#6A1B9A','LALLEMANT':'#2E7D32',
 var TERMINES = ['livre','termine','pose'];
 var commandes = [];
 var sortCol = 'ligne', sortAsc = false, alertFilter = 'all', editLigne = -1;
-var CACHE_DUREE = 60 * 1000, CACHE_KEY = 'eco-ouest-cache-v140', CACHE_TIME_KEY = 'eco-ouest-cache-time-v140';
+var CACHE_DUREE = 60 * 1000, CACHE_KEY = 'eco-ouest-cache-v141', CACHE_TIME_KEY = 'eco-ouest-cache-time-v141';
 var dernierRapportAgent = null;
 var recognition = null, recognitionAssistant = null, recognitionAction = null;
 var cacheTrad = {};
@@ -813,7 +808,6 @@ function renderFlotte() {
       totalGeneral += v.coutTTC;
     }
 
-    // Ajout de l'icône ✏️ à côté du repère
     return '<tr>' +
       '<td><span onclick="ouvrirModalVehicule(\'' + v.id + '\')" style="cursor:pointer; color:var(--bleu); font-size:16px;" title="Modifier ce véhicule">✏️</span> ' + repere + '</td>' +
       '<td>' + h(v.modele) + '</td>' +
@@ -851,6 +845,90 @@ function renderFlotte() {
   '</tr>';
 
   tbCouts.innerHTML = lignesCouts;
+}
+
+// ── MODAL AJOUT / MODIFICATION VÉHICULE ──
+function ouvrirModalVehicule(idVehicule) {
+  var v = flotteVehicules.find(function(x){ return x.id === idVehicule; }) || {};
+  
+  var overlay = document.getElementById('overlay-vehicule');
+  
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'overlay-vehicule';
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(10,20,40,.45);z-index:600;display:none;align-items:center;justify-content:center;padding:20px;';
+    overlay.onclick = function(e) { if (e.target === overlay) document.getElementById('overlay-vehicule').style.display = 'none'; };
+    
+    overlay.innerHTML = 
+      '<div class="modal" style="max-width:600px;width:100%;background:#fff;border-radius:14px;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.2);max-height:90vh;overflow-y:auto;" onclick="event.stopPropagation()">' +
+        '<h3 style="font-size:16px;font-weight:700;margin-bottom:15px;color:var(--bleu);" id="vehicule-modal-title">Ajouter un véhicule</h3>' +
+        '<div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">' +
+          '<div style="grid-column:1/-1;"><label>ID (Repère, ex: V5) *</label><input type="text" id="fv-id" class="task-input"></div>' +
+          '<div><label>Modèle</label><input type="text" id="fv-modele" class="task-input"></div>' +
+          '<div><label>Immatriculation</label><input type="text" id="fv-immat" class="task-input"></div>' +
+          '<div><label>Km Actuel</label><input type="number" id="fv-kmActuel" class="task-input"></div>' +
+          '<div><label>Km Révision</label><input type="number" id="fv-kmRevision" class="task-input"></div>' +
+          '<div><label>Date Révision</label><input type="date" id="fv-dateRevision" class="task-input"></div>' +
+          '<div><label>Prochain CT</label><input type="date" id="fv-prochainCT" class="task-input"></div>' +
+          '<div><label>Date Assurance</label><input type="date" id="fv-dateAssurance" class="task-input"></div>' +
+          '<div><label>Conducteur</label><input type="text" id="fv-conducteur" class="task-input"></div>' +
+          '<div><label>Type (coût)</label><select id="fv-type" class="task-input"><option value="">—</option><option>RÉVISION</option><option>PNEUS</option><option>PIÈCES D\'USURE</option><option>RÉPARATION</option><option>CONTRÔLE TECHNIQUE</option><option>ASSURANCE / ADMIN</option><option>AUTRE</option></select></div>' +
+          '<div><label>Coût TTC (€)</label><input type="number" id="fv-coutTTC" class="task-input" step="0.01"></div>' +
+        '</div>' +
+        '<div style="display:flex; gap:8px; margin-top:20px; justify-content:flex-end;">' +
+          '<button onclick="document.getElementById(\'overlay-vehicule\').style.display=\'none\'" class="btn btn-outline">Annuler</button>' +
+          '<button onclick="sauvegarderVehicule()" class="btn btn-primary">💾 Enregistrer</button>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(overlay);
+  }
+  
+  overlay.style.display = 'flex';
+  
+  document.getElementById('vehicule-modal-title').textContent = v.id ? 'Modifier ' + v.id : 'Ajouter un véhicule';
+  document.getElementById('fv-id').value = v.id || '';
+  document.getElementById('fv-modele').value = v.modele || '';
+  document.getElementById('fv-immat').value = v.immat || '';
+  document.getElementById('fv-kmActuel').value = v.kmActuel || '';
+  document.getElementById('fv-dateRevision').value = v.dateRevision || '';
+  document.getElementById('fv-kmRevision').value = v.kmRevision || '';
+  document.getElementById('fv-prochainCT').value = v.prochainCT || '';
+  document.getElementById('fv-dateAssurance').value = v.dateAssurance || '';
+  document.getElementById('fv-conducteur').value = v.conducteur || '';
+  document.getElementById('fv-type').value = v.type || '';
+  document.getElementById('fv-coutTTC').value = v.coutTTC || '';
+}
+
+async function sauvegarderVehicule() {
+  var id = document.getElementById('fv-id').value.trim();
+  if (!id) { alert("L'ID (Repère) est obligatoire (ex: V5)."); return; }
+  
+  var payload = {
+    action: 'enregistrerVehicule',
+    id: id,
+    modele: document.getElementById('fv-modele').value.trim(),
+    immat: document.getElementById('fv-immat').value.trim(),
+    kmActuel: document.getElementById('fv-kmActuel').value || 0,
+    dateRevision: document.getElementById('fv-dateRevision').value,
+    kmRevision: document.getElementById('fv-kmRevision').value || 0,
+    prochainCT: document.getElementById('fv-prochainCT').value,
+    dateAssurance: document.getElementById('fv-dateAssurance').value,
+    conducteur: document.getElementById('fv-conducteur').value.trim(),
+    type: document.getElementById('fv-type').value,
+    coutTTC: document.getElementById('fv-coutTTC').value || 0
+  };
+
+  try {
+    var r = await apiPost(payload);
+    if (!r || !r.ok) throw new Error(r.error || 'Erreur');
+    
+    document.getElementById('overlay-vehicule').style.display = 'none';
+    afficherToast('ok', '✅', 'Véhicule enregistré', id, 3000);
+    await chargerFlotte();
+    
+  } catch(e) {
+    alert("❌ Erreur : " + e.message);
+  }
 }
 
 // ── AGENT IA ──
@@ -1441,93 +1519,6 @@ async function sauvegarderNoteRapide() {
     afficherToast('ok', '✅', 'Note enregistrée', 'Retrouvez-la dans l\'onglet Notes.', 3000);
     await chargerTachesNotes();
     renderKPI();
-    
-  } catch(e) {
-    alert("❌ Erreur : " + e.message);
-  }
-}
-  // ── MODAL AJOUT / MODIFICATION VÉHICULE ──
-function ouvrirModalVehicule(idVehicule) {
-  // Recherche du véhicule dans la liste (si on clique sur ✏️)
-  var v = flotteVehicules.find(function(x){ return x.id === idVehicule; }) || {};
-  
-  var overlay = document.getElementById('overlay-vehicule');
-  
-  // Si la fenêtre n'existe pas encore dans la page, on la crée
-  if (!overlay) {
-    overlay = document.createElement('div');
-    overlay.id = 'overlay-vehicule';
-    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(10,20,40,.45);z-index:600;display:none;align-items:center;justify-content:center;padding:20px;';
-    overlay.onclick = function(e) { if (e.target === overlay) document.getElementById('overlay-vehicule').style.display = 'none'; };
-    
-    overlay.innerHTML = 
-      '<div class="modal" style="max-width:600px;width:100%;background:#fff;border-radius:14px;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.2);max-height:90vh;overflow-y:auto;" onclick="event.stopPropagation()">' +
-        '<h3 style="font-size:16px;font-weight:700;margin-bottom:15px;color:var(--bleu);" id="vehicule-modal-title">Ajouter un véhicule</h3>' +
-        '<div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">' +
-          '<div style="grid-column:1/-1;"><label>ID (Repère, ex: V5) *</label><input type="text" id="fv-id" class="task-input"></div>' +
-          '<div><label>Modèle</label><input type="text" id="fv-modele" class="task-input"></div>' +
-          '<div><label>Immatriculation</label><input type="text" id="fv-immat" class="task-input"></div>' +
-          '<div><label>Km Actuel</label><input type="number" id="fv-kmActuel" class="task-input"></div>' +
-          '<div><label>Km Révision</label><input type="number" id="fv-kmRevision" class="task-input"></div>' +
-          '<div><label>Date Révision</label><input type="date" id="fv-dateRevision" class="task-input"></div>' +
-          '<div><label>Prochain CT</label><input type="date" id="fv-prochainCT" class="task-input"></div>' +
-          '<div><label>Date Assurance</label><input type="date" id="fv-dateAssurance" class="task-input"></div>' +
-          '<div><label>Conducteur</label><input type="text" id="fv-conducteur" class="task-input"></div>' +
-          '<div><label>Type (coût)</label><select id="fv-type" class="task-input"><option value="">—</option><option>RÉVISION</option><option>PNEUS</option><option>PIÈCES D\'USURE</option><option>RÉPARATION</option><option>CONTRÔLE TECHNIQUE</option><option>ASSURANCE / ADMIN</option><option>AUTRE</option></select></div>' +
-          '<div><label>Coût TTC (€)</label><input type="number" id="fv-coutTTC" class="task-input" step="0.01"></div>' +
-        '</div>' +
-        '<div style="display:flex; gap:8px; margin-top:20px; justify-content:flex-end;">' +
-          '<button onclick="document.getElementById(\'overlay-vehicule\').style.display=\'none\'" class="btn btn-outline">Annuler</button>' +
-          '<button onclick="sauvegarderVehicule()" class="btn btn-primary">💾 Enregistrer</button>' +
-        '</div>' +
-      '</div>';
-    document.body.appendChild(overlay);
-  }
-  
-  // Affichage de la fenêtre
-  overlay.style.display = 'flex';
-  
-  // Remplissage des champs
-  document.getElementById('vehicule-modal-title').textContent = v.id ? 'Modifier ' + v.id : 'Ajouter un véhicule';
-  document.getElementById('fv-id').value = v.id || '';
-  document.getElementById('fv-modele').value = v.modele || '';
-  document.getElementById('fv-immat').value = v.immat || '';
-  document.getElementById('fv-kmActuel').value = v.kmActuel || '';
-  document.getElementById('fv-dateRevision').value = v.dateRevision || '';
-  document.getElementById('fv-kmRevision').value = v.kmRevision || '';
-  document.getElementById('fv-prochainCT').value = v.prochainCT || '';
-  document.getElementById('fv-dateAssurance').value = v.dateAssurance || '';
-  document.getElementById('fv-conducteur').value = v.conducteur || '';
-  document.getElementById('fv-type').value = v.type || '';
-  document.getElementById('fv-coutTTC').value = v.coutTTC || '';
-}
-
-async function sauvegarderVehicule() {
-  var id = document.getElementById('fv-id').value.trim();
-  if (!id) { alert("L'ID (Repère) est obligatoire (ex: V5)."); return; }
-  
-  var payload = {
-    action: 'enregistrerVehicule',
-    id: id,
-    modele: document.getElementById('fv-modele').value.trim(),
-    immat: document.getElementById('fv-immat').value.trim(),
-    kmActuel: document.getElementById('fv-kmActuel').value || 0,
-    dateRevision: document.getElementById('fv-dateRevision').value,
-    kmRevision: document.getElementById('fv-kmRevision').value || 0,
-    prochainCT: document.getElementById('fv-prochainCT').value,
-    dateAssurance: document.getElementById('fv-dateAssurance').value,
-    conducteur: document.getElementById('fv-conducteur').value.trim(),
-    type: document.getElementById('fv-type').value,
-    coutTTC: document.getElementById('fv-coutTTC').value || 0
-  };
-
-  try {
-    var r = await apiPost(payload);
-    if (!r || !r.ok) throw new Error(r.error || 'Erreur');
-    
-    document.getElementById('overlay-vehicule').style.display = 'none';
-    afficherToast('ok', '✅', 'Véhicule enregistré', id, 3000);
-    await chargerFlotte(); // Recharge les données pour mettre à jour le tableau
     
   } catch(e) {
     alert("❌ Erreur : " + e.message);
