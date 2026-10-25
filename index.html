@@ -221,7 +221,7 @@ textarea{resize:vertical;min-height:70px;}
 .filters-bar{flex-direction:column;gap:8px;padding:10px;}
 .search-input,.select-filter{width:100%;}
 .filter-badge{flex:1;min-width:70px;text-align:center;font-size:12px;padding:6px 8px;}
-.kpi-grid{grid-template-columns:1fr 1fr;gap:8px;}
+.kpi-grid{grid-template-columns:repeat(3, 1fr); gap:8px;}
 .kpi-card{padding:12px;}
 .kpi-value{font-size:22px;}
 .table-wrap{overflow:visible;}
@@ -660,18 +660,19 @@ function renderKPI() {
 var notesCount = tachesNotes.filter(function(t){ return t.type === 'note'; }).length;
 var achatsEnCours = achatsConsommables.filter(function(a){ return a.statut !== 'recu'; }).length;
 
-var shortcuts = document.createElement('div');
-shortcuts.className = 'kpi-card';
-shortcuts.style.cssText = 'grid-column: auto; cursor: default; justify-content: center; min-width: 200px; padding: 8px; display: flex; align-items: center;';
-
-shortcuts.innerHTML = 
-  '<div style="display:flex; flex-direction:row; flex-wrap:nowrap; gap:4px; width:100%;">' +
-    '<button class="btn btn-outline" onclick="showView(\'taches\'); ouvrirSousModuleTaches(\'taches\'); document.getElementById(\'task-filter-type\').value=\'taches\'; renderTaches();" style="flex:1; padding:6px 1px; font-size:9px; border-color:#CFD8DC; color:#455A64; justify-content:center; white-space:nowrap;">📝 Tâches (' + actifsTaches + ')</button>' +
-    '<button class="btn btn-outline" onclick="showView(\'taches\'); ouvrirSousModuleTaches(\'taches\'); document.getElementById(\'task-filter-type\').value=\'notes\'; renderTaches();" style="flex:1; padding:6px 1px; font-size:9px; border-color:#CFD8DC; color:#455A64; justify-content:center; white-space:nowrap;">🗒️ Notes (' + notesCount + ')</button>' +
-    '<button class="btn btn-outline" onclick="showView(\'taches\'); ouvrirSousModuleTaches(\'achats\');" style="flex:1; padding:6px 1px; font-size:9px; border-color:#CFD8DC; color:#455A64; justify-content:center; white-space:nowrap;">🛒 Achats (' + achatsEnCours + ')</button>' +
-  '</div>' +
-  '<button onclick="ouvrirModalDicteeNoteRapide()" style="margin-top:6px; width:100%; padding:6px; font-size:11px; font-weight:700; border:1.5px solid #E65100; background:#FFF3E0; color:#E65100; border-radius:6px; cursor:pointer; display:flex; justify-content:center; align-items:center; gap:6px;">🎤 Dicter une note rapide</button>';
-grid.appendChild(shortcuts);
+  var shortcuts = document.createElement('div');
+  shortcuts.className = 'kpi-card';
+  // On enlève la largeur min pour qu'il prenne la place d'une case normale
+  shortcuts.style.cssText = 'cursor: default; display: flex; flex-direction: column; justify-content: center; padding: 8px;';
+  
+  // On met les boutons en colonne pour qu'ils soient plus gros et lisibles
+  shortcuts.innerHTML = 
+    '<div style="display:flex; flex-direction:column; gap:6px; width:100%;">' +
+      '<button class="btn btn-outline" onclick="showView(\'taches\'); ouvrirSousModuleTaches(\'taches\'); document.getElementById(\'task-filter-type\').value=\'taches\'; renderTaches();" style="width:100%; padding:6px; font-size:12px; font-weight:700; border-color:#1565C0; color:#1565C0; justify-content:center; white-space:nowrap;">📝 Tâches (' + actifsTaches + ')</button>' +
+      '<button class="btn btn-outline" onclick="showView(\'taches\'); ouvrirSousModuleTaches(\'taches\'); document.getElementById(\'task-filter-type\').value=\'notes\'; renderTaches();" style="width:100%; padding:6px; font-size:12px; font-weight:700; border-color:#78909C; color:#78909C; justify-content:center; white-space:nowrap;">🗒️ Notes (' + notesCount + ')</button>' +
+      '<button class="btn btn-outline" onclick="showView(\'taches\'); ouvrirSousModuleTaches(\'achats\');" style="width:100%; padding:6px; font-size:12px; font-weight:700; border-color:#E65100; color:#E65100; justify-content:center; white-space:nowrap;">🛒 Achats (' + achatsEnCours + ')</button>' +
+    '</div>';
+  grid.appendChild(shortcuts);
 }
 
 function renderTable() {
