@@ -75,7 +75,7 @@ body{font-family:"Inter",sans-serif;background:#F0F4F8;color:var(--texte);min-he
 .filter-badge.noncmd-active{background:#E65100 !important;color:#fff !important;}
 
 /* ── TABLEAU OPTIMISÉ ── */
-.table-wrap{background:#fff;border-radius:10px;border:1px solid var(--bordure);overflow:auto;max-height:calc(100vh - 200px);display:block;width:100%;}
+.table-wrap{background:#fff;border-radius:10px;border:1px solid var(--bordure);overflow:auto;max-height:calc(100vh - 200px);display:block;width:100%;margin-bottom:15px;}
 table{width:100%;border-collapse:collapse;font-size:11px;white-space:nowrap;}
 thead th{position:sticky;top:0;z-index:10;background:var(--gris-bg);box-shadow:0 2px 0 var(--bordure);text-align:left;padding:8px 4px;font-size:10px;font-weight:700;color:var(--texte2);text-transform:uppercase;letter-spacing:.3px;cursor:pointer;user-select:none;}
 thead th:hover{color:var(--bleu);}
@@ -95,6 +95,11 @@ tr:hover td{background:#F8FBFF;}
 .action-btn{background:none;border:none;cursor:pointer;padding:4px 6px;border-radius:5px;font-size:15px;}
 .action-btn:hover{background:var(--gris-bg);}
 .scroll-hint{font-size:11px;color:var(--texte2);padding:8px 14px;border-top:1px solid var(--bordure);}
+
+/* ── VUE FLOTTE (Style Excel) ── */
+.flotte-table th, .flotte-table td { padding: 8px; font-size: 12px; border: 1px solid var(--bordure); text-align: center; }
+.flotte-table th { background: var(--bleu); color: #fff; font-weight: bold; }
+.flotte-table td:first-child { font-weight: bold; background: #F5F7FA; }
 
 /* ── AUTRES VUES ── */
 .empty-state{text-align:center;padding:48px 24px;color:var(--texte2);}
@@ -221,7 +226,7 @@ textarea{resize:vertical;min-height:70px;}
 .filters-bar{flex-direction:column;gap:8px;padding:10px;}
 .search-input,.select-filter{width:100%;}
 .filter-badge{flex:1;min-width:70px;text-align:center;font-size:12px;padding:6px 8px;}
-.kpi-grid{grid-template-columns:repeat(3, 1fr); gap:8px;}
+.kpi-grid{grid-template-columns:repeat(3, 1fr);gap:8px;}
 .kpi-card{padding:12px;}
 .kpi-value{font-size:22px;}
 .table-wrap{overflow:visible;}
@@ -298,6 +303,7 @@ textarea.task-input{resize:vertical}
     <div class="menu-mobile-item" onclick="menuMobileGo('agent')"><span class="icon">🤖</span> Agent IA</div>
     <div class="menu-mobile-item" onclick="menuMobileGo('metre')"><span class="icon">📅</span> Dates Métré</div>
     <div class="menu-mobile-item" onclick="menuMobileGo('dashboard')"><span class="icon">📊</span> Dashboard</div>
+    <div class="menu-mobile-item" onclick="menuMobileGo('flotte')"><span class="icon">🚗</span> Flotte</div>
     <div class="menu-mobile-item" onclick="menuMobileGo('suivipose')"><span class="icon">🔨</span> Suivi Pose</div>
     <div class="menu-mobile-item" onclick="menuMobileGo('planning')"><span class="icon">📅</span> Planning</div>
     <div class="menu-mobile-item" onclick="menuMobileGo('config')"><span class="icon">⚙️</span> Config</div>
@@ -305,7 +311,7 @@ textarea.task-input{resize:vertical}
 </div>
 
 <aside class="sidebar">
-  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v13.9</div></div>
+  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v14.0</div></div>
   <nav class="nav">
     <div class="nav-item active" id="nav-suivi" onclick="showView('suivi')"><span class="icon">📋</span><span>Commandes</span></div>
     <div class="nav-item" id="nav-alertes" onclick="showView('alertes')"><span class="icon">🔔</span><span>Alertes</span></div>
@@ -313,11 +319,12 @@ textarea.task-input{resize:vertical}
     <div class="nav-item" id="nav-agent" onclick="showView('agent')"><span class="icon">🤖</span><span>Agent IA</span></div>
     <div class="nav-item" id="nav-metre" onclick="showView('metre')"><span class="icon">📅</span><span>Dates Métré</span></div>
     <div class="nav-item" id="nav-dashboard" onclick="showView('dashboard')"><span class="icon">📊</span><span>Dashboard</span></div>
+    <div class="nav-item" id="nav-flotte" onclick="showView('flotte')"><span class="icon">🚗</span><span>Flotte</span></div>
     <div class="nav-item" id="nav-suivipose" onclick="showView('suivipose')"><span class="icon">🔨</span><span>Suivi Pose</span></div>
     <div class="nav-item" id="nav-planning" onclick="showView('planning')"><span class="icon">📅</span><span>Planning</span></div>
     <div class="nav-item" id="nav-config" onclick="showView('config')"><span class="icon">⚙️</span><span>Config</span></div>
   </nav>
-  <div class="sidebar-footer">v13.9</div>
+  <div class="sidebar-footer">v14.0</div>
 </aside>
 
 <div class="main">
@@ -385,35 +392,35 @@ textarea.task-input{resize:vertical}
               <select id="task-type" class="task-input"><option value="tache">📝 Tâche à faire</option><option value="note">🗒️ Note / information</option></select>
               
               <label for="task-title">Titre (ou contenu de la tâche) *</label>
-<div style="display:flex; gap:6px;">
-  <input id="task-title" class="task-input" maxlength="140" required placeholder="Ex. Relancer le fournisseur">
-  <button type="button" class="btn btn-outline" onclick="dicterPourChamp('task-title')" title="Dicter le titre" style="padding:0 10px; border-color:#E65100; color:#E65100;">🎤</button>
-</div>
-
-<label for="task-details">Détails (ou contenu de la note)</label>
-<div style="display:flex; gap:6px; align-items:flex-start;">
-  <textarea id="task-details" class="task-input" rows="3" maxlength="3000" placeholder="Informations complémentaires..."></textarea>
-  <button type="button" class="btn btn-outline" onclick="dicterPourChamp('task-details')" title="Dicter les détails" style="padding:8px 10px; border-color:#E65100; color:#E65100;">🎤</button>
-</div>
+              <div style="display:flex; gap:6px;">
+                <input id="task-title" class="task-input" maxlength="140" required placeholder="Ex. Relancer le fournisseur">
+                <button type="button" class="btn btn-outline" onclick="dicterPourChamp('task-title')" title="Dicter le titre" style="padding:0 10px; border-color:#E65100; color:#E65100;">🎤</button>
+              </div>
+              
+              <label for="task-details">Détails (ou contenu de la note)</label>
+              <div style="display:flex; gap:6px; align-items:flex-start;">
+                <textarea id="task-details" class="task-input" rows="3" maxlength="3000" placeholder="Informations complémentaires..."></textarea>
+                <button type="button" class="btn btn-outline" onclick="dicterPourChamp('task-details')" title="Dicter les détails" style="padding:8px 10px; border-color:#E65100; color:#E65100;">🎤</button>
+              </div>
+              
               <div class="task-fields-row">
-  <div><label for="task-echeance">Échéance</label><input id="task-echeance" class="task-input" type="date"></div>
-  <div><label for="task-priorite">Priorité</label><select id="task-priorite" class="task-input"><option value="haute">🔴 Haute</option><option value="normale" selected>🟠 Normale</option><option value="basse">🟢 Basse</option></select></div>
-</div>
+                <div><label for="task-echeance">Échéance</label><input id="task-echeance" class="task-input" type="date"></div>
+                <div><label for="task-priorite">Priorité</label><select id="task-priorite" class="task-input"><option value="haute">🔴 Haute</option><option value="normale" selected>🟠 Normale</option><option value="basse">🟢 Basse</option></select></div>
+              </div>
 
-<!-- NOUVEAU BOUTON MICRO ICI -->
-<button 
-  type="button" 
-  class="btn btn-outline" 
-  onclick="dicterPourChamp('task-details')" 
-  style="width: 100%; margin-top: 15px; padding: 12px; border-color: #E65100; color: #E65100; justify-content: center; font-weight: 700; font-size: 14px;"
->
-  🎤 Dicter la note / les détails à la voix
-</button>
+              <button 
+                type="button" 
+                class="btn btn-outline" 
+                onclick="dicterPourChamp('task-details')" 
+                style="width: 100%; margin-top: 15px; padding: 12px; border-color: #E65100; color: #E65100; justify-content: center; font-weight: 700; font-size: 14px;"
+              >
+                🎤 Dicter la note / les détails à la voix
+              </button>
 
-<div class="task-form-actions" style="margin-top: 15px;">
-  <button class="btn btn-primary" type="submit">💾 Enregistrer</button>
-  <button class="btn btn-outline" type="button" onclick="reinitialiserFormTache()">Annuler</button>
-</div>
+              <div class="task-form-actions" style="margin-top: 15px;">
+                <button class="btn btn-primary" type="submit">💾 Enregistrer</button>
+                <button class="btn btn-outline" type="button" onclick="reinitialiserFormTache()">Annuler</button>
+              </div>
             </form>
           </section>
           
@@ -481,7 +488,37 @@ textarea.task-input{resize:vertical}
     </div>
 
     <div id="view-dashboard" class="view"><div class="dash-grid" id="dash-content"></div></div>
+
+    <div id="view-flotte" class="view">
+      <h3 style="font-size:16px; margin-bottom:15px; color:var(--bleu);">Tableau de bord – Flotte</h3>
+      <div class="table-wrap">
+        <table class="flotte-table">
+          <thead>
+            <tr>
+              <th>Repère</th><th>Modèle</th><th>Immat.</th><th>Km actuel</th><th>Coût TTC (€)</th>
+              <th>Dernière révision</th><th>Km depuis révision</th><th>Alerte révision</th>
+              <th>Prochain CT</th><th>Jours avant CT</th><th>Alerte CT</th>
+            </tr>
+          </thead>
+          <tbody id="flotte-table-body"></tbody>
+        </table>
+      </div>
+
+      <h3 style="font-size:14px; margin:20px 0 10px 0; color:var(--bleu);">Coût TTC par type d'intervention et par véhicule (€)</h3>
+      <div class="table-wrap">
+        <table class="flotte-table">
+          <thead>
+            <tr>
+              <th>Type</th><th>V1</th><th>V2</th><th>V3</th><th>V4</th><th>Total</th>
+            </tr>
+          </thead>
+          <tbody id="flotte-couts-body"></tbody>
+        </table>
+      </div>
+    </div>
+
     <div id="view-suivipose" class="view"><div style="text-align:right;margin-bottom:10px;"><button onclick="traduireCommentairesPoseurs()" style="background:var(--bleu-bg);color:var(--bleu);border:1px solid var(--bleu);border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;">🇫🇷 Traduire les commentaires</button></div><div id="suivipose-content"></div></div>
+    
     <div id="view-planning" class="view">
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
         <button onclick="planningSemaine(-1)" style="background:var(--bleu);color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:14px;font-weight:600;cursor:pointer;">← Sem. préc.</button>
@@ -573,13 +610,14 @@ var FOU_COLORS = {'ATLANTEM':'#1565C0','ATULAM':'#6A1B9A','LALLEMANT':'#2E7D32',
 var TERMINES = ['livre','termine','pose'];
 var commandes = [];
 var sortCol = 'ligne', sortAsc = false, alertFilter = 'all', editLigne = -1;
-var CACHE_DUREE = 60 * 1000, CACHE_KEY = 'eco-ouest-cache-v139', CACHE_TIME_KEY = 'eco-ouest-cache-time-v139';
+var CACHE_DUREE = 60 * 1000, CACHE_KEY = 'eco-ouest-cache-v140', CACHE_TIME_KEY = 'eco-ouest-cache-time-v140';
 var dernierRapportAgent = null;
 var recognition = null, recognitionAssistant = null, recognitionAction = null;
 var cacheTrad = {};
 var catalogueConsommables = [];
 var tachesNotes = [];
 var achatsConsommables = [];
+var flotteVehicules = [];
 
 function nettoyerTextePourVoix(texte) { if (!texte) return ""; return texte.replace(/\*\*/g,'').replace(/\*/g,'').replace(/#/g,'').replace(/_/g,' ').replace(/`/g,'').replace(/•/g,', '); }
 function str(s) { if (s === null || s === undefined) return ''; return String(s); }
@@ -656,17 +694,14 @@ function renderKPI() {
   }); 
   
   var actifsTaches = tachesNotes.filter(function(t){ return t.type === 'tache' && !t.terminee; }).length;
-  var actifsTaches = tachesNotes.filter(function(t){ return t.type === 'tache' && !t.terminee; }).length;
-var notesCount = tachesNotes.filter(function(t){ return t.type === 'note'; }).length;
-var achatsEnCours = achatsConsommables.filter(function(a){ return a.statut !== 'recu'; }).length;
+  var notesCount = tachesNotes.filter(function(t){ return t.type === 'note'; }).length;
+  var achatsEnCours = achatsConsommables.filter(function(a){ return a.statut !== 'recu'; }).length;
 
   var shortcuts = document.createElement('div');
   shortcuts.className = 'kpi-card';
-  // On enlève la largeur min pour qu'il prenne la place d'une case normale
   shortcuts.style.cssText = 'cursor: default; display: flex; flex-direction: column; justify-content: center; padding: 8px;';
   
-  // On met les boutons en colonne pour qu'ils soient plus gros et lisibles
-   shortcuts.innerHTML = 
+  shortcuts.innerHTML = 
     '<div style="display:flex; flex-direction:column; gap:4px; width:100%;">' +
       '<button class="btn btn-outline" onclick="showView(\'taches\'); ouvrirSousModuleTaches(\'taches\'); document.getElementById(\'task-filter-type\').value=\'taches\'; renderTaches();" style="width:100%; padding:4px; font-size:11px; font-weight:700; border-color:#1565C0; color:#1565C0; justify-content:center; white-space:nowrap;">📝 Tâches (' + actifsTaches + ')</button>' +
       '<button class="btn btn-outline" onclick="showView(\'taches\'); ouvrirSousModuleTaches(\'taches\'); document.getElementById(\'task-filter-type\').value=\'notes\'; renderTaches();" style="width:100%; padding:4px; font-size:11px; font-weight:700; border-color:#78909C; color:#78909C; justify-content:center; white-space:nowrap;">🗒️ Notes (' + notesCount + ')</button>' +
@@ -710,6 +745,96 @@ function sortBy(col){if(sortCol===col)sortAsc=!sortAsc;else{sortCol=col;sortAsc=
 function setFilter(f){alertFilter=f;['all','urgent','warn','ok'].forEach(function(k){document.getElementById('fb-'+k).classList.toggle('active',k===f);});document.getElementById('fb-sav').classList.toggle('sav-active',f==='sav');document.getElementById('fb-noncmd').classList.toggle('noncmd-active',f==='noncmd');renderTable();}
 function afficherObjetParLigne(e,ligne){if(e)e.stopPropagation();var c=commandes.find(function(x){return x.ligne===ligne;});if(!c||!c.objetCommande)return;afficherObjet(null,c.objetCommande);}
 
+// ── MODULE FLOTTE (Style Excel) ──
+async function chargerFlotte() {
+  try {
+    var rV = await apiPost({ action: 'lireVehicules' });
+    if (rV.ok) {
+      flotteVehicules = rV.data;
+      renderFlotte();
+    }
+  } catch(e) { console.warn("Erreur chargement flotte :", e.message); }
+}
+
+function renderFlotte() {
+  var tb = document.getElementById('flotte-table-body');
+  var tbCouts = document.getElementById('flotte-couts-body');
+  if (!tb || !tbCouts) return;
+
+  var SEUIL_KM_REVISION = 30000;
+  var PRE_ALERTE_KM = 1500;
+  var PRE_ALERTE_JOURS = 30;
+  var aujourdhui = new Date();
+
+  var totauxParType = {};
+  var typesInterventions = ["RÉVISION", "PNEUS", "PIÈCES D'USURE", "RÉPARATION", "CONTRÔLE TECHNIQUE", "ASSURANCE / ADMIN", "AUTRE"];
+  typesInterventions.forEach(function(t) { totauxParType[t] = 0; });
+  var totalGeneral = 0;
+
+  var vehicules = flotteVehicules.slice(0, 4);
+
+  var htmlRows = vehicules.map(function(v, index) {
+    var repere = "V" + (index + 1);
+    var kmDepuisRevision = v.kmActuel - (v.kmRevision || 0);
+    var resteAvantRevision = SEUIL_KM_REVISION - kmDepuisRevision;
+    
+    var alerteRev = "OK", colorRev = "var(--vert)";
+    if (resteAvantRevision <= 0) { alerteRev = "À FAIRE"; colorRev = "var(--rouge)"; }
+    else if (resteAvantRevision <= PRE_ALERTE_KM) { alerteRev = "À prévoir"; colorRev = "var(--orange)"; }
+
+    var dateCT = new Date(v.prochainCT);
+    var joursAvantCT = Math.ceil((dateCT - aujourdhui) / (1000 * 60 * 60 * 24));
+    
+    var alerteCT = "OK", colorCT = "var(--vert)";
+    if (isNaN(joursAvantCT)) { alerteCT = "—"; colorCT = "var(--texte2)"; }
+    else if (joursAvantCT < 0) { alerteCT = "EXPIRÉ"; colorCT = "var(--rouge)"; }
+    else if (joursAvantCT <= PRE_ALERTE_JOURS) { alerteCT = "À prévoir"; colorCT = "var(--orange)"; }
+
+    var typeInt = String(v.type || "").toUpperCase();
+    if (totauxParType[typeInt] !== undefined) {
+      totauxParType[typeInt] += v.coutTTC;
+      totalGeneral += v.coutTTC;
+    }
+
+    return '<tr>' +
+      '<td>' + repere + '</td>' +
+      '<td>' + h(v.modele) + '</td>' +
+      '<td class="col-mono">' + h(v.immat) + '</td>' +
+      '<td>' + v.kmActuel.toLocaleString('fr-FR') + '</td>' +
+      '<td>' + v.coutTTC.toLocaleString('fr-FR', {style:'currency', currency:'EUR'}) + '</td>' +
+      '<td>' + (v.dateRevision ? formatDateMetre(v.dateRevision) : '–') + '</td>' +
+      '<td>' + (kmDepuisRevision > 0 ? kmDepuisRevision.toLocaleString('fr-FR') : '0') + '</td>' +
+      '<td style="background:' + (colorRev === 'var(--vert)' ? '#C8E6C9' : (colorRev === 'var(--rouge)' ? '#FFEBEE' : '#FFF3E0')) + '; color:' + colorRev + '; font-weight:bold;">' + alerteRev + '</td>' +
+      '<td>' + (v.prochainCT ? formatDateMetre(v.prochainCT) : '–') + '</td>' +
+      '<td>' + (isNaN(joursAvantCT) ? '–' : joursAvantCT) + '</td>' +
+      '<td style="background:' + (colorCT === 'var(--vert)' ? '#C8E6C9' : (colorCT === 'var(--rouge)' ? '#FFEBEE' : '#FFF3E0')) + '; color:' + colorCT + '; font-weight:bold;">' + alerteCT + '</td>' +
+    '</tr>';
+  }).join('');
+
+  htmlRows += '<tr style="background:#F5F7FA; font-weight:bold;">' +
+    '<td colspan="4" style="text-align:right;">Total flotte</td>' +
+    '<td>' + totalGeneral.toLocaleString('fr-FR', {style:'currency', currency:'EUR'}) + '</td>' +
+    '<td colspan="6"></td>' +
+  '</tr>';
+
+  tb.innerHTML = htmlRows;
+
+  var lignesCouts = typesInterventions.map(function(type) {
+    if (totauxParType[type] === 0) return '';
+    return '<tr>' +
+      '<td style="text-align:left;">' + type + '</td>' +
+      '<td colspan="4"></td>' +
+      '<td style="font-weight:bold;">' + totauxParType[type].toLocaleString('fr-FR', {style:'currency', currency:'EUR'}) + '</td>' +
+    '</tr>';
+  }).join('');
+
+  lignesCouts += '<tr style="background:#F5F7FA; font-weight:bold;">' +
+    '<td style="text-align:left;">Total</td><td colspan="4"></td><td>' + totalGeneral.toLocaleString('fr-FR', {style:'currency', currency:'EUR'}) + '</td>' +
+  '</tr>';
+
+  tbCouts.innerHTML = lignesCouts;
+}
+
 // ── AGENT IA ──
 async function chargerRapportAgent() { var content=document.getElementById('agent-content'), dateEl=document.getElementById('agent-date'); if(dateEl) dateEl.textContent='⏳ Chargement...'; content.innerHTML='<div class="agent-loader"><div class="spinner"></div><div class="loader-msg">📥 Chargement...</div></div>'; try { var r=await apiPost({action:'lireRapport'}); if(!r||!r.ok){content.innerHTML='<div class="empty-state"><div style="font-size:64px;">🤖</div><h3>Aucun rapport</h3><p>Le rapport est généré chaque matin à 8h.</p></div>';if(dateEl)dateEl.textContent='Dernière analyse : aucune';return;} if(dateEl&&r.dateRapport)dateEl.textContent='Dernière analyse : '+r.dateRapport+' (auto)'; else if(dateEl&&r.date)dateEl.textContent='Dernière analyse : '+r.date; dernierRapportAgent=r; afficherRapportAgent(r,0); } catch(e) { content.innerHTML='<div class="empty-state"><p>❌ '+h(e.message)+'</p></div>'; } }
 
@@ -735,14 +860,12 @@ async function envoyerQuestionVocal() {
   try { 
     var ql = q.toLowerCase(); 
     
-    // [v13.9] Recherche intelligente : on cherche si le nom tapé est inclus dans le nom du client, ou inversement
     var mots = ql.split(' ').filter(function(m){ return m.length > 2; });
     var ctx = commandes.filter(function(c){
       var nomClient = c.client.toLowerCase();
       return ql.indexOf(nomClient) !== -1 || mots.some(function(mot){ return nomClient.indexOf(mot) !== -1; });
     });
 
-    // Si on ne trouve pas de client spécifique, on envoie les 30 premiers pour donner du contexte à l'IA
     var contexteAEnvoyer = ctx.length > 0 ? ctx : commandes.slice(0, 30);
     
     var ctxJson = JSON.stringify(contexteAEnvoyer.map(function(c){return {client:c.client,date_metre:formatDateMetre(c.metres),numero_devis:c.devis,devis_ttc:c.devisTTC,fournisseur:c.fournisseur,commande_envoyee:c.commande,numero_arc:c.arc,validation_arc:c.commentaireARC,prevision_livraison:c.prevLivraison,statut_livraison:c.statutLivraison,statut_pose:c.statutPose,date_pose:c.datePose,pv_chantier:c.pvChantier,commentaires:c.commentaire,objet_commande:c.objetCommande};})); 
@@ -826,17 +949,14 @@ function capturerAchatsEnCours() {
   if (!items.length) { alert('Aucun achat en cours à capturer.'); return; }
   
   var container = document.createElement('div');
-  // On utilise une largeur fixe de 1000px
   container.style.cssText = 'position:absolute; left:-9999px; top:0; width:1000px; background:#fff; padding:40px; font-family:Arial, sans-serif;';
   
   var today = new Date().toLocaleDateString('fr-FR');
   
-  // En-tête de l'image
   var html = '<div style="text-align:center; margin-bottom:30px;">' +
              '<h1 style="color:#1565C0; margin:0 0 10px 0; font-size:24px;">ECO OUEST - Achats en cours</h1>' +
              '<p style="color:#666; margin:0; font-size:14px;">Généré le ' + today + '</p></div>';
 
-  // Création de la grille (Header)
   html += '<div style="display:grid; grid-template-columns: 12% 40% 8% 15% 15% 10%; gap: 10px; font-weight: bold; color: #546E7A; border-bottom: 2px solid #CFD8DC; padding-bottom: 10px; font-size: 13px;">' +
           '<div>Réf.</div>' +
           '<div>Article</div>' +
@@ -846,7 +966,6 @@ function capturerAchatsEnCours() {
           '<div>Priorité</div>' +
           '</div>';
 
-  // Création des lignes (Données)
   items.forEach(function(a) {
     var statut = a.statut === 'commande' ? 'Commandé' : 'À acheter';
     var color = a.statut === 'commande' ? '#1565C0' : '#E65100';
@@ -867,7 +986,6 @@ function capturerAchatsEnCours() {
   
   afficherToast('ok', '📸', 'Génération de l\'image...', 'Patientez', 2000);
 
-  // Capture
   html2canvas(container, { scale: 2, backgroundColor: '#ffffff' }).then(function(canvas) {
     document.body.removeChild(container);
     var link = document.createElement('a');
@@ -880,6 +998,7 @@ function capturerAchatsEnCours() {
     alert('Erreur lors de la capture : ' + e.message);
   });
 }
+
 // ── MODAL ──
 function ajouterOptionHorsListe(sel, v) { if (!sel||!v) return; var val=str(v), existe=false; for (var i=0;i<sel.options.length;i++){ if(sel.options[i].value===val){existe=true;break;} } if (!existe){ var opt=document.createElement('option'); opt.value=val; opt.textContent=val+' (hors liste)'; sel.appendChild(opt); } }
 function openModal(idx) { editLigne=-1; var c=idx>=0?commandes[idx]:{}; if(idx>=0)editLigne=c.ligne; document.getElementById('modal-title').textContent=idx>=0?'Modifier - '+str(c.client):'Nouvelle commande'; document.getElementById('btn-suppr').style.display=idx>=0?'inline-flex':'none'; ['client','devis','devisTTC','fournisseur','commande','arc','commentaireARC','prevLivraison','statutLivraison','statutPose'].forEach(function(f){ var el=document.getElementById('f-'+f); if(el) el.value=str(c[f]); }); ajouterOptionHorsListe(document.getElementById('f-fournisseur'),c.fournisseur); ajouterOptionHorsListe(document.getElementById('f-commande'),c.commande); ajouterOptionHorsListe(document.getElementById('f-commentaireARC'),c.commentaireARC); ajouterOptionHorsListe(document.getElementById('f-statutLivraison'),c.statutLivraison); ajouterOptionHorsListe(document.getElementById('f-statutPose'),c.statutPose); if(c.fournisseur) document.getElementById('f-fournisseur').value=str(c.fournisseur); if(c.commande) document.getElementById('f-commande').value=str(c.commande); if(c.commentaireARC) document.getElementById('f-commentaireARC').value=str(c.commentaireARC); if(c.statutLivraison) document.getElementById('f-statutLivraison').value=str(c.statutLivraison); if(c.statutPose) document.getElementById('f-statutPose').value=str(c.statutPose); var metEl=document.getElementById('f-metres'); if(metEl) metEl.value=c.metres?formatDateMetre(c.metres):''; var pvEl=document.getElementById('f-pvChantier'); if(pvEl) pvEl.checked=str(c.pvChantier).toUpperCase()==='OUI'; var dpEl=document.getElementById('f-datePose'); if(dpEl) dpEl.value=str(c.datePose); var objEl=document.getElementById('f-objetCommande'); if(objEl) objEl.value=str(c.objetCommande); document.getElementById('f-commentaire-historique').value=str(c.commentaire); var cmtNouv=document.getElementById('f-commentaire-nouveau'); if(cmtNouv) cmtNouv.value=''; document.getElementById('overlay').classList.add('open'); }
@@ -897,7 +1016,7 @@ function renderAlertes() { var g={3:[],2:[],1:[]}; commandes.forEach(function(c,
 function renderDashboard() { var byFou={}, ac={u:0,w:0,o:0}, caC=0, caP=0, nbE=0, nbS=0; function parseM(v){ if(!v) return 0; var s=str(v).replace(/[^0-9,.]/g,'').replace(/\s/g,'').replace(',','.'); var p=s.split('.'); if(p.length>2)s=p.slice(0,-1).join('')+'.'+p[p.length-1]; var n=parseFloat(s); return isNaN(n)?0:n; } var nbA=commandes.filter(function(c){return !estAnnulee(c);}).length; commandes.forEach(function(c){ if(estAnnulee(c))return; if(c.fournisseur)byFou[c.fournisseur]=(byFou[c.fournisseur]||0)+1; var a=alerte(c); if(a.n===3)ac.u++;else if(a.n>=1)ac.w++;else if(a.n===0)ac.o++; var m=parseM(c.devisTTC); if(str(c.commande).toUpperCase()==='OUI')caC+=m; if(estTermineStatut(c.statutPose))caP+=m; if(str(c.commande).toUpperCase()!=='OUI')nbE++; if(statutEstSAV(c.statutPose)||statutEstSAV(c.statutLivraison))nbS++; }); function fmt(n){return n.toLocaleString('fr-FR',{maximumFractionDigits:0})+' €';} var fS=Object.entries(byFou).sort(function(a,b){return b[1]-a[1];}), fM=fS[0]?fS[0][1]:1, n=nbA||1; var poseurs=[{nom:'ANATOLE',key:'poseur_ANATOLE',couleur:'#1565C0'},{nom:'ARTIOM',key:'poseur_ARTIOM',couleur:'#2E7D32'},{nom:'ANTONIO',key:'poseur_ANTONIO',couleur:'#E65100'},{nom:'VINCENT',key:'poseur_VINCENT',couleur:'#6A1B9A'},{nom:'LAMRI',key:'poseur_LAMRI',couleur:'#00695C'}]; var actifs=commandes.filter(function(c){return !estTermineStatut(c.statutLivraison)&&!estAnnulee(c);}).slice().sort(function(a,b){return str(b.datePose).localeCompare(str(a.datePose));}); var pvF=commandes.filter(function(c){return str(c.pvChantier).toUpperCase()==='OUI'&&!estAnnulee(c);}).length, pvM=actifs.filter(function(c){return str(c.pvChantier).toUpperCase()!=='OUI';}).length; var hC=''; if(!actifs.length){hC='<div style="text-align:center;padding:24px;color:var(--texte2);">Aucun chantier actif.</div>';}else{actifs.forEach(function(c){var pvFait=str(c.pvChantier).toUpperCase()==='OUI';hC+='<div style="background:#fff;border-radius:10px;border:1px solid var(--bordure);margin-bottom:10px;overflow:hidden;"><div style="padding:10px 14px;background:var(--gris-bg);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;border-bottom:1px solid var(--bordure);"><div><span style="font-weight:700;font-size:14px;">'+h(c.client)+'</span>';if(c.fournisseur)hC+=' <span style="font-size:11px;color:var(--texte2);">· '+h(c.fournisseur)+'</span>';hC+='</div><div style="display:flex;gap:6px;flex-wrap:wrap;">';if(c.metres)hC+='<span style="background:#FFF3E0;color:var(--orange);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;">📋 Métré : '+h(formatDateMetre(c.metres))+'</span>';if(c.datePose)hC+='<span style="background:var(--bleu-bg);color:var(--bleu);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;">📅 '+h(c.datePose)+'</span>';hC+=pvFait?'<span style="background:var(--vert-bg);color:var(--vert);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;">✓ PV Fait</span>':'<span style="background:#FFEBEE;color:var(--rouge);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;">✗ PV Manquant</span>';hC+='</div></div><div style="padding:10px 14px;">';var hasR=false;poseurs.forEach(function(p){if(!c[p.key]||!str(c[p.key]).trim())return;hasR=true;var l=str(c[p.key]).split('\n'),d=l[l.length-1];hC+='<div style="margin-bottom:8px;"><div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;"><div style="width:22px;height:22px;border-radius:50%;background:'+p.couleur+';display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;">'+p.nom.slice(0,2)+'</div><span style="font-size:12px;font-weight:700;color:'+p.couleur+';">'+p.nom+'</span></div><div style="font-size:11px;color:var(--texte);padding:6px 10px;background:var(--gris-bg);border-radius:6px;border-left:3px solid '+p.couleur+';">'+h(d)+'</div></div>';});if(!hasR)hC+='<div style="font-size:12px;color:var(--texte2);font-style:italic;">Aucune remarque poseur.</div>';hC+='</div></div>';});} document.getElementById('dash-content').innerHTML='<div class="dash-card" style="grid-column:1/-1;background:linear-gradient(135deg,#1565C0,#0D47A1);color:#fff;"><h4 style="color:#fff;">💰 Vue financière</h4><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;margin-top:8px;"><div><div style="font-size:24px;font-weight:800;">'+fmt(caC)+'</div><div style="font-size:12px;opacity:.85;">CA commandé</div></div><div><div style="font-size:24px;font-weight:800;">'+fmt(caP)+'</div><div style="font-size:12px;opacity:.85;">CA posé</div></div><div><div style="font-size:24px;font-weight:800;">'+nbE+'</div><div style="font-size:12px;opacity:.85;">En attente commande</div></div><div><div style="font-size:24px;font-weight:800;">'+nbS+'</div><div style="font-size:12px;opacity:.85;">SAV ouverts</div></div></div></div><div class="dash-card"><h4>Par fournisseur</h4>'+fS.map(function(e){return '<div class="bar-row"><span class="bar-label">'+h(e[0])+'</span><div class="bar-track"><div class="bar-fill" style="width:'+Math.round(e[1]/fM*100)+'%;background:'+(FOU_COLORS[e[0]]||'#546E7A')+'"></div></div><span class="bar-count">'+e[1]+'</span></div>';}).join('')+'</div><div class="dash-card"><h4>Alertes</h4>'+[['Urgentes',ac.u,'#D32F2F'],['Attention',ac.w,'#E65100'],['OK',ac.o,'#2E7D32']].map(function(x){return '<div class="bar-row"><span class="bar-label">'+x[0]+'</span><div class="bar-track"><div class="bar-fill" style="width:'+Math.round(x[1]/n*100)+'%;background:'+x[2]+'"></div></div><span class="bar-count">'+x[1]+'</span></div>';}).join('')+'</div><div class="dash-card"><h4>Résumé</h4><div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:4px;"><div style="text-align:center;padding:14px;background:var(--gris-bg);border-radius:8px;"><div style="font-size:28px;font-weight:700;color:var(--bleu);">'+nbA+'</div><div style="font-size:11px;color:var(--texte2);">Total (actifs)</div></div><div style="text-align:center;padding:14px;background:#FFEBEE;border-radius:8px;"><div style="font-size:28px;font-weight:700;color:var(--rouge);">'+ac.u+'</div><div style="font-size:11px;color:var(--texte2);">Urgences</div></div><div style="text-align:center;padding:14px;background:var(--vert-bg);border-radius:8px;"><div style="font-size:28px;font-weight:700;color:var(--vert);">'+pvF+'</div><div style="font-size:11px;color:var(--texte2);">PV Faits</div></div><div style="text-align:center;padding:14px;background:#FFF3E0;border-radius:8px;"><div style="font-size:28px;font-weight:700;color:var(--orange);">'+pvM+'</div><div style="font-size:11px;color:var(--texte2);">PV Manquants</div></div></div></div><div class="dash-card" style="grid-column:1/-1;"><h4>📋 Suivi chantiers</h4>'+hC+'</div>'; }
 
 // ── NAVIGATION ──
-function showView(v) { document.querySelectorAll('.view').forEach(function(el){el.classList.remove('active');}); document.querySelectorAll('.nav-item').forEach(function(el){el.classList.remove('active');}); document.getElementById('view-'+v).classList.add('active'); var nv=document.getElementById('nav-'+v); if(nv)nv.classList.add('active'); var titles={suivi:'Suivi des commandes', alertes:'Alertes actives', taches:'Tâches & Notes', agent:'🤖 Agent IA', metre:'Dates de métré', dashboard:'Tableau de bord', suivipose:'Suivi de Pose', planning:'Planning', config:'Configuration'}; document.getElementById('topbar-title').textContent=titles[v]||v; if(v==='config'){document.getElementById('config-url-input').value=WEBAPP;document.getElementById('config-url-current').textContent=WEBAPP;document.getElementById('config-status').innerHTML='';} if(v==='alertes')renderAlertes(); if(v==='taches'){if(document.getElementById('sousmodule-achats-consommables').style.display!=='none')renderAchatsConsommables();else renderTaches();} if(v==='agent')chargerRapportAgent(); if(v==='metre')renderMetre(); if(v==='dashboard')renderDashboard(); if(v==='suivipose'){renderSuiviPose();setTimeout(traduireCommentairesPoseurs,500);} if(v==='planning')renderPlanning(); }
+function showView(v) { document.querySelectorAll('.view').forEach(function(el){el.classList.remove('active');}); document.querySelectorAll('.nav-item').forEach(function(el){el.classList.remove('active');}); document.getElementById('view-'+v).classList.add('active'); var nv=document.getElementById('nav-'+v); if(nv)nv.classList.add('active'); var titles={suivi:'Suivi des commandes', alertes:'Alertes actives', taches:'Tâches & Notes', agent:'🤖 Agent IA', metre:'Dates de métré', dashboard:'Tableau de bord', flotte:'Flotte de véhicules', suivipose:'Suivi de Pose', planning:'Planning', config:'Configuration'}; document.getElementById('topbar-title').textContent=titles[v]||v; if(v==='config'){document.getElementById('config-url-input').value=WEBAPP;document.getElementById('config-url-current').textContent=WEBAPP;document.getElementById('config-status').innerHTML='';} if(v==='alertes')renderAlertes(); if(v==='taches'){if(document.getElementById('sousmodule-achats-consommables').style.display!=='none')renderAchatsConsommables();else renderTaches();} if(v==='agent')chargerRapportAgent(); if(v==='metre')renderMetre(); if(v==='dashboard')renderDashboard(); if(v==='flotte')chargerFlotte(); if(v==='suivipose'){renderSuiviPose();setTimeout(traduireCommentairesPoseurs,500);} if(v==='planning')renderPlanning(); }
 
 // ── SUIVI POSE ──
 function renderSuiviPose() { var poseurs=[{nom:'ANATOLE',key:'poseur_ANATOLE',couleur:'#1565C0'},{nom:'ARTIOM',key:'poseur_ARTIOM',couleur:'#2E7D32'},{nom:'ANTONIO',key:'poseur_ANTONIO',couleur:'#E65100'},{nom:'VINCENT',key:'poseur_VINCENT',couleur:'#6A1B9A'},{nom:'LAMRI',key:'poseur_LAMRI',couleur:'#00695C'}]; var semA=getWeekNumber(new Date()); function dpSem(dp,sem){var p=parseDatePose(dp);if(!p)return false;if(p.type==='semaine')return p.num===sem;if(p.type==='date')return getWeekNumber(p.date)===sem;return false;} var items=commandes.filter(function(c){if(estAnnulee(c))return false;if(estTermineStatut(c.statutPose))return false;return dpSem(c.datePose,semA);}).slice().sort(function(a,b){return str(b.datePose).localeCompare(str(a.datePose));}); if(!items.length){document.getElementById('suivipose-content').innerHTML='<div class="empty-state"><p>Aucun chantier actif cette semaine.</p></div>';return;} var html=''; items.forEach(function(c){var pvFait=str(c.pvChantier).toUpperCase()==='OUI';html+='<div class="suivipose-card"><div class="suivipose-header"><div><div class="suivipose-client">'+h(c.client)+'</div><div class="suivipose-meta">'+h(c.fournisseur||'')+(c.devis?' · '+h(c.devis):'')+'</div></div><div style="text-align:right;">';if(c.datePose)html+='<span class="suivipose-date">📅 '+h(cleanDate(c.datePose))+'</span>';var sP=str(c.statutPose);if(sP){var sBg=sP==='SAV'?'#FFEBEE':sP.indexOf('Termin')!==-1?'var(--vert-bg)':'#FFF3E0',sC=sP==='SAV'?'#D32F2F':sP.indexOf('Termin')!==-1?'var(--vert)':'#E65100';html+='<br><span style="font-size:11px;font-weight:700;background:'+sBg+';color:'+sC+';padding:2px 8px;border-radius:5px;display:inline-block;margin-top:4px;">'+h(sP)+'</span>';}html+='<br><span style="font-size:11px;font-weight:700;background:'+(pvFait?'var(--vert-bg)':'#FFEBEE')+';color:'+(pvFait?'var(--vert)':'var(--rouge)')+';padding:2px 8px;border-radius:5px;display:inline-block;margin-top:4px;">'+(pvFait?'✓ PV Fait':'✗ PV Manquant')+'</span></div></div><div class="suivipose-body">';if(c.metres)html+='<div style="margin-bottom:10px;padding:8px 12px;background:#FFF3E0;border-radius:8px;border-left:3px solid var(--orange);"><div style="font-size:11px;font-weight:700;color:var(--orange);margin-bottom:4px;">📋 DATE MÉTRÉ</div><div style="font-size:12px;">'+h(formatDateMetre(c.metres))+'</div></div>';if(c.commentaire)html+='<div style="margin-bottom:10px;padding:8px 12px;background:#FFF3E0;border-radius:8px;border-left:3px solid var(--orange);"><div style="font-size:11px;font-weight:700;color:var(--orange);margin-bottom:4px;">📋 NOTE BUREAU</div><div style="font-size:12px;white-space:pre-wrap;">'+h(c.commentaire)+'</div></div>';poseurs.forEach(function(p){html+='<div class="suivipose-poseur"><div class="suivipose-poseur-name"><div class="suivipose-poseur-avatar" style="background:'+p.couleur+'">'+p.nom.slice(0,2)+'</div><span class="suivipose-poseur-label">'+p.nom+'</span></div>';if(c[p.key]&&str(c[p.key]).trim()){var lignes=str(c[p.key]).split('\n').filter(function(l){return l.trim();});html+='<div class="suivipose-comment" id="cmt-'+c.ligne+'-'+p.key+'">';lignes.forEach(function(l,li){html+='<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid var(--bordure);"><span style="flex:1;font-size:12px;">'+h(l)+'</span><div style="display:flex;gap:4px;flex-shrink:0;"><button data-ligne="'+c.ligne+'" data-key="'+p.key+'" data-idx="'+li+'" class="btn-cmt-edit" style="background:var(--bleu-bg);color:var(--bleu);border:none;border-radius:5px;padding:3px 8px;font-size:11px;cursor:pointer;">✏️</button><button data-ligne="'+c.ligne+'" data-key="'+p.key+'" data-idx="'+li+'" class="btn-cmt-del" style="background:#FFEBEE;color:var(--rouge);border:none;border-radius:5px;padding:3px 8px;font-size:11px;cursor:pointer;">🗑</button></div></div>';});html+='</div>';}else{html+='<div class="suivipose-empty">Aucun suivi poseur.</div>';}html+='</div>';});html+='</div></div>';});document.getElementById('suivipose-content').innerHTML=html;document.getElementById('suivipose-content').querySelectorAll('.btn-cmt-edit').forEach(function(btn){btn.addEventListener('click',function(){modifierCommentaire(parseInt(btn.getAttribute('data-ligne')),btn.getAttribute('data-key'),parseInt(btn.getAttribute('data-idx')));});});document.getElementById('suivipose-content').querySelectorAll('.btn-cmt-del').forEach(function(btn){btn.addEventListener('click',function(){supprimerCommentaire(parseInt(btn.getAttribute('data-ligne')),btn.getAttribute('data-key'),parseInt(btn.getAttribute('data-idx')));});}); }
@@ -949,6 +1068,7 @@ function actualiserTout() {
   chargerTachesNotes();
   chargerAchatsConsommables();
   chargerCatalogueConsommables();
+  chargerFlotte();
 }
 
 chargerPrefsNotif();
@@ -1183,6 +1303,7 @@ function renderAchatsConsommables() {
     return '<article class="buy-card' + (enRetard ? ' buy-late' : '') + (a.statut === 'recu' ? ' buy-received' : '') + '"><div class="buy-card-title">' + h(a.nom) + '</div><div class="buy-card-meta"><span class="buy-chip">📦 ' + h(a.quantite) + '</span><span class="buy-chip">' + h(a.categorie) + '</span><span class="buy-chip ' + cl + '">' + (enRetard ? '⚠ EN RETARD · ' : '') + st + '</span><span class="buy-chip">' + (a.priorite==='haute'?'🔴 Haute':a.priorite==='basse'?'🟢 Basse':'🟠 Normale') + '</span>' + (a.echeance ? '<span class="buy-chip">📅 ' + h(formatEcheance(a.echeance)) + '</span>' : '') + (a.fournisseur ? '<span class="buy-chip">🏪 ' + h(a.fournisseur) + '</span>' : '') + (a.reference ? '<span class="buy-chip">🔖 ' + h(a.reference) + '</span>' : '') + '</div>' + (a.notes ? '<div class="task-card-details">' + h(a.notes) + '</div>' : '') + '<div class="buy-card-actions">' + (a.statut === 'a-acheter' ? '<button class="task-action" onclick="changerStatutAchat(\'' + a.id + '\',\'commande\')">📨 Marquer commandé</button>' : '') + (a.statut !== 'recu' ? '<button class="task-action" onclick="changerStatutAchat(\'' + a.id + '\',\'recu\')">✓ Marquer reçu</button>' : '<button class="task-action" onclick="changerStatutAchat(\'' + a.id + '\',\'a-acheter\')">↩ Remettre à acheter</button>') + '<button class="task-action" onclick="modifierAchatConsommable(\'' + a.id + '\')">✏️ Modifier</button><button class="task-action" onclick="supprimerAchatConsommable(\'' + a.id + '\')">🗑️ Supprimer</button></div></article>';
   }).join('');
 }
+
 // ── DICTÉE POUR LES CHAMPS DE TEXTE ──
 function dicterPourChamp(idChamp) {
   if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
@@ -1199,14 +1320,12 @@ function dicterPourChamp(idChamp) {
   var ancienTexte = champ.value;
   var ancienPlaceholder = champ.placeholder;
   
-  // Effet visuel pendant l'écoute
   champ.placeholder = "🎙️ Écoute en cours... Parlez maintenant.";
   champ.style.borderColor = "#E65100";
   champ.style.backgroundColor = "#FFF3E0";
   
   rec.onresult = function(e) {
     var texteDicte = e.results[0][0].transcript;
-    // On ajoute le texte dicté à la suite de ce qui était déjà écrit
     champ.value = ancienTexte ? ancienTexte + ' ' + texteDicte : texteDicte;
   };
   
@@ -1215,7 +1334,6 @@ function dicterPourChamp(idChamp) {
   };
   
   rec.onend = function() {
-    // On remet l'apparence normale
     champ.placeholder = ancienPlaceholder;
     champ.style.borderColor = "";
     champ.style.backgroundColor = "";
@@ -1224,7 +1342,8 @@ function dicterPourChamp(idChamp) {
   
   rec.start();
 }
-  // ── DICTÉE NOTE RAPIDE (DEPUIS L'ACCUEIL) ──
+
+// ── DICTÉE NOTE RAPIDE (DEPUIS L'ACCUEIL) ──
 function ouvrirModalDicteeNoteRapide() {
   var overlay = document.getElementById('overlay-dictee-note-rapide');
   if (!overlay) {
@@ -1302,8 +1421,8 @@ async function sauvegarderNoteRapide() {
     
     fermerModalDicteeNoteRapide();
     afficherToast('ok', '✅', 'Note enregistrée', 'Retrouvez-la dans l\'onglet Notes.', 3000);
-    await chargerTachesNotes(); // Met à jour les compteurs et la liste
-    renderKPI(); // Met à jour le compteur sur l'accueil
+    await chargerTachesNotes();
+    renderKPI();
     
   } catch(e) {
     alert("❌ Erreur : " + e.message);
