@@ -831,8 +831,8 @@ function renderFlotte() {
 
   tb.innerHTML = htmlRows;
 
-  var lignesCouts = typesInterventions.map(function(type) {
-    if (totauxParType[type] === 0) return '';
+    var lignesCouts = typesInterventions.map(function(type) {
+    // On affiche TOUS les types, même si le total est à 0
     return '<tr>' +
       '<td style="text-align:left;">' + type + '</td>' +
       '<td colspan="4"></td>' +
