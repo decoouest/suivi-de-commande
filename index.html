@@ -1446,6 +1446,93 @@ async function sauvegarderNoteRapide() {
     alert("❌ Erreur : " + e.message);
   }
 }
+  // ── MODAL AJOUT / MODIFICATION VÉHICULE ──
+function ouvrirModalVehicule(idVehicule) {
+  // Recherche du véhicule dans la liste (si on clique sur ✏️)
+  var v = flotteVehicules.find(function(x){ return x.id === idVehicule; }) || {};
+  
+  var overlay = document.getElementById('overlay-vehicule');
+  
+  // Si la fenêtre n'existe pas encore dans la page, on la crée
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'overlay-vehicule';
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(10,20,40,.45);z-index:600;display:none;align-items:center;justify-content:center;padding:20px;';
+    overlay.onclick = function(e) { if (e.target === overlay) document.getElementById('overlay-vehicule').style.display = 'none'; };
+    
+    overlay.innerHTML = 
+      '<div class="modal" style="max-width:600px;width:100%;background:#fff;border-radius:14px;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.2);max-height:90vh;overflow-y:auto;" onclick="event.stopPropagation()">' +
+        '<h3 style="font-size:16px;font-weight:700;margin-bottom:15px;color:var(--bleu);" id="vehicule-modal-title">Ajouter un véhicule</h3>' +
+        '<div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">' +
+          '<div style="grid-column:1/-1;"><label>ID (Repère, ex: V5) *</label><input type="text" id="fv-id" class="task-input"></div>' +
+          '<div><label>Modèle</label><input type="text" id="fv-modele" class="task-input"></div>' +
+          '<div><label>Immatriculation</label><input type="text" id="fv-immat" class="task-input"></div>' +
+          '<div><label>Km Actuel</label><input type="number" id="fv-kmActuel" class="task-input"></div>' +
+          '<div><label>Km Révision</label><input type="number" id="fv-kmRevision" class="task-input"></div>' +
+          '<div><label>Date Révision</label><input type="date" id="fv-dateRevision" class="task-input"></div>' +
+          '<div><label>Prochain CT</label><input type="date" id="fv-prochainCT" class="task-input"></div>' +
+          '<div><label>Date Assurance</label><input type="date" id="fv-dateAssurance" class="task-input"></div>' +
+          '<div><label>Conducteur</label><input type="text" id="fv-conducteur" class="task-input"></div>' +
+          '<div><label>Type (coût)</label><select id="fv-type" class="task-input"><option value="">—</option><option>RÉVISION</option><option>PNEUS</option><option>PIÈCES D\'USURE</option><option>RÉPARATION</option><option>CONTRÔLE TECHNIQUE</option><option>ASSURANCE / ADMIN</option><option>AUTRE</option></select></div>' +
+          '<div><label>Coût TTC (€)</label><input type="number" id="fv-coutTTC" class="task-input" step="0.01"></div>' +
+        '</div>' +
+        '<div style="display:flex; gap:8px; margin-top:20px; justify-content:flex-end;">' +
+          '<button onclick="document.getElementById(\'overlay-vehicule\').style.display=\'none\'" class="btn btn-outline">Annuler</button>' +
+          '<button onclick="sauvegarderVehicule()" class="btn btn-primary">💾 Enregistrer</button>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(overlay);
+  }
+  
+  // Affichage de la fenêtre
+  overlay.style.display = 'flex';
+  
+  // Remplissage des champs
+  document.getElementById('vehicule-modal-title').textContent = v.id ? 'Modifier ' + v.id : 'Ajouter un véhicule';
+  document.getElementById('fv-id').value = v.id || '';
+  document.getElementById('fv-modele').value = v.modele || '';
+  document.getElementById('fv-immat').value = v.immat || '';
+  document.getElementById('fv-kmActuel').value = v.kmActuel || '';
+  document.getElementById('fv-dateRevision').value = v.dateRevision || '';
+  document.getElementById('fv-kmRevision').value = v.kmRevision || '';
+  document.getElementById('fv-prochainCT').value = v.prochainCT || '';
+  document.getElementById('fv-dateAssurance').value = v.dateAssurance || '';
+  document.getElementById('fv-conducteur').value = v.conducteur || '';
+  document.getElementById('fv-type').value = v.type || '';
+  document.getElementById('fv-coutTTC').value = v.coutTTC || '';
+}
+
+async function sauvegarderVehicule() {
+  var id = document.getElementById('fv-id').value.trim();
+  if (!id) { alert("L'ID (Repère) est obligatoire (ex: V5)."); return; }
+  
+  var payload = {
+    action: 'enregistrerVehicule',
+    id: id,
+    modele: document.getElementById('fv-modele').value.trim(),
+    immat: document.getElementById('fv-immat').value.trim(),
+    kmActuel: document.getElementById('fv-kmActuel').value || 0,
+    dateRevision: document.getElementById('fv-dateRevision').value,
+    kmRevision: document.getElementById('fv-kmRevision').value || 0,
+    prochainCT: document.getElementById('fv-prochainCT').value,
+    dateAssurance: document.getElementById('fv-dateAssurance').value,
+    conducteur: document.getElementById('fv-conducteur').value.trim(),
+    type: document.getElementById('fv-type').value,
+    coutTTC: document.getElementById('fv-coutTTC').value || 0
+  };
+
+  try {
+    var r = await apiPost(payload);
+    if (!r || !r.ok) throw new Error(r.error || 'Erreur');
+    
+    document.getElementById('overlay-vehicule').style.display = 'none';
+    afficherToast('ok', '✅', 'Véhicule enregistré', id, 3000);
+    await chargerFlotte(); // Recharge les données pour mettre à jour le tableau
+    
+  } catch(e) {
+    alert("❌ Erreur : " + e.message);
+  }
+}
 </script>
 </body>
 </html>
