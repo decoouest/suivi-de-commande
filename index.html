@@ -669,7 +669,8 @@ shortcuts.innerHTML =
     '<button class="btn btn-outline" onclick="showView(\'taches\'); ouvrirSousModuleTaches(\'taches\'); document.getElementById(\'task-filter-type\').value=\'taches\'; renderTaches();" style="flex:1; padding:6px 1px; font-size:9px; border-color:#CFD8DC; color:#455A64; justify-content:center; white-space:nowrap;">📝 Tâches (' + actifsTaches + ')</button>' +
     '<button class="btn btn-outline" onclick="showView(\'taches\'); ouvrirSousModuleTaches(\'taches\'); document.getElementById(\'task-filter-type\').value=\'notes\'; renderTaches();" style="flex:1; padding:6px 1px; font-size:9px; border-color:#CFD8DC; color:#455A64; justify-content:center; white-space:nowrap;">🗒️ Notes (' + notesCount + ')</button>' +
     '<button class="btn btn-outline" onclick="showView(\'taches\'); ouvrirSousModuleTaches(\'achats\');" style="flex:1; padding:6px 1px; font-size:9px; border-color:#CFD8DC; color:#455A64; justify-content:center; white-space:nowrap;">🛒 Achats (' + achatsEnCours + ')</button>' +
-  '</div>';
+  '</div>' +
+  '<button onclick="ouvrirModalDicteeNoteRapide()" style="margin-top:6px; width:100%; padding:6px; font-size:11px; font-weight:700; border:1.5px solid #E65100; background:#FFF3E0; color:#E65100; border-radius:6px; cursor:pointer; display:flex; justify-content:center; align-items:center; gap:6px;">🎤 Dicter une note rapide</button>';
 grid.appendChild(shortcuts);
 }
 
@@ -1221,6 +1222,91 @@ function dicterPourChamp(idChamp) {
   };
   
   rec.start();
+}
+  // ── DICTÉE NOTE RAPIDE (DEPUIS L'ACCUEIL) ──
+function ouvrirModalDicteeNoteRapide() {
+  var overlay = document.getElementById('overlay-dictee-note-rapide');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'overlay-dictee-note-rapide';
+    overlay.className = 'overlay open';
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(10,20,40,.45);z-index:600;display:flex;align-items:center;justify-content:center;padding:20px;';
+    overlay.onclick = function(e) { if (e.target === overlay) fermerModalDicteeNoteRapide(); };
+    
+    overlay.innerHTML = 
+      '<div class="modal" style="max-width:400px;width:100%;background:#fff;border-radius:14px;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.2);" onclick="event.stopPropagation()">' +
+        '<h3 style="font-size:16px;font-weight:700;margin-bottom:10px;color:var(--bleu);">🎤 Note rapide</h3>' +
+        '<p style="font-size:12px;color:var(--texte2);margin-bottom:15px;">Dictez votre note, elle sera enregistrée automatiquement.</p>' +
+        '<textarea id="note-rapide-texte" class="task-input" rows="4" placeholder="Appuyez sur le micro et parlez..."></textarea>' +
+        '<div style="display:flex; gap:8px; margin-top:15px;">' +
+          '<button onclick="lancerDicteeNoteRapide()" class="btn btn-outline" style="flex:1; border-color:#E65100; color:#E65100; font-size:18px;">🎤</button>' +
+          '<button onclick="sauvegarderNoteRapide()" class="btn btn-primary" style="flex:2;">💾 Enregistrer</button>' +
+        '</div>' +
+        '<button onclick="fermerModalDicteeNoteRapide()" class="btn btn-outline" style="width:100%; margin-top:10px; font-size:12px;">Annuler</button>' +
+      '</div>';
+    document.body.appendChild(overlay);
+  } else {
+    overlay.style.display = 'flex';
+    document.getElementById('note-rapide-texte').value = '';
+  }
+}
+
+function fermerModalDicteeNoteRapide() {
+  var o = document.getElementById('overlay-dictee-note-rapide');
+  if (o) o.style.display = 'none';
+}
+
+function lancerDicteeNoteRapide() {
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    alert("La dictée vocale n'est pas supportée par ce navigateur.");
+    return;
+  }
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  var rec = new SR();
+  rec.lang = 'fr-FR';
+  rec.interimResults = false;
+  
+  var ta = document.getElementById('note-rapide-texte');
+  var ancienTexte = ta.value;
+  ta.placeholder = "🎙️ Écoute en cours... Parlez.";
+  ta.style.borderColor = "#E65100";
+  
+  rec.onresult = function(e) {
+    var texte = e.results[0][0].transcript;
+    ta.value = ancienTexte ? ancienTexte + ' ' + texte : texte;
+  };
+  
+  rec.onend = function() {
+    ta.placeholder = "Appuyez sur le micro et parlez...";
+    ta.style.borderColor = "";
+  };
+  
+  rec.start();
+}
+
+async function sauvegarderNoteRapide() {
+  var texte = document.getElementById('note-rapide-texte').value.trim();
+  if (!texte) { alert("Veuillez dicter ou taper une note."); return; }
+  
+  try {
+    var r = await apiPost({
+      action: 'ajouterTache',
+      type: 'note',
+      titre: texte.substring(0, 140),
+      details: texte,
+      priorite: 'normale'
+    });
+    
+    if (!r || !r.ok) throw new Error(r.error || 'Erreur');
+    
+    fermerModalDicteeNoteRapide();
+    afficherToast('ok', '✅', 'Note enregistrée', 'Retrouvez-la dans l\'onglet Notes.', 3000);
+    await chargerTachesNotes(); // Met à jour les compteurs et la liste
+    renderKPI(); // Met à jour le compteur sur l'accueil
+    
+  } catch(e) {
+    alert("❌ Erreur : " + e.message);
+  }
 }
 </script>
 </body>
