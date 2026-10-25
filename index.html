@@ -650,10 +650,10 @@ shortcuts.className = 'kpi-card';
 shortcuts.style.cssText = 'grid-column: auto; cursor: default; justify-content: center; min-width: 200px; padding: 8px; display: flex; align-items: center;';
 
 shortcuts.innerHTML = 
-  '<div style="display:flex; flex-direction:row; flex-wrap:nowrap; gap:6px; width:100%;">' +
-    '<button class="btn btn-outline" onclick="showView(\'taches\'); ouvrirSousModuleTaches(\'taches\'); document.getElementById(\'task-filter-type\').value=\'taches\'; renderTaches();" style="flex:1; padding:6px 2px; font-size:11px; border-color:#CFD8DC; color:#455A64; justify-content:center; white-space:nowrap;">📝 Tâches (' + actifsTaches + ')</button>' +
-    '<button class="btn btn-outline" onclick="showView(\'taches\'); ouvrirSousModuleTaches(\'taches\'); document.getElementById(\'task-filter-type\').value=\'notes\'; renderTaches();" style="flex:1; padding:6px 2px; font-size:11px; border-color:#CFD8DC; color:#455A64; justify-content:center; white-space:nowrap;">🗒️ Notes (' + notesCount + ')</button>' +
-    '<button class="btn btn-outline" onclick="showView(\'taches\'); ouvrirSousModuleTaches(\'achats\');" style="flex:1; padding:6px 2px; font-size:11px; border-color:#CFD8DC; color:#455A64; justify-content:center; white-space:nowrap;">🛒 Achats (' + achatsEnCours + ')</button>' +
+  '<div style="display:flex; flex-direction:row; flex-wrap:nowrap; gap:4px; width:100%;">' +
+    '<button class="btn btn-outline" onclick="showView(\'taches\'); ouvrirSousModuleTaches(\'taches\'); document.getElementById(\'task-filter-type\').value=\'taches\'; renderTaches();" style="flex:1; padding:6px 1px; font-size:9px; border-color:#CFD8DC; color:#455A64; justify-content:center; white-space:nowrap;">📝 Tâches (' + actifsTaches + ')</button>' +
+    '<button class="btn btn-outline" onclick="showView(\'taches\'); ouvrirSousModuleTaches(\'taches\'); document.getElementById(\'task-filter-type\').value=\'notes\'; renderTaches();" style="flex:1; padding:6px 1px; font-size:9px; border-color:#CFD8DC; color:#455A64; justify-content:center; white-space:nowrap;">🗒️ Notes (' + notesCount + ')</button>' +
+    '<button class="btn btn-outline" onclick="showView(\'taches\'); ouvrirSousModuleTaches(\'achats\');" style="flex:1; padding:6px 1px; font-size:9px; border-color:#CFD8DC; color:#455A64; justify-content:center; white-space:nowrap;">🛒 Achats (' + achatsEnCours + ')</button>' +
   '</div>';
 grid.appendChild(shortcuts);
 }
