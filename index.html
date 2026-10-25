@@ -233,16 +233,6 @@ textarea{resize:vertical;min-height:70px;}
   .kpi-value{font-size:22px;}
   .table-wrap{overflow:visible;}
   
-  /* Transforme les tableaux classiques en cartes sur mobile */
-  table:not(.no-responsive) thead{display:none;}
-  table:not(.no-responsive), table:not(.no-responsive) tbody, table:not(.no-responsive) tr, table:not(.no-responsive) td{display:block;width:100%;}
-  table:not(.no-responsive) tr{background:#fff;border-radius:12px;border:1px solid var(--bordure);margin-bottom:10px;padding:12px;box-shadow:0 1px 3px rgba(0,0,0,.05);}
-  table:not(.no-responsive) td{border:none;padding:5px 0;text-align:left !important;display:flex;justify-content:space-between;align-items:center;gap:10px;white-space:normal;}
-  table:not(.no-responsive) td::before{content:attr(data-label);font-weight:700;font-size:11px;text-transform:uppercase;color:var(--texte2);flex-shrink:0;}
-  table:not(.no-responsive) td:first-child{font-size:16px;font-weight:700;color:var(--bleu);border-bottom:1px solid var(--bordure);padding-bottom:8px;margin-bottom:4px;}
-  table:not(.no-responsive) td:first-child::before{display:none;}
-  .col-comment{max-width:none !important;white-space:normal !important;}
-  
   /* Force le tableau de la flotte à rester un tableau classique */
   table.no-responsive { display: table !important; width: 100% !important; }
   table.no-responsive thead { display: table-header-group !important; }
@@ -326,7 +316,7 @@ textarea.task-input{resize:vertical}
 </div>
 
 <aside class="sidebar">
-  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v14.1</div></div>
+  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v14.2</div></div>
   <nav class="nav">
     <div class="nav-item active" id="nav-suivi" onclick="showView('suivi')"><span class="icon">📋</span><span>Commandes</span></div>
     <div class="nav-item" id="nav-alertes" onclick="showView('alertes')"><span class="icon">🔔</span><span>Alertes</span></div>
@@ -339,7 +329,7 @@ textarea.task-input{resize:vertical}
     <div class="nav-item" id="nav-planning" onclick="showView('planning')"><span class="icon">📅</span><span>Planning</span></div>
     <div class="nav-item" id="nav-config" onclick="showView('config')"><span class="icon">⚙️</span><span>Config</span></div>
   </nav>
-  <div class="sidebar-footer">v14.1</div>
+  <div class="sidebar-footer">v14.2</div>
 </aside>
 
 <div class="main">
@@ -521,7 +511,7 @@ textarea.task-input{resize:vertical}
         <table class="flotte-table no-responsive">
           <thead>
             <tr>
-              <th>Type</th><th>V1</th><th>V2</th><th>V3</th><th>V4</th><th>Total</th>
+              <th>Type</th><th>V1</th><th>V2</th><th>V3</th><th>V4</th><th>Total</th><th>Alerte (+1 an)</th>
             </tr>
           </thead>
           <tbody id="flotte-couts-body"></tbody>
@@ -622,7 +612,7 @@ var FOU_COLORS = {'ATLANTEM':'#1565C0','ATULAM':'#6A1B9A','LALLEMANT':'#2E7D32',
 var TERMINES = ['livre','termine','pose'];
 var commandes = [];
 var sortCol = 'ligne', sortAsc = false, alertFilter = 'all', editLigne = -1;
-var CACHE_DUREE = 60 * 1000, CACHE_KEY = 'eco-ouest-cache-v141', CACHE_TIME_KEY = 'eco-ouest-cache-time-v141';
+var CACHE_DUREE = 60 * 1000, CACHE_KEY = 'eco-ouest-cache-v142', CACHE_TIME_KEY = 'eco-ouest-cache-time-v142';
 var dernierRapportAgent = null;
 var recognition = null, recognitionAssistant = null, recognitionAction = null;
 var cacheTrad = {};
@@ -831,17 +821,39 @@ function renderFlotte() {
 
   tb.innerHTML = htmlRows;
 
-    var lignesCouts = typesInterventions.map(function(type) {
-    // On affiche TOUS les types, même si le total est à 0
+  var lignesCouts = typesInterventions.map(function(type) {
+    var coutTotalType = totauxParType[type] || 0;
+    var alerteDate = "—";
+    var colorAlerte = "var(--texte2)";
+    
+    var vehiculesAvecCeType = flotteVehicules.filter(function(v) { 
+      return String(v.type).toUpperCase() === type && v.dateIntervention; 
+    });
+    
+    if (vehiculesAvecCeType.length > 0) {
+      var datePlusRecente = new Date(Math.max.apply(null, vehiculesAvecCeType.map(function(v) { return new Date(v.dateIntervention); })));
+      var unAnApres = new Date(datePlusRecente);
+      unAnApres.setFullYear(unAnApres.getFullYear() + 1);
+      
+      if (new Date() > unAnApres) {
+        alerteDate = "À FAIRE (+1 an)";
+        colorAlerte = "var(--rouge)";
+      } else {
+        alerteDate = "OK";
+        colorAlerte = "var(--vert)";
+      }
+    }
+
     return '<tr>' +
       '<td style="text-align:left;">' + type + '</td>' +
       '<td colspan="4"></td>' +
-      '<td style="font-weight:bold;">' + totauxParType[type].toLocaleString('fr-FR', {style:'currency', currency:'EUR'}) + '</td>' +
+      '<td style="font-weight:bold;">' + coutTotalType.toLocaleString('fr-FR', {style:'currency', currency:'EUR'}) + '</td>' +
+      '<td style="color:' + colorAlerte + '; font-weight:bold;">' + alerteDate + '</td>' +
     '</tr>';
   }).join('');
 
   lignesCouts += '<tr style="background:#F5F7FA; font-weight:bold;">' +
-    '<td style="text-align:left;">Total</td><td colspan="4"></td><td>' + totalGeneral.toLocaleString('fr-FR', {style:'currency', currency:'EUR'}) + '</td>' +
+    '<td style="text-align:left;">Total</td><td colspan="4"></td><td>' + totalGeneral.toLocaleString('fr-FR', {style:'currency', currency:'EUR'}) + '</td><td></td>' +
   '</tr>';
 
   tbCouts.innerHTML = lignesCouts;
@@ -874,6 +886,7 @@ function ouvrirModalVehicule(idVehicule) {
           '<div><label>Conducteur</label><input type="text" id="fv-conducteur" class="task-input"></div>' +
           '<div><label>Type (coût)</label><select id="fv-type" class="task-input"><option value="">—</option><option>RÉVISION</option><option>PNEUS</option><option>PIÈCES D\'USURE</option><option>RÉPARATION</option><option>CONTRÔLE TECHNIQUE</option><option>ASSURANCE / ADMIN</option><option>AUTRE</option></select></div>' +
           '<div><label>Coût TTC (€)</label><input type="number" id="fv-coutTTC" class="task-input" step="0.01"></div>' +
+          '<div style="grid-column:1/-1;"><label>Date de l\'intervention (ex: date de changement des pneus)</label><input type="date" id="fv-dateIntervention" class="task-input"></div>' +
         '</div>' +
         '<div style="display:flex; gap:8px; margin-top:20px; justify-content:flex-end;">' +
           '<button onclick="document.getElementById(\'overlay-vehicule\').style.display=\'none\'" class="btn btn-outline">Annuler</button>' +
@@ -897,6 +910,7 @@ function ouvrirModalVehicule(idVehicule) {
   document.getElementById('fv-conducteur').value = v.conducteur || '';
   document.getElementById('fv-type').value = v.type || '';
   document.getElementById('fv-coutTTC').value = v.coutTTC || '';
+  document.getElementById('fv-dateIntervention').value = v.dateIntervention || '';
 }
 
 async function sauvegarderVehicule() {
@@ -915,7 +929,8 @@ async function sauvegarderVehicule() {
     dateAssurance: document.getElementById('fv-dateAssurance').value,
     conducteur: document.getElementById('fv-conducteur').value.trim(),
     type: document.getElementById('fv-type').value,
-    coutTTC: document.getElementById('fv-coutTTC').value || 0
+    coutTTC: document.getElementById('fv-coutTTC').value || 0,
+    dateIntervention: document.getElementById('fv-dateIntervention').value
   };
 
   try {
