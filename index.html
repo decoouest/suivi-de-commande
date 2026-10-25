@@ -489,10 +489,14 @@ textarea.task-input{resize:vertical}
 
     <div id="view-dashboard" class="view"><div class="dash-grid" id="dash-content"></div></div>
 
-    <div id="view-flotte" class="view">
-      <h3 style="font-size:16px; margin-bottom:15px; color:var(--bleu);">Tableau de bord – Flotte</h3>
+        <div id="view-flotte" class="view">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
+        <h3 style="font-size:16px; margin:0; color:var(--bleu);">Tableau de bord – Flotte</h3>
+        <button class="btn btn-primary btn-sm" onclick="ouvrirModalVehicule()">+ Ajouter / Modifier</button>
+      </div>
+
       <div class="table-wrap">
-        <table class="flotte-table">
+        <table class="flotte-table no-responsive">
           <thead>
             <tr>
               <th>Repère</th><th>Modèle</th><th>Immat.</th><th>Km actuel</th><th>Coût TTC (€)</th>
@@ -503,6 +507,19 @@ textarea.task-input{resize:vertical}
           <tbody id="flotte-table-body"></tbody>
         </table>
       </div>
+
+      <h3 style="font-size:14px; margin:20px 0 10px 0; color:var(--bleu);">Coût TTC par type d'intervention et par véhicule (€)</h3>
+      <div class="table-wrap">
+        <table class="flotte-table no-responsive">
+          <thead>
+            <tr>
+              <th>Type</th><th>V1</th><th>V2</th><th>V3</th><th>V4</th><th>Total</th>
+            </tr>
+          </thead>
+          <tbody id="flotte-couts-body"></tbody>
+        </table>
+      </div>
+    </div>
 
       <h3 style="font-size:14px; margin:20px 0 10px 0; color:var(--bleu);">Coût TTC par type d'intervention et par véhicule (€)</h3>
       <div class="table-wrap">
