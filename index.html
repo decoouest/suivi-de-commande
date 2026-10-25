@@ -791,7 +791,7 @@ function renderFlotte() {
   var vehicules = flotteVehicules.slice(0, 4);
 
   var htmlRows = vehicules.map(function(v, index) {
-    var repere = "V" + (index + 1);
+    var repere = v.id || ("V" + (index + 1));
     var kmDepuisRevision = v.kmActuel - (v.kmRevision || 0);
     var resteAvantRevision = SEUIL_KM_REVISION - kmDepuisRevision;
     
@@ -813,8 +813,9 @@ function renderFlotte() {
       totalGeneral += v.coutTTC;
     }
 
+    // Ajout de l'icône ✏️ à côté du repère
     return '<tr>' +
-      '<td>' + repere + '</td>' +
+      '<td><span onclick="ouvrirModalVehicule(\'' + v.id + '\')" style="cursor:pointer; color:var(--bleu); font-size:16px;" title="Modifier ce véhicule">✏️</span> ' + repere + '</td>' +
       '<td>' + h(v.modele) + '</td>' +
       '<td class="col-mono">' + h(v.immat) + '</td>' +
       '<td>' + v.kmActuel.toLocaleString('fr-FR') + '</td>' +
