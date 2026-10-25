@@ -396,14 +396,19 @@ textarea.task-input{resize:vertical}
   <button type="button" class="btn btn-outline" onclick="dicterPourChamp('task-details')" title="Dicter les détails" style="padding:8px 10px; border-color:#E65100; color:#E65100;">🎤</button>
 </div>
               <div class="task-fields-row">
-                <div><label for="task-echeance">Échéance</label><input id="task-echeance" class="task-input" type="date"></div>
-                <div><label for="task-priorite">Priorité</label><select id="task-priorite" class="task-input"><option value="haute">🔴 Haute</option><option value="normale" selected>🟠 Normale</option><option value="basse">🟢 Basse</option></select></div>
-              </div>
+  <div><label for="task-echeance">Échéance</label><input id="task-echeance" class="task-input" type="date"></div>
+  <div><label for="task-priorite">Priorité</label><select id="task-priorite" class="task-input"><option value="haute">🔴 Haute</option><option value="normale" selected>🟠 Normale</option><option value="basse">🟢 Basse</option></select></div>
+</div>
 
-              <div class="task-form-actions">
-                <button class="btn btn-primary" type="submit">💾 Enregistrer</button>
-                <button class="btn btn-outline" type="button" onclick="reinitialiserFormTache()">Annuler</button>
-              </div>
+<!-- NOUVEAU BOUTON MICRO ICI -->
+<button type="button" class="btn btn-outline" onclick="dicterPourChamp('task-details')" style="width: 100%; margin-top: 10px; padding: 10px; border-color: #E65100; color: #E65100; justify-content: center; font-weight: 700;">
+  🎤 Dicter la note / les détails à la voix
+</button>
+
+<div class="task-form-actions" style="margin-top: 15px;">
+  <button class="btn btn-primary" type="submit">💾 Enregistrer</button>
+  <button class="btn btn-outline" type="button" onclick="reinitialiserFormTache()">Annuler</button>
+</div>
             </form>
           </section>
           
