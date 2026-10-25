@@ -824,45 +824,47 @@ function capturerAchatsEnCours() {
   if (!items.length) { alert('Aucun achat en cours à capturer.'); return; }
   
   var container = document.createElement('div');
-  container.style.cssText = 'position:absolute; left:-9999px; top:0; width:800px; background:#fff; padding:40px; font-family:Arial, sans-serif;';
+  container.style.cssText = 'position:absolute; left:-9999px; top:0; width:1000px; background:#fff; padding:40px; font-family:Arial, sans-serif;';
   
   var today = new Date().toLocaleDateString('fr-FR');
   var html = '<div style="text-align:center; margin-bottom:30px;">' +
-           '<h1 style="color:#1565C0; margin:0 0 10px 0; font-size:24px;">ECO OUEST - Achats en cours</h1>' +
-           '<p style="color:#666; margin:0; font-size:14px;">Généré le ' + today + '</p></div>';
-           
-html += '<table style="width:100%; border-collapse:collapse; font-size:13px;">';
-html += '<thead><tr style="background:#F5F7FA; color:#546E7A; text-align:left;">' +
-        '<th style="padding:10px; border-bottom:2px solid #E0E7EF; width:15%;">Réf.</th>' +
-        '<th style="padding:10px; border-bottom:2px solid #E0E7EF; width:35%;">Article</th>' +
-        '<th style="padding:10px; border-bottom:2px solid #E0E7EF; width:10%;">Qté</th>' +
-        '<th style="padding:10px; border-bottom:2px solid #E0E7EF; width:15%;">Fournisseur</th>' +
-        '<th style="padding:10px; border-bottom:2px solid #E0E7EF; width:15%;">Statut</th>' +
-        '<th style="padding:10px; border-bottom:2px solid #E0E7EF; width:10%;">Priorité</th>' +
-        '</tr></thead><tbody>';
-        
-items.forEach(function(a) {
-  var statut = a.statut === 'commande' ? 'Commandé' : 'À acheter';
-  var color = a.statut === 'commande' ? '#1565C0' : '#E65100';
-  var pColor = a.priorite === 'haute' ? '#D32F2F' : a.priorite === 'basse' ? '#2E7D32' : '#E65100';
-  
-  html += '<tr>' +
-          '<td style="padding:10px; border-bottom:1px solid #E0E7EF; font-family:monospace; font-size:12px; color:#455A64;">' + h(a.reference || '—') + '</td>' +
-          '<td style="padding:10px; border-bottom:1px solid #E0E7EF; font-weight:bold;">' + h(a.nom) + '</td>' +
-          '<td style="padding:10px; border-bottom:1px solid #E0E7EF;">' + h(a.quantite) + '</td>' +
-          '<td style="padding:10px; border-bottom:1px solid #E0E7EF;">' + h(a.fournisseur || '—') + '</td>' +
-          '<td style="padding:10px; border-bottom:1px solid #E0E7EF; color:' + color + '; font-weight:bold;">' + statut + '</td>' +
-          '<td style="padding:10px; border-bottom:1px solid #E0E7EF; color:' + pColor + '; font-weight:bold;">' + h(a.priorite) + '</td>' +
-          '</tr>';
-});
-html += '</tbody></table>';
+             '<h1 style="color:#1565C0; margin:0 0 10px 0; font-size:24px;">ECO OUEST - Achats en cours</h1>' +
+             '<p style="color:#666; margin:0; font-size:14px;">Généré le ' + today + '</p></div>';
+             
+  html += '<table style="width:100%; border-collapse:collapse; font-size:12px;">';
+  html += '<thead><tr style="background:#F5F7FA; color:#546E7A; text-align:left;">' +
+          '<th style="padding:12px; border-bottom:2px solid #E0E7EF; width:12%;">Réf.</th>' +
+          '<th style="padding:12px; border-bottom:2px solid #E0E7EF; width:40%;">Article</th>' +
+          '<th style="padding:12px; border-bottom:2px solid #E0E7EF; width:8%; text-align:center;">Qté</th>' +
+          '<th style="padding:12px; border-bottom:2px solid #E0E7EF; width:15%;">Fournisseur</th>' +
+          '<th style="padding:12px; border-bottom:2px solid #E0E7EF; width:15%;">Statut</th>' +
+          '<th style="padding:12px; border-bottom:2px solid #E0E7EF; width:10%;">Priorité</th>' +
+          '</tr></thead><tbody>';
+          
+  items.forEach(function(a) {
+    var statut = a.statut === 'commande' ? 'Commandé' : 'À acheter';
+    var color = a.statut === 'commande' ? '#1565C0' : '#E65100';
+    var pColor = a.priorite === 'haute' ? '#D32F2F' : a.priorite === 'basse' ? '#2E7D32' : '#E65100';
+    
+    // On force une hauteur de ligne et un alignement vertical centré
+    html += '<tr style="border-bottom:1px solid #E0E7EF;">' +
+            '<td style="padding:10px; font-family:monospace; font-size:11px; color:#455A64; vertical-align:middle;">' + h(a.reference || '—') + '</td>' +
+            '<td style="padding:10px; font-weight:bold; color:#333; vertical-align:middle;">' + h(a.nom) + '</td>' +
+            '<td style="padding:10px; text-align:center; font-weight:bold; vertical-align:middle;">' + h(a.quantite) + '</td>' +
+            '<td style="padding:10px; vertical-align:middle;">' + h(a.fournisseur || '—') + '</td>' +
+            '<td style="padding:10px; color:' + color + '; font-weight:bold; vertical-align:middle;">' + statut + '</td>' +
+            '<td style="padding:10px; color:' + pColor + '; font-weight:bold; vertical-align:middle;">' + h(a.priorite) + '</td>' +
+            '</tr>';
+  });
+  html += '</tbody></table>';
   
   container.innerHTML = html;
   document.body.appendChild(container);
   
   afficherToast('ok', '📸', 'Capture en cours...', 'Patientez', 2000);
 
-  html2canvas(container, { scale: 2, backgroundColor: '#ffffff' }).then(function(canvas) {
+  // On augmente l'échelle (scale: 3) pour que l'image soit très nette même en zoomant
+  html2canvas(container, { scale: 3, backgroundColor: '#ffffff' }).then(function(canvas) {
     document.body.removeChild(container);
     var link = document.createElement('a');
     link.download = 'Achats_en_cours_' + new Date().toISOString().slice(0,10) + '.png';
@@ -874,10 +876,6 @@ html += '</tbody></table>';
     alert('Erreur lors de la capture : ' + e.message);
   });
 }
-
-// ── MÉTRÉ ──
-function renderMetre() { var q = str(document.getElementById('metre-search').value).toLowerCase(), fFilt = document.getElementById('metre-filter').value; var rows = commandes.map(function(c,i){return Object.assign({},c,{_i:i,_a:alerte(c),_dateMetre:formatDateMetre(c.metres)});}); if (q) rows = rows.filter(function(c){return str(c.client).toLowerCase().indexOf(q)!==-1||str(c.devis).toLowerCase().indexOf(q)!==-1||str(c.fournisseur).toLowerCase().indexOf(q)!==-1;}); if (fFilt==='rempli') rows = rows.filter(function(c){return c._dateMetre!=='';}); if (fFilt==='vide') rows = rows.filter(function(c){return c._dateMetre==='';}); var total=commandes.length, remplis=commandes.filter(function(c){return formatDateMetre(c.metres)!=='';}).length, vides=total-remplis, pct=total>0?Math.round(remplis/total*100):0; var stats = document.getElementById('metre-stats'); stats.innerHTML = '<div class="kpi-card kpi-info"><span class="kpi-label">Total</span><span class="kpi-value">'+total+'</span><span class="kpi-sub">commandes</span></div><div class="kpi-card kpi-ok"><span class="kpi-label">Datées</span><span class="kpi-value">'+remplis+'</span><span class="kpi-sub">'+pct+'% complété</span></div><div class="kpi-card kpi-urgent"><span class="kpi-label">Manquantes</span><span class="kpi-value">'+vides+'</span><span class="kpi-sub">à planifier</span></div>'; rows.sort(function(a,b){if ((a._dateMetre==='')!==(b._dateMetre==='')) return a._dateMetre===''?-1:1; return b.ligne-a.ligne;}); var tb = document.getElementById('metre-table-body'); if (!rows.length) { tb.innerHTML='<tr><td colspan="9"><div class="empty-state"><p>Aucune.</p></div></td></tr>'; document.getElementById('metre-scroll-hint').textContent=''; return; } tb.innerHTML = rows.map(function(c){ var a=c._a, fc=FOU_COLORS[c.fournisseur]||'#546E7A'; var sL=c.statutLivraison?'<span class="badge '+(c.statutLivraison==='Livré'?'badge-ok':c.statutLivraison==='SAV'?'badge-urgent':'badge-info')+'">'+h(c.statutLivraison)+'</span>':'—'; var sP=c.statutPose?'<span class="badge '+(c.statutPose==='Terminé'?'badge-ok':c.statutPose==='SAV'?'badge-urgent':'badge-info')+'">'+h(c.statutPose)+'</span>':'—'; var dateCell = c._dateMetre?'<span style="background:var(--vert-bg);color:var(--vert);padding:3px 9px;border-radius:5px;font-size:12px;font-weight:700;">📅 '+h(c._dateMetre)+'</span>':'<span style="background:#FFEBEE;color:var(--rouge);padding:3px 9px;border-radius:5px;font-size:11px;font-weight:700;">⚠ Non datée</span>'; return '<tr><td class="col-mono" data-label="Ligne">L'+c.ligne+'</td><td class="col-client" data-label="Client">'+h(c.client)+'</td><td data-label="Fournisseur"><span style="background:'+fc+'18;color:'+fc+';padding:3px 8px;border-radius:5px;font-size:11px;font-weight:700;">'+h(c.fournisseur||'—')+'</span></td><td class="col-mono" data-label="Devis">'+h(c.devis||'—')+'</td><td data-label="Date métré">'+dateCell+'</td><td data-label="Statut livr.">'+sL+'</td><td data-label="Statut pose">'+sP+'</td><td data-label="Alerte"><span class="alerte-text '+aClass(a.n)+'">'+(a.n===0?'OK':a.n===-1?'⏹ Annulée':'⚠ '+h(a.t.split(' | ')[0]))+'</span></td><td><button class="action-btn" onclick="openModal('+c._i+')">✏️</button></td></tr>'; }).join(''); document.getElementById('metre-scroll-hint').textContent = rows.length+' commande(s) affichée(s) sur '+total; }
-
 // ── MODAL ──
 function ajouterOptionHorsListe(sel, v) { if (!sel||!v) return; var val=str(v), existe=false; for (var i=0;i<sel.options.length;i++){ if(sel.options[i].value===val){existe=true;break;} } if (!existe){ var opt=document.createElement('option'); opt.value=val; opt.textContent=val+' (hors liste)'; sel.appendChild(opt); } }
 function openModal(idx) { editLigne=-1; var c=idx>=0?commandes[idx]:{}; if(idx>=0)editLigne=c.ligne; document.getElementById('modal-title').textContent=idx>=0?'Modifier - '+str(c.client):'Nouvelle commande'; document.getElementById('btn-suppr').style.display=idx>=0?'inline-flex':'none'; ['client','devis','devisTTC','fournisseur','commande','arc','commentaireARC','prevLivraison','statutLivraison','statutPose'].forEach(function(f){ var el=document.getElementById('f-'+f); if(el) el.value=str(c[f]); }); ajouterOptionHorsListe(document.getElementById('f-fournisseur'),c.fournisseur); ajouterOptionHorsListe(document.getElementById('f-commande'),c.commande); ajouterOptionHorsListe(document.getElementById('f-commentaireARC'),c.commentaireARC); ajouterOptionHorsListe(document.getElementById('f-statutLivraison'),c.statutLivraison); ajouterOptionHorsListe(document.getElementById('f-statutPose'),c.statutPose); if(c.fournisseur) document.getElementById('f-fournisseur').value=str(c.fournisseur); if(c.commande) document.getElementById('f-commande').value=str(c.commande); if(c.commentaireARC) document.getElementById('f-commentaireARC').value=str(c.commentaireARC); if(c.statutLivraison) document.getElementById('f-statutLivraison').value=str(c.statutLivraison); if(c.statutPose) document.getElementById('f-statutPose').value=str(c.statutPose); var metEl=document.getElementById('f-metres'); if(metEl) metEl.value=c.metres?formatDateMetre(c.metres):''; var pvEl=document.getElementById('f-pvChantier'); if(pvEl) pvEl.checked=str(c.pvChantier).toUpperCase()==='OUI'; var dpEl=document.getElementById('f-datePose'); if(dpEl) dpEl.value=str(c.datePose); var objEl=document.getElementById('f-objetCommande'); if(objEl) objEl.value=str(c.objetCommande); document.getElementById('f-commentaire-historique').value=str(c.commentaire); var cmtNouv=document.getElementById('f-commentaire-nouveau'); if(cmtNouv) cmtNouv.value=''; document.getElementById('overlay').classList.add('open'); }
