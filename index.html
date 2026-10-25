@@ -828,35 +828,34 @@ function capturerAchatsEnCours() {
   
   var today = new Date().toLocaleDateString('fr-FR');
   var html = '<div style="text-align:center; margin-bottom:30px;">' +
-             '<h1 style="color:#1565C0; margin:0 0 10px 0; font-size:24px;">ECO OUEST - Achats en cours</h1>' +
-             '<p style="color:#666; margin:0; font-size:14px;">Généré le ' + today + '</p></div>';
-             
-  html += '<table style="width:100%; border-collapse:collapse; font-size:13px;">';
-  html += '<thead><tr style="background:#F5F7FA; color:#546E7A; text-align:left;">' +
-          '<th style="padding:12px; border-bottom:2px solid #E0E7EF;">Article</th>' +
-          '<th style="padding:12px; border-bottom:2px solid #E0E7EF;">Qté</th>' +
-          '<th style="padding:12px; border-bottom:2px solid #E0E7EF;">Catégorie</th>' +
-          '<th style="padding:12px; border-bottom:2px solid #E0E7EF;">Fournisseur</th>' +
-          '<th style="padding:12px; border-bottom:2px solid #E0E7EF;">Statut</th>' +
-          '<th style="padding:12px; border-bottom:2px solid #E0E7EF;">Échéance</th>' +
-          '<th style="padding:12px; border-bottom:2px solid #E0E7EF;">Priorité</th>' +
-          '</tr></thead><tbody>';
-          
-  items.forEach(function(a) {
-    var statut = a.statut === 'commande' ? 'Commandé' : 'À acheter';
-    var color = a.statut === 'commande' ? '#1565C0' : '#E65100';
-    var pColor = a.priorite === 'haute' ? '#D32F2F' : a.priorite === 'basse' ? '#2E7D32' : '#E65100';
-    html += '<tr>' +
-            '<td style="padding:12px; border-bottom:1px solid #E0E7EF; font-weight:bold;">' + h(a.nom) + '</td>' +
-            '<td style="padding:12px; border-bottom:1px solid #E0E7EF;">' + h(a.quantite) + '</td>' +
-            '<td style="padding:12px; border-bottom:1px solid #E0E7EF;">' + h(a.categorie) + '</td>' +
-            '<td style="padding:12px; border-bottom:1px solid #E0E7EF;">' + h(a.fournisseur || '—') + '</td>' +
-            '<td style="padding:12px; border-bottom:1px solid #E0E7EF; color:' + color + '; font-weight:bold;">' + statut + '</td>' +
-            '<td style="padding:12px; border-bottom:1px solid #E0E7EF;">' + (a.echeance ? formatEcheance(a.echeance) : '—') + '</td>' +
-            '<td style="padding:12px; border-bottom:1px solid #E0E7EF; color:' + pColor + '; font-weight:bold;">' + h(a.priorite) + '</td>' +
-            '</tr>';
-  });
-  html += '</tbody></table>';
+           '<h1 style="color:#1565C0; margin:0 0 10px 0; font-size:24px;">ECO OUEST - Achats en cours</h1>' +
+           '<p style="color:#666; margin:0; font-size:14px;">Généré le ' + today + '</p></div>';
+           
+html += '<table style="width:100%; border-collapse:collapse; font-size:13px;">';
+html += '<thead><tr style="background:#F5F7FA; color:#546E7A; text-align:left;">' +
+        '<th style="padding:10px; border-bottom:2px solid #E0E7EF; width:15%;">Réf.</th>' +
+        '<th style="padding:10px; border-bottom:2px solid #E0E7EF; width:35%;">Article</th>' +
+        '<th style="padding:10px; border-bottom:2px solid #E0E7EF; width:10%;">Qté</th>' +
+        '<th style="padding:10px; border-bottom:2px solid #E0E7EF; width:15%;">Fournisseur</th>' +
+        '<th style="padding:10px; border-bottom:2px solid #E0E7EF; width:15%;">Statut</th>' +
+        '<th style="padding:10px; border-bottom:2px solid #E0E7EF; width:10%;">Priorité</th>' +
+        '</tr></thead><tbody>';
+        
+items.forEach(function(a) {
+  var statut = a.statut === 'commande' ? 'Commandé' : 'À acheter';
+  var color = a.statut === 'commande' ? '#1565C0' : '#E65100';
+  var pColor = a.priorite === 'haute' ? '#D32F2F' : a.priorite === 'basse' ? '#2E7D32' : '#E65100';
+  
+  html += '<tr>' +
+          '<td style="padding:10px; border-bottom:1px solid #E0E7EF; font-family:monospace; font-size:12px; color:#455A64;">' + h(a.reference || '—') + '</td>' +
+          '<td style="padding:10px; border-bottom:1px solid #E0E7EF; font-weight:bold;">' + h(a.nom) + '</td>' +
+          '<td style="padding:10px; border-bottom:1px solid #E0E7EF;">' + h(a.quantite) + '</td>' +
+          '<td style="padding:10px; border-bottom:1px solid #E0E7EF;">' + h(a.fournisseur || '—') + '</td>' +
+          '<td style="padding:10px; border-bottom:1px solid #E0E7EF; color:' + color + '; font-weight:bold;">' + statut + '</td>' +
+          '<td style="padding:10px; border-bottom:1px solid #E0E7EF; color:' + pColor + '; font-weight:bold;">' + h(a.priorite) + '</td>' +
+          '</tr>';
+});
+html += '</tbody></table>';
   
   container.innerHTML = html;
   document.body.appendChild(container);
