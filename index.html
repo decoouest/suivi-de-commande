@@ -819,41 +819,42 @@ function afficherInventaireComplet() {
 
 // ── CAPTURE D'IMAGE ACHATS EN COURS ──
 function capturerAchatsEnCours() {
-  if (typeof html2canvas === 'undefined') { alert('Bibliothèque de capture indisponible (vérifiez votre connexion).'); return; }
+  if (typeof html2canvas === 'undefined') { alert('Bibliothèque de capture indisponible.'); return; }
   var items = achatsConsommables.filter(function(a){ return a.statut !== 'recu'; });
   if (!items.length) { alert('Aucun achat en cours à capturer.'); return; }
   
   var container = document.createElement('div');
-  container.style.cssText = 'position:absolute; left:-9999px; top:0; width:1000px; background:#fff; padding:40px; font-family:Arial, sans-serif;';
+  // On force une largeur de 1200px pour que tout rentre sans écraser
+  container.style.cssText = 'position:fixed; left:-9999px; top:0; width:1200px; background:#fff; padding:30px; font-family:Arial, sans-serif;';
   
   var today = new Date().toLocaleDateString('fr-FR');
-  var html = '<div style="text-align:center; margin-bottom:30px;">' +
-             '<h1 style="color:#1565C0; margin:0 0 10px 0; font-size:24px;">ECO OUEST - Achats en cours</h1>' +
-             '<p style="color:#666; margin:0; font-size:14px;">Généré le ' + today + '</p></div>';
-             
-  html += '<table style="width:100%; border-collapse:collapse; font-size:12px;">';
-  html += '<thead><tr style="background:#F5F7FA; color:#546E7A; text-align:left;">' +
-          '<th style="padding:12px; border-bottom:2px solid #E0E7EF; width:12%;">Réf.</th>' +
-          '<th style="padding:12px; border-bottom:2px solid #E0E7EF; width:40%;">Article</th>' +
-          '<th style="padding:12px; border-bottom:2px solid #E0E7EF; width:8%; text-align:center;">Qté</th>' +
-          '<th style="padding:12px; border-bottom:2px solid #E0E7EF; width:15%;">Fournisseur</th>' +
-          '<th style="padding:12px; border-bottom:2px solid #E0E7EF; width:15%;">Statut</th>' +
-          '<th style="padding:12px; border-bottom:2px solid #E0E7EF; width:10%;">Priorité</th>' +
-          '</tr></thead><tbody>';
-          
+  
+  // Construction du tableau
+  var html = '<div style="text-align:center; margin-bottom:20px;">' +
+             '<h1 style="color:#1565C0; margin:0 0 5px 0; font-size:22px;">ECO OUEST - Achats en cours</h1>' +
+             '<p style="color:#666; margin:0; font-size:12px;">Généré le ' + today + '</p></div>' +
+             '<table style="width:100%; border-collapse:collapse; font-size:12px; table-layout:fixed;">' +
+             '<thead><tr style="background:#F5F7FA; color:#546E7A; text-align:left;">' +
+             '<th style="padding:10px; border-bottom:2px solid #CFD8DC; width:12%;">Réf.</th>' +
+             '<th style="padding:10px; border-bottom:2px solid #CFD8DC; width:40%;">Article</th>' +
+             '<th style="padding:10px; border-bottom:2px solid #CFD8DC; width:8%; text-align:center;">Qté</th>' +
+             '<th style="padding:10px; border-bottom:2px solid #CFD8DC; width:15%;">Fournisseur</th>' +
+             '<th style="padding:10px; border-bottom:2px solid #CFD8DC; width:15%;">Statut</th>' +
+             '<th style="padding:10px; border-bottom:2px solid #CFD8DC; width:10%;">Priorité</th>' +
+             '</tr></thead><tbody>';
+
   items.forEach(function(a) {
     var statut = a.statut === 'commande' ? 'Commandé' : 'À acheter';
     var color = a.statut === 'commande' ? '#1565C0' : '#E65100';
     var pColor = a.priorite === 'haute' ? '#D32F2F' : a.priorite === 'basse' ? '#2E7D32' : '#E65100';
     
-    // On force une hauteur de ligne et un alignement vertical centré
     html += '<tr style="border-bottom:1px solid #E0E7EF;">' +
-            '<td style="padding:10px; font-family:monospace; font-size:11px; color:#455A64; vertical-align:middle;">' + h(a.reference || '—') + '</td>' +
-            '<td style="padding:10px; font-weight:bold; color:#333; vertical-align:middle;">' + h(a.nom) + '</td>' +
-            '<td style="padding:10px; text-align:center; font-weight:bold; vertical-align:middle;">' + h(a.quantite) + '</td>' +
-            '<td style="padding:10px; vertical-align:middle;">' + h(a.fournisseur || '—') + '</td>' +
-            '<td style="padding:10px; color:' + color + '; font-weight:bold; vertical-align:middle;">' + statut + '</td>' +
-            '<td style="padding:10px; color:' + pColor + '; font-weight:bold; vertical-align:middle;">' + h(a.priorite) + '</td>' +
+            '<td style="padding:10px; color:#455A64; font-family:monospace; word-wrap:break-word;">' + h(a.reference || '—') + '</td>' +
+            '<td style="padding:10px; font-weight:bold; color:#333; word-wrap:break-word;">' + h(a.nom) + '</td>' +
+            '<td style="padding:10px; text-align:center; font-weight:bold;">' + h(a.quantite) + '</td>' +
+            '<td style="padding:10px; word-wrap:break-word;">' + h(a.fournisseur || '—') + '</td>' +
+            '<td style="padding:10px; color:' + color + '; font-weight:bold;">' + statut + '</td>' +
+            '<td style="padding:10px; color:' + pColor + '; font-weight:bold;">' + h(a.priorite) + '</td>' +
             '</tr>';
   });
   html += '</tbody></table>';
@@ -861,10 +862,10 @@ function capturerAchatsEnCours() {
   container.innerHTML = html;
   document.body.appendChild(container);
   
-  afficherToast('ok', '📸', 'Capture en cours...', 'Patientez', 2000);
+  afficherToast('ok', '📸', 'Génération de l\'image...', 'Patientez', 2000);
 
-  // On augmente l'échelle (scale: 3) pour que l'image soit très nette même en zoomant
-  html2canvas(container, { scale: 3, backgroundColor: '#ffffff' }).then(function(canvas) {
+  // scale: 2 est le meilleur compromis netteté/poids pour un tableau
+  html2canvas(container, { scale: 2, backgroundColor: '#ffffff', width: 1200 }).then(function(canvas) {
     document.body.removeChild(container);
     var link = document.createElement('a');
     link.download = 'Achats_en_cours_' + new Date().toISOString().slice(0,10) + '.png';
