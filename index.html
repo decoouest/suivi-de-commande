@@ -233,7 +233,15 @@ textarea{resize:vertical;min-height:70px;}
   .kpi-value{font-size:22px;}
   .table-wrap{overflow:visible;}
   
-  /* Force le tableau de la flotte à rester un tableau classique */
+  table:not(.no-responsive) thead{display:none;}
+  table:not(.no-responsive), table:not(.no-responsive) tbody, table:not(.no-responsive) tr, table:not(.no-responsive) td{display:block;width:100%;}
+  table:not(.no-responsive) tr{background:#fff;border-radius:12px;border:1px solid var(--bordure);margin-bottom:10px;padding:12px;box-shadow:0 1px 3px rgba(0,0,0,.05);}
+  table:not(.no-responsive) td{border:none;padding:5px 0;text-align:left !important;display:flex;justify-content:space-between;align-items:center;gap:10px;white-space:normal;}
+  table:not(.no-responsive) td::before{content:attr(data-label);font-weight:700;font-size:11px;text-transform:uppercase;color:var(--texte2);flex-shrink:0;}
+  table:not(.no-responsive) td:first-child{font-size:16px;font-weight:700;color:var(--bleu);border-bottom:1px solid var(--bordure);padding-bottom:8px;margin-bottom:4px;}
+  table:not(.no-responsive) td:first-child::before{display:none;}
+  .col-comment{max-width:none !important;white-space:normal !important;}
+  
   table.no-responsive { display: table !important; width: 100% !important; }
   table.no-responsive thead { display: table-header-group !important; }
   table.no-responsive tbody { display: table-row-group !important; }
@@ -316,7 +324,7 @@ textarea.task-input{resize:vertical}
 </div>
 
 <aside class="sidebar">
-  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v14.2</div></div>
+  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v14.3</div></div>
   <nav class="nav">
     <div class="nav-item active" id="nav-suivi" onclick="showView('suivi')"><span class="icon">📋</span><span>Commandes</span></div>
     <div class="nav-item" id="nav-alertes" onclick="showView('alertes')"><span class="icon">🔔</span><span>Alertes</span></div>
@@ -329,7 +337,7 @@ textarea.task-input{resize:vertical}
     <div class="nav-item" id="nav-planning" onclick="showView('planning')"><span class="icon">📅</span><span>Planning</span></div>
     <div class="nav-item" id="nav-config" onclick="showView('config')"><span class="icon">⚙️</span><span>Config</span></div>
   </nav>
-  <div class="sidebar-footer">v14.2</div>
+  <div class="sidebar-footer">v14.3</div>
 </aside>
 
 <div class="main">
@@ -511,7 +519,7 @@ textarea.task-input{resize:vertical}
         <table class="flotte-table no-responsive">
           <thead>
             <tr>
-              <th>Type</th><th>V1</th><th>V2</th><th>V3</th><th>V4</th><th>Total</th><th>Alerte (+1 an)</th>
+              <th>Type</th><th>V1</th><th>V2</th><th>V3</th><th>V4</th><th>Total</th>
             </tr>
           </thead>
           <tbody id="flotte-couts-body"></tbody>
@@ -612,7 +620,7 @@ var FOU_COLORS = {'ATLANTEM':'#1565C0','ATULAM':'#6A1B9A','LALLEMANT':'#2E7D32',
 var TERMINES = ['livre','termine','pose'];
 var commandes = [];
 var sortCol = 'ligne', sortAsc = false, alertFilter = 'all', editLigne = -1;
-var CACHE_DUREE = 60 * 1000, CACHE_KEY = 'eco-ouest-cache-v142', CACHE_TIME_KEY = 'eco-ouest-cache-time-v142';
+var CACHE_DUREE = 60 * 1000, CACHE_KEY = 'eco-ouest-cache-v143', CACHE_TIME_KEY = 'eco-ouest-cache-time-v143';
 var dernierRapportAgent = null;
 var recognition = null, recognitionAssistant = null, recognitionAction = null;
 var cacheTrad = {};
@@ -763,26 +771,18 @@ function renderFlotte() {
   var tbCouts = document.getElementById('flotte-couts-body');
   if (!tb || !tbCouts) return;
 
-  var SEUIL_KM_REVISION = 30000;
-  var PRE_ALERTE_KM = 1500;
-  var PRE_ALERTE_JOURS = 30;
   var aujourdhui = new Date();
-
-  var totauxParType = {};
-  var typesInterventions = ["RÉVISION", "PNEUS", "PIÈCES D'USURE", "RÉPARATION", "CONTRÔLE TECHNIQUE", "ASSURANCE / ADMIN", "AUTRE"];
-  typesInterventions.forEach(function(t) { totauxParType[t] = 0; });
-  var totalGeneral = 0;
-
   var vehicules = flotteVehicules.slice(0, 4);
 
+  // 1. Tableau du haut : Alertes Révision & CT
   var htmlRows = vehicules.map(function(v, index) {
     var repere = v.id || ("V" + (index + 1));
     var kmDepuisRevision = v.kmActuel - (v.kmRevision || 0);
-    var resteAvantRevision = SEUIL_KM_REVISION - kmDepuisRevision;
+    var resteAvantRevision = 30000 - kmDepuisRevision;
     
     var alerteRev = "OK", colorRev = "var(--vert)";
     if (resteAvantRevision <= 0) { alerteRev = "À FAIRE"; colorRev = "var(--rouge)"; }
-    else if (resteAvantRevision <= PRE_ALERTE_KM) { alerteRev = "À prévoir"; colorRev = "var(--orange)"; }
+    else if (resteAvantRevision <= 1500) { alerteRev = "À prévoir"; colorRev = "var(--orange)"; }
 
     var dateCT = new Date(v.prochainCT);
     var joursAvantCT = Math.ceil((dateCT - aujourdhui) / (1000 * 60 * 60 * 24));
@@ -790,13 +790,7 @@ function renderFlotte() {
     var alerteCT = "OK", colorCT = "var(--vert)";
     if (isNaN(joursAvantCT)) { alerteCT = "—"; colorCT = "var(--texte2)"; }
     else if (joursAvantCT < 0) { alerteCT = "EXPIRÉ"; colorCT = "var(--rouge)"; }
-    else if (joursAvantCT <= PRE_ALERTE_JOURS) { alerteCT = "À prévoir"; colorCT = "var(--orange)"; }
-
-    var typeInt = String(v.type || "").toUpperCase();
-    if (totauxParType[typeInt] !== undefined) {
-      totauxParType[typeInt] += v.coutTTC;
-      totalGeneral += v.coutTTC;
-    }
+    else if (joursAvantCT <= 30) { alerteCT = "À prévoir"; colorCT = "var(--orange)"; }
 
     return '<tr>' +
       '<td><span onclick="ouvrirModalVehicule(\'' + v.id + '\')" style="cursor:pointer; color:var(--bleu); font-size:16px;" title="Modifier ce véhicule">✏️</span> ' + repere + '</td>' +
@@ -807,53 +801,88 @@ function renderFlotte() {
       '<td>' + (v.dateRevision ? formatDateMetre(v.dateRevision) : '–') + '</td>' +
       '<td>' + (kmDepuisRevision > 0 ? kmDepuisRevision.toLocaleString('fr-FR') : '0') + '</td>' +
       '<td style="background:' + (colorRev === 'var(--vert)' ? '#C8E6C9' : (colorRev === 'var(--rouge)' ? '#FFEBEE' : '#FFF3E0')) + '; color:' + colorRev + '; font-weight:bold;">' + alerteRev + '</td>' +
-      '<td>' + (v.prochainCT ? formatDateMetre(v.prochainCT) : '–') + '</td>' +
-      '<td>' + (isNaN(joursAvantCT) ? '–' : joursAvantCT) + '</td>' +
+      '<td>' + (v.prochainCT ? formatDateMetre(v.prochainCT) : '—') + '</td>' +
+      '<td>' + (isNaN(joursAvantCT) ? '—' : joursAvantCT) + '</td>' +
       '<td style="background:' + (colorCT === 'var(--vert)' ? '#C8E6C9' : (colorCT === 'var(--rouge)' ? '#FFEBEE' : '#FFF3E0')) + '; color:' + colorCT + '; font-weight:bold;">' + alerteCT + '</td>' +
     '</tr>';
   }).join('');
 
-  htmlRows += '<tr style="background:#F5F7FA; font-weight:bold;">' +
-    '<td colspan="4" style="text-align:right;">Total flotte</td>' +
-    '<td>' + totalGeneral.toLocaleString('fr-FR', {style:'currency', currency:'EUR'}) + '</td>' +
-    '<td colspan="6"></td>' +
-  '</tr>';
-
   tb.innerHTML = htmlRows;
 
+  // 2. Tableau du bas : Matrice des alertes par type (Double déclencheur Temps + Km)
+  var SEUIL_KM_PRE_ALERTE = 2000;
+  var SEUIL_JOURS_PRE_ALERTE = 30;
+  
+  // Fréquences de référence (issues de votre document)
+  var FREQUENCES = {
+    "RÉVISION": { km: 30000, mois: 24 }, // 30 000 km ou 2 ans
+    "PNEUS": { km: 40000, mois: 60 },    // 40 000 km ou 5 ans
+    "CONTRÔLE TECHNIQUE": { km: 0, mois: 24 },
+    "ASSURANCE / ADMIN": { km: 0, mois: 12 },
+    "PIÈCES D'USURE": { km: 20000, mois: 24 },
+    "RÉPARATION": { km: 0, mois: 0 },
+    "AUTRE": { km: 0, mois: 0 }
+  };
+
+  var typesInterventions = ["RÉVISION", "PNEUS", "PIÈCES D'USURE", "RÉPARATION", "CONTRÔLE TECHNIQUE", "ASSURANCE / ADMIN", "AUTRE"];
+
   var lignesCouts = typesInterventions.map(function(type) {
-    var coutTotalType = totauxParType[type] || 0;
-    var alerteDate = "—";
-    var colorAlerte = "var(--texte2)";
-    
-    var vehiculesAvecCeType = flotteVehicules.filter(function(v) { 
-      return String(v.type).toUpperCase() === type && v.dateIntervention; 
-    });
-    
-    if (vehiculesAvecCeType.length > 0) {
-      var datePlusRecente = new Date(Math.max.apply(null, vehiculesAvecCeType.map(function(v) { return new Date(v.dateIntervention); })));
-      var unAnApres = new Date(datePlusRecente);
-      unAnApres.setFullYear(unAnApres.getFullYear() + 1);
+    var totalType = 0;
+    var freq = FREQUENCES[type] || { km: 0, mois: 0 };
+
+    var colonnesVehicules = vehicules.map(function(v) {
+      var vType = String(v.type || "").toUpperCase();
+      var cout = (vType === type) ? v.coutTTC : 0;
+      totalType += cout;
       
-      if (new Date() > unAnApres) {
-        alerteDate = "À FAIRE (+1 an)";
-        colorAlerte = "var(--rouge)";
-      } else {
-        alerteDate = "OK";
-        colorAlerte = "var(--vert)";
+      var alerteHtml = "—";
+      var bgColor = "transparent";
+
+      if (vType === type && (v.dateIntervention || v.kmIntervention)) {
+        var joursRestants = 99999;
+        if (v.dateIntervention && freq.mois > 0) {
+          var dateProchaine = new Date(v.dateIntervention);
+          dateProchaine.setMonth(dateProchaine.getMonth() + freq.mois);
+          joursRestants = Math.ceil((dateProchaine - new Date()) / (1000 * 60 * 60 * 24));
+        }
+
+        var kmRestants = 99999;
+        if (v.kmIntervention > 0 && freq.km > 0) {
+          var kmLimite = v.kmIntervention + freq.km;
+          kmRestants = kmLimite - v.kmActuel;
+        }
+
+        if (joursRestants <= 0 || kmRestants <= 0) {
+          alerteHtml = "🔴 À FAIRE";
+          bgColor = "#FFEBEE";
+        } else if (joursRestants <= SEUIL_JOURS_PRE_ALERTE || kmRestants <= SEUIL_KM_PRE_ALERTE) {
+          alerteHtml = "🟡 À PLANIFIER";
+          bgColor = "#FFF3E0";
+        } else {
+          alerteHtml = "🟢 OK";
+          bgColor = "#E8F5E9";
+        }
       }
-    }
+
+      var contenu = "";
+      if (cout > 0) contenu += '<div style="font-weight:bold;">' + cout.toLocaleString('fr-FR', {style:'currency', currency:'EUR'}) + '</div>';
+      if (alerteHtml !== "—") contenu += '<div style="font-size:11px;margin-top:2px;">' + alerteHtml + '</div>';
+
+      return '<td style="background:' + bgColor + ';">' + (contenu || '—') + '</td>';
+    }).join('');
 
     return '<tr>' +
-      '<td style="text-align:left;">' + type + '</td>' +
-      '<td colspan="4"></td>' +
-      '<td style="font-weight:bold;">' + coutTotalType.toLocaleString('fr-FR', {style:'currency', currency:'EUR'}) + '</td>' +
-      '<td style="color:' + colorAlerte + '; font-weight:bold;">' + alerteDate + '</td>' +
+      '<td style="text-align:left;font-weight:bold;">' + type + '</td>' +
+      colonnesVehicules +
+      '<td style="font-weight:bold;">' + totalType.toLocaleString('fr-FR', {style:'currency', currency:'EUR'}) + '</td>' +
     '</tr>';
   }).join('');
 
+  var totalGeneral = vehicules.reduce(function(acc, v) { return acc + (v.coutTTC || 0); }, 0);
   lignesCouts += '<tr style="background:#F5F7FA; font-weight:bold;">' +
-    '<td style="text-align:left;">Total</td><td colspan="4"></td><td>' + totalGeneral.toLocaleString('fr-FR', {style:'currency', currency:'EUR'}) + '</td><td></td>' +
+    '<td style="text-align:left;">Total</td>' +
+    '<td colspan="4"></td>' +
+    '<td>' + totalGeneral.toLocaleString('fr-FR', {style:'currency', currency:'EUR'}) + '</td>' +
   '</tr>';
 
   tbCouts.innerHTML = lignesCouts;
@@ -886,7 +915,8 @@ function ouvrirModalVehicule(idVehicule) {
           '<div><label>Conducteur</label><input type="text" id="fv-conducteur" class="task-input"></div>' +
           '<div><label>Type (coût)</label><select id="fv-type" class="task-input"><option value="">—</option><option>RÉVISION</option><option>PNEUS</option><option>PIÈCES D\'USURE</option><option>RÉPARATION</option><option>CONTRÔLE TECHNIQUE</option><option>ASSURANCE / ADMIN</option><option>AUTRE</option></select></div>' +
           '<div><label>Coût TTC (€)</label><input type="number" id="fv-coutTTC" class="task-input" step="0.01"></div>' +
-          '<div style="grid-column:1/-1;"><label>Date de l\'intervention (ex: date de changement des pneus)</label><input type="date" id="fv-dateIntervention" class="task-input"></div>' +
+          '<div style="grid-column:1/-1;"><label>Date de l\'intervention (ex: pneus)</label><input type="date" id="fv-dateIntervention" class="task-input"></div>' +
+          '<div style="grid-column:1/-1;"><label>Kilométrage à l\'intervention</label><input type="number" id="fv-kmIntervention" class="task-input" placeholder="Ex: 45000"></div>' +
         '</div>' +
         '<div style="display:flex; gap:8px; margin-top:20px; justify-content:flex-end;">' +
           '<button onclick="document.getElementById(\'overlay-vehicule\').style.display=\'none\'" class="btn btn-outline">Annuler</button>' +
@@ -911,6 +941,7 @@ function ouvrirModalVehicule(idVehicule) {
   document.getElementById('fv-type').value = v.type || '';
   document.getElementById('fv-coutTTC').value = v.coutTTC || '';
   document.getElementById('fv-dateIntervention').value = v.dateIntervention || '';
+  document.getElementById('fv-kmIntervention').value = v.kmIntervention || '';
 }
 
 async function sauvegarderVehicule() {
@@ -930,7 +961,8 @@ async function sauvegarderVehicule() {
     conducteur: document.getElementById('fv-conducteur').value.trim(),
     type: document.getElementById('fv-type').value,
     coutTTC: document.getElementById('fv-coutTTC').value || 0,
-    dateIntervention: document.getElementById('fv-dateIntervention').value
+    dateIntervention: document.getElementById('fv-dateIntervention').value,
+    kmIntervention: document.getElementById('fv-kmIntervention').value || 0
   };
 
   try {
