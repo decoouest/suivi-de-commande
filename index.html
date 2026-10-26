@@ -298,13 +298,14 @@ textarea.task-input{resize:vertical}
 @media(max-width:900px){.task-layout{grid-template-columns:1fr}.task-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.task-list-head{align-items:flex-start;flex-direction:column}.task-filters{width:100%}.task-filters .task-input{flex:1;max-width:none}}
 
 /* ── FLOTTE (MODE ALERTES) ── */
-.flotte-alerte-card{background:#fff;border-radius:10px;border:1px solid var(--bordure);border-left:4px solid;padding:14px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
+.flotte-alerte-card{background:#fff;border-radius:10px;border:1px solid var(--bordure);border-left:4px solid;padding:14px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px;}
 .flotte-alerte-card.urgent{border-left-color:var(--rouge);}
 .flotte-alerte-card.warn{border-left-color:var(--orange);}
-.flotte-alerte-titre{font-weight:700;font-size:15px;color:var(--texte);margin-bottom:4px;display:flex;align-items:center;gap:6px;}
+.flotte-alerte-titre{font-weight:700;font-size:15px;color:var(--texte);margin-bottom:8px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
 .flotte-alerte-liste{margin:0;padding-left:18px;color:var(--texte2);margin-top:6px;font-size:13px;}
-.flotte-alerte-liste li{margin-bottom:4px;}
+.flotte-alerte-liste li{margin-bottom:6px;line-height: 1.4;}
 .flotte-ok-item{background:#fff;border:1px solid var(--bordure);border-radius:8px;padding:10px 14px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;opacity:0.8;}
+.flotte-details-box {font-size: 11px; background: #F5F7FA; border-radius: 6px; padding: 8px 12px; margin-top: 8px; color: #546E7A; display: block; border-left: 3px solid #90CAF9;}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -767,6 +768,7 @@ function renderFlotte() {
 
   flotteVehicules.forEach(function(v) {
     var alertesVehicule = [];
+    var infosIntervention = [];
 
     // 1. Contrôle Technique
     if (v.prochainCT) {
@@ -809,30 +811,46 @@ function renderFlotte() {
       else if (joursAssur <= 30) alertesVehicule.push({ sev: 2, txt: 'Assurance à renouveler dans ' + joursAssur + ' jours' });
     }
 
-    // Si le véhicule a au moins une alerte, on le classe
+    // Infos sur la dernière intervention (Pneus, Révision, etc.)
+    if (v.type || v.description || v.dateIntervention) {
+      var txt = '<strong>' + h(v.type || 'Intervention') + '</strong>';
+      if (v.dateIntervention) txt += ' le ' + new Date(v.dateIntervention).toLocaleDateString('fr-FR');
+      if (v.kmIntervention > 0) txt += ' à ' + v.kmIntervention + ' km';
+      if (v.description) txt += '<br><span style="color:#333;">« ' + h(v.description) + ' »</span>';
+      infosIntervention.push(txt);
+    }
+
+    // Tri du véhicule
     if (alertesVehicule.length > 0) {
       var severiteMax = Math.max.apply(null, alertesVehicule.map(function(a) { return a.sev; }));
-      if (severiteMax === 3) listeUrgents.push({ v: v, alertes: alertesVehicule });
-      else listeAttention.push({ v: v, alertes: alertesVehicule });
+      if (severiteMax === 3) listeUrgents.push({ v: v, alertes: alertesVehicule, infos: infosIntervention });
+      else listeAttention.push({ v: v, alertes: alertesVehicule, infos: infosIntervention });
     } else {
-      listeOK.push(v);
+      listeOK.push({ v: v, infos: infosIntervention });
     }
   });
 
   // Fonction pour générer une carte
   function genererCarte(item, type) {
     var color = type === 'urgent' ? 'var(--rouge)' : 'var(--orange)';
-    var bg = type === 'urgent' ? '#FFEBEE' : '#FFF3E0';
     var icon = type === 'urgent' ? '🔴' : '🟠';
     
     var lignesAlertes = item.alertes.map(function(a) {
       return '<li style="font-size:13px; margin-bottom:4px;">' + a.txt + '</li>';
     }).join('');
 
+    var detailsHtml = '';
+    if (item.infos.length > 0) {
+      detailsHtml = '<div class="flotte-details-box">' +
+        '🔧 ' + item.infos.join('<br>') + 
+      '</div>';
+    }
+
     return '<div class="flotte-alerte-card ' + type + '">' +
       '<div style="flex:1;">' +
-        '<div class="flotte-alerte-titre">' + icon + ' ' + h(item.v.id) + ' - ' + h(item.v.modele) + ' <span style="font-size:11px; color:var(--texte2);">(' + h(item.v.immat) + ')</span></div>' +
+        '<div class="flotte-alerte-titre">' + icon + ' ' + h(item.v.id) + ' - ' + h(item.v.modele) + ' <span style="font-size:11px; color:var(--texte2); font-weight:normal;">(' + h(item.v.immat) + ')</span></div>' +
         '<ul class="flotte-alerte-liste">' + lignesAlertes + '</ul>' +
+        detailsHtml +
       '</div>' +
       '<div>' +
         '<button class="btn btn-outline btn-sm" onclick="ouvrirModalVehicule(\'' + item.v.id + '\')" style="border-color:' + color + '; color:' + color + ';">✏️ Mettre à jour</button>' +
@@ -858,26 +876,23 @@ function renderFlotte() {
   containerAlertes.innerHTML = html;
 
   // Gérer la liste des OK
-   // Affichage direct des véhicules OK en bas
   if (listeOK.length > 0) {
-    btnToggleOK.style.display = 'none'; // On cache le bouton "Afficher"
-    containerOK.style.display = 'block'; // On force l'affichage
-    containerOK.style.opacity = '1'; // On enlève la transparence
-    
-    var htmlOK = '<div style="margin-top:20px;"><div style="font-size:12px; font-weight:700; text-transform:uppercase; color:var(--vert); margin-bottom:8px;">🟢 Sans alerte (' + listeOK.length + ')</div>';
-    listeOK.forEach(function(v) {
-      htmlOK += '<div class="flotte-ok-item" style="opacity:1;">' +
-        '<div><strong>' + h(v.id) + '</strong> - ' + h(v.modele) + ' <span style="font-size:11px; color:var(--texte2);">(' + h(v.immat) + ')</span></div>' +
-        '<div><span style="color:var(--vert); font-weight:700; font-size:12px; margin-right:10px;">🟢 OK</span><button class="action-btn" onclick="ouvrirModalVehicule(\'' + v.id + '\')">✏️</button></div>' +
+    btnToggleOK.style.display = 'inline-flex';
+    btnToggleOK.textContent = 'Afficher les ' + listeOK.length + ' véhicule(s) sans alerte';
+    containerOK.innerHTML = listeOK.map(function(item) {
+      var detailsHtml = '';
+      if (item.infos.length > 0) {
+        detailsHtml = '<div style="margin-top:5px; font-size:10px; color:#546E7A;">🔧 ' + item.infos.join(' — ') + '</div>';
+      }
+      return '<div class="flotte-ok-item">' +
+        '<div><strong>' + h(item.v.id) + '</strong> - ' + h(item.v.modele) + ' <span style="font-size:11px; color:var(--texte2);">(' + h(item.v.immat) + ')</span>' + detailsHtml + '</div>' +
+        '<div><span style="color:var(--vert); font-weight:700; font-size:12px; margin-right:10px;">🟢 OK</span><button class="action-btn" onclick="ouvrirModalVehicule(\'' + item.v.id + '\')">✏️</button></div>' +
       '</div>';
-    });
-    htmlOK += '</div>';
-    containerOK.innerHTML = htmlOK;
+    }).join('');
   } else {
     btnToggleOK.style.display = 'none';
   }
 }
-
 
 function toggleFlotteOK() {
   var container = document.getElementById('flotte-ok-list');
