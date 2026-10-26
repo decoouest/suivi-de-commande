@@ -96,11 +96,6 @@ tr:hover td{background:#F8FBFF;}
 .action-btn:hover{background:var(--gris-bg);}
 .scroll-hint{font-size:11px;color:var(--texte2);padding:8px 14px;border-top:1px solid var(--bordure);}
 
-/* ── VUE FLOTTE (Style Excel) ── */
-.flotte-table th, .flotte-table td { padding: 8px; font-size: 12px; border: 1px solid var(--bordure); text-align: center; }
-.flotte-table th { background: var(--bleu); color: #fff; font-weight: bold; }
-.flotte-table td:first-child { font-weight: bold; background: #F5F7FA; }
-
 /* ── AUTRES VUES ── */
 .empty-state{text-align:center;padding:48px 24px;color:var(--texte2);}
 .overlay{display:none;position:fixed;inset:0;background:rgba(10,20,40,.45);z-index:200;align-items:center;justify-content:center;}
@@ -301,6 +296,15 @@ textarea.task-input{resize:vertical}
 .task-empty{padding:28px 12px;text-align:center;color:var(--texte2);font-size:12px}
 .task-card-details{font-size:12px;line-height:1.55;color:var(--texte2);white-space:pre-wrap;margin-top:7px;overflow-wrap:anywhere}
 @media(max-width:900px){.task-layout{grid-template-columns:1fr}.task-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.task-list-head{align-items:flex-start;flex-direction:column}.task-filters{width:100%}.task-filters .task-input{flex:1;max-width:none}}
+
+/* ── FLOTTE (MODE ALERTES) ── */
+.flotte-alerte-card{background:#fff;border-radius:10px;border:1px solid var(--bordure);border-left:4px solid;padding:14px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
+.flotte-alerte-card.urgent{border-left-color:var(--rouge);}
+.flotte-alerte-card.warn{border-left-color:var(--orange);}
+.flotte-alerte-titre{font-weight:700;font-size:15px;color:var(--texte);margin-bottom:4px;display:flex;align-items:center;gap:6px;}
+.flotte-alerte-liste{margin:0;padding-left:18px;color:var(--texte2);margin-top:6px;font-size:13px;}
+.flotte-alerte-liste li{margin-bottom:4px;}
+.flotte-ok-item{background:#fff;border:1px solid var(--bordure);border-radius:8px;padding:10px 14px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;opacity:0.8;}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -324,7 +328,7 @@ textarea.task-input{resize:vertical}
 </div>
 
 <aside class="sidebar">
-  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v14.3</div></div>
+  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v15.0</div></div>
   <nav class="nav">
     <div class="nav-item active" id="nav-suivi" onclick="showView('suivi')"><span class="icon">📋</span><span>Commandes</span></div>
     <div class="nav-item" id="nav-alertes" onclick="showView('alertes')"><span class="icon">🔔</span><span>Alertes</span></div>
@@ -337,7 +341,7 @@ textarea.task-input{resize:vertical}
     <div class="nav-item" id="nav-planning" onclick="showView('planning')"><span class="icon">📅</span><span>Planning</span></div>
     <div class="nav-item" id="nav-config" onclick="showView('config')"><span class="icon">⚙️</span><span>Config</span></div>
   </nav>
-  <div class="sidebar-footer">v14.3</div>
+  <div class="sidebar-footer">v15.0</div>
 </aside>
 
 <div class="main">
@@ -497,34 +501,18 @@ textarea.task-input{resize:vertical}
 
     <div id="view-flotte" class="view">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
-        <h3 style="font-size:16px; margin:0; color:var(--bleu);">Tableau de bord – Flotte</h3>
-        <button class="btn btn-primary btn-sm" onclick="ouvrirModalVehicule()">+ Ajouter / Modifier</button>
+        <h3 style="font-size:16px; margin:0; color:var(--bleu);">État de la flotte</h3>
+        <button class="btn btn-primary btn-sm" onclick="ouvrirModalVehicule()">+ Ajouter / Modifier un véhicule</button>
       </div>
+      
+      <!-- Zone des alertes -->
+      <div id="flotte-alertes" style="display:flex; flex-direction:column; gap:10px;"></div>
 
-      <div class="table-wrap">
-        <table class="flotte-table no-responsive">
-          <thead>
-            <tr>
-              <th>Repère</th><th>Modèle</th><th>Immat.</th><th>Km actuel</th><th>Coût TTC (€)</th>
-              <th>Dernière révision</th><th>Km depuis révision</th><th>Alerte révision</th>
-              <th>Prochain CT</th><th>Jours avant CT</th><th>Alerte CT</th>
-            </tr>
-          </thead>
-          <tbody id="flotte-table-body"></tbody>
-        </table>
+      <!-- Bouton pour afficher les véhicules OK -->
+      <div style="margin-top:20px; text-align:center;">
+        <button id="btn-toggle-ok" class="btn btn-outline btn-sm" onclick="toggleFlotteOK()" style="display:none;">Afficher les véhicules sans alerte</button>
       </div>
-
-      <h3 style="font-size:14px; margin:20px 0 10px 0; color:var(--bleu);">Coût TTC par type d'intervention et par véhicule (€)</h3>
-      <div class="table-wrap">
-        <table class="flotte-table no-responsive">
-          <thead>
-            <tr>
-              <th>Type</th><th>V1</th><th>V2</th><th>V3</th><th>V4</th><th>Total</th>
-            </tr>
-          </thead>
-          <tbody id="flotte-couts-body"></tbody>
-        </table>
-      </div>
+      <div id="flotte-ok-list" style="display:none; margin-top:15px; opacity:0.7;"></div>
     </div>
 
     <div id="view-suivipose" class="view"><div style="text-align:right;margin-bottom:10px;"><button onclick="traduireCommentairesPoseurs()" style="background:var(--bleu-bg);color:var(--bleu);border:1px solid var(--bleu);border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;">🇫🇷 Traduire les commentaires</button></div><div id="suivipose-content"></div></div>
@@ -620,7 +608,7 @@ var FOU_COLORS = {'ATLANTEM':'#1565C0','ATULAM':'#6A1B9A','LALLEMANT':'#2E7D32',
 var TERMINES = ['livre','termine','pose'];
 var commandes = [];
 var sortCol = 'ligne', sortAsc = false, alertFilter = 'all', editLigne = -1;
-var CACHE_DUREE = 60 * 1000, CACHE_KEY = 'eco-ouest-cache-v143', CACHE_TIME_KEY = 'eco-ouest-cache-time-v143';
+var CACHE_DUREE = 60 * 1000, CACHE_KEY = 'eco-ouest-cache-v150', CACHE_TIME_KEY = 'eco-ouest-cache-time-v150';
 var dernierRapportAgent = null;
 var recognition = null, recognitionAssistant = null, recognitionAction = null;
 var cacheTrad = {};
@@ -755,7 +743,7 @@ function sortBy(col){if(sortCol===col)sortAsc=!sortAsc;else{sortCol=col;sortAsc=
 function setFilter(f){alertFilter=f;['all','urgent','warn','ok'].forEach(function(k){document.getElementById('fb-'+k).classList.toggle('active',k===f);});document.getElementById('fb-sav').classList.toggle('sav-active',f==='sav');document.getElementById('fb-noncmd').classList.toggle('noncmd-active',f==='noncmd');renderTable();}
 function afficherObjetParLigne(e,ligne){if(e)e.stopPropagation();var c=commandes.find(function(x){return x.ligne===ligne;});if(!c||!c.objetCommande)return;afficherObjet(null,c.objetCommande);}
 
-// ── MODULE FLOTTE (Style Excel) ──
+// ── MODULE FLOTTE (MODE ALERTES) ──
 async function chargerFlotte() {
   try {
     var rV = await apiPost({ action: 'lireVehicules' });
@@ -767,125 +755,133 @@ async function chargerFlotte() {
 }
 
 function renderFlotte() {
-  var tb = document.getElementById('flotte-table-body');
-  var tbCouts = document.getElementById('flotte-couts-body');
-  if (!tb || !tbCouts) return;
+  var containerAlertes = document.getElementById('flotte-alertes');
+  var containerOK = document.getElementById('flotte-ok-list');
+  var btnToggleOK = document.getElementById('btn-toggle-ok');
+  if (!containerAlertes) return;
 
   var aujourdhui = new Date();
-  var vehicules = flotteVehicules.slice(0, 4);
+  var listeUrgents = [];
+  var listeAttention = [];
+  var listeOK = [];
 
-  // 1. Tableau du haut : Alertes Révision & CT
-  var htmlRows = vehicules.map(function(v, index) {
-    var repere = v.id || ("V" + (index + 1));
-    var kmDepuisRevision = v.kmActuel - (v.kmRevision || 0);
-    var resteAvantRevision = 30000 - kmDepuisRevision;
-    
-    var alerteRev = "OK", colorRev = "var(--vert)";
-    if (resteAvantRevision <= 0) { alerteRev = "À FAIRE"; colorRev = "var(--rouge)"; }
-    else if (resteAvantRevision <= 1500) { alerteRev = "À prévoir"; colorRev = "var(--orange)"; }
+  flotteVehicules.forEach(function(v) {
+    var alertesVehicule = [];
 
-    var dateCT = new Date(v.prochainCT);
-    var joursAvantCT = Math.ceil((dateCT - aujourdhui) / (1000 * 60 * 60 * 24));
-    
-    var alerteCT = "OK", colorCT = "var(--vert)";
-    if (isNaN(joursAvantCT)) { alerteCT = "—"; colorCT = "var(--texte2)"; }
-    else if (joursAvantCT < 0) { alerteCT = "EXPIRÉ"; colorCT = "var(--rouge)"; }
-    else if (joursAvantCT <= 30) { alerteCT = "À prévoir"; colorCT = "var(--orange)"; }
+    // 1. Contrôle Technique
+    if (v.prochainCT) {
+      var dateCT = new Date(v.prochainCT);
+      var joursCT = Math.ceil((dateCT - aujourdhui) / (1000 * 60 * 60 * 24));
+      if (joursCT < 0) alertesVehicule.push({ sev: 3, txt: 'Contrôle technique expiré depuis ' + Math.abs(joursCT) + ' jours' });
+      else if (joursCT <= 30) alertesVehicule.push({ sev: 2, txt: 'Contrôle technique dans ' + joursCT + ' jours' });
+    } else {
+      alertesVehicule.push({ sev: 2, txt: 'Date de contrôle technique manquante' });
+    }
 
-    return '<tr>' +
-      '<td><span onclick="ouvrirModalVehicule(\'' + v.id + '\')" style="cursor:pointer; color:var(--bleu); font-size:16px;" title="Modifier ce véhicule">✏️</span> ' + repere + '</td>' +
-      '<td>' + h(v.modele) + '</td>' +
-      '<td class="col-mono">' + h(v.immat) + '</td>' +
-      '<td>' + v.kmActuel.toLocaleString('fr-FR') + '</td>' +
-      '<td>' + v.coutTTC.toLocaleString('fr-FR', {style:'currency', currency:'EUR'}) + '</td>' +
-      '<td>' + (v.dateRevision ? formatDateMetre(v.dateRevision) : '–') + '</td>' +
-      '<td>' + (kmDepuisRevision > 0 ? kmDepuisRevision.toLocaleString('fr-FR') : '0') + '</td>' +
-      '<td style="background:' + (colorRev === 'var(--vert)' ? '#C8E6C9' : (colorRev === 'var(--rouge)' ? '#FFEBEE' : '#FFF3E0')) + '; color:' + colorRev + '; font-weight:bold;">' + alerteRev + '</td>' +
-      '<td>' + (v.prochainCT ? formatDateMetre(v.prochainCT) : '—') + '</td>' +
-      '<td>' + (isNaN(joursAvantCT) ? '—' : joursAvantCT) + '</td>' +
-      '<td style="background:' + (colorCT === 'var(--vert)' ? '#C8E6C9' : (colorCT === 'var(--rouge)' ? '#FFEBEE' : '#FFF3E0')) + '; color:' + colorCT + '; font-weight:bold;">' + alerteCT + '</td>' +
-    '</tr>';
-  }).join('');
+    // 2. Révision (Vidange)
+    if (v.kmRevision > 0) {
+      var kmDepuisRev = v.kmActuel - v.kmRevision;
+      var resteRev = 30000 - kmDepuisRev;
+      if (resteRev <= 0) alertesVehicule.push({ sev: 3, txt: 'Révision dépassée de ' + Math.abs(resteRev) + ' km' });
+      else if (resteRev <= 2000) alertesVehicule.push({ sev: 2, txt: 'Révision dans ' + resteRev + ' km' });
+    }
 
-  tb.innerHTML = htmlRows;
-
-  // 2. Tableau du bas : Matrice des alertes par type (Double déclencheur Temps + Km)
-  var SEUIL_KM_PRE_ALERTE = 2000;
-  var SEUIL_JOURS_PRE_ALERTE = 30;
-  
-  // Fréquences de référence (issues de votre document)
-  var FREQUENCES = {
-    "RÉVISION": { km: 30000, mois: 24 }, // 30 000 km ou 2 ans
-    "PNEUS": { km: 40000, mois: 60 },    // 40 000 km ou 5 ans
-    "CONTRÔLE TECHNIQUE": { km: 0, mois: 24 },
-    "ASSURANCE / ADMIN": { km: 0, mois: 12 },
-    "PIÈCES D'USURE": { km: 20000, mois: 24 },
-    "RÉPARATION": { km: 0, mois: 0 },
-    "AUTRE": { km: 0, mois: 0 }
-  };
-
-  var typesInterventions = ["RÉVISION", "PNEUS", "PIÈCES D'USURE", "RÉPARATION", "CONTRÔLE TECHNIQUE", "ASSURANCE / ADMIN", "AUTRE"];
-
-  var lignesCouts = typesInterventions.map(function(type) {
-    var totalType = 0;
-    var freq = FREQUENCES[type] || { km: 0, mois: 0 };
-
-    var colonnesVehicules = vehicules.map(function(v) {
-      var vType = String(v.type || "").toUpperCase();
-      var cout = (vType === type) ? v.coutTTC : 0;
-      totalType += cout;
-      
-      var alerteHtml = "—";
-      var bgColor = "transparent";
-
-      if (vType === type && (v.dateIntervention || v.kmIntervention)) {
-        var joursRestants = 99999;
-        if (v.dateIntervention && freq.mois > 0) {
-          var dateProchaine = new Date(v.dateIntervention);
-          dateProchaine.setMonth(dateProchaine.getMonth() + freq.mois);
-          joursRestants = Math.ceil((dateProchaine - new Date()) / (1000 * 60 * 60 * 24));
-        }
-
-        var kmRestants = 99999;
-        if (v.kmIntervention > 0 && freq.km > 0) {
-          var kmLimite = v.kmIntervention + freq.km;
-          kmRestants = kmLimite - v.kmActuel;
-        }
-
-        if (joursRestants <= 0 || kmRestants <= 0) {
-          alerteHtml = "🔴 À FAIRE";
-          bgColor = "#FFEBEE";
-        } else if (joursRestants <= SEUIL_JOURS_PRE_ALERTE || kmRestants <= SEUIL_KM_PRE_ALERTE) {
-          alerteHtml = "🟡 À PLANIFIER";
-          bgColor = "#FFF3E0";
-        } else {
-          alerteHtml = "🟢 OK";
-          bgColor = "#E8F5E9";
-        }
+    // 3. Pneus (via DateIntervention et KmIntervention)
+    if (v.type && v.type.toUpperCase() === 'PNEUS') {
+      if (v.dateIntervention) {
+        var datePneus = new Date(v.dateIntervention);
+        var moisDepuisPneus = (aujourdhui.getFullYear() - datePneus.getFullYear()) * 12 + (aujourdhui.getMonth() - datePneus.getMonth());
+        if (moisDepuisPneus >= 60) alertesVehicule.push({ sev: 3, txt: 'Pneus à changer (plus de 5 ans)' });
+        else if (moisDepuisPneus >= 55) alertesVehicule.push({ sev: 2, txt: 'Pneus à prévoir (bientôt 5 ans)' });
       }
+      if (v.kmIntervention > 0) {
+        var kmPneus = v.kmActuel - v.kmIntervention;
+        if (kmPneus >= 40000) alertesVehicule.push({ sev: 3, txt: 'Pneus usés (' + kmPneus + ' km)' });
+        else if (kmPneus >= 38000) alertesVehicule.push({ sev: 2, txt: 'Pneus à prévoir (' + kmPneus + ' km)' });
+      }
+    }
 
-      var contenu = "";
-      if (cout > 0) contenu += '<div style="font-weight:bold;">' + cout.toLocaleString('fr-FR', {style:'currency', currency:'EUR'}) + '</div>';
-      if (alerteHtml !== "—") contenu += '<div style="font-size:11px;margin-top:2px;">' + alerteHtml + '</div>';
+    // 4. Assurance
+    if (v.dateAssurance) {
+      var dateAssur = new Date(v.dateAssurance);
+      var joursAssur = Math.ceil((dateAssur - aujourdhui) / (1000 * 60 * 60 * 24));
+      if (joursAssur < 0) alertesVehicule.push({ sev: 3, txt: 'Assurance expirée !' });
+      else if (joursAssur <= 30) alertesVehicule.push({ sev: 2, txt: 'Assurance à renouveler dans ' + joursAssur + ' jours' });
+    }
 
-      return '<td style="background:' + bgColor + ';">' + (contenu || '—') + '</td>';
+    // Si le véhicule a au moins une alerte, on le classe
+    if (alertesVehicule.length > 0) {
+      var severiteMax = Math.max.apply(null, alertesVehicule.map(function(a) { return a.sev; }));
+      if (severiteMax === 3) listeUrgents.push({ v: v, alertes: alertesVehicule });
+      else listeAttention.push({ v: v, alertes: alertesVehicule });
+    } else {
+      listeOK.push(v);
+    }
+  });
+
+  // Fonction pour générer une carte
+  function genererCarte(item, type) {
+    var color = type === 'urgent' ? 'var(--rouge)' : 'var(--orange)';
+    var bg = type === 'urgent' ? '#FFEBEE' : '#FFF3E0';
+    var icon = type === 'urgent' ? '🔴' : '🟠';
+    
+    var lignesAlertes = item.alertes.map(function(a) {
+      return '<li style="font-size:13px; margin-bottom:4px;">' + a.txt + '</li>';
     }).join('');
 
-    return '<tr>' +
-      '<td style="text-align:left;font-weight:bold;">' + type + '</td>' +
-      colonnesVehicules +
-      '<td style="font-weight:bold;">' + totalType.toLocaleString('fr-FR', {style:'currency', currency:'EUR'}) + '</td>' +
-    '</tr>';
-  }).join('');
+    return '<div class="flotte-alerte-card ' + type + '">' +
+      '<div style="flex:1;">' +
+        '<div class="flotte-alerte-titre">' + icon + ' ' + h(item.v.id) + ' - ' + h(item.v.modele) + ' <span style="font-size:11px; color:var(--texte2);">(' + h(item.v.immat) + ')</span></div>' +
+        '<ul class="flotte-alerte-liste">' + lignesAlertes + '</ul>' +
+      '</div>' +
+      '<div>' +
+        '<button class="btn btn-outline btn-sm" onclick="ouvrirModalVehicule(\'' + item.v.id + '\')" style="border-color:' + color + '; color:' + color + ';">✏️ Mettre à jour</button>' +
+      '</div>' +
+    '</div>';
+  }
 
-  var totalGeneral = vehicules.reduce(function(acc, v) { return acc + (v.coutTTC || 0); }, 0);
-  lignesCouts += '<tr style="background:#F5F7FA; font-weight:bold;">' +
-    '<td style="text-align:left;">Total</td>' +
-    '<td colspan="4"></td>' +
-    '<td>' + totalGeneral.toLocaleString('fr-FR', {style:'currency', currency:'EUR'}) + '</td>' +
-  '</tr>';
+  var html = '';
+  if (listeUrgents.length > 0) {
+    html += '<div style="margin-bottom:15px;"><div style="font-size:12px; font-weight:700; text-transform:uppercase; color:var(--rouge); margin-bottom:8px;">🔴 Urgent (' + listeUrgents.length + ')</div>';
+    listeUrgents.forEach(function(item) { html += genererCarte(item, 'urgent'); });
+    html += '</div>';
+  }
+  if (listeAttention.length > 0) {
+    html += '<div style="margin-bottom:15px;"><div style="font-size:12px; font-weight:700; text-transform:uppercase; color:var(--orange); margin-bottom:8px;">🟠 À prévoir (' + listeAttention.length + ')</div>';
+    listeAttention.forEach(function(item) { html += genererCarte(item, 'attention'); });
+    html += '</div>';
+  }
+  
+  if (!html) {
+    html = '<div style="text-align:center; padding:40px; color:var(--vert); font-weight:600; font-size:16px;">🟢 Tous les véhicules sont à jour ! Aucune action requise.</div>';
+  }
+  containerAlertes.innerHTML = html;
 
-  tbCouts.innerHTML = lignesCouts;
+  // Gérer la liste des OK
+  if (listeOK.length > 0) {
+    btnToggleOK.style.display = 'inline-flex';
+    btnToggleOK.textContent = 'Afficher les ' + listeOK.length + ' véhicule(s) sans alerte';
+    containerOK.innerHTML = listeOK.map(function(v) {
+      return '<div class="flotte-ok-item">' +
+        '<div><strong>' + h(v.id) + '</strong> - ' + h(v.modele) + ' <span style="font-size:11px; color:var(--texte2);">(' + h(v.immat) + ')</span></div>' +
+        '<div><span style="color:var(--vert); font-weight:700; font-size:12px; margin-right:10px;">🟢 OK</span><button class="action-btn" onclick="ouvrirModalVehicule(\'' + v.id + '\')">✏️</button></div>' +
+      '</div>';
+    }).join('');
+  } else {
+    btnToggleOK.style.display = 'none';
+  }
+}
+
+function toggleFlotteOK() {
+  var container = document.getElementById('flotte-ok-list');
+  var btn = document.getElementById('btn-toggle-ok');
+  if (container.style.display === 'none') {
+    container.style.display = 'block';
+    btn.textContent = 'Masquer les véhicules sans alerte';
+  } else {
+    container.style.display = 'none';
+    btn.textContent = btn.textContent.replace('Masquer', 'Afficher');
+  }
 }
 
 // ── MODAL AJOUT / MODIFICATION VÉHICULE ──
@@ -913,10 +909,10 @@ function ouvrirModalVehicule(idVehicule) {
           '<div><label>Prochain CT</label><input type="date" id="fv-prochainCT" class="task-input"></div>' +
           '<div><label>Date Assurance</label><input type="date" id="fv-dateAssurance" class="task-input"></div>' +
           '<div><label>Conducteur</label><input type="text" id="fv-conducteur" class="task-input"></div>' +
-          '<div><label>Type (coût)</label><select id="fv-type" class="task-input"><option value="">—</option><option>RÉVISION</option><option>PNEUS</option><option>PIÈCES D\'USURE</option><option>RÉPARATION</option><option>CONTRÔLE TECHNIQUE</option><option>ASSURANCE / ADMIN</option><option>AUTRE</option></select></div>' +
-          '<div><label>Coût TTC (€)</label><input type="number" id="fv-coutTTC" class="task-input" step="0.01"></div>' +
-          '<div style="grid-column:1/-1;"><label>Date de l\'intervention (ex: pneus)</label><input type="date" id="fv-dateIntervention" class="task-input"></div>' +
-          '<div style="grid-column:1/-1;"><label>Kilométrage à l\'intervention</label><input type="number" id="fv-kmIntervention" class="task-input" placeholder="Ex: 45000"></div>' +
+          '<div><label>Type d\'intervention</label><select id="fv-type" class="task-input"><option value="">—</option><option>RÉVISION</option><option>PNEUS</option><option>PIÈCES D\'USURE</option><option>RÉPARATION</option><option>CONTRÔLE TECHNIQUE</option><option>ASSURANCE / ADMIN</option><option>AUTRE</option></select></div>' +
+          '<div><label>Description</label><input type="text" id="fv-description" class="task-input"></div>' +
+          '<div><label>Date de l\'intervention</label><input type="date" id="fv-dateIntervention" class="task-input"></div>' +
+          '<div><label>Kilométrage à l\'intervention</label><input type="number" id="fv-kmIntervention" class="task-input" placeholder="Ex: 45000"></div>' +
         '</div>' +
         '<div style="display:flex; gap:8px; margin-top:20px; justify-content:flex-end;">' +
           '<button onclick="document.getElementById(\'overlay-vehicule\').style.display=\'none\'" class="btn btn-outline">Annuler</button>' +
@@ -939,7 +935,7 @@ function ouvrirModalVehicule(idVehicule) {
   document.getElementById('fv-dateAssurance').value = v.dateAssurance || '';
   document.getElementById('fv-conducteur').value = v.conducteur || '';
   document.getElementById('fv-type').value = v.type || '';
-  document.getElementById('fv-coutTTC').value = v.coutTTC || '';
+  document.getElementById('fv-description').value = v.description || '';
   document.getElementById('fv-dateIntervention').value = v.dateIntervention || '';
   document.getElementById('fv-kmIntervention').value = v.kmIntervention || '';
 }
@@ -960,7 +956,7 @@ async function sauvegarderVehicule() {
     dateAssurance: document.getElementById('fv-dateAssurance').value,
     conducteur: document.getElementById('fv-conducteur').value.trim(),
     type: document.getElementById('fv-type').value,
-    coutTTC: document.getElementById('fv-coutTTC').value || 0,
+    description: document.getElementById('fv-description').value.trim(),
     dateIntervention: document.getElementById('fv-dateIntervention').value,
     kmIntervention: document.getElementById('fv-kmIntervention').value || 0
   };
@@ -1159,7 +1155,7 @@ function renderAlertes() { var g={3:[],2:[],1:[]}; commandes.forEach(function(c,
 function renderDashboard() { var byFou={}, ac={u:0,w:0,o:0}, caC=0, caP=0, nbE=0, nbS=0; function parseM(v){ if(!v) return 0; var s=str(v).replace(/[^0-9,.]/g,'').replace(/\s/g,'').replace(',','.'); var p=s.split('.'); if(p.length>2)s=p.slice(0,-1).join('')+'.'+p[p.length-1]; var n=parseFloat(s); return isNaN(n)?0:n; } var nbA=commandes.filter(function(c){return !estAnnulee(c);}).length; commandes.forEach(function(c){ if(estAnnulee(c))return; if(c.fournisseur)byFou[c.fournisseur]=(byFou[c.fournisseur]||0)+1; var a=alerte(c); if(a.n===3)ac.u++;else if(a.n>=1)ac.w++;else if(a.n===0)ac.o++; var m=parseM(c.devisTTC); if(str(c.commande).toUpperCase()==='OUI')caC+=m; if(estTermineStatut(c.statutPose))caP+=m; if(str(c.commande).toUpperCase()!=='OUI')nbE++; if(statutEstSAV(c.statutPose)||statutEstSAV(c.statutLivraison))nbS++; }); function fmt(n){return n.toLocaleString('fr-FR',{maximumFractionDigits:0})+' €';} var fS=Object.entries(byFou).sort(function(a,b){return b[1]-a[1];}), fM=fS[0]?fS[0][1]:1, n=nbA||1; var poseurs=[{nom:'ANATOLE',key:'poseur_ANATOLE',couleur:'#1565C0'},{nom:'ARTIOM',key:'poseur_ARTIOM',couleur:'#2E7D32'},{nom:'ANTONIO',key:'poseur_ANTONIO',couleur:'#E65100'},{nom:'VINCENT',key:'poseur_VINCENT',couleur:'#6A1B9A'},{nom:'LAMRI',key:'poseur_LAMRI',couleur:'#00695C'}]; var actifs=commandes.filter(function(c){return !estTermineStatut(c.statutLivraison)&&!estAnnulee(c);}).slice().sort(function(a,b){return str(b.datePose).localeCompare(str(a.datePose));}); var pvF=commandes.filter(function(c){return str(c.pvChantier).toUpperCase()==='OUI'&&!estAnnulee(c);}).length, pvM=actifs.filter(function(c){return str(c.pvChantier).toUpperCase()!=='OUI';}).length; var hC=''; if(!actifs.length){hC='<div style="text-align:center;padding:24px;color:var(--texte2);">Aucun chantier actif.</div>';}else{actifs.forEach(function(c){var pvFait=str(c.pvChantier).toUpperCase()==='OUI';hC+='<div style="background:#fff;border-radius:10px;border:1px solid var(--bordure);margin-bottom:10px;overflow:hidden;"><div style="padding:10px 14px;background:var(--gris-bg);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;border-bottom:1px solid var(--bordure);"><div><span style="font-weight:700;font-size:14px;">'+h(c.client)+'</span>';if(c.fournisseur)hC+=' <span style="font-size:11px;color:var(--texte2);">· '+h(c.fournisseur)+'</span>';hC+='</div><div style="display:flex;gap:6px;flex-wrap:wrap;">';if(c.metres)hC+='<span style="background:#FFF3E0;color:var(--orange);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;">📋 Métré : '+h(formatDateMetre(c.metres))+'</span>';if(c.datePose)hC+='<span style="background:var(--bleu-bg);color:var(--bleu);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;">📅 '+h(c.datePose)+'</span>';hC+=pvFait?'<span style="background:var(--vert-bg);color:var(--vert);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;">✓ PV Fait</span>':'<span style="background:#FFEBEE;color:var(--rouge);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;">✗ PV Manquant</span>';hC+='</div></div><div style="padding:10px 14px;">';var hasR=false;poseurs.forEach(function(p){if(!c[p.key]||!str(c[p.key]).trim())return;hasR=true;var l=str(c[p.key]).split('\n'),d=l[l.length-1];hC+='<div style="margin-bottom:8px;"><div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;"><div style="width:22px;height:22px;border-radius:50%;background:'+p.couleur+';display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;">'+p.nom.slice(0,2)+'</div><span style="font-size:12px;font-weight:700;color:'+p.couleur+';">'+p.nom+'</span></div><div style="font-size:11px;color:var(--texte);padding:6px 10px;background:var(--gris-bg);border-radius:6px;border-left:3px solid '+p.couleur+';">'+h(d)+'</div></div>';});if(!hasR)hC+='<div style="font-size:12px;color:var(--texte2);font-style:italic;">Aucune remarque poseur.</div>';hC+='</div></div>';});} document.getElementById('dash-content').innerHTML='<div class="dash-card" style="grid-column:1/-1;background:linear-gradient(135deg,#1565C0,#0D47A1);color:#fff;"><h4 style="color:#fff;">💰 Vue financière</h4><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;margin-top:8px;"><div><div style="font-size:24px;font-weight:800;">'+fmt(caC)+'</div><div style="font-size:12px;opacity:.85;">CA commandé</div></div><div><div style="font-size:24px;font-weight:800;">'+fmt(caP)+'</div><div style="font-size:12px;opacity:.85;">CA posé</div></div><div><div style="font-size:24px;font-weight:800;">'+nbE+'</div><div style="font-size:12px;opacity:.85;">En attente commande</div></div><div><div style="font-size:24px;font-weight:800;">'+nbS+'</div><div style="font-size:12px;opacity:.85;">SAV ouverts</div></div></div></div><div class="dash-card"><h4>Par fournisseur</h4>'+fS.map(function(e){return '<div class="bar-row"><span class="bar-label">'+h(e[0])+'</span><div class="bar-track"><div class="bar-fill" style="width:'+Math.round(e[1]/fM*100)+'%;background:'+(FOU_COLORS[e[0]]||'#546E7A')+'"></div></div><span class="bar-count">'+e[1]+'</span></div>';}).join('')+'</div><div class="dash-card"><h4>Alertes</h4>'+[['Urgentes',ac.u,'#D32F2F'],['Attention',ac.w,'#E65100'],['OK',ac.o,'#2E7D32']].map(function(x){return '<div class="bar-row"><span class="bar-label">'+x[0]+'</span><div class="bar-track"><div class="bar-fill" style="width:'+Math.round(x[1]/n*100)+'%;background:'+x[2]+'"></div></div><span class="bar-count">'+x[1]+'</span></div>';}).join('')+'</div><div class="dash-card"><h4>Résumé</h4><div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:4px;"><div style="text-align:center;padding:14px;background:var(--gris-bg);border-radius:8px;"><div style="font-size:28px;font-weight:700;color:var(--bleu);">'+nbA+'</div><div style="font-size:11px;color:var(--texte2);">Total (actifs)</div></div><div style="text-align:center;padding:14px;background:#FFEBEE;border-radius:8px;"><div style="font-size:28px;font-weight:700;color:var(--rouge);">'+ac.u+'</div><div style="font-size:11px;color:var(--texte2);">Urgences</div></div><div style="text-align:center;padding:14px;background:var(--vert-bg);border-radius:8px;"><div style="font-size:28px;font-weight:700;color:var(--vert);">'+pvF+'</div><div style="font-size:11px;color:var(--texte2);">PV Faits</div></div><div style="text-align:center;padding:14px;background:#FFF3E0;border-radius:8px;"><div style="font-size:28px;font-weight:700;color:var(--orange);">'+pvM+'</div><div style="font-size:11px;color:var(--texte2);">PV Manquants</div></div></div></div><div class="dash-card" style="grid-column:1/-1;"><h4>📋 Suivi chantiers</h4>'+hC+'</div>'; }
 
 // ── NAVIGATION ──
-function showView(v) { document.querySelectorAll('.view').forEach(function(el){el.classList.remove('active');}); document.querySelectorAll('.nav-item').forEach(function(el){el.classList.remove('active');}); document.getElementById('view-'+v).classList.add('active'); var nv=document.getElementById('nav-'+v); if(nv)nv.classList.add('active'); var titles={suivi:'Suivi des commandes', alertes:'Alertes actives', taches:'Tâches & Notes', agent:'🤖 Agent IA', metre:'Dates de métré', dashboard:'Tableau de bord', flotte:'Flotte de véhicules', suivipose:'Suivi de Pose', planning:'Planning', config:'Configuration'}; document.getElementById('topbar-title').textContent=titles[v]||v; if(v==='config'){document.getElementById('config-url-input').value=WEBAPP;document.getElementById('config-url-current').textContent=WEBAPP;document.getElementById('config-status').innerHTML='';} if(v==='alertes')renderAlertes(); if(v==='taches'){if(document.getElementById('sousmodule-achats-consommables').style.display!=='none')renderAchatsConsommables();else renderTaches();} if(v==='agent')chargerRapportAgent(); if(v==='metre')renderMetre(); if(v==='dashboard')renderDashboard(); if(v==='flotte')chargerFlotte(); if(v==='suivipose'){renderSuiviPose();setTimeout(traduireCommentairesPoseurs,500);} if(v==='planning')renderPlanning(); }
+function showView(v) { document.querySelectorAll('.view').forEach(function(el){el.classList.remove('active');}); document.querySelectorAll('.nav-item').forEach(function(el){el.classList.remove('active');}); document.getElementById('view-'+v).classList.add('active'); var nv=document.getElementById('nav-'+v); if(nv)nv.classList.add('active'); var titles={suivi:'Suivi des commandes', alertes:'Alertes actives', taches:'Tâches & Notes', agent:'🤖 Agent IA', metre:'Dates de métré', dashboard:'Tableau de bord', flotte:'État de la flotte', suivipose:'Suivi de Pose', planning:'Planning', config:'Configuration'}; document.getElementById('topbar-title').textContent=titles[v]||v; if(v==='config'){document.getElementById('config-url-input').value=WEBAPP;document.getElementById('config-url-current').textContent=WEBAPP;document.getElementById('config-status').innerHTML='';} if(v==='alertes')renderAlertes(); if(v==='taches'){if(document.getElementById('sousmodule-achats-consommables').style.display!=='none')renderAchatsConsommables();else renderTaches();} if(v==='agent')chargerRapportAgent(); if(v==='metre')renderMetre(); if(v==='dashboard')renderDashboard(); if(v==='flotte')chargerFlotte(); if(v==='suivipose'){renderSuiviPose();setTimeout(traduireCommentairesPoseurs,500);} if(v==='planning')renderPlanning(); }
 
 // ── SUIVI POSE ──
 function renderSuiviPose() { var poseurs=[{nom:'ANATOLE',key:'poseur_ANATOLE',couleur:'#1565C0'},{nom:'ARTIOM',key:'poseur_ARTIOM',couleur:'#2E7D32'},{nom:'ANTONIO',key:'poseur_ANTONIO',couleur:'#E65100'},{nom:'VINCENT',key:'poseur_VINCENT',couleur:'#6A1B9A'},{nom:'LAMRI',key:'poseur_LAMRI',couleur:'#00695C'}]; var semA=getWeekNumber(new Date()); function dpSem(dp,sem){var p=parseDatePose(dp);if(!p)return false;if(p.type==='semaine')return p.num===sem;if(p.type==='date')return getWeekNumber(p.date)===sem;return false;} var items=commandes.filter(function(c){if(estAnnulee(c))return false;if(estTermineStatut(c.statutPose))return false;return dpSem(c.datePose,semA);}).slice().sort(function(a,b){return str(b.datePose).localeCompare(str(a.datePose));}); if(!items.length){document.getElementById('suivipose-content').innerHTML='<div class="empty-state"><p>Aucun chantier actif cette semaine.</p></div>';return;} var html=''; items.forEach(function(c){var pvFait=str(c.pvChantier).toUpperCase()==='OUI';html+='<div class="suivipose-card"><div class="suivipose-header"><div><div class="suivipose-client">'+h(c.client)+'</div><div class="suivipose-meta">'+h(c.fournisseur||'')+(c.devis?' · '+h(c.devis):'')+'</div></div><div style="text-align:right;">';if(c.datePose)html+='<span class="suivipose-date">📅 '+h(cleanDate(c.datePose))+'</span>';var sP=str(c.statutPose);if(sP){var sBg=sP==='SAV'?'#FFEBEE':sP.indexOf('Termin')!==-1?'var(--vert-bg)':'#FFF3E0',sC=sP==='SAV'?'#D32F2F':sP.indexOf('Termin')!==-1?'var(--vert)':'#E65100';html+='<br><span style="font-size:11px;font-weight:700;background:'+sBg+';color:'+sC+';padding:2px 8px;border-radius:5px;display:inline-block;margin-top:4px;">'+h(sP)+'</span>';}html+='<br><span style="font-size:11px;font-weight:700;background:'+(pvFait?'var(--vert-bg)':'#FFEBEE')+';color:'+(pvFait?'var(--vert)':'var(--rouge)')+';padding:2px 8px;border-radius:5px;display:inline-block;margin-top:4px;">'+(pvFait?'✓ PV Fait':'✗ PV Manquant')+'</span></div></div><div class="suivipose-body">';if(c.metres)html+='<div style="margin-bottom:10px;padding:8px 12px;background:#FFF3E0;border-radius:8px;border-left:3px solid var(--orange);"><div style="font-size:11px;font-weight:700;color:var(--orange);margin-bottom:4px;">📋 DATE MÉTRÉ</div><div style="font-size:12px;">'+h(formatDateMetre(c.metres))+'</div></div>';if(c.commentaire)html+='<div style="margin-bottom:10px;padding:8px 12px;background:#FFF3E0;border-radius:8px;border-left:3px solid var(--orange);"><div style="font-size:11px;font-weight:700;color:var(--orange);margin-bottom:4px;">📋 NOTE BUREAU</div><div style="font-size:12px;white-space:pre-wrap;">'+h(c.commentaire)+'</div></div>';poseurs.forEach(function(p){html+='<div class="suivipose-poseur"><div class="suivipose-poseur-name"><div class="suivipose-poseur-avatar" style="background:'+p.couleur+'">'+p.nom.slice(0,2)+'</div><span class="suivipose-poseur-label">'+p.nom+'</span></div>';if(c[p.key]&&str(c[p.key]).trim()){var lignes=str(c[p.key]).split('\n').filter(function(l){return l.trim();});html+='<div class="suivipose-comment" id="cmt-'+c.ligne+'-'+p.key+'">';lignes.forEach(function(l,li){html+='<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid var(--bordure);"><span style="flex:1;font-size:12px;">'+h(l)+'</span><div style="display:flex;gap:4px;flex-shrink:0;"><button data-ligne="'+c.ligne+'" data-key="'+p.key+'" data-idx="'+li+'" class="btn-cmt-edit" style="background:var(--bleu-bg);color:var(--bleu);border:none;border-radius:5px;padding:3px 8px;font-size:11px;cursor:pointer;">✏️</button><button data-ligne="'+c.ligne+'" data-key="'+p.key+'" data-idx="'+li+'" class="btn-cmt-del" style="background:#FFEBEE;color:var(--rouge);border:none;border-radius:5px;padding:3px 8px;font-size:11px;cursor:pointer;">🗑</button></div></div>';});html+='</div>';}else{html+='<div class="suivipose-empty">Aucun suivi poseur.</div>';}html+='</div>';});html+='</div></div>';});document.getElementById('suivipose-content').innerHTML=html;document.getElementById('suivipose-content').querySelectorAll('.btn-cmt-edit').forEach(function(btn){btn.addEventListener('click',function(){modifierCommentaire(parseInt(btn.getAttribute('data-ligne')),btn.getAttribute('data-key'),parseInt(btn.getAttribute('data-idx')));});});document.getElementById('suivipose-content').querySelectorAll('.btn-cmt-del').forEach(function(btn){btn.addEventListener('click',function(){supprimerCommentaire(parseInt(btn.getAttribute('data-ligne')),btn.getAttribute('data-key'),parseInt(btn.getAttribute('data-idx')));});}); }
