@@ -793,15 +793,27 @@ function renderFlotte() {
       else if (resteRev <= 2000) alertesVehicule.push({ sev: 2, txt: 'Révision dans ' + resteRev + ' km' });
     }
 
-    // 4. Pneus (usure kilométrique/temps)
+    // 4. Pneus (Vérification de la date d'intervention)
     if (v.type && v.type.toUpperCase() === 'PNEUS') {
+      var estRecent = false;
       if (v.dateIntervention) {
         var datePneus = new Date(v.dateIntervention);
-        var moisDepuisPneus = (aujourdhui.getFullYear() - datePneus.getFullYear()) * 12 + (aujourdhui.getMonth() - datePneus.getMonth());
-        if (moisDepuisPneus >= 60) alertesVehicule.push({ sev: 3, txt: 'Pneus à changer (plus de 5 ans)' });
-        else if (moisDepuisPneus >= 55) alertesVehicule.push({ sev: 2, txt: 'Pneus à prévoir (bientôt 5 ans)' });
+        var joursDepuisPneus = Math.ceil((aujourdhui - datePneus) / (1000 * 60 * 60 * 24));
+        
+        // Si l'intervention a été faite il y a moins de 30 jours, on ne déclenche pas d'alerte d'usure
+        if (joursDepuisPneus < 30) {
+          estRecent = true;
+          alertesVehicule.push({ sev: 0, txt: '✅ PNEUS FAITS RÉCEMMENT (' + joursDepuisPneus + ' jours)' });
+        } else {
+          // Sinon on vérifie l'ancienneté (5 ans)
+          var moisDepuisPneus = (aujourdhui.getFullYear() - datePneus.getFullYear()) * 12 + (aujourdhui.getMonth() - datePneus.getMonth());
+          if (moisDepuisPneus >= 60) alertesVehicule.push({ sev: 3, txt: 'Pneus à changer (plus de 5 ans)' });
+          else if (moisDepuisPneus >= 55) alertesVehicule.push({ sev: 2, txt: 'Pneus à prévoir (bientôt 5 ans)' });
+        }
       }
-      if (v.kmIntervention > 0) {
+      
+      // Vérification kilométrique (seulement si pas récent)
+      if (!estRecent && v.kmIntervention > 0) {
         var kmPneus = v.kmActuel - v.kmIntervention;
         if (kmPneus >= 40000) alertesVehicule.push({ sev: 3, txt: 'Pneus usés (' + kmPneus + ' km)' });
         else if (kmPneus >= 38000) alertesVehicule.push({ sev: 2, txt: 'Pneus à prévoir (' + kmPneus + ' km)' });
@@ -830,7 +842,8 @@ function renderFlotte() {
     if (alertesVehicule.length > 0) {
       var severiteMax = Math.max.apply(null, alertesVehicule.map(function(a) { return a.sev; }));
       if (severiteMax === 3) listeUrgents.push({ v: v, alertes: alertesVehicule, infos: infosIntervention });
-      else listeAttention.push({ v: v, alertes: alertesVehicule, infos: infosIntervention });
+      else if (severiteMax === 2) listeAttention.push({ v: v, alertes: alertesVehicule, infos: infosIntervention });
+      else listeOK.push({ v: v, alertes: alertesVehicule, infos: infosIntervention }); // Si severité 0 (Fait récemment), on le met dans OK
     } else {
       listeOK.push({ v: v, infos: infosIntervention });
     }
@@ -843,9 +856,11 @@ function renderFlotte() {
     
     var lignesAlertes = item.alertes.map(function(a) {
       var txt = a.txt;
-      // Mise en évidence si c'est l'alerte d'intervention urgente
       if (txt.indexOf('ACTION URGENTE') !== -1) {
         return '<li style="font-size:13px; margin-bottom:6px; font-weight:700; color:var(--rouge); background:#FFEBEE; padding:6px 10px; border-radius:6px;">' + txt + '</li>';
+      }
+      if (txt.indexOf('FAITS RÉCEMMENT') !== -1) {
+        return '<li style="font-size:13px; margin-bottom:6px; font-weight:700; color:var(--vert); background:#E8F5E9; padding:6px 10px; border-radius:6px;">' + txt + '</li>';
       }
       return '<li style="font-size:13px; margin-bottom:4px;">' + txt + '</li>';
     }).join('');
@@ -884,7 +899,7 @@ function renderFlotte() {
   }
   containerAlertes.innerHTML = html;
 
-  // Liste des OK
+  // Liste des OK (qui contient aussi les "Faits récemment")
   if (listeOK.length > 0) {
     btnToggleOK.style.display = 'inline-flex';
     btnToggleOK.textContent = 'Afficher les ' + listeOK.length + ' véhicule(s) sans alerte';
@@ -893,8 +908,14 @@ function renderFlotte() {
       if (item.infos.length > 0) {
         detailsHtml = '<div style="margin-top:5px; font-size:10px; color:#546E7A;">' + item.infos.join(' — ') + '</div>';
       }
+      
+      var alerteHtml = '';
+      if (item.alertes && item.alertes.length > 0) {
+        alerteHtml = '<div style="margin-top:5px; font-size:11px; color:var(--vert); font-weight:700;">' + item.alertes[0].txt + '</div>';
+      }
+
       return '<div class="flotte-ok-item">' +
-        '<div><strong>' + h(item.v.id) + '</strong> - ' + h(item.v.modele) + ' <span style="font-size:11px; color:var(--texte2);">(' + h(item.v.immat) + ')</span>' + detailsHtml + '</div>' +
+        '<div><strong>' + h(item.v.id) + '</strong> - ' + h(item.v.modele) + ' <span style="font-size:11px; color:var(--texte2);">(' + h(item.v.immat) + ')</span>' + alerteHtml + detailsHtml + '</div>' +
         '<div><span style="color:var(--vert); font-weight:700; font-size:12px; margin-right:10px;">🟢 OK</span><button class="action-btn" onclick="ouvrirModalVehicule(\'' + item.v.id + '\')">✏️</button></div>' +
       '</div>';
     }).join('');
