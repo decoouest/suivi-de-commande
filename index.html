@@ -770,7 +770,12 @@ function renderFlotte() {
     var alertesVehicule = [];
     var infosIntervention = [];
 
-    // 1. Contrôle Technique
+    // 1. Interventions URGENTES (Pneus, pare-brise, etc.)
+    if (v.urgence === 'haute' && v.description) {
+      alertesVehicule.push({ sev: 3, txt: '🚨 ACTION URGENTE : ' + v.type + ' — ' + v.description });
+    }
+
+    // 2. Contrôle Technique
     if (v.prochainCT) {
       var dateCT = new Date(v.prochainCT);
       var joursCT = Math.ceil((dateCT - aujourdhui) / (1000 * 60 * 60 * 24));
@@ -780,7 +785,7 @@ function renderFlotte() {
       alertesVehicule.push({ sev: 2, txt: 'Date de contrôle technique manquante' });
     }
 
-    // 2. Révision (Vidange)
+    // 3. Révision (Vidange)
     if (v.kmRevision > 0) {
       var kmDepuisRev = v.kmActuel - v.kmRevision;
       var resteRev = 30000 - kmDepuisRev;
@@ -788,7 +793,7 @@ function renderFlotte() {
       else if (resteRev <= 2000) alertesVehicule.push({ sev: 2, txt: 'Révision dans ' + resteRev + ' km' });
     }
 
-    // 3. Pneus (via DateIntervention et KmIntervention)
+    // 4. Pneus (usure kilométrique/temps)
     if (v.type && v.type.toUpperCase() === 'PNEUS') {
       if (v.dateIntervention) {
         var datePneus = new Date(v.dateIntervention);
@@ -803,7 +808,7 @@ function renderFlotte() {
       }
     }
 
-    // 4. Assurance
+    // 5. Assurance
     if (v.dateAssurance) {
       var dateAssur = new Date(v.dateAssurance);
       var joursAssur = Math.ceil((dateAssur - aujourdhui) / (1000 * 60 * 60 * 24));
@@ -811,9 +816,10 @@ function renderFlotte() {
       else if (joursAssur <= 30) alertesVehicule.push({ sev: 2, txt: 'Assurance à renouveler dans ' + joursAssur + ' jours' });
     }
 
-    // Infos sur la dernière intervention (Pneus, Révision, etc.)
+    // Infos sur la dernière intervention enregistrée
     if (v.type || v.description || v.dateIntervention) {
-      var txt = '<strong>' + h(v.type || 'Intervention') + '</strong>';
+      var badgeUrgence = v.urgence === 'haute' ? '🔴 <strong>URGENT</strong> : ' : '🔧 ';
+      var txt = badgeUrgence + '<strong>' + h(v.type || 'Intervention') + '</strong>';
       if (v.dateIntervention) txt += ' le ' + new Date(v.dateIntervention).toLocaleDateString('fr-FR');
       if (v.kmIntervention > 0) txt += ' à ' + v.kmIntervention + ' km';
       if (v.description) txt += '<br><span style="color:#333;">« ' + h(v.description) + ' »</span>';
@@ -830,26 +836,29 @@ function renderFlotte() {
     }
   });
 
-  // Fonction pour générer une carte
+  // Génération de la carte
   function genererCarte(item, type) {
     var color = type === 'urgent' ? 'var(--rouge)' : 'var(--orange)';
     var icon = type === 'urgent' ? '🔴' : '🟠';
     
     var lignesAlertes = item.alertes.map(function(a) {
-      return '<li style="font-size:13px; margin-bottom:4px;">' + a.txt + '</li>';
+      var txt = a.txt;
+      // Mise en évidence si c'est l'alerte d'intervention urgente
+      if (txt.indexOf('ACTION URGENTE') !== -1) {
+        return '<li style="font-size:13px; margin-bottom:6px; font-weight:700; color:var(--rouge); background:#FFEBEE; padding:6px 10px; border-radius:6px;">' + txt + '</li>';
+      }
+      return '<li style="font-size:13px; margin-bottom:4px;">' + txt + '</li>';
     }).join('');
 
     var detailsHtml = '';
     if (item.infos.length > 0) {
-      detailsHtml = '<div class="flotte-details-box">' +
-        '🔧 ' + item.infos.join('<br>') + 
-      '</div>';
+      detailsHtml = '<div class="flotte-details-box">' + item.infos.join('<br>') + '</div>';
     }
 
     return '<div class="flotte-alerte-card ' + type + '">' +
       '<div style="flex:1;">' +
         '<div class="flotte-alerte-titre">' + icon + ' ' + h(item.v.id) + ' - ' + h(item.v.modele) + ' <span style="font-size:11px; color:var(--texte2); font-weight:normal;">(' + h(item.v.immat) + ')</span></div>' +
-        '<ul class="flotte-alerte-liste">' + lignesAlertes + '</ul>' +
+        '<ul class="flotte-alerte-liste" style="list-style:none; padding-left:0;">' + lignesAlertes + '</ul>' +
         detailsHtml +
       '</div>' +
       '<div>' +
@@ -875,14 +884,14 @@ function renderFlotte() {
   }
   containerAlertes.innerHTML = html;
 
-  // Gérer la liste des OK
+  // Liste des OK
   if (listeOK.length > 0) {
     btnToggleOK.style.display = 'inline-flex';
     btnToggleOK.textContent = 'Afficher les ' + listeOK.length + ' véhicule(s) sans alerte';
     containerOK.innerHTML = listeOK.map(function(item) {
       var detailsHtml = '';
       if (item.infos.length > 0) {
-        detailsHtml = '<div style="margin-top:5px; font-size:10px; color:#546E7A;">🔧 ' + item.infos.join(' — ') + '</div>';
+        detailsHtml = '<div style="margin-top:5px; font-size:10px; color:#546E7A;">' + item.infos.join(' — ') + '</div>';
       }
       return '<div class="flotte-ok-item">' +
         '<div><strong>' + h(item.v.id) + '</strong> - ' + h(item.v.modele) + ' <span style="font-size:11px; color:var(--texte2);">(' + h(item.v.immat) + ')</span>' + detailsHtml + '</div>' +
@@ -931,8 +940,9 @@ function ouvrirModalVehicule(idVehicule) {
           '<div><label>Prochain CT</label><input type="date" id="fv-prochainCT" class="task-input"></div>' +
           '<div><label>Date Assurance</label><input type="date" id="fv-dateAssurance" class="task-input"></div>' +
           '<div><label>Conducteur</label><input type="text" id="fv-conducteur" class="task-input"></div>' +
-          '<div><label>Type d\'intervention</label><select id="fv-type" class="task-input"><option value="">—</option><option>RÉVISION</option><option>PNEUS</option><option>PIÈCES D\'USURE</option><option>RÉPARATION</option><option>CONTRÔLE TECHNIQUE</option><option>ASSURANCE / ADMIN</option><option>AUTRE</option></select></div>' +
-          '<div><label>Description</label><input type="text" id="fv-description" class="task-input"></div>' +
+          '<div><label>Type d\'intervention / Panne</label><select id="fv-type" class="task-input"><option value="">—</option><option>RÉVISION</option><option>PNEUS</option><option>PIÈCES D\'USURE</option><option>AMPOULE / PHARE</option><option>VITRE / PARE-BRISE</option><option>RÉPARATION</option><option>CONTRÔLE TECHNIQUE</option><option>ASSURANCE / ADMIN</option><option>AUTRE</option></select></div>' +
+          '<div><label style="color:var(--rouge);">Niveau d\'urgence</label><select id="fv-urgence" class="task-input"><option value="normale">🟠 À prévoir (Normal)</option><option value="haute">🔴 URGENT (Sécurité / Bloquant)</option></select></div>' +
+          '<div style="grid-column:1/-1;"><label>Description / Détails</label><input type="text" id="fv-description" class="task-input" placeholder="Ex: Pneu avant droit crevé, phare gauche cassé..."></div>' +
           '<div><label>Date de l\'intervention</label><input type="date" id="fv-dateIntervention" class="task-input"></div>' +
           '<div><label>Kilométrage à l\'intervention</label><input type="number" id="fv-kmIntervention" class="task-input" placeholder="Ex: 45000"></div>' +
         '</div>' +
@@ -957,6 +967,7 @@ function ouvrirModalVehicule(idVehicule) {
   document.getElementById('fv-dateAssurance').value = v.dateAssurance || '';
   document.getElementById('fv-conducteur').value = v.conducteur || '';
   document.getElementById('fv-type').value = v.type || '';
+  document.getElementById('fv-urgence').value = v.urgence || 'normale';
   document.getElementById('fv-description').value = v.description || '';
   document.getElementById('fv-dateIntervention').value = v.dateIntervention || '';
   document.getElementById('fv-kmIntervention').value = v.kmIntervention || '';
@@ -978,6 +989,7 @@ async function sauvegarderVehicule() {
     dateAssurance: document.getElementById('fv-dateAssurance').value,
     conducteur: document.getElementById('fv-conducteur').value.trim(),
     type: document.getElementById('fv-type').value,
+    urgence: document.getElementById('fv-urgence').value, // NOUVEAU
     description: document.getElementById('fv-description').value.trim(),
     dateIntervention: document.getElementById('fv-dateIntervention').value,
     kmIntervention: document.getElementById('fv-kmIntervention').value || 0
