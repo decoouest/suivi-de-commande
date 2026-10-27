@@ -304,7 +304,7 @@ textarea.task-input{resize:vertical}
 .flotte-alerte-titre{font-weight:700;font-size:15px;color:var(--texte);margin-bottom:8px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
 .flotte-alerte-liste{margin:0;padding-left:18px;color:var(--texte2);margin-top:6px;font-size:13px;}
 .flotte-alerte-liste li{margin-bottom:6px;line-height: 1.4;}
-.flotte-ok-item{background:#fff;border:1px solid var(--bordure);border-radius:8px;padding:10px 14px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;opacity:0.8;}
+.flotte-ok-item{background:#fff;border:1px solid var(--bordure);border-radius:8px;padding:10px 14px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;opacity:1;}
 .flotte-details-box {font-size: 11px; background: #F5F7FA; border-radius: 6px; padding: 8px 12px; margin-top: 8px; color: #546E7A; display: block; border-left: 3px solid #90CAF9;}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -509,11 +509,9 @@ textarea.task-input{resize:vertical}
       <!-- Zone des alertes -->
       <div id="flotte-alertes" style="display:flex; flex-direction:column; gap:10px;"></div>
 
-      <!-- Bouton pour afficher les véhicules OK -->
-      <div style="margin-top:20px; text-align:center;">
-        <button id="btn-toggle-ok" class="btn btn-outline btn-sm" onclick="toggleFlotteOK()" style="display:none;">Afficher les véhicules sans alerte</button>
-      </div>
-      <div id="flotte-ok-list" style="display:none; margin-top:15px; opacity:0.7;"></div>
+      <!-- Affichage permanent des véhicules OK -->
+      <div id="flotte-ok-list" style="display:block; margin-top:20px;"></div>
+      <button id="btn-toggle-ok" style="display:none;"></button>
     </div>
 
     <div id="view-suivipose" class="view"><div style="text-align:right;margin-bottom:10px;"><button onclick="traduireCommentairesPoseurs()" style="background:var(--bleu-bg);color:var(--bleu);border:1px solid var(--bleu);border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;">🇫🇷 Traduire les commentaires</button></div><div id="suivipose-content"></div></div>
@@ -770,7 +768,7 @@ function renderFlotte() {
     var alertesVehicule = [];
     var infosIntervention = [];
 
-    // 1. Interventions URGENTES déclarées manuellement (ex: vitre cassée, phare HS)
+    // 1. Interventions URGENTES déclarées manuellement
     if (v.urgence === 'haute' && v.description) {
       alertesVehicule.push({ sev: 3, txt: '🚨 ACTION URGENTE : ' + v.type + ' — ' + v.description });
     }
@@ -785,7 +783,7 @@ function renderFlotte() {
       alertesVehicule.push({ sev: 2, txt: 'Date de contrôle technique manquante' });
     }
 
-    // 3. Révision (Vidange)
+    // 3. Révision
     if (v.kmRevision > 0) {
       var kmDepuisRev = v.kmActuel - v.kmRevision;
       var resteRev = 30000 - kmDepuisRev;
@@ -793,26 +791,23 @@ function renderFlotte() {
       else if (resteRev <= 2000) alertesVehicule.push({ sev: 2, txt: 'Révision dans ' + resteRev + ' km' });
     }
 
-    // 4. Pneus et Pièces d'usure (Vérification de la date)
+    // 4. Pneus et Pièces d'usure
     if (v.type && (v.type.toUpperCase() === 'PNEUS' || v.type.toUpperCase().indexOf('PIÈCES') !== -1)) {
       var estRecent = false;
       if (v.dateIntervention) {
         var dateInter = new Date(v.dateIntervention);
         var joursDepuis = Math.ceil((aujourdhui - dateInter) / (1000 * 60 * 60 * 24));
         
-        // Si c'est fait depuis moins de 30 jours, c'est VERT
         if (joursDepuis < 30) {
           estRecent = true;
           alertesVehicule.push({ sev: 0, txt: '✅ ' + v.type + ' FAITS RÉCEMMENT (il y a ' + joursDepuis + ' j)' });
         } else {
-          // Sinon on vérifie l'ancienneté (5 ans)
           var moisDepuis = (aujourdhui.getFullYear() - dateInter.getFullYear()) * 12 + (aujourdhui.getMonth() - dateInter.getMonth());
           if (moisDepuis >= 60) alertesVehicule.push({ sev: 3, txt: v.type + ' à changer (plus de 5 ans)' });
           else if (moisDepuis >= 55) alertesVehicule.push({ sev: 2, txt: v.type + ' à prévoir (bientôt 5 ans)' });
         }
       }
       
-      // Vérification kilométrique (si pas récent)
       if (!estRecent && v.kmIntervention > 0) {
         var kmDepuis = v.kmActuel - v.kmIntervention;
         if (kmDepuis >= 40000) alertesVehicule.push({ sev: 3, txt: v.type + ' usés (' + kmDepuis + ' km)' });
@@ -828,7 +823,7 @@ function renderFlotte() {
       else if (joursAssur <= 30) alertesVehicule.push({ sev: 2, txt: 'Assurance à renouveler dans ' + joursAssur + ' jours' });
     }
 
-    // Infos sur la dernière intervention enregistrée (le bloc en bas de la carte)
+    // Bloc détails
     if (v.type || v.description || v.dateIntervention) {
       var badgeUrgence = v.urgence === 'haute' ? '🔴 <strong>URGENT</strong> : ' : '🔧 ';
       var txt = badgeUrgence + '<strong>' + h(v.type || 'Intervention') + '</strong>';
@@ -839,7 +834,6 @@ function renderFlotte() {
       if (v.kmIntervention > 0) txt += ' à ' + v.kmIntervention + ' km';
       if (v.description) txt += '<br><span style="color:#333;">« ' + h(v.description) + ' »</span>';
       
-      // Si c'est récent, on le met en évidence
       if (v.type && v.dateIntervention && Math.ceil((aujourdhui - new Date(v.dateIntervention)) / (1000 * 60 * 60 * 24)) < 30) {
          txt = '✅ ' + txt.replace('🔧 ', '');
       }
@@ -847,33 +841,29 @@ function renderFlotte() {
       infosIntervention.push(txt);
     }
 
-    // Tri du véhicule
+    // Tri
     if (alertesVehicule.length > 0) {
       var severiteMax = Math.max.apply(null, alertesVehicule.map(function(a) { return a.sev; }));
       if (severiteMax === 3) listeUrgents.push({ v: v, alertes: alertesVehicule, infos: infosIntervention });
       else if (severiteMax === 2) listeAttention.push({ v: v, alertes: alertesVehicule, infos: infosIntervention });
-      else listeOK.push({ v: v, alertes: alertesVehicule, infos: infosIntervention }); // severité 0
+      else listeOK.push({ v: v, alertes: alertesVehicule, infos: infosIntervention });
     } else {
       listeOK.push({ v: v, infos: infosIntervention });
     }
   });
 
-  // Génération de la carte
   function genererCarte(item, type) {
     var color = type === 'urgent' ? 'var(--rouge)' : 'var(--orange)';
     var icon = type === 'urgent' ? '🔴' : '🟠';
     
     var lignesAlertes = item.alertes.map(function(a) {
       var txt = a.txt;
-      // Alerte Urgente manuelle (Rouge vif)
       if (txt.indexOf('ACTION URGENTE') !== -1) {
         return '<li style="font-size:13px; margin-bottom:6px; font-weight:700; color:var(--rouge); background:#FFEBEE; padding:6px 10px; border-radius:6px;">' + txt + '</li>';
       }
-      // Alerte "Fait récemment" (Vert)
       if (txt.indexOf('FAITS RÉCEMMENT') !== -1 || txt.indexOf('FAIT RÉCEMMENT') !== -1) {
         return '<li style="font-size:13px; margin-bottom:6px; font-weight:700; color:var(--vert); background:#E8F5E9; padding:6px 10px; border-radius:6px;">' + txt + '</li>';
       }
-      // Autres alertes
       return '<li style="font-size:13px; margin-bottom:4px;">' + txt + '</li>';
     }).join('');
 
@@ -888,8 +878,9 @@ function renderFlotte() {
         '<ul class="flotte-alerte-liste" style="list-style:none; padding-left:0;">' + lignesAlertes + '</ul>' +
         detailsHtml +
       '</div>' +
-      '<div>' +
+      '<div style="display:flex; flex-direction:column; gap:5px;">' +
         '<button class="btn btn-outline btn-sm" onclick="ouvrirModalVehicule(\'' + item.v.id + '\')" style="border-color:' + color + '; color:' + color + ';">✏️ Mettre à jour</button>' +
+        '<button class="btn btn-outline btn-sm" onclick="afficherHistoriqueVehicule(\'' + item.v.id + '\')" style="border-color:var(--bleu); color:var(--bleu);">📜 Historique</button>' +
       '</div>' +
     '</div>';
   }
@@ -906,16 +897,19 @@ function renderFlotte() {
     html += '</div>';
   }
   
-  if (!html) {
-    html = '<div style="text-align:center; padding:40px; color:var(--vert); font-weight:600; font-size:16px;">🟢 Tous les véhicules sont à jour ! Aucune action requise.</div>';
+  if (!html && listeOK.length === 0) {
+    html = '<div style="text-align:center; padding:40px; color:var(--vert); font-weight:600; font-size:16px;">🟢 Aucun véhicule enregistré.</div>';
   }
   containerAlertes.innerHTML = html;
 
-  // Liste des OK
+  // AFFICHAGE PERMANENT DES VÉHICULES OK
+  btnToggleOK.style.display = 'none';
+  containerOK.style.display = 'block';
+  containerOK.style.marginTop = '20px';
+  
   if (listeOK.length > 0) {
-    btnToggleOK.style.display = 'inline-flex';
-    btnToggleOK.textContent = 'Afficher les ' + listeOK.length + ' véhicule(s) sans alerte';
-    containerOK.innerHTML = listeOK.map(function(item) {
+    var htmlOK = '<div style="font-size:12px; font-weight:700; text-transform:uppercase; color:var(--vert); margin-bottom:8px;">🟢 Véhicules à jour (' + listeOK.length + ')</div>';
+    htmlOK += listeOK.map(function(item) {
       var detailsHtml = '';
       if (item.infos.length > 0) {
         detailsHtml = '<div style="margin-top:5px; font-size:10px; color:#546E7A;">' + item.infos.join(' — ') + '</div>';
@@ -926,16 +920,78 @@ function renderFlotte() {
         alerteHtml = '<div style="margin-top:5px; font-size:11px; color:var(--vert); font-weight:700;">' + item.alertes[0].txt + '</div>';
       }
 
-      return '<div class="flotte-ok-item">' +
+      return '<div class="flotte-ok-item" style="opacity:1;">' +
         '<div><strong>' + h(item.v.id) + '</strong> - ' + h(item.v.modele) + ' <span style="font-size:11px; color:var(--texte2);">(' + h(item.v.immat) + ')</span>' + alerteHtml + detailsHtml + '</div>' +
-        '<div><span style="color:var(--vert); font-weight:700; font-size:12px; margin-right:10px;">🟢 OK</span><button class="action-btn" onclick="ouvrirModalVehicule(\'' + item.v.id + '\')">✏️</button></div>' +
+        '<div style="display:flex; gap:5px;">' +
+          '<button class="action-btn" onclick="afficherHistoriqueVehicule(\'' + item.v.id + '\')" title="Historique">📜</button>' +
+          '<button class="action-btn" onclick="ouvrirModalVehicule(\'' + item.v.id + '\')">✏️</button>' +
+        '</div>' +
       '</div>';
     }).join('');
+    containerOK.innerHTML = htmlOK;
   } else {
-    btnToggleOK.style.display = 'none';
+    containerOK.innerHTML = '';
   }
 }
 
+// Fonction pour afficher la popup d'historique
+async function afficherHistoriqueVehicule(idVehicule) {
+  var overlay = document.getElementById('overlay-historique');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'overlay-historique';
+    overlay.className = 'overlay open';
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(10,20,40,.6);z-index:700;display:flex;align-items:center;justify-content:center;padding:20px;';
+    overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
+    
+    overlay.innerHTML = 
+      '<div class="modal" style="max-width:700px;width:100%;background:#fff;border-radius:14px;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.3);max-height:90vh;overflow-y:auto;" onclick="event.stopPropagation()">' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">' +
+          '<h3 style="font-size:16px;font-weight:700;color:var(--bleu);" id="histo-titre">Historique</h3>' +
+          '<button onclick="document.getElementById(\'overlay-historique\').remove()" style="background:#F5F7FA;border:none;border-radius:8px;width:30px;height:30px;cursor:pointer;font-size:16px;">✕</button>' +
+        '</div>' +
+        '<div id="histo-content" style="font-size:13px;">Chargement...</div>' +
+      '</div>';
+    document.body.appendChild(overlay);
+  }
+  
+  document.getElementById('histo-titre').textContent = 'Historique - ' + idVehicule;
+  document.getElementById('histo-content').innerHTML = '<div style="text-align:center;padding:20px;">⏳ Chargement...</div>';
+  
+  try {
+    var r = await apiPost({action: 'lireHistoriqueVehicule', id: idVehicule});
+    if (!r || !r.ok) throw new Error(r.error || 'Erreur');
+    
+    if (!r.data || r.data.length === 0) {
+      document.getElementById('histo-content').innerHTML = '<div style="text-align:center;padding:20px;color:var(--texte2);">Aucun historique pour ce véhicule.</div>';
+      return;
+    }
+    
+    var html = '<table style="width:100%;border-collapse:collapse;font-size:12px;">' +
+      '<thead><tr style="background:#F5F7FA;text-align:left;">' +
+        '<th style="padding:8px;border-bottom:1px solid #ddd;">Type</th>' +
+        '<th style="padding:8px;border-bottom:1px solid #ddd;">Description</th>' +
+        '<th style="padding:8px;border-bottom:1px solid #ddd;">Date</th>' +
+        '<th style="padding:8px;border-bottom:1px solid #ddd;">Km</th>' +
+        '<th style="padding:8px;border-bottom:1px solid #ddd;">Coût</th>' +
+      '</tr></thead><tbody>';
+      
+    r.data.forEach(function(h) {
+      html += '<tr>' +
+        '<td style="padding:8px;border-bottom:1px solid #eee;"><strong>' + h.type + '</strong></td>' +
+        '<td style="padding:8px;border-bottom:1px solid #eee;">' + h.description + '</td>' +
+        '<td style="padding:8px;border-bottom:1px solid #eee;">' + h.dateIntervention + '</td>' +
+        '<td style="padding:8px;border-bottom:1px solid #eee;">' + h.kmIntervention + '</td>' +
+        '<td style="padding:8px;border-bottom:1px solid #eee;">' + h.coutTTC + ' €</td>' +
+      '</tr>';
+    });
+    html += '</tbody></table>';
+    document.getElementById('histo-content').innerHTML = html;
+    
+  } catch(e) {
+    document.getElementById('histo-content').innerHTML = '<div style="color:var(--rouge);padding:20px;">❌ ' + e.message + '</div>';
+  }
+}
 
 function toggleFlotteOK() {
   var container = document.getElementById('flotte-ok-list');
@@ -1023,7 +1079,7 @@ async function sauvegarderVehicule() {
     dateAssurance: document.getElementById('fv-dateAssurance').value,
     conducteur: document.getElementById('fv-conducteur').value.trim(),
     type: document.getElementById('fv-type').value,
-    urgence: document.getElementById('fv-urgence').value, // NOUVEAU
+    urgence: document.getElementById('fv-urgence').value,
     description: document.getElementById('fv-description').value.trim(),
     dateIntervention: document.getElementById('fv-dateIntervention').value,
     kmIntervention: document.getElementById('fv-kmIntervention').value || 0
