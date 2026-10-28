@@ -654,7 +654,9 @@ async function apiPost(body, tentative) {
   } finally { if (timeoutId !== null) clearTimeout(timeoutId); }
 }
 
-function chargerDepuisCache() { try { var ts = parseInt(localStorage.getItem(CACHE_TIME_KEY) || '0'), age = Date.now()-ts; if (age<CACHE_DUREE) { var cached = localStorage.getItem(CACHE_KEY); if (cached) { commandes = JSON.parse(cached); var t = new Date(ts).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}); sync('ok','Cache · '+t); fillFournisseur(); renderAll(); setLoader(false); return true; } } } catch(e) {} return false; }
+function chargerDepuisCache() { 
+  return false; // Cache désactivé pour forcer le chargement
+}
 function sauvegarderCache(d) { try { localStorage.setItem(CACHE_KEY, JSON.stringify(d)); localStorage.setItem(CACHE_TIME_KEY, String(Date.now())); } catch(e) {} }
 function viderCache() { try { localStorage.removeItem(CACHE_KEY); localStorage.removeItem(CACHE_TIME_KEY); } catch(e) {} }
 window._jsonpCallback = function(d) { window._jsonpInProgress=false; if (window._jsonpTimeout) { clearTimeout(window._jsonpTimeout); window._jsonpTimeout=null; } var old = document.getElementById('jsonp-script'); if (old) old.remove(); if (!d||!d.ok||!Array.isArray(d.data)) { sync('error',(d&&d.error)?d.error:'Réponse invalide'); setLoader(false); return; } commandes=d.data; sauvegarderCache(commandes); sync('ok','Mis à jour '+new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})); fillFournisseur(); renderAll(); setLoader(false); };
