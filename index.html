@@ -505,11 +505,7 @@ textarea.task-input{resize:vertical}
         <h3 style="font-size:16px; margin:0; color:var(--bleu);">État de la flotte</h3>
         <button class="btn btn-primary btn-sm" onclick="ouvrirModalVehicule()">+ Ajouter / Modifier un véhicule</button>
       </div>
-      
-      <!-- Zone des alertes -->
       <div id="flotte-alertes" style="display:flex; flex-direction:column; gap:10px;"></div>
-
-      <!-- Affichage permanent des véhicules OK -->
       <div id="flotte-ok-list" style="display:block; margin-top:20px;"></div>
       <button id="btn-toggle-ok" style="display:none;"></button>
     </div>
@@ -768,12 +764,10 @@ function renderFlotte() {
     var alertesVehicule = [];
     var infosIntervention = [];
 
-    // 1. Interventions URGENTES déclarées manuellement
     if (v.urgence === 'haute' && v.description) {
       alertesVehicule.push({ sev: 3, txt: '🚨 ACTION URGENTE : ' + v.type + ' — ' + v.description });
     }
 
-    // 2. Contrôle Technique
     if (v.prochainCT) {
       var dateCT = new Date(v.prochainCT);
       var joursCT = Math.ceil((dateCT - aujourdhui) / (1000 * 60 * 60 * 24));
@@ -783,7 +777,6 @@ function renderFlotte() {
       alertesVehicule.push({ sev: 2, txt: 'Date de contrôle technique manquante' });
     }
 
-    // 3. Révision
     if (v.kmRevision > 0) {
       var kmDepuisRev = v.kmActuel - v.kmRevision;
       var resteRev = 30000 - kmDepuisRev;
@@ -791,14 +784,13 @@ function renderFlotte() {
       else if (resteRev <= 2000) alertesVehicule.push({ sev: 2, txt: 'Révision dans ' + resteRev + ' km' });
     }
 
-    // 4. Pneus et Pièces d'usure
     if (v.type && (v.type.toUpperCase() === 'PNEUS' || v.type.toUpperCase().indexOf('PIÈCES') !== -1)) {
       var estRecent = false;
       if (v.dateIntervention) {
         var dateInter = new Date(v.dateIntervention);
         var joursDepuis = Math.ceil((aujourdhui - dateInter) / (1000 * 60 * 60 * 24));
         
-        if (joursDepuis < 30) {
+        if (joursDepuis < 30 && joursDepuis >= 0) {
           estRecent = true;
           alertesVehicule.push({ sev: 0, txt: '✅ ' + v.type + ' FAITS RÉCEMMENT (il y a ' + joursDepuis + ' j)' });
         } else {
@@ -815,7 +807,6 @@ function renderFlotte() {
       }
     }
 
-    // 5. Assurance
     if (v.dateAssurance) {
       var dateAssur = new Date(v.dateAssurance);
       var joursAssur = Math.ceil((dateAssur - aujourdhui) / (1000 * 60 * 60 * 24));
@@ -823,7 +814,6 @@ function renderFlotte() {
       else if (joursAssur <= 30) alertesVehicule.push({ sev: 2, txt: 'Assurance à renouveler dans ' + joursAssur + ' jours' });
     }
 
-    // Bloc détails
     if (v.type || v.description || v.dateIntervention) {
       var badgeUrgence = v.urgence === 'haute' ? '🔴 <strong>URGENT</strong> : ' : '🔧 ';
       var txt = badgeUrgence + '<strong>' + h(v.type || 'Intervention') + '</strong>';
@@ -841,7 +831,6 @@ function renderFlotte() {
       infosIntervention.push(txt);
     }
 
-    // Tri
     if (alertesVehicule.length > 0) {
       var severiteMax = Math.max.apply(null, alertesVehicule.map(function(a) { return a.sev; }));
       if (severiteMax === 3) listeUrgents.push({ v: v, alertes: alertesVehicule, infos: infosIntervention });
@@ -872,7 +861,11 @@ function renderFlotte() {
       detailsHtml = '<div class="flotte-details-box">' + item.infos.join('<br>') + '</div>';
     }
 
-    var critAirBadge = item.v.critAir ? ' <span style="font-size:10px; font-weight:700; padding:2px 6px; border-radius:4px; margin-left:6px; color:#fff; background:' + (item.v.critAir==='0'?'#2E7D32':item.v.critAir==='1'?'#8E24AA':item.v.critAir==='2'?'#43A047':item.v.critAir==='3'?'#F57C00':item.v.critAir==='4'?'#AD1457':'#757575') + ';">Crit\'Air ' + h(item.v.critAir) + '</span>' : '';
+    var critAirBadge = '';
+    if (item.v.critAir) {
+      var bgCrit = item.v.critAir==='0'?'#2E7D32':item.v.critAir==='1'?'#8E24AA':item.v.critAir==='2'?'#43A047':item.v.critAir==='3'?'#F57C00':item.v.critAir==='4'?'#AD1457':'#757575';
+      critAirBadge = ' <span style="font-size:10px; font-weight:700; padding:2px 6px; border-radius:4px; margin-left:6px; color:#fff; background:' + bgCrit + ';">Crit\'Air ' + h(item.v.critAir) + '</span>';
+    }
 
     return '<div class="flotte-alerte-card ' + type + '">' +
       '<div style="flex:1;">' +
@@ -904,7 +897,6 @@ function renderFlotte() {
   }
   containerAlertes.innerHTML = html;
 
-  // AFFICHAGE PERMANENT DES VÉHICULES OK
   btnToggleOK.style.display = 'none';
   containerOK.style.display = 'block';
   containerOK.style.marginTop = '20px';
@@ -922,7 +914,11 @@ function renderFlotte() {
         alerteHtml = '<div style="margin-top:5px; font-size:11px; color:var(--vert); font-weight:700;">' + item.alertes[0].txt + '</div>';
       }
       
-      var critAirBadge = item.v.critAir ? ' <span style="font-size:10px; font-weight:700; padding:2px 6px; border-radius:4px; color:#fff; background:' + (item.v.critAir==='0'?'#2E7D32':item.v.critAir==='1'?'#8E24AA':item.v.critAir==='2'?'#43A047':item.v.critAir==='3'?'#F57C00':item.v.critAir==='4'?'#AD1457':'#757575') + ';">Crit\'Air ' + h(item.v.critAir) + '</span>' : '';
+      var critAirBadge = '';
+      if (item.v.critAir) {
+        var bgCrit = item.v.critAir==='0'?'#2E7D32':item.v.critAir==='1'?'#8E24AA':item.v.critAir==='2'?'#43A047':item.v.critAir==='3'?'#F57C00':item.v.critAir==='4'?'#AD1457':'#757575';
+        critAirBadge = ' <span style="font-size:10px; font-weight:700; padding:2px 6px; border-radius:4px; color:#fff; background:' + bgCrit + ';">Crit\'Air ' + h(item.v.critAir) + '</span>';
+      }
 
       return '<div class="flotte-ok-item" style="opacity:1;">' +
         '<div><strong>' + h(item.v.id) + '</strong> - ' + h(item.v.modele) + ' <span style="font-size:11px; color:var(--texte2);">(' + h(item.v.immat) + ')</span>' + critAirBadge + alerteHtml + detailsHtml + '</div>' +
@@ -938,7 +934,6 @@ function renderFlotte() {
   }
 }
 
-// Fonction pour afficher la popup d'historique
 async function afficherHistoriqueVehicule(idVehicule) {
   var overlay = document.getElementById('overlay-historique');
   if (!overlay) {
