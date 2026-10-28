@@ -1303,6 +1303,72 @@ function getSemNum(d){return getWeekNumber(d);}
 function planningSemaine(delta){if(planningSemA===null||delta===0)planningSemA=getSemNum(new Date());else{planningSemA+=delta;if(planningSemA>53)planningSemA=1;if(planningSemA<1)planningSemA=53;}renderPlanning();}
 function renderPlanning(){if(planningSemA===null)planningSemA=getSemNum(new Date());var sem=planningSemA;document.getElementById('planning-titre').textContent='Semaine S'+sem;var poseurs=[{nom:'ANATOLE',key:'poseur_ANATOLE',couleur:'#1565C0'},{nom:'ARTIOM',key:'poseur_ARTIOM',couleur:'#2E7D32'},{nom:'ANTONIO',key:'poseur_ANTONIO',couleur:'#E65100'},{nom:'VINCENT',key:'poseur_VINCENT',couleur:'#6A1B9A'},{nom:'LAMRI',key:'poseur_LAMRI',couleur:'#00695C'}];var chantiers=commandes.filter(function(c){if(estAnnulee(c))return false;var p=parseDatePose(c.datePose);if(!p)return false;if(p.type==='semaine')return p.num===sem;if(p.type==='date')return getSemNum(p.date)===sem;return false;});if(!chantiers.length){document.getElementById('planning-content').innerHTML='<div style="text-align:center;padding:48px;color:var(--texte2);"><div style="font-size:48px;">📅</div><p>Aucune pose pour S'+sem+'</p></div>';return;}var html='<div style="display:grid;gap:12px;">';chantiers.forEach(function(c){var pvF=str(c.pvChantier).toUpperCase()==='OUI',sP=str(c.statutPose),sBg=sP==='SAV'?'#FFEBEE':sP.indexOf('Termin')!==-1?'#E8F5E9':'#FFF3E0',sC=sP==='SAV'?'#D32F2F':sP.indexOf('Termin')!==-1?'#2E7D32':'#E65100',pAct=poseurs.filter(function(p){return c[p.key]&&str(c[p.key]).trim();});html+='<div style="background:#fff;border-radius:12px;border:1px solid var(--bordure);border-left:4px solid var(--bleu);padding:16px;"><div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px;"><div><span style="font-size:16px;font-weight:700;">'+h(c.client)+'</span>';if(c.fournisseur)html+=' <span style="font-size:12px;color:var(--texte2);">· '+h(c.fournisseur)+'</span>';html+='</div><div style="display:flex;gap:6px;flex-wrap:wrap;">';if(c.metres)html+='<span style="background:#FFF3E0;color:var(--orange);padding:3px 10px;border-radius:6px;font-size:12px;font-weight:700;">📋 '+h(formatDateMetre(c.metres))+'</span>';html+='<span style="background:var(--bleu-bg);color:var(--bleu);padding:3px 10px;border-radius:6px;font-size:12px;font-weight:700;">📅 '+h(c.datePose)+'</span>';if(sP)html+='<span style="background:'+sBg+';color:'+sC+';padding:3px 10px;border-radius:6px;font-size:12px;font-weight:700;">'+h(sP)+'</span>';html+='<span style="background:'+(pvF?'#E8F5E9':'#FFEBEE')+';color:'+(pvF?'#2E7D32':'#D32F2F')+';padding:3px 10px;border-radius:6px;font-size:12px;font-weight:700;">'+(pvF?'✓ PV':'✗ PV')+'</span></div></div>';if(pAct.length){html+='<div style="display:flex;gap:8px;flex-wrap:wrap;">';pAct.forEach(function(p){html+='<span style="display:inline-flex;align-items:center;gap:5px;background:'+p.couleur+'18;color:'+p.couleur+';padding:4px 10px;border-radius:20px;font-size:12px;font-weight:600;"><span style="width:18px;height:18px;border-radius:50%;background:'+p.couleur+';color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:9px;">'+p.nom.slice(0,2)+'</span>'+p.nom+'</span>';});html+='</div>';}else{html+='<div style="font-size:12px;color:var(--texte2);font-style:italic;">Aucun poseur assigné</div>';}if(c.commentaire)html+='<div style="margin-top:8px;font-size:12px;color:var(--texte2);padding:6px 10px;background:var(--gris-bg);border-radius:6px;">📋 '+h(c.commentaire)+'</div>';html+='</div>';});html+='</div>';document.getElementById('planning-content').innerHTML=html;}
 
+  // ── DATES DE MÉTRÉ ──
+function renderMetre() {
+  var q = str(document.getElementById('metre-search').value).toLowerCase();
+  var f = document.getElementById('metre-filter').value;
+  
+  var rows = commandes.map(function(c,i){return Object.assign({},c,{_i:i,_a:alerte(c)});});
+  
+  // Filtre recherche
+  if (q) rows = rows.filter(function(c){
+    return str(c.client).toLowerCase().indexOf(q)!==-1 || 
+           str(c.devis).toLowerCase().indexOf(q)!==-1 || 
+           str(c.fournisseur).toLowerCase().indexOf(q)!==-1;
+  });
+  
+  // Filtre date manquante / remplie
+  if (f === 'rempli') rows = rows.filter(function(c){ return c.metres && str(c.metres).trim() !== ''; });
+  if (f === 'vide') rows = rows.filter(function(c){ return !c.metres || str(c.metres).trim() === ''; });
+
+  // Stats
+  var tot = commandes.length;
+  var remplis = commandes.filter(function(c){ return c.metres && str(c.metres).trim() !== ''; }).length;
+  var vides = tot - remplis;
+  
+  document.getElementById('metre-stats').innerHTML = 
+    '<div class="kpi-card kpi-info"><span class="kpi-label">Total</span><span class="kpi-value">' + tot + '</span></div>' +
+    '<div class="kpi-card kpi-ok"><span class="kpi-label">Dates remplies</span><span class="kpi-value">' + remplis + '</span></div>' +
+    '<div class="kpi-card kpi-urgent"><span class="kpi-label">Dates manquantes</span><span class="kpi-value">' + vides + '</span></div>';
+
+  var tb = document.getElementById('metre-table-body');
+  
+  if (!rows.length) {
+    tb.innerHTML = '<tr><td colspan="9"><div class="empty-state"><p>Aucun résultat.</p></div></td></tr>';
+    document.getElementById('metre-scroll-hint').textContent = '';
+    return;
+  }
+
+  tb.innerHTML = rows.map(function(c) {
+    var a = c._a;
+    var fc = FOU_COLORS[c.fournisseur] || '#546E7A';
+    
+    var metreCell = c.metres 
+      ? '<span style="background:#FFF3E0;color:var(--orange);padding:3px 9px;border-radius:5px;font-size:11px;font-weight:700;">📅 ' + h(formatDateMetre(c.metres)) + '</span>' 
+      : '<span style="color:var(--rouge);font-weight:bold;font-size:11px;">⚠ Manquante</span>';
+
+    var sL = c.statutLivraison ? '<span class="badge badge-info">' + h(c.statutLivraison) + '</span>' : '—';
+    var sP = c.statutPose ? '<span class="badge badge-info">' + h(c.statutPose) + '</span>' : '—';
+    
+    var alerteHtml = a.n === 0 
+      ? '<span class="alerte-text alerte-ok">OK</span>' 
+      : '<span class="alerte-text ' + aClass(a.n) + '">⚠ ' + h(a.t.split(' | ')[0]) + '</span>';
+
+    return '<tr>' +
+      '<td class="col-mono">L' + c.ligne + '</td>' +
+      '<td class="col-client">' + h(c.client) + '</td>' +
+      '<td><span style="background:' + fc + '18;color:' + fc + ';padding:3px 8px;border-radius:5px;font-size:11px;font-weight:700;">' + h(c.fournisseur || '—') + '</span></td>' +
+      '<td class="col-mono">' + h(c.devis || '—') + '</td>' +
+      '<td>' + metreCell + '</td>' +
+      '<td>' + sL + '</td>' +
+      '<td>' + sP + '</td>' +
+      '<td>' + alerteHtml + '</td>' +
+      '<td><button class="action-btn" onclick="openModal(' + c._i + ')">✏️</button></td>' +
+    '</tr>';
+  }).join('');
+  
+  document.getElementById('metre-scroll-hint').textContent = rows.length + ' commande(s) affichée(s)';
+}
 // ── PDF ──
 async function genererRapportChantier(){if(editLigne===null||editLigne<0){alert('Enregistrez d\'abord.');return;}var c=commandes.find(function(x){return x.ligne===editLigne;});if(!c)return;try{var jspdf=window.jspdf,doc=new jspdf.jsPDF({orientation:'portrait',unit:'mm',format:'a4'});doc.setFillColor(21,101,192);doc.rect(0,0,210,30,'F');doc.setTextColor(255,255,255);doc.setFontSize(18);doc.setFont('helvetica','bold');doc.text('FICHE CHANTIER',105,13,{align:'center'});doc.setFontSize(10);doc.setFont('helvetica','normal');doc.text('ECO OUEST',105,22,{align:'center'});var y=42;doc.setFontSize(16);doc.setFont('helvetica','bold');doc.setTextColor(21,101,192);doc.text(str(c.client)||'—',14,y);y+=10;doc.setDrawColor(220,220,220);doc.setFontSize(10);doc.setTextColor(60,60,60);doc.setFont('helvetica','normal');function lg(lbl,val){if(y>270){doc.addPage();y=20;}doc.setFont('helvetica','bold');doc.text(lbl,14,y);doc.setFont('helvetica','normal');doc.text(str(val)||'—',70,y);y+=7;}lg('Fournisseur :',c.fournisseur);lg('Date métré :',formatDateMetre(c.metres));lg('N° Devis :',c.devis);lg('Commande :',c.commande);lg('N° ARC :',c.arc);lg('Prev. livraison :',c.prevLivraison);lg('Statut livraison :',c.statutLivraison);lg('Statut pose :',c.statutPose);lg('Date de pose :',c.datePose);lg('PV chantier :',str(c.pvChantier).toUpperCase()==='OUI'?'FAIT':'MANQUANT');var poseurs=[{nom:'ANATOLE',key:'poseur_ANATOLE'},{nom:'ARTIOM',key:'poseur_ARTIOM'},{nom:'ANTONIO',key:'poseur_ANTONIO'},{nom:'VINCENT',key:'poseur_VINCENT'},{nom:'LAMRI',key:'poseur_LAMRI'}];poseurs.forEach(function(p){if(!c[p.key]||!str(c[p.key]).trim())return;if(y>250){doc.addPage();y=20;}doc.setFont('helvetica','bold');doc.setFontSize(10);doc.setTextColor(21,101,192);doc.text('POSEUR : '+p.nom,14,y);y+=6;doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(60,60,60);var lP=doc.splitTextToSize(str(c[p.key]),182);lP.forEach(function(l){if(y>280){doc.addPage();y=20;}doc.text(l,14,y);y+=5;});y+=4;});var tp=doc.internal.getNumberOfPages();for(var i=1;i<=tp;i++){doc.setPage(i);doc.setFillColor(21,101,192);doc.rect(0,285,210,12,'F');doc.setTextColor(255,255,255);doc.setFontSize(8);doc.setFont('helvetica','normal');doc.text('ECO OUEST - ' + new Date().toLocaleDateString('fr-FR') + ' — Page '+i+'/'+tp,105,292,{align:'center'});}var fn='Fiche_'+(str(c.client)||'chantier').replace(/\s/g,'_')+'.pdf';doc.save(fn);}catch(e){alert('Erreur PDF : '+e.message);}}
 
