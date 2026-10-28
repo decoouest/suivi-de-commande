@@ -13,30 +13,30 @@
 <title>ECO OUEST — Suivi Commandes</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
-:root{--bleu:#1565C0;--bleu-clair:#1976D2;--bleu-bg:#E3F2FD;--rouge:#D32F2F;--orange:#E65100;--jaune:#F9A825;--vert:#2E7D32;--vert-bg:#C8E6C9;--gris:#78909C;--gris-bg:#F5F7FA;--texte:#1A1A2E;--texte2:#546E7A;--bordure:#E0E7EF;--sidebar:180px;}
+:root{--bleu:#1565C0;--bleu-clair:#1976D2;--bleu-bg:#E3F2FD;--rouge:#D32F2F;--orange:#E65100;--jaune:#F9A825;--vert:#2E7D32;--vert-bg:#C8E6C9;--gris:#78909C;--gris-bg:#F5F7FA;--texte:#1A1A2E;--texte2:#546E7A;--bordure:#E0E7EF;--sidebar:90px;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:"Inter",sans-serif;background:#F0F4F8;color:var(--texte);min-height:100vh;display:flex;}
 .sidebar{width:var(--sidebar);background:var(--bleu);min-height:100vh;display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;}
-.sidebar-logo{padding:18px 16px 14px;border-bottom:1px solid rgba(255,255,255,.15);}
-.sidebar-logo span{display:block;font-size:18px;font-weight:700;color:#fff;}
-.sidebar-logo small{font-size:10px;color:#90CAF9;text-transform:uppercase;letter-spacing:1.5px;}
+.sidebar-logo{padding:18px 10px 14px;border-bottom:1px solid rgba(255,255,255,.15);text-align:center;}
+.sidebar-logo span{display:block;font-size:16px;font-weight:700;color:#fff;}
+.sidebar-logo small{font-size:9px;color:#90CAF9;text-transform:uppercase;letter-spacing:1px;}
 .nav{flex:1;padding:12px 0;overflow-y:auto;}
-.nav-item{display:flex;align-items:center;gap:10px;padding:11px 18px;color:rgba(255,255,255,.7);cursor:pointer;font-size:13px;font-weight:500;transition:all .15s;border-left:3px solid transparent;}
+.nav-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:12px 4px;color:rgba(255,255,255,.7);cursor:pointer;font-size:10px;font-weight:600;transition:all .15s;border-left:3px solid transparent;text-align:center;}
 .nav-item:hover{color:#fff;background:rgba(255,255,255,.08);}
 .nav-item.active{color:#fff;background:rgba(255,255,255,.12);border-left-color:#90CAF9;}
-.nav-item .icon{font-size:16px;width:20px;text-align:center;}
-.sidebar-footer{padding:14px 16px;border-top:1px solid rgba(255,255,255,.1);font-size:11px;color:rgba(255,255,255,.4);}
-.main{margin-left:var(--sidebar);flex:1;display:flex;flex-direction:column;min-height:100vh;}
-.topbar{background:#fff;border-bottom:1px solid var(--bordure);padding:8px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+.nav-item .icon{font-size:22px;}
+.sidebar-footer{padding:14px 10px;border-top:1px solid rgba(255,255,255,.1);font-size:10px;color:rgba(255,255,255,.4);text-align:center;}
+.main{margin-left:var(--sidebar);flex:1;display:flex;flex-direction:column;min-height:100vh;width:calc(100% - var(--sidebar));}
+.topbar{background:#fff;border-bottom:1px solid var(--bordure);padding:8px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
 .topbar-title{font-size:16px;font-weight:600;}
-.topbar-right{display:flex;align-items:center;gap:10px;}
-.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:7px;border:none;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;transition:all .15s;}
+.topbar-right{display:flex;align-items:center;gap:8px;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:7px;border:none;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;transition:all .15s;}
 .btn-primary{background:var(--bleu);color:#fff;}.btn-primary:hover{background:var(--bleu-clair);}
 .btn-outline{background:#fff;color:var(--bleu);border:1.5px solid var(--bleu);}.btn-outline:hover{background:var(--bleu-bg);}
 .btn-danger{background:var(--rouge);color:#fff;}
 .btn-sm{padding:5px 11px;font-size:12px;}
 .btn:disabled{opacity:.5;cursor:not-allowed;}
-.content{padding:12px 28px;flex:1;}
+.content{padding:8px 12px;flex:1;width:100%;max-width:100%;overflow-x:hidden;}
 .view{display:none;}.view.active{display:block;}
 .loader-bar{height:3px;background:var(--bleu-bg);margin-bottom:12px;border-radius:2px;overflow:hidden;display:none;}
 .loader-bar.active{display:block;}
@@ -46,19 +46,23 @@ body{font-family:"Inter",sans-serif;background:#F0F4F8;color:var(--texte);min-he
 .sync-dot{width:7px;height:7px;border-radius:50%;background:var(--vert);display:inline-block;}
 .sync-dot.loading{background:var(--orange);animation:pulse .8s infinite;}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:12px;}
-.kpi-card{background:#fff;border-radius:10px;padding:10px 16px;border:1px solid var(--bordure);display:flex;flex-direction:column;gap:4px;cursor:pointer;transition:box-shadow .15s;}
+
+/* ── KPI & RACCOURCIS ── */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin-bottom:10px;}
+.kpi-card{background:#fff;border-radius:10px;padding:8px 12px;border:1px solid var(--bordure);display:flex;flex-direction:column;gap:2px;cursor:pointer;transition:box-shadow .15s;}
 .kpi-card:hover{box-shadow:0 4px 14px rgba(0,0,0,.08);}
-.kpi-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--texte2);}
-.kpi-value{font-size:22px;font-weight:700;line-height:1;}
-.kpi-sub{font-size:11px;color:var(--texte2);}
+.kpi-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--texte2);}
+.kpi-value{font-size:20px;font-weight:700;line-height:1;}
+.kpi-sub{font-size:9px;color:var(--texte2);}
 .kpi-urgent .kpi-value{color:var(--rouge);}.kpi-warn .kpi-value{color:var(--orange);}
 .kpi-ok .kpi-value{color:var(--vert);}.kpi-info .kpi-value{color:var(--bleu);}
-.filters-bar{background:#fff;border-radius:10px;border:1px solid var(--bordure);padding:8px 14px;display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:10px;}
-.search-input{flex:1;min-width:180px;border:1.5px solid var(--bordure);border-radius:7px;padding:7px 12px;font-family:inherit;font-size:13px;outline:none;}
+
+/* ── FILTRES ── */
+.filters-bar{background:#fff;border-radius:10px;border:1px solid var(--bordure);padding:6px 12px;display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:8px;}
+.search-input{flex:1;min-width:180px;border:1.5px solid var(--bordure);border-radius:7px;padding:6px 10px;font-family:inherit;font-size:13px;outline:none;}
 .search-input:focus{border-color:var(--bleu);}
-.select-filter{border:1.5px solid var(--bordure);border-radius:7px;padding:7px 10px;font-family:inherit;font-size:13px;outline:none;background:#fff;cursor:pointer;}
-.filter-badge{padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid transparent;transition:all .15s;}
+.select-filter{border:1.5px solid var(--bordure);border-radius:7px;padding:6px 10px;font-family:inherit;font-size:13px;outline:none;background:#fff;cursor:pointer;}
+.filter-badge{padding:5px 12px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:1.5px solid transparent;transition:all .15s;}
 .filter-badge.all{border-color:var(--bleu);color:var(--bleu);background:var(--bleu-bg);}
 .filter-badge.urgent{border-color:var(--rouge);color:var(--rouge);}
 .filter-badge.warn{border-color:var(--orange);color:var(--orange);}
@@ -69,26 +73,30 @@ body{font-family:"Inter",sans-serif;background:#F0F4F8;color:var(--texte);min-he
 .filter-badge.ok.active{background:var(--vert);color:#fff;}
 .filter-badge.sav-active{background:#D32F2F !important;color:#fff !important;}
 .filter-badge.noncmd-active{background:#E65100 !important;color:#fff !important;}
-.table-wrap{background:#fff;border-radius:10px;border:1px solid var(--bordure);overflow:auto;max-height:calc(100vh - 220px);}
-table{width:100%;border-collapse:collapse;font-size:13px;}
-thead th{position:sticky;top:0;z-index:10;background:var(--gris-bg);box-shadow:0 2px 0 var(--bordure);text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--texte2);text-transform:uppercase;letter-spacing:.8px;white-space:nowrap;cursor:pointer;user-select:none;}
+
+/* ── TABLEAU OPTIMISÉ ── */
+.table-wrap{background:#fff;border-radius:10px;border:1px solid var(--bordure);overflow:auto;max-height:calc(100vh - 200px);display:block;width:100%;margin-bottom:15px;}
+table{width:100%;border-collapse:collapse;font-size:11px;white-space:nowrap;}
+thead th{position:sticky;top:0;z-index:10;background:var(--gris-bg);box-shadow:0 2px 0 var(--bordure);text-align:left;padding:8px 4px;font-size:10px;font-weight:700;color:var(--texte2);text-transform:uppercase;letter-spacing:.3px;cursor:pointer;user-select:none;}
 thead th:hover{color:var(--bleu);}
-td{padding:10px 14px;border-bottom:1px solid var(--bordure);vertical-align:middle;}
+td{padding:8px 4px;border-bottom:1px solid var(--bordure);vertical-align:middle;font-size:11px;}
 tr:last-child td{border-bottom:none;}
 tr:hover td{background:#F8FBFF;}
-.col-client{font-weight:600;}
-.col-mono{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--texte2);}
-.col-comment{font-style:italic;color:var(--texte2);max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.badge{display:inline-block;padding:3px 9px;border-radius:5px;font-size:11px;font-weight:600;white-space:nowrap;}
+.col-client{font-weight:600;min-width:100px;}
+.col-mono{font-family:"JetBrains Mono",monospace;font-size:10px;color:var(--texte2);}
+.col-comment{font-style:italic;color:var(--texte2);white-space:normal;min-width:80px;max-width:120px;font-size:10px;line-height:1.2;}
+.badge{display:inline-block;padding:2px 6px;border-radius:4px;font-size:9px;font-weight:700;white-space:nowrap;}
 .badge-ok{background:var(--vert-bg);color:var(--vert);}
 .badge-urgent{background:#FFEBEE;color:var(--rouge);}
 .badge-info{background:var(--bleu-bg);color:var(--bleu);}
-.alerte-text{font-size:11px;font-weight:600;}
+.alerte-text{font-size:10px;font-weight:700;white-space:normal;min-width:80px;max-width:120px;display:block;line-height:1.2;}
 .alerte-ok{color:var(--vert);}.alerte-rouge{color:var(--rouge);}
 .alerte-orange{color:var(--orange);}.alerte-jaune{color:#B7860B;}
 .action-btn{background:none;border:none;cursor:pointer;padding:4px 6px;border-radius:5px;font-size:15px;}
 .action-btn:hover{background:var(--gris-bg);}
 .scroll-hint{font-size:11px;color:var(--texte2);padding:8px 14px;border-top:1px solid var(--bordure);}
+
+/* ── AUTRES VUES ── */
 .empty-state{text-align:center;padding:48px 24px;color:var(--texte2);}
 .overlay{display:none;position:fixed;inset:0;background:rgba(10,20,40,.45);z-index:200;align-items:center;justify-content:center;}
 .overlay.open{display:flex;}
@@ -190,47 +198,61 @@ textarea{resize:vertical;min-height:70px;}
 .menu-mobile-item{display:flex;align-items:center;gap:12px;padding:16px 22px;cursor:pointer;font-size:15px;font-weight:500;border-bottom:1px solid var(--bordure);transition:background .15s;color:var(--texte);}
 .menu-mobile-item:hover{background:var(--bleu-bg);}
 .menu-mobile-item .icon{font-size:22px;width:28px;text-align:center;}
+
+/* ── RESPONSIVE MOBILE ── */
 @media(max-width:900px){
-.sidebar{width:52px;}
-.sidebar .nav-item span,.sidebar-logo span,.sidebar-logo small,.sidebar-footer{display:none;}
-.sidebar-logo #version-info{display:none;}
-.main{margin-left:52px;}
-.sidebar-logo{padding:14px 8px;}
-.nav-item{padding:14px 8px;justify-content:center;}
-.nav-item .icon{font-size:20px;}
-.agent-header{padding:16px 18px;}
-.agent-header-info h2{font-size:16px;}
+  .sidebar{width:52px;}
+  .sidebar .nav-item span,.sidebar-logo span,.sidebar-logo small,.sidebar-footer{display:none;}
+  .sidebar-logo #version-info{display:none;}
+  .main{margin-left:52px;width:calc(100% - 52px);}
+  .sidebar-logo{padding:14px 8px;}
+  .nav-item{padding:14px 8px;justify-content:center;}
+  .nav-item .icon{font-size:20px;}
+  .agent-header{padding:16px 18px;}
+  .agent-header-info h2{font-size:16px;}
 }
 @media(max-width:768px){
-.sidebar{display:none !important;}
-.main{margin-left:0 !important;}
-.menu-burger{display:inline-flex;align-items:center;justify-content:center;}
-.topbar{flex-wrap:wrap;gap:8px;padding:8px 12px;}
-.topbar-title{flex:1;font-size:15px;}
-.topbar-right{width:100%;justify-content:space-between;gap:6px;flex-wrap:wrap;}
-.topbar-right .btn{font-size:12px;padding:8px 10px;flex:1;min-width:80px;}
-.content{padding:10px 12px;}
-.filters-bar{flex-direction:column;gap:8px;padding:10px;}
-.search-input,.select-filter{width:100%;}
-.filter-badge{flex:1;min-width:70px;text-align:center;font-size:12px;padding:6px 8px;}
-.kpi-grid{grid-template-columns:1fr 1fr;gap:8px;}
-.kpi-card{padding:12px;}
-.kpi-value{font-size:22px;}
-.table-wrap{overflow:visible;}
-table thead{display:none;}
-table, table tbody, table tr, table td{display:block;width:100%;}
-table tr{background:#fff;border-radius:12px;border:1px solid var(--bordure);margin-bottom:10px;padding:12px;box-shadow:0 1px 3px rgba(0,0,0,.05);}
-table td{border:none;padding:5px 0;text-align:left !important;display:flex;justify-content:space-between;align-items:center;gap:10px;}
-table td::before{content:attr(data-label);font-weight:700;font-size:11px;text-transform:uppercase;color:var(--texte2);flex-shrink:0;}
-table td:first-child{font-size:16px;font-weight:700;color:var(--bleu);border-bottom:1px solid var(--bordure);padding-bottom:8px;margin-bottom:4px;}
-table td:first-child::before{display:none;}
-.col-comment{max-width:none !important;white-space:normal !important;}
-.form-grid{grid-template-columns:1fr;}
-#planning-titre{font-size:14px;}
-.agent-card{flex-direction:column;gap:10px;}
-.agent-card-actions{width:100%;flex-direction:row;flex-wrap:wrap;}
-.agent-card-btn{flex:1;padding:8px;font-size:13px;}
+  .sidebar{display:none !important;}
+  .main{margin-left:0 !important;width:100% !important;}
+  .menu-burger{display:inline-flex;align-items:center;justify-content:center;}
+  .topbar{flex-wrap:wrap;gap:8px;padding:8px 12px;}
+  .topbar-title{flex:1;font-size:15px;}
+  .topbar-right{width:100%;justify-content:space-between;gap:6px;flex-wrap:wrap;}
+  .topbar-right .btn{font-size:12px;padding:8px 10px;flex:1;min-width:80px;}
+  .content{padding:10px 12px;}
+  .filters-bar{flex-direction:column;gap:8px;padding:10px;}
+  .search-input,.select-filter{width:100%;}
+  .filter-badge{flex:1;min-width:70px;text-align:center;font-size:12px;padding:6px 8px;}
+  .kpi-grid{grid-template-columns:repeat(3, 1fr);gap:8px;}
+  .kpi-card{padding:12px;}
+  .kpi-value{font-size:22px;}
+  .table-wrap{overflow:visible;}
+  
+  table:not(.no-responsive) thead{display:none;}
+  table:not(.no-responsive), table:not(.no-responsive) tbody, table:not(.no-responsive) tr, table:not(.no-responsive) td{display:block;width:100%;}
+  table:not(.no-responsive) tr{background:#fff;border-radius:12px;border:1px solid var(--bordure);margin-bottom:10px;padding:12px;box-shadow:0 1px 3px rgba(0,0,0,.05);}
+  table:not(.no-responsive) td{border:none;padding:5px 0;text-align:left !important;display:flex;justify-content:space-between;align-items:center;gap:10px;white-space:normal;}
+  table:not(.no-responsive) td::before{content:attr(data-label);font-weight:700;font-size:11px;text-transform:uppercase;color:var(--texte2);flex-shrink:0;}
+  table:not(.no-responsive) td:first-child{font-size:16px;font-weight:700;color:var(--bleu);border-bottom:1px solid var(--bordure);padding-bottom:8px;margin-bottom:4px;}
+  table:not(.no-responsive) td:first-child::before{display:none;}
+  .col-comment{max-width:none !important;white-space:normal !important;}
+  
+  table.no-responsive { display: table !important; width: 100% !important; }
+  table.no-responsive thead { display: table-header-group !important; }
+  table.no-responsive tbody { display: table-row-group !important; }
+  table.no-responsive tr { display: table-row !important; margin-bottom: 0 !important; padding: 0 !important; border-radius: 0 !important; background: transparent !important; box-shadow: none !important; border: none !important; }
+  table.no-responsive th, table.no-responsive td { display: table-cell !important; text-align: center !important; border: 1px solid var(--bordure) !important; padding: 6px 4px !important; font-size: 11px !important; white-space: nowrap !important; }
+  table.no-responsive td::before { display: none !important; }
+  table.no-responsive td:first-child { font-size: 11px !important; font-weight: bold !important; color: var(--texte) !important; border-bottom: 1px solid var(--bordure) !important; background: transparent !important; }
+  
+  .form-grid{grid-template-columns:1fr;}
+  #planning-titre{font-size:14px;}
+  .agent-card{flex-direction:column;gap:10px;}
+  .agent-card-actions{width:100%;flex-direction:row;flex-wrap:wrap;}
+  .agent-card-btn{flex:1;padding:8px;font-size:13px;}
 }
+
+/* ── SOUS-MODULES TACHES & ACHATS ── */
 .stock-subtabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}
 .stock-subtab{border:1px solid #CFD8DC;background:#fff;color:var(--texte);padding:9px 14px;border-radius:8px;font:inherit;font-size:12px;font-weight:750;cursor:pointer}
 .stock-subtab.active{background:var(--bleu);border-color:var(--bleu);color:#fff}
@@ -274,6 +296,16 @@ textarea.task-input{resize:vertical}
 .task-empty{padding:28px 12px;text-align:center;color:var(--texte2);font-size:12px}
 .task-card-details{font-size:12px;line-height:1.55;color:var(--texte2);white-space:pre-wrap;margin-top:7px;overflow-wrap:anywhere}
 @media(max-width:900px){.task-layout{grid-template-columns:1fr}.task-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.task-list-head{align-items:flex-start;flex-direction:column}.task-filters{width:100%}.task-filters .task-input{flex:1;max-width:none}}
+
+/* ── FLOTTE (MODE ALERTES) ── */
+.flotte-alerte-card{background:#fff;border-radius:10px;border:1px solid var(--bordure);border-left:4px solid;padding:14px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px;}
+.flotte-alerte-card.urgent{border-left-color:var(--rouge);}
+.flotte-alerte-card.warn{border-left-color:var(--orange);}
+.flotte-alerte-titre{font-weight:700;font-size:15px;color:var(--texte);margin-bottom:8px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.flotte-alerte-liste{margin:0;padding-left:18px;color:var(--texte2);margin-top:6px;font-size:13px;}
+.flotte-alerte-liste li{margin-bottom:6px;line-height: 1.4;}
+.flotte-ok-item{background:#fff;border:1px solid var(--bordure);border-radius:8px;padding:10px 14px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;opacity:1;}
+.flotte-details-box {font-size: 11px; background: #F5F7FA; border-radius: 6px; padding: 8px 12px; margin-top: 8px; color: #546E7A; display: block; border-left: 3px solid #90CAF9;}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -285,10 +317,11 @@ textarea.task-input{resize:vertical}
     <div class="menu-mobile-header"><span>📋 Navigation</span><button onclick="fermerMenuMobile()" style="background:none;border:none;font-size:22px;cursor:pointer;color:#fff;">✕</button></div>
     <div class="menu-mobile-item" onclick="menuMobileGo('suivi')"><span class="icon">📋</span> Commandes</div>
     <div class="menu-mobile-item" onclick="menuMobileGo('alertes')"><span class="icon">🔔</span> Alertes</div>
-    <div class="menu-mobile-item" onclick="menuMobileGo('taches')"><span class="icon">📝</span> Tâches & Notes <span id="taches-badge-mobile" class="task-nav-badge"></span></div>
+    <div class="menu-mobile-item" onclick="menuMobileGo('taches')"><span class="icon">📝</span> Tâches & Consommables <span id="taches-badge-mobile" class="task-nav-badge"></span></div>
     <div class="menu-mobile-item" onclick="menuMobileGo('agent')"><span class="icon">🤖</span> Agent IA</div>
     <div class="menu-mobile-item" onclick="menuMobileGo('metre')"><span class="icon">📅</span> Dates Métré</div>
     <div class="menu-mobile-item" onclick="menuMobileGo('dashboard')"><span class="icon">📊</span> Dashboard</div>
+    <div class="menu-mobile-item" onclick="menuMobileGo('flotte')"><span class="icon">🚗</span> Flotte</div>
     <div class="menu-mobile-item" onclick="menuMobileGo('suivipose')"><span class="icon">🔨</span> Suivi Pose</div>
     <div class="menu-mobile-item" onclick="menuMobileGo('planning')"><span class="icon">📅</span> Planning</div>
     <div class="menu-mobile-item" onclick="menuMobileGo('config')"><span class="icon">⚙️</span> Config</div>
@@ -296,19 +329,20 @@ textarea.task-input{resize:vertical}
 </div>
 
 <aside class="sidebar">
-  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v13.7</div></div>
+  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v15.0</div></div>
   <nav class="nav">
     <div class="nav-item active" id="nav-suivi" onclick="showView('suivi')"><span class="icon">📋</span><span>Commandes</span></div>
     <div class="nav-item" id="nav-alertes" onclick="showView('alertes')"><span class="icon">🔔</span><span>Alertes</span></div>
-    <div class="nav-item" id="nav-taches" onclick="showView('taches')"><span class="icon">📝</span><span>Tâches & Notes</span><span id="taches-badge" class="task-nav-badge"></span></div>
+    <div class="nav-item" id="nav-taches" onclick="showView('taches')"><span class="icon">📝</span><span>Tâches & Consommables</span></div>
     <div class="nav-item" id="nav-agent" onclick="showView('agent')"><span class="icon">🤖</span><span>Agent IA</span></div>
     <div class="nav-item" id="nav-metre" onclick="showView('metre')"><span class="icon">📅</span><span>Dates Métré</span></div>
     <div class="nav-item" id="nav-dashboard" onclick="showView('dashboard')"><span class="icon">📊</span><span>Dashboard</span></div>
+    <div class="nav-item" id="nav-flotte" onclick="showView('flotte')"><span class="icon">🚗</span><span>Flotte</span></div>
     <div class="nav-item" id="nav-suivipose" onclick="showView('suivipose')"><span class="icon">🔨</span><span>Suivi Pose</span></div>
     <div class="nav-item" id="nav-planning" onclick="showView('planning')"><span class="icon">📅</span><span>Planning</span></div>
     <div class="nav-item" id="nav-config" onclick="showView('config')"><span class="icon">⚙️</span><span>Config</span></div>
   </nav>
-  <div class="sidebar-footer">v13.7</div>
+  <div class="sidebar-footer">v15.0</div>
 </aside>
 
 <div class="main">
@@ -376,17 +410,25 @@ textarea.task-input{resize:vertical}
               <select id="task-type" class="task-input"><option value="tache">📝 Tâche à faire</option><option value="note">🗒️ Note / information</option></select>
               
               <label for="task-title">Titre (ou contenu de la tâche) *</label>
-              <input id="task-title" class="task-input" maxlength="140" required placeholder="Ex. Relancer le fournisseur">
+              <div style="display:flex; gap:6px;">
+                <input id="task-title" class="task-input" maxlength="140" required placeholder="Ex. Relancer le fournisseur">
+                <button type="button" class="btn btn-outline" onclick="dicterPourChamp('task-title')" title="Dicter le titre" style="padding:0 10px; border-color:#E65100; color:#E65100;">🎤</button>
+              </div>
               
               <label for="task-details">Détails (ou contenu de la note)</label>
-              <textarea id="task-details" class="task-input" rows="3" maxlength="3000" placeholder="Informations complémentaires..."></textarea>
+              <div style="display:flex; gap:6px; align-items:flex-start;">
+                <textarea id="task-details" class="task-input" rows="3" maxlength="3000" placeholder="Informations complémentaires..."></textarea>
+                <button type="button" class="btn btn-outline" onclick="dicterPourChamp('task-details')" title="Dicter les détails" style="padding:8px 10px; border-color:#E65100; color:#E65100;">🎤</button>
+              </div>
               
               <div class="task-fields-row">
                 <div><label for="task-echeance">Échéance</label><input id="task-echeance" class="task-input" type="date"></div>
                 <div><label for="task-priorite">Priorité</label><select id="task-priorite" class="task-input"><option value="haute">🔴 Haute</option><option value="normale" selected>🟠 Normale</option><option value="basse">🟢 Basse</option></select></div>
               </div>
 
-              <div class="task-form-actions">
+              <button type="button" class="btn btn-outline" onclick="dicterPourChamp('task-details')" style="width: 100%; margin-top: 15px; padding: 12px; border-color: #E65100; color: #E65100; justify-content: center; font-weight: 700; font-size: 14px;">🎤 Dicter la note / les détails à la voix</button>
+
+              <div class="task-form-actions" style="margin-top: 15px;">
                 <button class="btn btn-primary" type="submit">💾 Enregistrer</button>
                 <button class="btn btn-outline" type="button" onclick="reinitialiserFormTache()">Annuler</button>
               </div>
@@ -457,7 +499,19 @@ textarea.task-input{resize:vertical}
     </div>
 
     <div id="view-dashboard" class="view"><div class="dash-grid" id="dash-content"></div></div>
+
+    <div id="view-flotte" class="view">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
+        <h3 style="font-size:16px; margin:0; color:var(--bleu);">État de la flotte</h3>
+        <button class="btn btn-primary btn-sm" onclick="ouvrirModalVehicule()">+ Ajouter / Modifier un véhicule</button>
+      </div>
+      <div id="flotte-alertes" style="display:flex; flex-direction:column; gap:10px;"></div>
+      <div id="flotte-ok-list" style="display:block; margin-top:20px;"></div>
+      <button id="btn-toggle-ok" style="display:none;"></button>
+    </div>
+
     <div id="view-suivipose" class="view"><div style="text-align:right;margin-bottom:10px;"><button onclick="traduireCommentairesPoseurs()" style="background:var(--bleu-bg);color:var(--bleu);border:1px solid var(--bleu);border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;">🇫🇷 Traduire les commentaires</button></div><div id="suivipose-content"></div></div>
+    
     <div id="view-planning" class="view">
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
         <button onclick="planningSemaine(-1)" style="background:var(--bleu);color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:14px;font-weight:600;cursor:pointer;">← Sem. préc.</button>
@@ -549,14 +603,14 @@ var FOU_COLORS = {'ATLANTEM':'#1565C0','ATULAM':'#6A1B9A','LALLEMANT':'#2E7D32',
 var TERMINES = ['livre','termine','pose'];
 var commandes = [];
 var sortCol = 'ligne', sortAsc = false, alertFilter = 'all', editLigne = -1;
-// [v13.7] Cache versionné v137
-var CACHE_DUREE = 60 * 1000, CACHE_KEY = 'eco-ouest-cache-v137', CACHE_TIME_KEY = 'eco-ouest-cache-time-v137';
+var CACHE_DUREE = 60 * 1000, CACHE_KEY = 'eco-ouest-cache-v150', CACHE_TIME_KEY = 'eco-ouest-cache-time-v150';
 var dernierRapportAgent = null;
 var recognition = null, recognitionAssistant = null, recognitionAction = null;
 var cacheTrad = {};
 var catalogueConsommables = [];
 var tachesNotes = [];
 var achatsConsommables = [];
+var flotteVehicules = [];
 
 function nettoyerTextePourVoix(texte) { if (!texte) return ""; return texte.replace(/\*\*/g,'').replace(/\*/g,'').replace(/#/g,'').replace(/_/g,' ').replace(/`/g,'').replace(/•/g,', '); }
 function str(s) { if (s === null || s === undefined) return ''; return String(s); }
@@ -600,7 +654,9 @@ async function apiPost(body, tentative) {
   } finally { if (timeoutId !== null) clearTimeout(timeoutId); }
 }
 
-function chargerDepuisCache() { try { var ts = parseInt(localStorage.getItem(CACHE_TIME_KEY) || '0'), age = Date.now()-ts; if (age<CACHE_DUREE) { var cached = localStorage.getItem(CACHE_KEY); if (cached) { commandes = JSON.parse(cached); var t = new Date(ts).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}); sync('ok','Cache · '+t); fillFournisseur(); renderAll(); setLoader(false); return true; } } } catch(e) {} return false; }
+function chargerDepuisCache() { 
+  return false; // Cache désactivé pour forcer le chargement
+}
 function sauvegarderCache(d) { try { localStorage.setItem(CACHE_KEY, JSON.stringify(d)); localStorage.setItem(CACHE_TIME_KEY, String(Date.now())); } catch(e) {} }
 function viderCache() { try { localStorage.removeItem(CACHE_KEY); localStorage.removeItem(CACHE_TIME_KEY); } catch(e) {} }
 window._jsonpCallback = function(d) { window._jsonpInProgress=false; if (window._jsonpTimeout) { clearTimeout(window._jsonpTimeout); window._jsonpTimeout=null; } var old = document.getElementById('jsonp-script'); if (old) old.remove(); if (!d||!d.ok||!Array.isArray(d.data)) { sync('error',(d&&d.error)?d.error:'Réponse invalide'); setLoader(false); return; } commandes=d.data; sauvegarderCache(commandes); sync('ok','Mis à jour '+new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})); fillFournisseur(); renderAll(); setLoader(false); };
@@ -615,6 +671,7 @@ function renderKPI() {
   var tot=commandes.length,urg=0,warn=0,ok=0,enc=0; 
   al.forEach(function(a){if(a.n===3)urg++;else if(a.n>=1)warn++;else if(a.n===0)ok++;}); 
   commandes.forEach(function(c){if(!estTermineStatut(c.statutLivraison))enc++;}); 
+  
   var items=[
     {cls:'kpi-info',f:'all',lb:'Total',v:tot,sub:'commandes'},
     {cls:'kpi-urgent',f:'urgent',lb:'Urgentes',v:urg,sub:'action requise'},
@@ -622,6 +679,7 @@ function renderKPI() {
     {cls:'kpi-ok',f:'ok',lb:'OK',v:ok,sub:'sans alerte'},
     {cls:'kpi-info',f:'encours',lb:'En cours',v:enc,sub:'non livrées'}
   ]; 
+  
   items.forEach(function(it){ 
     var d=document.createElement('div'); 
     d.className='kpi-card '+it.cls; 
@@ -630,14 +688,20 @@ function renderKPI() {
     grid.appendChild(d); 
   }); 
   
+  var actifsTaches = tachesNotes.filter(function(t){ return t.type === 'tache' && !t.terminee; }).length;
+  var notesCount = tachesNotes.filter(function(t){ return t.type === 'note'; }).length;
+  var achatsEnCours = achatsConsommables.filter(function(a){ return a.statut !== 'recu'; }).length;
+
   var shortcuts = document.createElement('div');
   shortcuts.className = 'kpi-card';
-  shortcuts.style.cssText = 'grid-column: auto; min-width: 220px; cursor: default; justify-content: center;';
-  shortcuts.innerHTML = '<span class="kpi-label">Raccourcis</span>' +
-    '<div style="display:flex; gap:6px; margin-top:4px;">' +
-      '<button class="btn btn-outline" onclick="showView(\'taches\'); ouvrirSousModuleTaches(\'taches\'); document.getElementById(\'task-filter-type\').value=\'taches\'; renderTaches();" style="flex:1; padding:6px 4px; font-size:11px; border-color:#CFD8DC; color:#455A64; justify-content:center;">📝 Tâches</button>' +
-      '<button class="btn btn-outline" onclick="showView(\'taches\'); ouvrirSousModuleTaches(\'taches\'); document.getElementById(\'task-filter-type\').value=\'notes\'; renderTaches();" style="flex:1; padding:6px 4px; font-size:11px; border-color:#CFD8DC; color:#455A64; justify-content:center;">🗒️ Notes</button>' +
-      '<button class="btn btn-outline" onclick="showView(\'taches\'); ouvrirSousModuleTaches(\'achats\');" style="flex:1; padding:6px 4px; font-size:11px; border-color:#CFD8DC; color:#455A64; justify-content:center;">🛒 Achats</button>' +
+  shortcuts.style.cssText = 'cursor: default; display: flex; flex-direction: column; justify-content: center; padding: 8px;';
+  
+  shortcuts.innerHTML = 
+    '<div style="display:flex; flex-direction:column; gap:4px; width:100%;">' +
+      '<button class="btn btn-outline" onclick="showView(\'taches\'); ouvrirSousModuleTaches(\'taches\'); document.getElementById(\'task-filter-type\').value=\'taches\'; renderTaches();" style="width:100%; padding:4px; font-size:11px; font-weight:700; border-color:#1565C0; color:#1565C0; justify-content:center; white-space:nowrap;">📝 Tâches (' + actifsTaches + ')</button>' +
+      '<button class="btn btn-outline" onclick="showView(\'taches\'); ouvrirSousModuleTaches(\'taches\'); document.getElementById(\'task-filter-type\').value=\'notes\'; renderTaches();" style="width:100%; padding:4px; font-size:11px; font-weight:700; border-color:#78909C; color:#78909C; justify-content:center; white-space:nowrap;">🗒️ Notes (' + notesCount + ')</button>' +
+      '<button class="btn btn-outline" onclick="showView(\'taches\'); ouvrirSousModuleTaches(\'achats\');" style="width:100%; padding:4px; font-size:11px; font-weight:700; border-color:#E65100; color:#E65100; justify-content:center; white-space:nowrap;">🛒 Achats (' + achatsEnCours + ')</button>' +
+      '<button onclick="ouvrirModalDicteeNoteRapide()" style="width:100%; padding:4px; font-size:11px; font-weight:700; border:1.5px solid #E65100; background:#FFF3E0; color:#E65100; border-radius:6px; cursor:pointer; justify-content:center; white-space:nowrap; display:flex; align-items:center; gap:4px;">🎤 Dicter</button>' +
     '</div>';
   grid.appendChild(shortcuts);
 }
@@ -667,7 +731,7 @@ function renderTable() {
     var extra = a.t.indexOf(' | ')!==-1?'<br><span style="font-size:10px;color:var(--texte2);">+'+(a.t.split(' | ').length-1)+' autre(s)</span>':'';
     var objetBadge = c.objetCommande?'<span style="border-bottom:2px dotted var(--bleu);cursor:pointer;" onclick="afficherObjetParLigne(event,'+c.ligne+')">'+h(c.arc||'—')+' 📦</span>':h(c.arc||'—');
     var metreCell = c.metres?'<span style="background:#FFF3E0;color:var(--orange);padding:3px 9px;border-radius:5px;font-size:11px;font-weight:700;">📅 '+h(formatDateMetre(c.metres))+'</span>':'<span style="color:#ccc;">—</span>';
-    return '<tr><td class="col-client" data-label="Client"><span style="display:inline-block;background:var(--gris-bg);color:var(--texte2);font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px;margin-right:6px;">L'+c.ligne+'</span>'+h(c.client)+'</td><td data-label="Fournisseur"><span style="background:'+fc+'18;color:'+fc+';padding:3px 8px;border-radius:5px;font-size:11px;font-weight:700;">'+h(c.fournisseur||'—')+'</span></td><td data-label="Métré">'+metreCell+'</td><td class="col-mono" data-label="Devis">'+h(c.devis||'—')+'</td><td>'+(c.commande==='OUI'?'<span class="badge badge-ok">OUI</span>':c.commande==='NON'?'<span class="badge badge-urgent">NON</span>':'—')+'</td><td class="col-mono" data-label="ARC">'+objetBadge+'</td><td data-label="Livraison">'+semaineBadge(c.prevLivraison)+'</td><td data-label="Statut livr.">'+sL+'</td><td data-label="Statut pose">'+sP+'</td><td style="font-size:12px;font-weight:600;color:var(--bleu);" data-label="Date pose">'+h(c.datePose||'—')+'</td><td data-label="PV">'+pvBadge(c.pvChantier,c.ligne)+'</td><td class="col-comment" data-label="Commentaire" title="'+escAttr(c.commentaire)+'">'+h(c.commentaire||'')+'</td><td data-label="Alerte"><span class="alerte-text '+aClass(a.n)+'">'+(a.n===0?'OK':a.n===-1?'⏹ Annulée':'⚠ '+h(a.t.split(' | ')[0]))+'</span>'+extra+'</td><td><button class="action-btn" onclick="openModal('+c._i+')">✏️</button></td></tr>';
+    return '<tr><td class="col-client" data-label="Client"><span style="display:none;">L'+c.ligne+'</span>'+h(c.client)+'</td><td data-label="Fournisseur"><span style="background:'+fc+'18;color:'+fc+';padding:3px 8px;border-radius:5px;font-size:11px;font-weight:700;">'+h(c.fournisseur||'—')+'</span></td><td data-label="Métré">'+metreCell+'</td><td class="col-mono" data-label="Devis">'+h(c.devis||'—')+'</td><td>'+(c.commande==='OUI'?'<span class="badge badge-ok">OUI</span>':c.commande==='NON'?'<span class="badge badge-urgent">NON</span>':'—')+'</td><td class="col-mono" data-label="ARC">'+objetBadge+'</td><td data-label="Livraison">'+semaineBadge(c.prevLivraison)+'</td><td data-label="Statut livr.">'+sL+'</td><td data-label="Statut pose">'+sP+'</td><td style="font-size:12px;font-weight:600;color:var(--bleu);" data-label="Date pose">'+h(c.datePose||'—')+'</td><td data-label="PV">'+pvBadge(c.pvChantier,c.ligne)+'</td><td class="col-comment" data-label="Commentaire" title="'+escAttr(c.commentaire)+'">'+h(c.commentaire||'')+'</td><td data-label="Alerte"><span class="alerte-text '+aClass(a.n)+'">'+(a.n===0?'OK':a.n===-1?'⏹ Annulée':'⚠ '+h(a.t.split(' | ')[0]))+'</span>'+extra+'</td><td><button class="action-btn" onclick="openModal('+c._i+')">✏️</button></td></tr>';
   }).join('');
   document.getElementById('scroll-hint').textContent = rows.length+' commande(s) sur '+commandes.length;
 }
@@ -675,6 +739,386 @@ function renderTable() {
 function sortBy(col){if(sortCol===col)sortAsc=!sortAsc;else{sortCol=col;sortAsc=true;}renderTable();}
 function setFilter(f){alertFilter=f;['all','urgent','warn','ok'].forEach(function(k){document.getElementById('fb-'+k).classList.toggle('active',k===f);});document.getElementById('fb-sav').classList.toggle('sav-active',f==='sav');document.getElementById('fb-noncmd').classList.toggle('noncmd-active',f==='noncmd');renderTable();}
 function afficherObjetParLigne(e,ligne){if(e)e.stopPropagation();var c=commandes.find(function(x){return x.ligne===ligne;});if(!c||!c.objetCommande)return;afficherObjet(null,c.objetCommande);}
+
+// ── MODULE FLOTTE (MODE ALERTES) ──
+async function chargerFlotte() {
+  try {
+    var rV = await apiPost({ action: 'lireVehicules' });
+    if (rV.ok) {
+      flotteVehicules = rV.data;
+      renderFlotte();
+    }
+  } catch(e) { console.warn("Erreur chargement flotte :", e.message); }
+}
+
+function renderFlotte() {
+  var containerAlertes = document.getElementById('flotte-alertes');
+  var containerOK = document.getElementById('flotte-ok-list');
+  var btnToggleOK = document.getElementById('btn-toggle-ok');
+  if (!containerAlertes) return;
+
+  var aujourdhui = new Date();
+  var listeUrgents = [];
+  var listeAttention = [];
+  var listeOK = [];
+
+  flotteVehicules.forEach(function(v) {
+    var alertesVehicule = [];
+    var infosIntervention = [];
+
+    if (v.urgence === 'haute' && v.description) {
+      alertesVehicule.push({ sev: 3, txt: '🚨 ACTION URGENTE : ' + v.type + ' — ' + v.description });
+    }
+
+    if (v.prochainCT) {
+      var dateCT = new Date(v.prochainCT);
+      var joursCT = Math.ceil((dateCT - aujourdhui) / (1000 * 60 * 60 * 24));
+      if (joursCT < 0) alertesVehicule.push({ sev: 3, txt: 'Contrôle technique expiré depuis ' + Math.abs(joursCT) + ' jours' });
+      else if (joursCT <= 30) alertesVehicule.push({ sev: 2, txt: 'Contrôle technique dans ' + joursCT + ' jours' });
+    } else {
+      alertesVehicule.push({ sev: 2, txt: 'Date de contrôle technique manquante' });
+    }
+
+    if (v.kmRevision > 0) {
+      var kmDepuisRev = v.kmActuel - v.kmRevision;
+      var resteRev = 30000 - kmDepuisRev;
+      if (resteRev <= 0) alertesVehicule.push({ sev: 3, txt: 'Révision dépassée de ' + Math.abs(resteRev) + ' km' });
+      else if (resteRev <= 2000) alertesVehicule.push({ sev: 2, txt: 'Révision dans ' + resteRev + ' km' });
+    }
+
+    if (v.type && (v.type.toUpperCase() === 'PNEUS' || v.type.toUpperCase().indexOf('PIÈCES') !== -1)) {
+      var estRecent = false;
+      if (v.dateIntervention) {
+        var dateInter = new Date(v.dateIntervention);
+        var joursDepuis = Math.ceil((aujourdhui - dateInter) / (1000 * 60 * 60 * 24));
+        
+        if (joursDepuis < 30 && joursDepuis >= 0) {
+          estRecent = true;
+          alertesVehicule.push({ sev: 0, txt: '✅ ' + v.type + ' FAITS RÉCEMMENT (il y a ' + joursDepuis + ' j)' });
+        } else {
+          var moisDepuis = (aujourdhui.getFullYear() - dateInter.getFullYear()) * 12 + (aujourdhui.getMonth() - dateInter.getMonth());
+          if (moisDepuis >= 60) alertesVehicule.push({ sev: 3, txt: v.type + ' à changer (plus de 5 ans)' });
+          else if (moisDepuis >= 55) alertesVehicule.push({ sev: 2, txt: v.type + ' à prévoir (bientôt 5 ans)' });
+        }
+      }
+      
+      if (!estRecent && v.kmIntervention > 0) {
+        var kmDepuis = v.kmActuel - v.kmIntervention;
+        if (kmDepuis >= 40000) alertesVehicule.push({ sev: 3, txt: v.type + ' usés (' + kmDepuis + ' km)' });
+        else if (kmDepuis >= 38000) alertesVehicule.push({ sev: 2, txt: v.type + ' à prévoir (' + kmDepuis + ' km)' });
+      }
+    }
+
+    if (v.dateAssurance) {
+      var dateAssur = new Date(v.dateAssurance);
+      var joursAssur = Math.ceil((dateAssur - aujourdhui) / (1000 * 60 * 60 * 24));
+      if (joursAssur < 0) alertesVehicule.push({ sev: 3, txt: 'Assurance expirée !' });
+      else if (joursAssur <= 30) alertesVehicule.push({ sev: 2, txt: 'Assurance à renouveler dans ' + joursAssur + ' jours' });
+    }
+
+    if (v.type || v.description || v.dateIntervention) {
+      var badgeUrgence = v.urgence === 'haute' ? '🔴 <strong>URGENT</strong> : ' : '🔧 ';
+      var txt = badgeUrgence + '<strong>' + h(v.type || 'Intervention') + '</strong>';
+      if (v.dateIntervention) {
+        var d = new Date(v.dateIntervention);
+        txt += ' le ' + d.toLocaleDateString('fr-FR');
+      }
+      if (v.kmIntervention > 0) txt += ' à ' + v.kmIntervention + ' km';
+      if (v.description) txt += '<br><span style="color:#333;">« ' + h(v.description) + ' »</span>';
+      
+      if (v.type && v.dateIntervention && Math.ceil((aujourdhui - new Date(v.dateIntervention)) / (1000 * 60 * 60 * 24)) < 30) {
+         txt = '✅ ' + txt.replace('🔧 ', '');
+      }
+      
+      infosIntervention.push(txt);
+    }
+
+    if (alertesVehicule.length > 0) {
+      var severiteMax = Math.max.apply(null, alertesVehicule.map(function(a) { return a.sev; }));
+      if (severiteMax === 3) listeUrgents.push({ v: v, alertes: alertesVehicule, infos: infosIntervention });
+      else if (severiteMax === 2) listeAttention.push({ v: v, alertes: alertesVehicule, infos: infosIntervention });
+      else listeOK.push({ v: v, alertes: alertesVehicule, infos: infosIntervention });
+    } else {
+      listeOK.push({ v: v, infos: infosIntervention });
+    }
+  });
+
+  function genererCarte(item, type) {
+    var color = type === 'urgent' ? 'var(--rouge)' : 'var(--orange)';
+    var icon = type === 'urgent' ? '🔴' : '🟠';
+    
+    var lignesAlertes = item.alertes.map(function(a) {
+      var txt = a.txt;
+      if (txt.indexOf('ACTION URGENTE') !== -1) {
+        return '<li style="font-size:13px; margin-bottom:6px; font-weight:700; color:var(--rouge); background:#FFEBEE; padding:6px 10px; border-radius:6px;">' + txt + '</li>';
+      }
+      if (txt.indexOf('FAITS RÉCEMMENT') !== -1 || txt.indexOf('FAIT RÉCEMMENT') !== -1) {
+        return '<li style="font-size:13px; margin-bottom:6px; font-weight:700; color:var(--vert); background:#E8F5E9; padding:6px 10px; border-radius:6px;">' + txt + '</li>';
+      }
+      return '<li style="font-size:13px; margin-bottom:4px;">' + txt + '</li>';
+    }).join('');
+
+    var detailsHtml = '';
+    if (item.infos.length > 0) {
+      detailsHtml = '<div class="flotte-details-box">' + item.infos.join('<br>') + '</div>';
+    }
+
+    var critAirBadge = '';
+    if (item.v.critAir) {
+      var bgCrit = item.v.critAir==='0'?'#2E7D32':item.v.critAir==='1'?'#8E24AA':item.v.critAir==='2'?'#43A047':item.v.critAir==='3'?'#F57C00':item.v.critAir==='4'?'#AD1457':'#757575';
+      critAirBadge = ' <span style="font-size:10px; font-weight:700; padding:2px 6px; border-radius:4px; margin-left:6px; color:#fff; background:' + bgCrit + ';">Crit\'Air ' + h(item.v.critAir) + '</span>';
+    }
+
+    return '<div class="flotte-alerte-card ' + type + '">' +
+      '<div style="flex:1;">' +
+        '<div class="flotte-alerte-titre">' + icon + ' ' + h(item.v.id) + ' - ' + h(item.v.modele) + ' <span style="font-size:11px; color:var(--texte2); font-weight:normal;">(' + h(item.v.immat) + ')</span>' + critAirBadge + '</div>' +
+        '<ul class="flotte-alerte-liste" style="list-style:none; padding-left:0;">' + lignesAlertes + '</ul>' +
+        detailsHtml +
+      '</div>' +
+      '<div style="display:flex; flex-direction:column; gap:5px;">' +
+        '<button class="btn btn-outline btn-sm" onclick="ouvrirModalVehicule(\'' + item.v.id + '\')" style="border-color:' + color + '; color:' + color + ';">✏️ Mettre à jour</button>' +
+        '<button class="btn btn-outline btn-sm" onclick="afficherHistoriqueVehicule(\'' + item.v.id + '\')" style="border-color:var(--bleu); color:var(--bleu);">📜 Historique</button>' +
+      '</div>' +
+    '</div>';
+  }
+
+  var html = '';
+  if (listeUrgents.length > 0) {
+    html += '<div style="margin-bottom:15px;"><div style="font-size:12px; font-weight:700; text-transform:uppercase; color:var(--rouge); margin-bottom:8px;">🔴 Urgent (' + listeUrgents.length + ')</div>';
+    listeUrgents.forEach(function(item) { html += genererCarte(item, 'urgent'); });
+    html += '</div>';
+  }
+  if (listeAttention.length > 0) {
+    html += '<div style="margin-bottom:15px;"><div style="font-size:12px; font-weight:700; text-transform:uppercase; color:var(--orange); margin-bottom:8px;">🟠 À prévoir (' + listeAttention.length + ')</div>';
+    listeAttention.forEach(function(item) { html += genererCarte(item, 'attention'); });
+    html += '</div>';
+  }
+  
+  if (!html && listeOK.length === 0) {
+    html = '<div style="text-align:center; padding:40px; color:var(--vert); font-weight:600; font-size:16px;">🟢 Aucun véhicule enregistré.</div>';
+  }
+  containerAlertes.innerHTML = html;
+
+  btnToggleOK.style.display = 'none';
+  containerOK.style.display = 'block';
+  containerOK.style.marginTop = '20px';
+  
+  if (listeOK.length > 0) {
+    var htmlOK = '<div style="font-size:12px; font-weight:700; text-transform:uppercase; color:var(--vert); margin-bottom:8px;">🟢 Véhicules à jour (' + listeOK.length + ')</div>';
+    htmlOK += listeOK.map(function(item) {
+      var detailsHtml = '';
+      if (item.infos.length > 0) {
+        detailsHtml = '<div style="margin-top:5px; font-size:10px; color:#546E7A;">' + item.infos.join(' — ') + '</div>';
+      }
+      
+      var alerteHtml = '';
+      if (item.alertes && item.alertes.length > 0) {
+        alerteHtml = '<div style="margin-top:5px; font-size:11px; color:var(--vert); font-weight:700;">' + item.alertes[0].txt + '</div>';
+      }
+      
+      var critAirBadge = '';
+      if (item.v.critAir) {
+        var bgCrit = item.v.critAir==='0'?'#2E7D32':item.v.critAir==='1'?'#8E24AA':item.v.critAir==='2'?'#43A047':item.v.critAir==='3'?'#F57C00':item.v.critAir==='4'?'#AD1457':'#757575';
+        critAirBadge = ' <span style="font-size:10px; font-weight:700; padding:2px 6px; border-radius:4px; color:#fff; background:' + bgCrit + ';">Crit\'Air ' + h(item.v.critAir) + '</span>';
+      }
+
+      return '<div class="flotte-ok-item" style="opacity:1;">' +
+        '<div><strong>' + h(item.v.id) + '</strong> - ' + h(item.v.modele) + ' <span style="font-size:11px; color:var(--texte2);">(' + h(item.v.immat) + ')</span>' + critAirBadge + alerteHtml + detailsHtml + '</div>' +
+        '<div style="display:flex; gap:5px;">' +
+          '<button class="action-btn" onclick="afficherHistoriqueVehicule(\'' + item.v.id + '\')" title="Historique">📜</button>' +
+          '<button class="action-btn" onclick="ouvrirModalVehicule(\'' + item.v.id + '\')">✏️</button>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+    containerOK.innerHTML = htmlOK;
+  } else {
+    containerOK.innerHTML = '';
+  }
+}
+
+async function afficherHistoriqueVehicule(idVehicule) {
+  var overlay = document.getElementById('overlay-historique');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'overlay-historique';
+    overlay.className = 'overlay open';
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(10,20,40,.6);z-index:700;display:flex;align-items:center;justify-content:center;padding:20px;';
+    overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
+    
+    overlay.innerHTML = 
+      '<div class="modal" style="max-width:700px;width:100%;background:#fff;border-radius:14px;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.3);max-height:90vh;overflow-y:auto;" onclick="event.stopPropagation()">' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">' +
+          '<h3 style="font-size:16px;font-weight:700;color:var(--bleu);" id="histo-titre">Historique</h3>' +
+          '<button onclick="document.getElementById(\'overlay-historique\').remove()" style="background:#F5F7FA;border:none;border-radius:8px;width:30px;height:30px;cursor:pointer;font-size:16px;">✕</button>' +
+        '</div>' +
+        '<div id="histo-content" style="font-size:13px;">Chargement...</div>' +
+      '</div>';
+    document.body.appendChild(overlay);
+  }
+  
+  document.getElementById('histo-titre').textContent = 'Historique - ' + idVehicule;
+  document.getElementById('histo-content').innerHTML = '<div style="text-align:center;padding:20px;">⏳ Chargement...</div>';
+  
+  try {
+    var r = await apiPost({action: 'lireHistoriqueVehicule', id: idVehicule});
+    if (!r || !r.ok) throw new Error(r.error || 'Erreur');
+    
+    if (!r.data || r.data.length === 0) {
+      document.getElementById('histo-content').innerHTML = '<div style="text-align:center;padding:20px;color:var(--texte2);">Aucun historique pour ce véhicule.</div>';
+      return;
+    }
+    
+    var html = '<table style="width:100%;border-collapse:collapse;font-size:12px;">' +
+      '<thead><tr style="background:#F5F7FA;text-align:left;">' +
+        '<th style="padding:8px;border-bottom:1px solid #ddd;">Type</th>' +
+        '<th style="padding:8px;border-bottom:1px solid #ddd;">Description</th>' +
+        '<th style="padding:8px;border-bottom:1px solid #ddd;">Date</th>' +
+        '<th style="padding:8px;border-bottom:1px solid #ddd;">Km</th>' +
+        '<th style="padding:8px;border-bottom:1px solid #ddd;">Coût</th>' +
+      '</tr></thead><tbody>';
+      
+    r.data.forEach(function(h) {
+      html += '<tr>' +
+        '<td style="padding:8px;border-bottom:1px solid #eee;"><strong>' + h.type + '</strong></td>' +
+        '<td style="padding:8px;border-bottom:1px solid #eee;">' + h.description + '</td>' +
+        '<td style="padding:8px;border-bottom:1px solid #eee;">' + h.dateIntervention + '</td>' +
+        '<td style="padding:8px;border-bottom:1px solid #eee;">' + h.kmIntervention + '</td>' +
+        '<td style="padding:8px;border-bottom:1px solid #eee;">' + h.coutTTC + ' €</td>' +
+      '</tr>';
+    });
+    html += '</tbody></table>';
+    document.getElementById('histo-content').innerHTML = html;
+    
+  } catch(e) {
+    document.getElementById('histo-content').innerHTML = '<div style="color:var(--rouge);padding:20px;">❌ ' + e.message + '</div>';
+  }
+}
+
+function toggleFlotteOK() {
+  var container = document.getElementById('flotte-ok-list');
+  var btn = document.getElementById('btn-toggle-ok');
+  if (container.style.display === 'none') {
+    container.style.display = 'block';
+    btn.textContent = 'Masquer les véhicules sans alerte';
+  } else {
+    container.style.display = 'none';
+    btn.textContent = btn.textContent.replace('Masquer', 'Afficher');
+  }
+}
+
+// ── MODAL AJOUT / MODIFICATION VÉHICULE ──
+function ouvrirModalVehicule(idVehicule) {
+  var v = flotteVehicules.find(function(x){ return x.id === idVehicule; }) || {};
+  
+  var overlay = document.getElementById('overlay-vehicule');
+  
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'overlay-vehicule';
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(10,20,40,.45);z-index:600;display:none;align-items:center;justify-content:center;padding:20px;';
+    overlay.onclick = function(e) { if (e.target === overlay) document.getElementById('overlay-vehicule').style.display = 'none'; };
+    
+    overlay.innerHTML = 
+      '<div class="modal" style="max-width:600px;width:100%;background:#fff;border-radius:14px;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.2);max-height:90vh;overflow-y:auto;" onclick="event.stopPropagation()">' +
+        '<h3 style="font-size:16px;font-weight:700;margin-bottom:15px;color:var(--bleu);" id="vehicule-modal-title">Ajouter un véhicule</h3>' +
+        '<div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">' +
+          '<div style="grid-column:1/-1;"><label>ID (Repère, ex: V5) *</label><input type="text" id="fv-id" class="task-input"></div>' +
+          '<div><label>Modèle</label><input type="text" id="fv-modele" class="task-input"></div>' +
+          '<div><label>Immatriculation</label><input type="text" id="fv-immat" class="task-input"></div>' +
+          '<div><label>Km Actuel</label><input type="number" id="fv-kmActuel" class="task-input"></div>' +
+          '<div><label>Km Révision</label><input type="number" id="fv-kmRevision" class="task-input"></div>' +
+          '<div><label>Date Révision</label><input type="date" id="fv-dateRevision" class="task-input"></div>' +
+          '<div><label>Prochain CT</label><input type="date" id="fv-prochainCT" class="task-input"></div>' +
+          '<div><label>Date Assurance</label><input type="date" id="fv-dateAssurance" class="task-input"></div>' +
+          '<div><label>Conducteur</label><input type="text" id="fv-conducteur" class="task-input"></div>' +
+          
+          // Champ fusionné ici
+          '<div><label>Type d\'intervention / Panne / Crit\'Air</label><select id="fv-type" class="task-input"><option value="">—</option><option>RÉVISION</option><option>PNEUS</option><option>PIÈCES D\'USURE</option><option>AMPOULE / PHARE</option><option>VITRE / PARE-BRISE</option><option>RÉPARATION</option><option>CONTRÔLE TECHNIQUE</option><option>ASSURANCE / ADMIN</option><option disabled>──────────</option><option value="CRITAIR_0">Vignette Crit'Air 0 (Électrique)</option><option value="CRITAIR_1">Vignette Crit'Air 1 (Violet)</option><option value="CRITAIR_2">Vignette Crit'Air 2 (Vert)</option><option value="CRITAIR_3">Vignette Crit'Air 3 (Orange)</option><option value="CRITAIR_4">Vignette Crit'Air 4 (Bordeaux)</option><option value="CRITAIR_5">Vignette Crit'Air 5 (Gris)</option><option>AUTRE</option></select></div>' +
+
+          '<div><label style="color:var(--rouge);">Niveau d\'urgence</label><select id="fv-urgence" class="task-input"><option value="normale">🟠 À prévoir (Normal)</option><option value="haute">🔴 URGENT (Sécurité / Bloquant)</option></select></div>' +
+          '<div style="grid-column:1/-1;"><label>Description / Détails</label><input type="text" id="fv-description" class="task-input" placeholder="Ex: Pneu avant droit crevé, phare gauche cassé..."></div>' +
+          '<div><label>Date de l\'intervention</label><input type="date" id="fv-dateIntervention" class="task-input"></div>' +
+          '<div><label>Kilométrage à l\'intervention</label><input type="number" id="fv-kmIntervention" class="task-input" placeholder="Ex: 45000"></div>' +
+        '</div>' +
+        '<div style="display:flex; gap:8px; margin-top:20px; justify-content:flex-end;">' +
+          '<button onclick="document.getElementById(\'overlay-vehicule\').style.display=\'none\'" class="btn btn-outline">Annuler</button>' +
+          '<button onclick="sauvegarderVehicule()" class="btn btn-primary">💾 Enregistrer</button>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(overlay);
+  }
+  
+  overlay.style.display = 'flex';
+  
+  document.getElementById('vehicule-modal-title').textContent = v.id ? 'Modifier ' + v.id : 'Ajouter un véhicule';
+  document.getElementById('fv-id').value = v.id || '';
+  document.getElementById('fv-modele').value = v.modele || '';
+  document.getElementById('fv-immat').value = v.immat || '';
+  document.getElementById('fv-kmActuel').value = v.kmActuel || '';
+  document.getElementById('fv-dateRevision').value = v.dateRevision || '';
+  document.getElementById('fv-kmRevision').value = v.kmRevision || '';
+  document.getElementById('fv-prochainCT').value = v.prochainCT || '';
+  document.getElementById('fv-dateAssurance').value = v.dateAssurance || '';
+  document.getElementById('fv-conducteur').value = v.conducteur || '';
+  
+  // Logique d'affichage du menu déroulant fusionné
+  if (v.critAir) {
+    document.getElementById('fv-type').value = 'CRITAIR_' + v.critAir;
+  } else {
+    document.getElementById('fv-type').value = v.type || '';
+  }
+  
+  document.getElementById('fv-urgence').value = v.urgence || 'normale';
+  document.getElementById('fv-description').value = v.description || '';
+  document.getElementById('fv-dateIntervention').value = v.dateIntervention || '';
+  document.getElementById('fv-kmIntervention').value = v.kmIntervention || '';
+}
+
+async function sauvegarderVehicule() {
+  var id = document.getElementById('fv-id').value.trim();
+  if (!id) { alert("L'ID (Repère) est obligatoire (ex: V5)."); return; }
+  
+  var typeSelectionne = document.getElementById('fv-type').value;
+  var critAirValue = '';
+  var typeIntervention = typeSelectionne;
+
+  // Si c'est un choix de Crit'Air, on sépare la valeur
+  if (typeSelectionne.indexOf('CRITAIR_') === 0) {
+    critAirValue = typeSelectionne.replace('CRITAIR_', '');
+    typeIntervention = ''; // On ne met pas ça dans la colonne "Type"
+  }
+
+  var payload = {
+    action: 'enregistrerVehicule',
+    id: id,
+    modele: document.getElementById('fv-modele').value.trim(),
+    immat: document.getElementById('fv-immat').value.trim(),
+    kmActuel: document.getElementById('fv-kmActuel').value || 0,
+    dateRevision: document.getElementById('fv-dateRevision').value,
+    kmRevision: document.getElementById('fv-kmRevision').value || 0,
+    prochainCT: document.getElementById('fv-prochainCT').value,
+    dateAssurance: document.getElementById('fv-dateAssurance').value,
+    conducteur: document.getElementById('fv-conducteur').value.trim(),
+    type: typeIntervention,
+    critAir: critAirValue,
+    urgence: document.getElementById('fv-urgence').value,
+    description: document.getElementById('fv-description').value.trim(),
+    dateIntervention: document.getElementById('fv-dateIntervention').value,
+    kmIntervention: document.getElementById('fv-kmIntervention').value || 0
+  };
+
+  try {
+    var r = await apiPost(payload);
+    if (!r || !r.ok) throw new Error(r.error || 'Erreur');
+    
+    document.getElementById('overlay-vehicule').style.display = 'none';
+    afficherToast('ok', '✅', 'Véhicule enregistré', id, 3000);
+    await chargerFlotte();
+    
+  } catch(e) {
+    alert("❌ Erreur : " + e.message);
+  }
+}
 
 // ── AGENT IA ──
 async function chargerRapportAgent() { var content=document.getElementById('agent-content'), dateEl=document.getElementById('agent-date'); if(dateEl) dateEl.textContent='⏳ Chargement...'; content.innerHTML='<div class="agent-loader"><div class="spinner"></div><div class="loader-msg">📥 Chargement...</div></div>'; try { var r=await apiPost({action:'lireRapport'}); if(!r||!r.ok){content.innerHTML='<div class="empty-state"><div style="font-size:64px;">🤖</div><h3>Aucun rapport</h3><p>Le rapport est généré chaque matin à 8h.</p></div>';if(dateEl)dateEl.textContent='Dernière analyse : aucune';return;} if(dateEl&&r.dateRapport)dateEl.textContent='Dernière analyse : '+r.dateRapport+' (auto)'; else if(dateEl&&r.date)dateEl.textContent='Dernière analyse : '+r.date; dernierRapportAgent=r; afficherRapportAgent(r,0); } catch(e) { content.innerHTML='<div class="empty-state"><p>❌ '+h(e.message)+'</p></div>'; } }
@@ -693,7 +1137,37 @@ async function relancerFournisseurDepuisAgent(ligne, motif) { var c = commandes.
 function ouvrirAssistantVocal() { document.getElementById('overlay-assistant').style.display = 'flex'; document.getElementById('assistant-question').value = ''; document.getElementById('assistant-reponse').style.display = 'none'; document.getElementById('assistant-status').style.display = 'none'; }
 function fermerAssistant(e) { if (e && e.target.id !== 'overlay-assistant') return; document.getElementById('overlay-assistant').style.display = 'none'; if (recognitionAssistant) recognitionAssistant.stop(); window.speechSynthesis.cancel(); }
 function lancerQuestionVocale() { if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) { alert("Dictée non supportée."); return; } var SR = window.SpeechRecognition || window.webkitSpeechRecognition; recognitionAssistant = new SR(); recognitionAssistant.lang='fr-FR'; recognitionAssistant.interimResults=false; var st=document.getElementById('assistant-status'), inp=document.getElementById('assistant-question'); st.style.display='block'; st.textContent="🎙️ Parlez..."; inp.value=''; recognitionAssistant.onresult=function(e){inp.value=e.results[0][0].transcript; st.textContent="✅ Enregistré."; setTimeout(function(){st.style.display='none';},2000); envoyerQuestionVocal();}; recognitionAssistant.onerror=function(e){st.textContent="❌ "+e.error; setTimeout(function(){st.style.display='none';},3000);}; recognitionAssistant.start(); }
-async function envoyerQuestionVocal() { var q = document.getElementById('assistant-question').value.trim(); if (!q) { alert("Posez une question."); return; } var btn = document.getElementById('btn-envoyer-assistant'), rep = document.getElementById('assistant-reponse'); btn.disabled = true; btn.textContent = "⏳..."; rep.style.display = 'none'; window.speechSynthesis.cancel(); try { var ql = q.toLowerCase(); var ctx = commandes.filter(function(c){return ql.indexOf(c.client.toLowerCase())!==-1;}); var ctxJson = JSON.stringify((ctx.length?ctx:commandes.slice(0,20)).map(function(c){return {client:c.client,date_metre:formatDateMetre(c.metres),numero_devis:c.devis,devis_ttc:c.devisTTC,fournisseur:c.fournisseur,commande_envoyee:c.commande,numero_arc:c.arc,validation_arc:c.commentaireARC,prevision_livraison:c.prevLivraison,statut_livraison:c.statutLivraison,statut_pose:c.statutPose,date_pose:c.datePose,pv_chantier:c.pvChantier,commentaires:c.commentaire,objet_commande:c.objetCommande};})); var r = await apiPost({action:'assistantVocal', question:q, contexte:ctxJson}); if (!r||!r.ok) throw new Error(r.error||'Erreur'); if (!r.reponse) throw new Error('Pas de réponse'); rep.innerHTML = '<strong style="color:#E65100;">🤖 Réponse :</strong><br><br>'+h(r.reponse).replace(/\*\*(.*?)\*\*/g,'<b>$1</b>').replace(/^\s*[\*\-]\s+/gm,'• ').replace(/\n/g,'<br>'); rep.style.display = 'block'; btn.disabled=false; btn.textContent="✨ Envoyer"; var msg = new SpeechSynthesisUtterance(nettoyerTextePourVoix(r.reponse)); msg.lang='fr-FR'; window.speechSynthesis.speak(msg); } catch(e) { rep.innerHTML='<span style="color:var(--rouge);">❌ '+h(e.message)+'</span>'; rep.style.display='block'; btn.disabled=false; btn.textContent="✨ Envoyer"; } }
+async function envoyerQuestionVocal() { 
+  var q = document.getElementById('assistant-question').value.trim(); 
+  if (!q) { alert("Posez une question."); return; } 
+  var btn = document.getElementById('btn-envoyer-assistant'), rep = document.getElementById('assistant-reponse'); 
+  btn.disabled = true; btn.textContent = "⏳..."; rep.style.display = 'none'; window.speechSynthesis.cancel(); 
+  try { 
+    var ql = q.toLowerCase(); 
+    
+    var mots = ql.split(' ').filter(function(m){ return m.length > 2; });
+    var ctx = commandes.filter(function(c){
+      var nomClient = c.client.toLowerCase();
+      return ql.indexOf(nomClient) !== -1 || mots.some(function(mot){ return nomClient.indexOf(mot) !== -1; });
+    });
+
+    var contexteAEnvoyer = ctx.length > 0 ? ctx : commandes.slice(0, 30);
+    
+    var ctxJson = JSON.stringify(contexteAEnvoyer.map(function(c){return {client:c.client,date_metre:formatDateMetre(c.metres),numero_devis:c.devis,devis_ttc:c.devisTTC,fournisseur:c.fournisseur,commande_envoyee:c.commande,numero_arc:c.arc,validation_arc:c.commentaireARC,prevision_livraison:c.prevLivraison,statut_livraison:c.statutLivraison,statut_pose:c.statutPose,date_pose:c.datePose,pv_chantier:c.pvChantier,commentaires:c.commentaire,objet_commande:c.objetCommande};})); 
+    var r = await apiPost({action:'assistantVocal', question:q, contexte:ctxJson}); 
+    if (!r||!r.ok) throw new Error(r.error||'Erreur'); 
+    if (!r.reponse) throw new Error('Pas de réponse'); 
+    rep.innerHTML = '<strong style="color:#E65100;">🤖 Réponse :</strong><br><br>'+h(r.reponse).replace(/\*\*(.*?)\*\*/g,'<b>$1</b>').replace(/^\s*[\*\-]\s+/gm,'• ').replace(/\n/g,'<br>'); 
+    rep.style.display = 'block'; 
+    btn.disabled=false; btn.textContent="✨ Envoyer"; 
+    var msg = new SpeechSynthesisUtterance(nettoyerTextePourVoix(r.reponse)); 
+    msg.lang='fr-FR'; window.speechSynthesis.speak(msg); 
+  } catch(e) { 
+    rep.innerHTML='<span style="color:var(--rouge);">❌ '+h(e.message)+'</span>'; 
+    rep.style.display='block'; 
+    btn.disabled=false; btn.textContent="✨ Envoyer"; 
+  } 
+}
 
 // ── COMMANDES D'ACTION ──
 function ouvrirActionVocale() { document.getElementById('overlay-action').style.display='flex'; document.getElementById('action-question').value=''; document.getElementById('action-reponse').style.display='none'; document.getElementById('action-status').style.display='none'; }
@@ -753,51 +1227,49 @@ function afficherInventaireComplet() {
   document.body.appendChild(popup); document.getElementById('inventaire-recherche').addEventListener('input', function(e) { recherche = e.target.value; renderTable(); }); renderTable();
 }
 
-// ── CAPTURE D'IMAGE ACHATS EN COURS ──
+// ── CAPTURE D'IMAGE ACHATS EN COURS (Version Grille) ──
 function capturerAchatsEnCours() {
-  if (typeof html2canvas === 'undefined') { alert('Bibliothèque de capture indisponible (vérifiez votre connexion).'); return; }
+  if (typeof html2canvas === 'undefined') { alert('Bibliothèque de capture indisponible.'); return; }
   var items = achatsConsommables.filter(function(a){ return a.statut !== 'recu'; });
   if (!items.length) { alert('Aucun achat en cours à capturer.'); return; }
   
   var container = document.createElement('div');
-  container.style.cssText = 'position:absolute; left:-9999px; top:0; width:800px; background:#fff; padding:40px; font-family:Arial, sans-serif;';
+  container.style.cssText = 'position:absolute; left:-9999px; top:0; width:1000px; background:#fff; padding:40px; font-family:Arial, sans-serif;';
   
   var today = new Date().toLocaleDateString('fr-FR');
+  
   var html = '<div style="text-align:center; margin-bottom:30px;">' +
              '<h1 style="color:#1565C0; margin:0 0 10px 0; font-size:24px;">ECO OUEST - Achats en cours</h1>' +
              '<p style="color:#666; margin:0; font-size:14px;">Généré le ' + today + '</p></div>';
-             
-  html += '<table style="width:100%; border-collapse:collapse; font-size:13px;">';
-  html += '<thead><tr style="background:#F5F7FA; color:#546E7A; text-align:left;">' +
-          '<th style="padding:12px; border-bottom:2px solid #E0E7EF;">Article</th>' +
-          '<th style="padding:12px; border-bottom:2px solid #E0E7EF;">Qté</th>' +
-          '<th style="padding:12px; border-bottom:2px solid #E0E7EF;">Catégorie</th>' +
-          '<th style="padding:12px; border-bottom:2px solid #E0E7EF;">Fournisseur</th>' +
-          '<th style="padding:12px; border-bottom:2px solid #E0E7EF;">Statut</th>' +
-          '<th style="padding:12px; border-bottom:2px solid #E0E7EF;">Échéance</th>' +
-          '<th style="padding:12px; border-bottom:2px solid #E0E7EF;">Priorité</th>' +
-          '</tr></thead><tbody>';
-          
+
+  html += '<div style="display:grid; grid-template-columns: 12% 40% 8% 15% 15% 10%; gap: 10px; font-weight: bold; color: #546E7A; border-bottom: 2px solid #CFD8DC; padding-bottom: 10px; font-size: 13px;">' +
+          '<div>Réf.</div>' +
+          '<div>Article</div>' +
+          '<div style="text-align:center;">Qté</div>' +
+          '<div>Fournisseur</div>' +
+          '<div>Statut</div>' +
+          '<div>Priorité</div>' +
+          '</div>';
+
   items.forEach(function(a) {
     var statut = a.statut === 'commande' ? 'Commandé' : 'À acheter';
     var color = a.statut === 'commande' ? '#1565C0' : '#E65100';
     var pColor = a.priorite === 'haute' ? '#D32F2F' : a.priorite === 'basse' ? '#2E7D32' : '#E65100';
-    html += '<tr>' +
-            '<td style="padding:12px; border-bottom:1px solid #E0E7EF; font-weight:bold;">' + h(a.nom) + '</td>' +
-            '<td style="padding:12px; border-bottom:1px solid #E0E7EF;">' + h(a.quantite) + '</td>' +
-            '<td style="padding:12px; border-bottom:1px solid #E0E7EF;">' + h(a.categorie) + '</td>' +
-            '<td style="padding:12px; border-bottom:1px solid #E0E7EF;">' + h(a.fournisseur || '—') + '</td>' +
-            '<td style="padding:12px; border-bottom:1px solid #E0E7EF; color:' + color + '; font-weight:bold;">' + statut + '</td>' +
-            '<td style="padding:12px; border-bottom:1px solid #E0E7EF;">' + (a.echeance ? formatEcheance(a.echeance) : '—') + '</td>' +
-            '<td style="padding:12px; border-bottom:1px solid #E0E7EF; color:' + pColor + '; font-weight:bold;">' + h(a.priorite) + '</td>' +
-            '</tr>';
+
+    html += '<div style="display:grid; grid-template-columns: 12% 40% 8% 15% 15% 10%; gap: 10px; padding: 12px 0; border-bottom: 1px solid #E0E7EF; font-size: 13px; align-items: center; color: #333;">' +
+            '<div style="font-family:monospace; font-size:12px; color:#455A64;">' + h(a.reference || '—') + '</div>' +
+            '<div style="font-weight:bold; overflow-wrap: break-word;">' + h(a.nom) + '</div>' +
+            '<div style="text-align:center; font-weight:bold;">' + h(a.quantite) + '</div>' +
+            '<div>' + h(a.fournisseur || '—') + '</div>' +
+            '<div style="color:' + color + '; font-weight:bold;">' + statut + '</div>' +
+            '<div style="color:' + pColor + '; font-weight:bold;">' + h(a.priorite) + '</div>' +
+            '</div>';
   });
-  html += '</tbody></table>';
   
   container.innerHTML = html;
   document.body.appendChild(container);
   
-  afficherToast('ok', '📸', 'Capture en cours...', 'Patientez', 2000);
+  afficherToast('ok', '📸', 'Génération de l\'image...', 'Patientez', 2000);
 
   html2canvas(container, { scale: 2, backgroundColor: '#ffffff' }).then(function(canvas) {
     document.body.removeChild(container);
@@ -811,9 +1283,6 @@ function capturerAchatsEnCours() {
     alert('Erreur lors de la capture : ' + e.message);
   });
 }
-
-// ── MÉTRÉ ──
-function renderMetre() { var q = str(document.getElementById('metre-search').value).toLowerCase(), fFilt = document.getElementById('metre-filter').value; var rows = commandes.map(function(c,i){return Object.assign({},c,{_i:i,_a:alerte(c),_dateMetre:formatDateMetre(c.metres)});}); if (q) rows = rows.filter(function(c){return str(c.client).toLowerCase().indexOf(q)!==-1||str(c.devis).toLowerCase().indexOf(q)!==-1||str(c.fournisseur).toLowerCase().indexOf(q)!==-1;}); if (fFilt==='rempli') rows = rows.filter(function(c){return c._dateMetre!=='';}); if (fFilt==='vide') rows = rows.filter(function(c){return c._dateMetre==='';}); var total=commandes.length, remplis=commandes.filter(function(c){return formatDateMetre(c.metres)!=='';}).length, vides=total-remplis, pct=total>0?Math.round(remplis/total*100):0; var stats = document.getElementById('metre-stats'); stats.innerHTML = '<div class="kpi-card kpi-info"><span class="kpi-label">Total</span><span class="kpi-value">'+total+'</span><span class="kpi-sub">commandes</span></div><div class="kpi-card kpi-ok"><span class="kpi-label">Datées</span><span class="kpi-value">'+remplis+'</span><span class="kpi-sub">'+pct+'% complété</span></div><div class="kpi-card kpi-urgent"><span class="kpi-label">Manquantes</span><span class="kpi-value">'+vides+'</span><span class="kpi-sub">à planifier</span></div>'; rows.sort(function(a,b){if ((a._dateMetre==='')!==(b._dateMetre==='')) return a._dateMetre===''?-1:1; return b.ligne-a.ligne;}); var tb = document.getElementById('metre-table-body'); if (!rows.length) { tb.innerHTML='<tr><td colspan="9"><div class="empty-state"><p>Aucune.</p></div></td></tr>'; document.getElementById('metre-scroll-hint').textContent=''; return; } tb.innerHTML = rows.map(function(c){ var a=c._a, fc=FOU_COLORS[c.fournisseur]||'#546E7A'; var sL=c.statutLivraison?'<span class="badge '+(c.statutLivraison==='Livré'?'badge-ok':c.statutLivraison==='SAV'?'badge-urgent':'badge-info')+'">'+h(c.statutLivraison)+'</span>':'—'; var sP=c.statutPose?'<span class="badge '+(c.statutPose==='Terminé'?'badge-ok':c.statutPose==='SAV'?'badge-urgent':'badge-info')+'">'+h(c.statutPose)+'</span>':'—'; var dateCell = c._dateMetre?'<span style="background:var(--vert-bg);color:var(--vert);padding:3px 9px;border-radius:5px;font-size:12px;font-weight:700;">📅 '+h(c._dateMetre)+'</span>':'<span style="background:#FFEBEE;color:var(--rouge);padding:3px 9px;border-radius:5px;font-size:11px;font-weight:700;">⚠ Non datée</span>'; return '<tr><td class="col-mono" data-label="Ligne">L'+c.ligne+'</td><td class="col-client" data-label="Client">'+h(c.client)+'</td><td data-label="Fournisseur"><span style="background:'+fc+'18;color:'+fc+';padding:3px 8px;border-radius:5px;font-size:11px;font-weight:700;">'+h(c.fournisseur||'—')+'</span></td><td class="col-mono" data-label="Devis">'+h(c.devis||'—')+'</td><td data-label="Date métré">'+dateCell+'</td><td data-label="Statut livr.">'+sL+'</td><td data-label="Statut pose">'+sP+'</td><td data-label="Alerte"><span class="alerte-text '+aClass(a.n)+'">'+(a.n===0?'OK':a.n===-1?'⏹ Annulée':'⚠ '+h(a.t.split(' | ')[0]))+'</span></td><td><button class="action-btn" onclick="openModal('+c._i+')">✏️</button></td></tr>'; }).join(''); document.getElementById('metre-scroll-hint').textContent = rows.length+' commande(s) affichée(s) sur '+total; }
 
 // ── MODAL ──
 function ajouterOptionHorsListe(sel, v) { if (!sel||!v) return; var val=str(v), existe=false; for (var i=0;i<sel.options.length;i++){ if(sel.options[i].value===val){existe=true;break;} } if (!existe){ var opt=document.createElement('option'); opt.value=val; opt.textContent=val+' (hors liste)'; sel.appendChild(opt); } }
@@ -832,7 +1301,7 @@ function renderAlertes() { var g={3:[],2:[],1:[]}; commandes.forEach(function(c,
 function renderDashboard() { var byFou={}, ac={u:0,w:0,o:0}, caC=0, caP=0, nbE=0, nbS=0; function parseM(v){ if(!v) return 0; var s=str(v).replace(/[^0-9,.]/g,'').replace(/\s/g,'').replace(',','.'); var p=s.split('.'); if(p.length>2)s=p.slice(0,-1).join('')+'.'+p[p.length-1]; var n=parseFloat(s); return isNaN(n)?0:n; } var nbA=commandes.filter(function(c){return !estAnnulee(c);}).length; commandes.forEach(function(c){ if(estAnnulee(c))return; if(c.fournisseur)byFou[c.fournisseur]=(byFou[c.fournisseur]||0)+1; var a=alerte(c); if(a.n===3)ac.u++;else if(a.n>=1)ac.w++;else if(a.n===0)ac.o++; var m=parseM(c.devisTTC); if(str(c.commande).toUpperCase()==='OUI')caC+=m; if(estTermineStatut(c.statutPose))caP+=m; if(str(c.commande).toUpperCase()!=='OUI')nbE++; if(statutEstSAV(c.statutPose)||statutEstSAV(c.statutLivraison))nbS++; }); function fmt(n){return n.toLocaleString('fr-FR',{maximumFractionDigits:0})+' €';} var fS=Object.entries(byFou).sort(function(a,b){return b[1]-a[1];}), fM=fS[0]?fS[0][1]:1, n=nbA||1; var poseurs=[{nom:'ANATOLE',key:'poseur_ANATOLE',couleur:'#1565C0'},{nom:'ARTIOM',key:'poseur_ARTIOM',couleur:'#2E7D32'},{nom:'ANTONIO',key:'poseur_ANTONIO',couleur:'#E65100'},{nom:'VINCENT',key:'poseur_VINCENT',couleur:'#6A1B9A'},{nom:'LAMRI',key:'poseur_LAMRI',couleur:'#00695C'}]; var actifs=commandes.filter(function(c){return !estTermineStatut(c.statutLivraison)&&!estAnnulee(c);}).slice().sort(function(a,b){return str(b.datePose).localeCompare(str(a.datePose));}); var pvF=commandes.filter(function(c){return str(c.pvChantier).toUpperCase()==='OUI'&&!estAnnulee(c);}).length, pvM=actifs.filter(function(c){return str(c.pvChantier).toUpperCase()!=='OUI';}).length; var hC=''; if(!actifs.length){hC='<div style="text-align:center;padding:24px;color:var(--texte2);">Aucun chantier actif.</div>';}else{actifs.forEach(function(c){var pvFait=str(c.pvChantier).toUpperCase()==='OUI';hC+='<div style="background:#fff;border-radius:10px;border:1px solid var(--bordure);margin-bottom:10px;overflow:hidden;"><div style="padding:10px 14px;background:var(--gris-bg);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;border-bottom:1px solid var(--bordure);"><div><span style="font-weight:700;font-size:14px;">'+h(c.client)+'</span>';if(c.fournisseur)hC+=' <span style="font-size:11px;color:var(--texte2);">· '+h(c.fournisseur)+'</span>';hC+='</div><div style="display:flex;gap:6px;flex-wrap:wrap;">';if(c.metres)hC+='<span style="background:#FFF3E0;color:var(--orange);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;">📋 Métré : '+h(formatDateMetre(c.metres))+'</span>';if(c.datePose)hC+='<span style="background:var(--bleu-bg);color:var(--bleu);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;">📅 '+h(c.datePose)+'</span>';hC+=pvFait?'<span style="background:var(--vert-bg);color:var(--vert);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;">✓ PV Fait</span>':'<span style="background:#FFEBEE;color:var(--rouge);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;">✗ PV Manquant</span>';hC+='</div></div><div style="padding:10px 14px;">';var hasR=false;poseurs.forEach(function(p){if(!c[p.key]||!str(c[p.key]).trim())return;hasR=true;var l=str(c[p.key]).split('\n'),d=l[l.length-1];hC+='<div style="margin-bottom:8px;"><div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;"><div style="width:22px;height:22px;border-radius:50%;background:'+p.couleur+';display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;">'+p.nom.slice(0,2)+'</div><span style="font-size:12px;font-weight:700;color:'+p.couleur+';">'+p.nom+'</span></div><div style="font-size:11px;color:var(--texte);padding:6px 10px;background:var(--gris-bg);border-radius:6px;border-left:3px solid '+p.couleur+';">'+h(d)+'</div></div>';});if(!hasR)hC+='<div style="font-size:12px;color:var(--texte2);font-style:italic;">Aucune remarque poseur.</div>';hC+='</div></div>';});} document.getElementById('dash-content').innerHTML='<div class="dash-card" style="grid-column:1/-1;background:linear-gradient(135deg,#1565C0,#0D47A1);color:#fff;"><h4 style="color:#fff;">💰 Vue financière</h4><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;margin-top:8px;"><div><div style="font-size:24px;font-weight:800;">'+fmt(caC)+'</div><div style="font-size:12px;opacity:.85;">CA commandé</div></div><div><div style="font-size:24px;font-weight:800;">'+fmt(caP)+'</div><div style="font-size:12px;opacity:.85;">CA posé</div></div><div><div style="font-size:24px;font-weight:800;">'+nbE+'</div><div style="font-size:12px;opacity:.85;">En attente commande</div></div><div><div style="font-size:24px;font-weight:800;">'+nbS+'</div><div style="font-size:12px;opacity:.85;">SAV ouverts</div></div></div></div><div class="dash-card"><h4>Par fournisseur</h4>'+fS.map(function(e){return '<div class="bar-row"><span class="bar-label">'+h(e[0])+'</span><div class="bar-track"><div class="bar-fill" style="width:'+Math.round(e[1]/fM*100)+'%;background:'+(FOU_COLORS[e[0]]||'#546E7A')+'"></div></div><span class="bar-count">'+e[1]+'</span></div>';}).join('')+'</div><div class="dash-card"><h4>Alertes</h4>'+[['Urgentes',ac.u,'#D32F2F'],['Attention',ac.w,'#E65100'],['OK',ac.o,'#2E7D32']].map(function(x){return '<div class="bar-row"><span class="bar-label">'+x[0]+'</span><div class="bar-track"><div class="bar-fill" style="width:'+Math.round(x[1]/n*100)+'%;background:'+x[2]+'"></div></div><span class="bar-count">'+x[1]+'</span></div>';}).join('')+'</div><div class="dash-card"><h4>Résumé</h4><div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:4px;"><div style="text-align:center;padding:14px;background:var(--gris-bg);border-radius:8px;"><div style="font-size:28px;font-weight:700;color:var(--bleu);">'+nbA+'</div><div style="font-size:11px;color:var(--texte2);">Total (actifs)</div></div><div style="text-align:center;padding:14px;background:#FFEBEE;border-radius:8px;"><div style="font-size:28px;font-weight:700;color:var(--rouge);">'+ac.u+'</div><div style="font-size:11px;color:var(--texte2);">Urgences</div></div><div style="text-align:center;padding:14px;background:var(--vert-bg);border-radius:8px;"><div style="font-size:28px;font-weight:700;color:var(--vert);">'+pvF+'</div><div style="font-size:11px;color:var(--texte2);">PV Faits</div></div><div style="text-align:center;padding:14px;background:#FFF3E0;border-radius:8px;"><div style="font-size:28px;font-weight:700;color:var(--orange);">'+pvM+'</div><div style="font-size:11px;color:var(--texte2);">PV Manquants</div></div></div></div><div class="dash-card" style="grid-column:1/-1;"><h4>📋 Suivi chantiers</h4>'+hC+'</div>'; }
 
 // ── NAVIGATION ──
-function showView(v) { document.querySelectorAll('.view').forEach(function(el){el.classList.remove('active');}); document.querySelectorAll('.nav-item').forEach(function(el){el.classList.remove('active');}); document.getElementById('view-'+v).classList.add('active'); var nv=document.getElementById('nav-'+v); if(nv)nv.classList.add('active'); var titles={suivi:'Suivi des commandes', alertes:'Alertes actives', taches:'Tâches & Notes', agent:'🤖 Agent IA', metre:'Dates de métré', dashboard:'Tableau de bord', suivipose:'Suivi de Pose', planning:'Planning', config:'Configuration'}; document.getElementById('topbar-title').textContent=titles[v]||v; if(v==='config'){document.getElementById('config-url-input').value=WEBAPP;document.getElementById('config-url-current').textContent=WEBAPP;document.getElementById('config-status').innerHTML='';} if(v==='alertes')renderAlertes(); if(v==='taches'){if(document.getElementById('sousmodule-achats-consommables').style.display!=='none')renderAchatsConsommables();else renderTaches();} if(v==='agent')chargerRapportAgent(); if(v==='metre')renderMetre(); if(v==='dashboard')renderDashboard(); if(v==='suivipose'){renderSuiviPose();setTimeout(traduireCommentairesPoseurs,500);} if(v==='planning')renderPlanning(); }
+function showView(v) { document.querySelectorAll('.view').forEach(function(el){el.classList.remove('active');}); document.querySelectorAll('.nav-item').forEach(function(el){el.classList.remove('active');}); document.getElementById('view-'+v).classList.add('active'); var nv=document.getElementById('nav-'+v); if(nv)nv.classList.add('active'); var titles={suivi:'Suivi des commandes', alertes:'Alertes actives', taches:'Tâches & Consommables', agent:'🤖 Agent IA', metre:'Dates de métré', dashboard:'Tableau de bord', flotte:'État de la flotte', suivipose:'Suivi de Pose', planning:'Planning', config:'Configuration'}; document.getElementById('topbar-title').textContent=titles[v]||v; if(v==='config'){document.getElementById('config-url-input').value=WEBAPP;document.getElementById('config-url-current').textContent=WEBAPP;document.getElementById('config-status').innerHTML='';} if(v==='alertes')renderAlertes(); if(v==='taches'){if(document.getElementById('sousmodule-achats-consommables').style.display!=='none')renderAchatsConsommables();else renderTaches();} if(v==='agent')chargerRapportAgent(); if(v==='metre')renderMetre(); if(v==='dashboard')renderDashboard(); if(v==='flotte')chargerFlotte(); if(v==='suivipose'){renderSuiviPose();setTimeout(traduireCommentairesPoseurs,500);} if(v==='planning')renderPlanning(); }
 
 // ── SUIVI POSE ──
 function renderSuiviPose() { var poseurs=[{nom:'ANATOLE',key:'poseur_ANATOLE',couleur:'#1565C0'},{nom:'ARTIOM',key:'poseur_ARTIOM',couleur:'#2E7D32'},{nom:'ANTONIO',key:'poseur_ANTONIO',couleur:'#E65100'},{nom:'VINCENT',key:'poseur_VINCENT',couleur:'#6A1B9A'},{nom:'LAMRI',key:'poseur_LAMRI',couleur:'#00695C'}]; var semA=getWeekNumber(new Date()); function dpSem(dp,sem){var p=parseDatePose(dp);if(!p)return false;if(p.type==='semaine')return p.num===sem;if(p.type==='date')return getWeekNumber(p.date)===sem;return false;} var items=commandes.filter(function(c){if(estAnnulee(c))return false;if(estTermineStatut(c.statutPose))return false;return dpSem(c.datePose,semA);}).slice().sort(function(a,b){return str(b.datePose).localeCompare(str(a.datePose));}); if(!items.length){document.getElementById('suivipose-content').innerHTML='<div class="empty-state"><p>Aucun chantier actif cette semaine.</p></div>';return;} var html=''; items.forEach(function(c){var pvFait=str(c.pvChantier).toUpperCase()==='OUI';html+='<div class="suivipose-card"><div class="suivipose-header"><div><div class="suivipose-client">'+h(c.client)+'</div><div class="suivipose-meta">'+h(c.fournisseur||'')+(c.devis?' · '+h(c.devis):'')+'</div></div><div style="text-align:right;">';if(c.datePose)html+='<span class="suivipose-date">📅 '+h(cleanDate(c.datePose))+'</span>';var sP=str(c.statutPose);if(sP){var sBg=sP==='SAV'?'#FFEBEE':sP.indexOf('Termin')!==-1?'var(--vert-bg)':'#FFF3E0',sC=sP==='SAV'?'#D32F2F':sP.indexOf('Termin')!==-1?'var(--vert)':'#E65100';html+='<br><span style="font-size:11px;font-weight:700;background:'+sBg+';color:'+sC+';padding:2px 8px;border-radius:5px;display:inline-block;margin-top:4px;">'+h(sP)+'</span>';}html+='<br><span style="font-size:11px;font-weight:700;background:'+(pvFait?'var(--vert-bg)':'#FFEBEE')+';color:'+(pvFait?'var(--vert)':'var(--rouge)')+';padding:2px 8px;border-radius:5px;display:inline-block;margin-top:4px;">'+(pvFait?'✓ PV Fait':'✗ PV Manquant')+'</span></div></div><div class="suivipose-body">';if(c.metres)html+='<div style="margin-bottom:10px;padding:8px 12px;background:#FFF3E0;border-radius:8px;border-left:3px solid var(--orange);"><div style="font-size:11px;font-weight:700;color:var(--orange);margin-bottom:4px;">📋 DATE MÉTRÉ</div><div style="font-size:12px;">'+h(formatDateMetre(c.metres))+'</div></div>';if(c.commentaire)html+='<div style="margin-bottom:10px;padding:8px 12px;background:#FFF3E0;border-radius:8px;border-left:3px solid var(--orange);"><div style="font-size:11px;font-weight:700;color:var(--orange);margin-bottom:4px;">📋 NOTE BUREAU</div><div style="font-size:12px;white-space:pre-wrap;">'+h(c.commentaire)+'</div></div>';poseurs.forEach(function(p){html+='<div class="suivipose-poseur"><div class="suivipose-poseur-name"><div class="suivipose-poseur-avatar" style="background:'+p.couleur+'">'+p.nom.slice(0,2)+'</div><span class="suivipose-poseur-label">'+p.nom+'</span></div>';if(c[p.key]&&str(c[p.key]).trim()){var lignes=str(c[p.key]).split('\n').filter(function(l){return l.trim();});html+='<div class="suivipose-comment" id="cmt-'+c.ligne+'-'+p.key+'">';lignes.forEach(function(l,li){html+='<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid var(--bordure);"><span style="flex:1;font-size:12px;">'+h(l)+'</span><div style="display:flex;gap:4px;flex-shrink:0;"><button data-ligne="'+c.ligne+'" data-key="'+p.key+'" data-idx="'+li+'" class="btn-cmt-edit" style="background:var(--bleu-bg);color:var(--bleu);border:none;border-radius:5px;padding:3px 8px;font-size:11px;cursor:pointer;">✏️</button><button data-ligne="'+c.ligne+'" data-key="'+p.key+'" data-idx="'+li+'" class="btn-cmt-del" style="background:#FFEBEE;color:var(--rouge);border:none;border-radius:5px;padding:3px 8px;font-size:11px;cursor:pointer;">🗑</button></div></div>';});html+='</div>';}else{html+='<div class="suivipose-empty">Aucun suivi poseur.</div>';}html+='</div>';});html+='</div></div>';});document.getElementById('suivipose-content').innerHTML=html;document.getElementById('suivipose-content').querySelectorAll('.btn-cmt-edit').forEach(function(btn){btn.addEventListener('click',function(){modifierCommentaire(parseInt(btn.getAttribute('data-ligne')),btn.getAttribute('data-key'),parseInt(btn.getAttribute('data-idx')));});});document.getElementById('suivipose-content').querySelectorAll('.btn-cmt-del').forEach(function(btn){btn.addEventListener('click',function(){supprimerCommentaire(parseInt(btn.getAttribute('data-ligne')),btn.getAttribute('data-key'),parseInt(btn.getAttribute('data-idx')));});}); }
@@ -884,6 +1353,7 @@ function actualiserTout() {
   chargerTachesNotes();
   chargerAchatsConsommables();
   chargerCatalogueConsommables();
+  chargerFlotte();
 }
 
 chargerPrefsNotif();
@@ -1119,6 +1589,130 @@ function renderAchatsConsommables() {
   }).join('');
 }
 
+// ── DICTÉE POUR LES CHAMPS DE TEXTE ──
+function dicterPourChamp(idChamp) {
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    alert("La dictée vocale n'est pas supportée par ce navigateur.");
+    return;
+  }
+  
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  var rec = new SR();
+  rec.lang = 'fr-FR';
+  rec.interimResults = false;
+  
+  var champ = document.getElementById(idChamp);
+  var ancienTexte = champ.value;
+  var ancienPlaceholder = champ.placeholder;
+  
+  champ.placeholder = "🎙️ Écoute en cours... Parlez maintenant.";
+  champ.style.borderColor = "#E65100";
+  champ.style.backgroundColor = "#FFF3E0";
+  
+  rec.onresult = function(e) {
+    var texteDicte = e.results[0][0].transcript;
+    champ.value = ancienTexte ? ancienTexte + ' ' + texteDicte : texteDicte;
+  };
+  
+  rec.onerror = function(e) {
+    console.warn("Erreur dictée :", e.error);
+  };
+  
+  rec.onend = function() {
+    champ.placeholder = ancienPlaceholder;
+    champ.style.borderColor = "";
+    champ.style.backgroundColor = "";
+    champ.focus();
+  };
+  
+  rec.start();
+}
+
+// ── DICTÉE NOTE RAPIDE (DEPUIS L'ACCUEIL) ──
+function ouvrirModalDicteeNoteRapide() {
+  var overlay = document.getElementById('overlay-dictee-note-rapide');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'overlay-dictee-note-rapide';
+    overlay.className = 'overlay open';
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(10,20,40,.45);z-index:600;display:flex;align-items:center;justify-content:center;padding:20px;';
+    overlay.onclick = function(e) { if (e.target === overlay) fermerModalDicteeNoteRapide(); };
+    
+    overlay.innerHTML = 
+      '<div class="modal" style="max-width:400px;width:100%;background:#fff;border-radius:14px;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.2);" onclick="event.stopPropagation()">' +
+        '<h3 style="font-size:16px;font-weight:700;margin-bottom:10px;color:var(--bleu);">🎤 Note rapide</h3>' +
+        '<p style="font-size:12px;color:var(--texte2);margin-bottom:15px;">Dictez votre note, elle sera enregistrée automatiquement.</p>' +
+        '<textarea id="note-rapide-texte" class="task-input" rows="4" placeholder="Appuyez sur le micro et parlez..."></textarea>' +
+        '<div style="display:flex; gap:8px; margin-top:15px;">' +
+          '<button onclick="lancerDicteeNoteRapide()" class="btn btn-outline" style="flex:1; border-color:#E65100; color:#E65100; font-size:18px;">🎤</button>' +
+          '<button onclick="sauvegarderNoteRapide()" class="btn btn-primary" style="flex:2;">💾 Enregistrer</button>' +
+        '</div>' +
+        '<button onclick="fermerModalDicteeNoteRapide()" class="btn btn-outline" style="width:100%; margin-top:10px; font-size:12px;">Annuler</button>' +
+      '</div>';
+    document.body.appendChild(overlay);
+  } else {
+    overlay.style.display = 'flex';
+    document.getElementById('note-rapide-texte').value = '';
+  }
+}
+
+function fermerModalDicteeNoteRapide() {
+  var o = document.getElementById('overlay-dictee-note-rapide');
+  if (o) o.style.display = 'none';
+}
+
+function lancerDicteeNoteRapide() {
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    alert("La dictée vocale n'est pas supportée par ce navigateur.");
+    return;
+  }
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  var rec = new SR();
+  rec.lang = 'fr-FR';
+  rec.interimResults = false;
+  
+  var ta = document.getElementById('note-rapide-texte');
+  var ancienTexte = ta.value;
+  ta.placeholder = "🎙️ Écoute en cours... Parlez.";
+  ta.style.borderColor = "#E65100";
+  
+  rec.onresult = function(e) {
+    var texte = e.results[0][0].transcript;
+    ta.value = ancienTexte ? ancienTexte + ' ' + texte : texte;
+  };
+  
+  rec.onend = function() {
+    ta.placeholder = "Appuyez sur le micro et parlez...";
+    ta.style.borderColor = "";
+  };
+  
+  rec.start();
+}
+
+async function sauvegarderNoteRapide() {
+  var texte = document.getElementById('note-rapide-texte').value.trim();
+  if (!texte) { alert("Veuillez dicter ou taper une note."); return; }
+  
+  try {
+    var r = await apiPost({
+      action: 'ajouterTache',
+      type: 'note',
+      titre: texte.substring(0, 140),
+      details: texte,
+      priorite: 'normale'
+    });
+    
+    if (!r || !r.ok) throw new Error(r.error || 'Erreur');
+    
+    fermerModalDicteeNoteRapide();
+    afficherToast('ok', '✅', 'Note enregistrée', 'Retrouvez-la dans l\'onglet Notes.', 3000);
+    await chargerTachesNotes();
+    renderKPI();
+    
+  } catch(e) {
+    alert("❌ Erreur : " + e.message);
+  }
+}
 </script>
 </body>
 </html>
