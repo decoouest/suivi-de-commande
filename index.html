@@ -333,7 +333,8 @@ textarea.task-input{resize:vertical}
   <nav class="nav">
     <div class="nav-item active" id="nav-suivi" onclick="showView('suivi')"><span class="icon">📋</span><span>Commandes</span></div>
     <div class="nav-item" id="nav-taches" onclick="showView('taches')"><span class="icon">📝</span><span>Tâches & Consommables</span></div>
-       <div class="nav-item" id="nav-agent" onclick="showView('agent')"><span class="icon">🤖</span><span>Agent IA</span></div>
+    <div class="nav-item" id="nav-taches" onclick="showView('taches')"><span class="icon">📝</span><span>Tâches & Notes</span></div>
+    <div class="nav-item" id="nav-agent" onclick="showView('agent')"><span class="icon">🤖</span><span>Agent IA</span></div>
     <div class="nav-item" id="nav-metre" onclick="showView('metre')"><span class="icon">📅</span><span>Dates Métré</span></div>
     <div class="nav-item" id="nav-dashboard" onclick="showView('dashboard')"><span class="icon">📊</span><span>Dashboard</span></div>
     <div class="nav-item" id="nav-flotte" onclick="showView('flotte')"><span class="icon">🚗</span><span>Flotte</span></div>
@@ -1004,7 +1005,7 @@ function toggleFlotteOK() {
   }
 }
 
-// ── MODAL AJOUT / MODIFICATION VÉHICULE (CORRIGÉ : Crit'Air fusionné) ──
+// ── MODAL AJOUT / MODIFICATION VÉHICULE ──
 function ouvrirModalVehicule(idVehicule) {
   var v = flotteVehicules.find(function(x){ return x.id === idVehicule; }) || {};
   
@@ -1016,7 +1017,6 @@ function ouvrirModalVehicule(idVehicule) {
     overlay.style.cssText = 'position:fixed;inset:0;background:rgba(10,20,40,.45);z-index:600;display:none;align-items:center;justify-content:center;padding:20px;';
     overlay.onclick = function(e) { if (e.target === overlay) document.getElementById('overlay-vehicule').style.display = 'none'; };
     
-    // ─── CORRECTION 1 : un seul menu fusionné "Type / Crit'Air" ───
     overlay.innerHTML = 
       '<div class="modal" style="max-width:600px;width:100%;background:#fff;border-radius:14px;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.2);max-height:90vh;overflow-y:auto;" onclick="event.stopPropagation()">' +
         '<h3 style="font-size:16px;font-weight:700;margin-bottom:15px;color:var(--bleu);" id="vehicule-modal-title">Ajouter un véhicule</h3>' +
@@ -1030,7 +1030,7 @@ function ouvrirModalVehicule(idVehicule) {
           '<div><label>Prochain CT</label><input type="date" id="fv-prochainCT" class="task-input"></div>' +
           '<div><label>Date Assurance</label><input type="date" id="fv-dateAssurance" class="task-input"></div>' +
           '<div><label>Conducteur</label><input type="text" id="fv-conducteur" class="task-input"></div>' +
-          '<div><label>Type d\'intervention / Panne / Crit\'Air</label><select id="fv-type" class="task-input"><option value="">—</option><option>RÉVISION</option><option>PNEUS</option><option>PIÈCES D\'USURE</option><option>AMPOULE / PHARE</option><option>VITRE / PARE-BRISE</option><option>RÉPARATION</option><option>CONTRÔLE TECHNIQUE</option><option>ASSURANCE / ADMIN</option><option disabled>──────────</option><option value="CRITAIR_0">Vignette Crit\'Air 0 (Électrique)</option><option value="CRITAIR_1">Vignette Crit\'Air 1 (Violet)</option><option value="CRITAIR_2">Vignette Crit\'Air 2 (Vert)</option><option value="CRITAIR_3">Vignette Crit\'Air 3 (Orange)</option><option value="CRITAIR_4">Vignette Crit\'Air 4 (Bordeaux)</option><option value="CRITAIR_5">Vignette Crit\'Air 5 (Gris)</option><option>AUTRE</option></select></div>' +
+          '<div><label>Type d\'intervention / Panne</label><select id="fv-type" class="task-input"><option value="">—</option><option>RÉVISION</option><option>PNEUS</option><option>PIÈCES D\'USURE</option><option>AMPOULE / PHARE</option><option>VITRE / PARE-BRISE</option><option>RÉPARATION</option><option>CONTRÔLE TECHNIQUE</option><option>ASSURANCE / ADMIN</option><option>AUTRE</option></select></div>' +
           '<div><label style="color:var(--rouge);">Niveau d\'urgence</label><select id="fv-urgence" class="task-input"><option value="normale">🟠 À prévoir (Normal)</option><option value="haute">🔴 URGENT (Sécurité / Bloquant)</option></select></div>' +
           '<div style="grid-column:1/-1;"><label>Description / Détails</label><input type="text" id="fv-description" class="task-input" placeholder="Ex: Pneu avant droit crevé, phare gauche cassé..."></div>' +
           '<div><label>Date de l\'intervention</label><input type="date" id="fv-dateIntervention" class="task-input"></div>' +
@@ -1056,14 +1056,7 @@ function ouvrirModalVehicule(idVehicule) {
   document.getElementById('fv-prochainCT').value = v.prochainCT || '';
   document.getElementById('fv-dateAssurance').value = v.dateAssurance || '';
   document.getElementById('fv-conducteur').value = v.conducteur || '';
-  
-  // ─── CORRECTION 2 : logique d'affichage du menu fusionné ───
-  if (v.critAir) {
-    document.getElementById('fv-type').value = 'CRITAIR_' + v.critAir;
-  } else {
-    document.getElementById('fv-type').value = v.type || '';
-  }
-  
+  document.getElementById('fv-type').value = v.type || '';
   document.getElementById('fv-urgence').value = v.urgence || 'normale';
   document.getElementById('fv-description').value = v.description || '';
   document.getElementById('fv-dateIntervention').value = v.dateIntervention || '';
@@ -1074,15 +1067,6 @@ async function sauvegarderVehicule() {
   var id = document.getElementById('fv-id').value.trim();
   if (!id) { alert("L'ID (Repère) est obligatoire (ex: V5)."); return; }
   
-  // ─── CORRECTION 3 : séparation propre Crit'Air / Type ───
-  var typeSelectionne = document.getElementById('fv-type').value;
-  var critAirValue = '';
-  var typeIntervention = typeSelectionne;
-  if (typeSelectionne.indexOf('CRITAIR_') === 0) {
-    critAirValue = typeSelectionne.replace('CRITAIR_', '');
-    typeIntervention = '';
-  }
-
   var payload = {
     action: 'enregistrerVehicule',
     id: id,
@@ -1094,8 +1078,7 @@ async function sauvegarderVehicule() {
     prochainCT: document.getElementById('fv-prochainCT').value,
     dateAssurance: document.getElementById('fv-dateAssurance').value,
     conducteur: document.getElementById('fv-conducteur').value.trim(),
-    type: typeIntervention,
-    critAir: critAirValue,
+    type: document.getElementById('fv-type').value,
     urgence: document.getElementById('fv-urgence').value,
     description: document.getElementById('fv-description').value.trim(),
     dateIntervention: document.getElementById('fv-dateIntervention').value,
@@ -1126,7 +1109,6 @@ function renderAgentCard(p) { var sc='sev-'+(p.severite||1), ic=p.severite===3?'
 
 function ouvrirDepuisAgent(ligne) { if (!ligne) return; var idx = commandes.findIndex(function(x){ return x.ligne === ligne; }); if (idx >= 0) openModal(idx); else afficherToast('warn','⚠️','Commande introuvable','', 3000); }
 
-// ─── CORRECTION 4 : La ligne "ligne: c.ligne" est remise ! ───
 async function relancerFournisseurDepuisAgent(ligne, motif) { var c = commandes.find(function(x){ return x.ligne === ligne; }); if (!c) return; if (!c.fournisseur || !c.fournisseur.trim()) { alert('⚠️ Aucun fournisseur.'); return; } afficherToast('warn','⏳','Création...','', 2000); try { var r = await apiPost({action:'relancerFournisseur', fournisseur:c.fournisseur, client:c.client, ligne:c.ligne, devis:c.devis, commande:c.commande, arc:c.arc, motif:motif, commentaire:(c.commentaire||'').substring(0,300)}); if (!r||!r.ok) throw new Error(r.error||'Erreur'); afficherToast('ok','📧','Brouillon créé','Allez dans Gmail.', 6000); alert('📧 Brouillon Gmail créé !\n\nÀ : '+r.destinataire+'\nSujet : '+r.sujet); } catch(e) { afficherToast('urgent','❌','Erreur', e.message, 8000); } }
 
 // ── ASSISTANT VOCAL ──
