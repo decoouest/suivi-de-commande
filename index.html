@@ -744,20 +744,17 @@ function afficherObjetParLigne(e,ligne){if(e)e.stopPropagation();var c=commandes
 async function chargerFlotte() {
   try {
     var rV = await apiPost({ action: 'lireVehicules' });
-    if (rV && rV.ok && Array.isArray(rV.data)) {
+    if (rV.ok) {
       flotteVehicules = rV.data;
       renderFlotte();
-    } else {
-      document.getElementById('flotte-alertes').innerHTML = '<div style="padding:20px;color:red;">Erreur API : ' + (rV ? rV.error : 'Réponse vide') + '</div>';
     }
-  } catch(e) { 
-    document.getElementById('flotte-alertes').innerHTML = '<div style="padding:20px;color:red;">Erreur réseau : ' + e.message + '</div>';
-  }
+  } catch(e) { console.warn("Erreur chargement flotte :", e.message); }
 }
 
 function renderFlotte() {
   var containerAlertes = document.getElementById('flotte-alertes');
   var containerOK = document.getElementById('flotte-ok-list');
+  var btnToggleOK = document.getElementById('btn-toggle-ok');
   if (!containerAlertes) return;
 
   var aujourdhui = new Date();
@@ -769,87 +766,73 @@ function renderFlotte() {
     var alertesVehicule = [];
     var infosIntervention = [];
 
-    // 1. Vérification de l'urgence (colonne P)
-    if (String(v.urgence).toLowerCase().trim() === 'haute' && v.description) {
-      alertesVehicule.push({ sev: 3, txt: '🚨 ACTION URGENTE : ' + (v.type || 'Intervention') + ' — ' + v.description });
+    if (v.urgence === 'haute' && v.description) {
+      alertesVehicule.push({ sev: 3, txt: '🚨 ACTION URGENTE : ' + v.type + ' — ' + v.description });
     }
 
-    // 2. Contrôle Technique (CT)
     if (v.prochainCT) {
       var dateCT = new Date(v.prochainCT);
-      if (!isNaN(dateCT.getTime())) {
-        var joursCT = Math.ceil((dateCT - aujourdhui) / (1000 * 60 * 60 * 24));
-        if (joursCT < 0) alertesVehicule.push({ sev: 3, txt: 'Contrôle technique expiré depuis ' + Math.abs(joursCT) + ' jours' });
-        else if (joursCT <= 30) alertesVehicule.push({ sev: 2, txt: 'Contrôle technique dans ' + joursCT + ' jours' });
-      }
+      var joursCT = Math.ceil((dateCT - aujourdhui) / (1000 * 60 * 60 * 24));
+      if (joursCT < 0) alertesVehicule.push({ sev: 3, txt: 'Contrôle technique expiré depuis ' + Math.abs(joursCT) + ' jours' });
+      else if (joursCT <= 30) alertesVehicule.push({ sev: 2, txt: 'Contrôle technique dans ' + joursCT + ' jours' });
     } else {
       alertesVehicule.push({ sev: 2, txt: 'Date de contrôle technique manquante' });
     }
 
-    // 3. Révision
-    if (v.kmRevision > 0 && v.kmActuel > 0) {
+    if (v.kmRevision > 0) {
       var kmDepuisRev = v.kmActuel - v.kmRevision;
       var resteRev = 30000 - kmDepuisRev;
       if (resteRev <= 0) alertesVehicule.push({ sev: 3, txt: 'Révision dépassée de ' + Math.abs(resteRev) + ' km' });
       else if (resteRev <= 2000) alertesVehicule.push({ sev: 2, txt: 'Révision dans ' + resteRev + ' km' });
     }
 
-    // 4. Pneus / Pièces
     if (v.type && (v.type.toUpperCase() === 'PNEUS' || v.type.toUpperCase().indexOf('PIÈCES') !== -1)) {
       var estRecent = false;
       if (v.dateIntervention) {
         var dateInter = new Date(v.dateIntervention);
-        if (!isNaN(dateInter.getTime())) {
-          var joursDepuis = Math.ceil((aujourdhui - dateInter) / (1000 * 60 * 60 * 24));
-          if (joursDepuis < 30 && joursDepuis >= 0) {
-            estRecent = true;
-            alertesVehicule.push({ sev: 0, txt: '✅ ' + v.type + ' FAITS RÉCEMMENT (il y a ' + joursDepuis + ' j)' });
-          } else {
-            var moisDepuis = (aujourdhui.getFullYear() - dateInter.getFullYear()) * 12 + (aujourdhui.getMonth() - dateInter.getMonth());
-            if (moisDepuis >= 60) alertesVehicule.push({ sev: 3, txt: v.type + ' à changer (plus de 5 ans)' });
-            else if (moisDepuis >= 55) alertesVehicule.push({ sev: 2, txt: v.type + ' à prévoir (bientôt 5 ans)' });
-          }
+        var joursDepuis = Math.ceil((aujourdhui - dateInter) / (1000 * 60 * 60 * 24));
+        
+        if (joursDepuis < 30 && joursDepuis >= 0) {
+          estRecent = true;
+          alertesVehicule.push({ sev: 0, txt: '✅ ' + v.type + ' FAITS RÉCEMMENT (il y a ' + joursDepuis + ' j)' });
+        } else {
+          var moisDepuis = (aujourdhui.getFullYear() - dateInter.getFullYear()) * 12 + (aujourdhui.getMonth() - dateInter.getMonth());
+          if (moisDepuis >= 60) alertesVehicule.push({ sev: 3, txt: v.type + ' à changer (plus de 5 ans)' });
+          else if (moisDepuis >= 55) alertesVehicule.push({ sev: 2, txt: v.type + ' à prévoir (bientôt 5 ans)' });
         }
       }
-      if (!estRecent && v.kmIntervention > 0 && v.kmActuel > 0) {
+      
+      if (!estRecent && v.kmIntervention > 0) {
         var kmDepuis = v.kmActuel - v.kmIntervention;
         if (kmDepuis >= 40000) alertesVehicule.push({ sev: 3, txt: v.type + ' usés (' + kmDepuis + ' km)' });
         else if (kmDepuis >= 38000) alertesVehicule.push({ sev: 2, txt: v.type + ' à prévoir (' + kmDepuis + ' km)' });
       }
     }
 
-    // 5. Assurance
     if (v.dateAssurance) {
       var dateAssur = new Date(v.dateAssurance);
-      if (!isNaN(dateAssur.getTime())) {
-        var joursAssur = Math.ceil((dateAssur - aujourdhui) / (1000 * 60 * 60 * 24));
-        if (joursAssur < 0) alertesVehicule.push({ sev: 3, txt: 'Assurance expirée !' });
-        else if (joursAssur <= 30) alertesVehicule.push({ sev: 2, txt: 'Assurance à renouveler dans ' + joursAssur + ' jours' });
-      }
+      var joursAssur = Math.ceil((dateAssur - aujourdhui) / (1000 * 60 * 60 * 24));
+      if (joursAssur < 0) alertesVehicule.push({ sev: 3, txt: 'Assurance expirée !' });
+      else if (joursAssur <= 30) alertesVehicule.push({ sev: 2, txt: 'Assurance à renouveler dans ' + joursAssur + ' jours' });
     }
 
-    // 6. Affichage de l'intervention
     if (v.type || v.description || v.dateIntervention) {
-      var badgeUrgence = (String(v.urgence).toLowerCase().trim() === 'haute') ? '🔴 <strong>URGENT</strong> : ' : '🔧 ';
+      var badgeUrgence = v.urgence === 'haute' ? '🔴 <strong>URGENT</strong> : ' : '🔧 ';
       var txt = badgeUrgence + '<strong>' + h(v.type || 'Intervention') + '</strong>';
-      
       if (v.dateIntervention) {
         var d = new Date(v.dateIntervention);
-        if (!isNaN(d.getTime())) txt += ' le ' + d.toLocaleDateString('fr-FR');
+        txt += ' le ' + d.toLocaleDateString('fr-FR');
       }
       if (v.kmIntervention > 0) txt += ' à ' + v.kmIntervention + ' km';
       if (v.description) txt += '<br><span style="color:#333;">« ' + h(v.description) + ' »</span>';
       
-      if (v.dateIntervention) {
-        var dInter = new Date(v.dateIntervention);
-        if (!isNaN(dInter.getTime()) && Math.ceil((aujourdhui - dInter) / (1000 * 60 * 60 * 24)) < 30) {
-           txt = '✅ ' + txt.replace('🔧 ', '');
-        }
+      if (v.type && v.dateIntervention && Math.ceil((aujourdhui - new Date(v.dateIntervention)) / (1000 * 60 * 60 * 24)) < 30) {
+         txt = '✅ ' + txt.replace('🔧 ', '');
       }
+      
       infosIntervention.push(txt);
     }
 
-    // Classement
     if (alertesVehicule.length > 0) {
       var severiteMax = Math.max.apply(null, alertesVehicule.map(function(a) { return a.sev; }));
       if (severiteMax === 3) listeUrgents.push({ v: v, alertes: alertesVehicule, infos: infosIntervention });
@@ -863,16 +846,34 @@ function renderFlotte() {
   function genererCarte(item, type) {
     var color = type === 'urgent' ? 'var(--rouge)' : 'var(--orange)';
     var icon = type === 'urgent' ? '🔴' : '🟠';
+    
     var lignesAlertes = item.alertes.map(function(a) {
-      var style = a.txt.indexOf('ACTION URGENTE') !== -1 ? 'font-weight:700;color:var(--rouge);background:#FFEBEE;padding:6px 10px;border-radius:6px;' : 'margin-bottom:4px;';
-      return '<li style="font-size:13px; margin-bottom:6px; ' + style + '">' + a.txt + '</li>';
+      var txt = a.txt;
+      if (txt.indexOf('ACTION URGENTE') !== -1) {
+        return '<li style="font-size:13px; margin-bottom:6px; font-weight:700; color:var(--rouge); background:#FFEBEE; padding:6px 10px; border-radius:6px;">' + txt + '</li>';
+      }
+      if (txt.indexOf('FAITS RÉCEMMENT') !== -1 || txt.indexOf('FAIT RÉCEMMENT') !== -1) {
+        return '<li style="font-size:13px; margin-bottom:6px; font-weight:700; color:var(--vert); background:#E8F5E9; padding:6px 10px; border-radius:6px;">' + txt + '</li>';
+      }
+      return '<li style="font-size:13px; margin-bottom:4px;">' + txt + '</li>';
     }).join('');
-    var detailsHtml = (item.infos && item.infos.length > 0) ? '<div class="flotte-details-box">' + item.infos.join('<br>') + '</div>' : '';
+
+    var detailsHtml = '';
+    if (item.infos.length > 0) {
+      detailsHtml = '<div class="flotte-details-box">' + item.infos.join('<br>') + '</div>';
+    }
+
+    var critAirBadge = '';
+    if (item.v.critAir) {
+      var bgCrit = item.v.critAir==='0'?'#2E7D32':item.v.critAir==='1'?'#8E24AA':item.v.critAir==='2'?'#43A047':item.v.critAir==='3'?'#F57C00':item.v.critAir==='4'?'#AD1457':'#757575';
+      critAirBadge = ' <span style="font-size:10px; font-weight:700; padding:2px 6px; border-radius:4px; margin-left:6px; color:#fff; background:' + bgCrit + ';">Crit\'Air ' + h(item.v.critAir) + '</span>';
+    }
 
     return '<div class="flotte-alerte-card ' + type + '">' +
       '<div style="flex:1;">' +
-        '<div class="flotte-alerte-titre">' + icon + ' ' + h(item.v.id) + ' - ' + h(item.v.modele) + ' <span style="font-size:11px; color:var(--texte2); font-weight:normal;">(' + h(item.v.immat) + ')</span></div>' +
-        '<ul class="flotte-alerte-liste" style="list-style:none; padding-left:0;">' + lignesAlertes + '</ul>' + detailsHtml +
+        '<div class="flotte-alerte-titre">' + icon + ' ' + h(item.v.id) + ' - ' + h(item.v.modele) + ' <span style="font-size:11px; color:var(--texte2); font-weight:normal;">(' + h(item.v.immat) + ')</span>' + critAirBadge + '</div>' +
+        '<ul class="flotte-alerte-liste" style="list-style:none; padding-left:0;">' + lignesAlertes + '</ul>' +
+        detailsHtml +
       '</div>' +
       '<div style="display:flex; flex-direction:column; gap:5px;">' +
         '<button class="btn btn-outline btn-sm" onclick="ouvrirModalVehicule(\'' + item.v.id + '\')" style="border-color:' + color + '; color:' + color + ';">✏️ Mettre à jour</button>' +
@@ -894,20 +895,35 @@ function renderFlotte() {
   }
   
   if (!html && listeOK.length === 0) {
-    html = '<div style="text-align:center; padding:40px; color:var(--vert); font-weight:600; font-size:16px;">🟢 Aucun véhicule enregistré ou aucun problème détecté.</div>';
+    html = '<div style="text-align:center; padding:40px; color:var(--vert); font-weight:600; font-size:16px;">🟢 Aucun véhicule enregistré.</div>';
   }
   containerAlertes.innerHTML = html;
 
+  btnToggleOK.style.display = 'none';
   containerOK.style.display = 'block';
   containerOK.style.marginTop = '20px';
   
   if (listeOK.length > 0) {
     var htmlOK = '<div style="font-size:12px; font-weight:700; text-transform:uppercase; color:var(--vert); margin-bottom:8px;">🟢 Véhicules à jour (' + listeOK.length + ')</div>';
     htmlOK += listeOK.map(function(item) {
-      var detailsHtml = (item.infos && item.infos.length > 0) ? '<div style="margin-top:5px; font-size:10px; color:#546E7A;">' + item.infos.join(' — ') + '</div>' : '';
-      var alerteHtml = (item.alertes && item.alertes.length > 0) ? '<div style="margin-top:5px; font-size:11px; color:var(--vert); font-weight:700;">' + item.alertes[0].txt + '</div>' : '';
-      return '<div class="flotte-ok-item" style="opacity:1; border-left:4px solid var(--vert);">' +
-        '<div><strong>' + h(item.v.id) + '</strong> - ' + h(item.v.modele) + ' <span style="font-size:11px; color:var(--texte2);">(' + h(item.v.immat) + ')</span>' + alerteHtml + detailsHtml + '</div>' +
+      var detailsHtml = '';
+      if (item.infos.length > 0) {
+        detailsHtml = '<div style="margin-top:5px; font-size:10px; color:#546E7A;">' + item.infos.join(' — ') + '</div>';
+      }
+      
+      var alerteHtml = '';
+      if (item.alertes && item.alertes.length > 0) {
+        alerteHtml = '<div style="margin-top:5px; font-size:11px; color:var(--vert); font-weight:700;">' + item.alertes[0].txt + '</div>';
+      }
+      
+      var critAirBadge = '';
+      if (item.v.critAir) {
+        var bgCrit = item.v.critAir==='0'?'#2E7D32':item.v.critAir==='1'?'#8E24AA':item.v.critAir==='2'?'#43A047':item.v.critAir==='3'?'#F57C00':item.v.critAir==='4'?'#AD1457':'#757575';
+        critAirBadge = ' <span style="font-size:10px; font-weight:700; padding:2px 6px; border-radius:4px; color:#fff; background:' + bgCrit + ';">Crit\'Air ' + h(item.v.critAir) + '</span>';
+      }
+
+      return '<div class="flotte-ok-item" style="opacity:1;">' +
+        '<div><strong>' + h(item.v.id) + '</strong> - ' + h(item.v.modele) + ' <span style="font-size:11px; color:var(--texte2);">(' + h(item.v.immat) + ')</span>' + critAirBadge + alerteHtml + detailsHtml + '</div>' +
         '<div style="display:flex; gap:5px;">' +
           '<button class="action-btn" onclick="afficherHistoriqueVehicule(\'' + item.v.id + '\')" title="Historique">📜</button>' +
           '<button class="action-btn" onclick="ouvrirModalVehicule(\'' + item.v.id + '\')">✏️</button>' +
