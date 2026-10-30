@@ -744,20 +744,46 @@ function afficherObjetParLigne(e,ligne){if(e)e.stopPropagation();var c=commandes
 
 // ── MODULE FLOTTE (MODE ALERTES) ──
 async function chargerFlotte() {
+  var container = document.getElementById('flotte-alertes');
+  if (container) container.innerHTML = '<div style="text-align:center;padding:20px;color:#78909C;">⏳ Chargement de la flotte...</div>';
+  
   try {
-    var rV = await apiPost({ action: 'lireVehicules' });
-    if (rV.ok) {
-      flotteVehicules = rV.data;
-      renderFlotte();
+    // On demande les données au serveur
+    var response = await apiPost({ action: 'lireVehicules' });
+    
+    // On vérifie que la réponse est bien valide et qu'elle contient un tableau
+    if (response && response.ok && Array.isArray(response.data)) {
+      flotteVehicules = response.data;
+    } else {
+      flotteVehicules = [];
+      var msg = (response && response.error) ? response.error : 'Réponse invalide du serveur';
+      if (container) container.innerHTML = '<div style="color:red;text-align:center;padding:20px;">⚠️ Erreur serveur : ' + msg + '</div>';
+      return;
     }
-  } catch(e) { console.warn("Erreur chargement flotte :", e.message); }
+    
+    // On force l'affichage
+    renderFlotte(); 
+    
+  } catch(e) { 
+    console.warn("Erreur chargement flotte :", e.message); 
+    if (container) container.innerHTML = '<div style="color:red;text-align:center;padding:20px;">❌ Impossible de contacter le serveur : ' + e.message + '</div>';
+  }
 }
 
 function renderFlotte() {
   var containerAlertes = document.getElementById('flotte-alertes');
   var containerOK = document.getElementById('flotte-ok-list');
   var btnToggleOK = document.getElementById('btn-toggle-ok');
+  
+  // Si le conteneur n'existe pas sur la page, on arrête tout
   if (!containerAlertes) return;
+
+  // Si la liste est vide (serveur OK mais aucun véhicule), on affiche un message
+  if (!flotteVehicules || !Array.isArray(flotteVehicules) || flotteVehicules.length === 0) {
+    containerAlertes.innerHTML = '<div style="text-align:center;padding:30px;color:#2E7D32;font-weight:600;">🟢 Aucun véhicule enregistré ou la feuille VEHICULES est vide.</div>';
+    if (containerOK) containerOK.innerHTML = '';
+    return;
+  }
 
   var aujourdhui = new Date();
   var listeUrgents = [];
@@ -767,6 +793,13 @@ function renderFlotte() {
   flotteVehicules.forEach(function(v) {
     var alertesVehicule = [];
     var infosIntervention = [];
+
+    // 1. Interventions URGENTES déclarées manuellement
+    if (v.urgence === 'haute' && v.description) {
+      alertesVehicule.push({ sev: 3, txt: '🚨 ACTION URGENTE : ' + (v.type || 'Panne') + ' — ' + v.description });
+    }
+    
+    // ... (Laisse la suite de ta fonction renderFlotte exactement comme elle est) ...
 
     // 1. Interventions URGENTES déclarées manuellement
     if (v.urgence === 'haute' && v.description) {
