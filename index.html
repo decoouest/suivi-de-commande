@@ -554,6 +554,19 @@ textarea.task-input{resize:vertical}
     <div class="form-group"><label>Statut pose</label><select id="f-statutPose"><option value="">—</option><option>A planifier</option><option>A PLANIFIER</option><option>En cours</option><option>Posé</option><option>Terminé</option><option>SAV</option><option>Annulé</option></select></div>
     <div class="form-group"><label>Date de pose</label><input id="f-datePose" type="text" placeholder="S26 ou 23/06/2026"></div>
     <div class="form-group"><label>PV fin de chantier</label><label style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--gris-bg);border-radius:8px;cursor:pointer;"><input type="checkbox" id="f-pvChantier" style="width:18px;height:18px;accent-color:var(--vert);"><span style="font-size:13px;font-weight:600;">PV effectué</span></label></div>
+       <!-- NOUVEAUX CHAMPS FINANCIERS -->
+    <div class="form-group"><label>Acompte versé (€)</label><input id="f-acompte" type="text" placeholder="0.00"></div>
+    <div class="form-group"><label>Reste à payer (€)</label><input id="f-resteAPayer" type="text" placeholder="0.00"></div>
+    <div class="form-group full"><label>Montant Facture Fournisseur (€)</label><input id="f-factureFournisseur" type="text" placeholder="0.00"></div>
+    
+    <!-- BOUTON DE SCAN -->
+    <div class="form-group full">
+      <button type="button" class="btn btn-outline" onclick="scannerDocument()" style="width:100%; border-color:#E65100; color:#E65100; justify-content:center; font-weight:700; padding:12px;">
+        📸 Importer une image / facture pour remplir automatiquement
+      </button>
+      <input type="file" id="file-scanner" accept="image/*" style="display:none;" onchange="traiterImageDocument(event)">
+      <div id="scan-status" style="font-size:12px; color:var(--bleu); text-align:center; margin-top:5px; display:none; font-weight:bold;">⏳ Analyse du document par l'IA...</div>
+    </div>
     <div class="form-group full"><label>Historique commentaires</label><textarea id="f-commentaire-historique" readonly style="background:#F5F7FA;font-style:italic;min-height:90px;"></textarea></div>
     <div class="form-group full"><label>Ajouter un commentaire</label><textarea id="f-commentaire-nouveau" style="min-height:60px;"></textarea></div>
   </div></div>
@@ -1690,6 +1703,48 @@ async function sauvegarderNoteRapide() {
   } catch(e) {
     alert("❌ Erreur : " + e.message);
   }
+}
+  function scannerDocument() {
+  document.getElementById('file-scanner').click();
+}
+
+async function traiterImageDocument(e) {
+  var file = e.target.files[0];
+  if (!file) return;
+  
+  var status = document.getElementById('scan-status');
+  status.style.display = 'block';
+  status.textContent = "⏳ Lecture du document en cours... (L'IA analyse l'image)";
+  
+  var reader = new FileReader();
+  reader.onload = async function(evt) {
+    var base64Data = evt.target.result.split(',')[1];
+    
+    try {
+      // On envoie l'image à notre serveur Apps Script
+      var r = await apiPost({ action: 'analyserDocument', imageBase64: base64Data, mimeType: file.type });
+      
+      if (r && r.ok && r.data) {
+        // On remplit les champs automatiquement
+        if (r.data.acompte) document.getElementById('f-acompte').value = r.data.acompte;
+        if (r.data.resteAPayer) document.getElementById('f-resteAPayer').value = r.data.resteAPayer;
+        if (r.data.montantFournisseur) document.getElementById('f-factureFournisseur').value = r.data.montantFournisseur;
+        
+        status.style.color = "var(--vert)";
+        status.textContent = "✅ Informations financières extraites avec succès !";
+        afficherToast('ok', '✅', 'Document analysé', 'Les montants ont été remplis.', 3000);
+      } else {
+        throw new Error(r ? r.error : "Erreur de réponse");
+      }
+    } catch(err) {
+      status.style.color = "var(--rouge)";
+      status.textContent = "❌ Erreur : " + err.message;
+    }
+    
+    // On réinitialise le champ fichier pour pouvoir re-scanner
+    e.target.value = '';
+  };
+  reader.readAsDataURL(file);
 }
 </script>
 </body>
