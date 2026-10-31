@@ -550,37 +550,6 @@ textarea.task-input{resize:vertical}
     <div class="form-group"><label>Statut pose</label><select id="f-statutPose"><option value="">—</option><option>A planifier</option><option>A PLANIFIER</option><option>En cours</option><option>Posé</option><option>Terminé</option><option>SAV</option><option>Annulé</option></select></div>
     <div class="form-group"><label>Date de pose</label><input id="f-datePose" type="text" placeholder="S26 ou 23/06/2026"></div>
     <div class="form-group"><label>PV fin de chantier</label><label style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--gris-bg);border-radius:8px;cursor:pointer;"><input type="checkbox" id="f-pvChantier" style="width:18px;height:18px;accent-color:var(--vert);"><span style="font-size:13px;font-weight:600;">PV effectué</span></label></div>
-       <!-- NOUVEAUX CHAMPS FINANCIERS -->
-    <div class="form-group full" style="background:#F8FBFF; border:1.5px dashed #90CAF9; border-radius:10px; padding:15px; margin-top:10px;">
-      <div style="font-size:14px; font-weight:700; color:var(--bleu); margin-bottom:10px;">📸 Analyse automatique de document</div>
-      <div style="font-size:12px; color:var(--texte2); margin-bottom:10px;">Cliquez ci-dessous, puis faites <b>Ctrl+V</b> pour coller une capture d'écran.</div>
-      <div id="drop-zone" onclick="document.getElementById('file-scanner').click()" style="border:2px dashed #BBDEFB; border-radius:8px; padding:20px; text-align:center; cursor:pointer; background:#fff;">
-        <span style="font-size:24px;">📋</span><br>
-        <span style="font-size:12px; font-weight:600; color:var(--bleu);">Coller (Ctrl+V) ou cliquer pour choisir un fichier</span>
-      </div>
-      <input type="file" id="file-scanner" accept="image/*" style="display:none;" onchange="traiterImageDocument(event)">
-      <div id="scan-status" style="font-size:12px; color:var(--bleu); text-align:center; margin-top:10px; display:none; font-weight:bold;">⏳ Analyse du document par l'IA...</div>
-    </div>
-
-    <div class="form-group full" style="margin-top:10px; background:#F1F8E9; padding:12px; border-radius:8px; border:1px solid #C8E6C9;">
-      <div style="font-size:13px; font-weight:700; color:var(--vert); margin-bottom:8px;">💰 Acompte Client</div>
-      <div style="display:flex; gap:10px;">
-        <div style="flex:1;"><label>Montant versé (€)</label><input id="f-acompte" type="text" placeholder="0.00"></div>
-        <div style="flex:1;"><label>Reste à payer (€)</label><input id="f-resteAPayer" type="text" placeholder="0.00"></div>
-      </div>
-    </div>
-
-    <div class="form-group full" style="background:#FFF8E1; border:1.5px solid #FFE082; border-radius:10px; padding:15px; margin-top:5px;">
-      <div style="font-size:13px; font-weight:700; color:#E65100; margin-bottom:8px;">🏭 Facture Fournisseur</div>
-      <div style="display:flex; gap:10px; margin-bottom:10px;">
-        <div style="flex:1;"><label>Montant Facture (€)</label><input id="f-factureFournisseur" type="text" placeholder="0.00"></div>
-      </div>
-      <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:12px; font-weight:700; color:#D32F2F; background:#fff; padding:8px; border-radius:6px; border:1px solid #FFCDD2;">
-        <input type="checkbox" id="f-alerteProforma" style="width:18px; height:18px; accent-color:#D32F2F;">
-        ⚠️ Acompte Fournisseur (Proforma) demandé avant livraison
-      </label>
-    </div>
-    <!-- FIN NOUVEAUX CHAMPS FINANCIERS -->
     <div class="form-group full"><label>Historique commentaires</label><textarea id="f-commentaire-historique" readonly style="background:#F5F7FA;font-style:italic;min-height:90px;"></textarea></div>
     <div class="form-group full"><label>Ajouter un commentaire</label><textarea id="f-commentaire-nouveau" style="min-height:60px;"></textarea></div>
   </div></div>
