@@ -560,26 +560,18 @@ textarea.task-input{resize:vertical}
     <div class="form-group full"><label>Montant Facture Fournisseur (€)</label><input id="f-factureFournisseur" type="text" placeholder="0.00"></div>
     
     <!-- BOUTON DE SCAN -->
-    <div class="form-group full">
-      <button type="button" class="btn btn-outline" onclick="scannerDocument()" style="width:100%; border-color:#E65100; color:#E65100; justify-content:center; font-weight:700; padding:12px;">
-        📸 Importer une image / facture pour remplir automatiquement
-      </button>
+       <!-- ENCART FINANCIER AVEC ANALYSE D'IMAGE -->
+    <div class="form-group full" style="background:#F8FBFF; border:1.5px dashed #90CAF9; border-radius:10px; padding:15px; margin-top:10px;">
+      <div style="font-size:14px; font-weight:700; color:var(--bleu); margin-bottom:10px;">📸 Analyse automatique de document</div>
+      <div style="font-size:12px; color:var(--texte2); margin-bottom:10px;">Cliquez ci-dessous, puis faites <b>Ctrl+V</b> pour coller une capture d'écran de facture, devis ou proforma.</div>
+      
+      <div id="drop-zone" onclick="document.getElementById('file-scanner').click()" style="border:2px dashed #BBDEFB; border-radius:8px; padding:20px; text-align:center; cursor:pointer; background:#fff;">
+        <span style="font-size:24px;">📋</span><br>
+        <span style="font-size:12px; font-weight:600; color:var(--bleu);">Coller (Ctrl+V) ou cliquer pour choisir un fichier</span>
+      </div>
       <input type="file" id="file-scanner" accept="image/*" style="display:none;" onchange="traiterImageDocument(event)">
-      <div id="scan-status" style="font-size:12px; color:var(--bleu); text-align:center; margin-top:5px; display:none; font-weight:bold;">⏳ Analyse du document par l'IA...</div>
+      <div id="scan-status" style="font-size:12px; color:var(--bleu); text-align:center; margin-top:10px; display:none; font-weight:bold;">⏳ Analyse du document par l'IA...</div>
     </div>
-    <div class="form-group full"><label>Historique commentaires</label><textarea id="f-commentaire-historique" readonly style="background:#F5F7FA;font-style:italic;min-height:90px;"></textarea></div>
-    <div class="form-group full"><label>Ajouter un commentaire</label><textarea id="f-commentaire-nouveau" style="min-height:60px;"></textarea></div>
-  </div></div>
-  <div class="modal-footer">
-    <button class="btn btn-danger btn-sm" id="btn-suppr" onclick="supprimerCommande()" style="display:none;">🗑 Supprimer</button>
-    <div style="display:flex;gap:10px;align-items:center;">
-      <span class="saving-msg" id="saving-msg">Enregistrement...</span>
-      <button class="btn btn-outline" onclick="closeModal()">Annuler</button>
-      <button class="btn btn-outline" onclick="genererRapportChantier()" style="border-color:#1565C0;color:#1565C0;">📄 PDF</button>
-      <button class="btn btn-primary" onclick="sauvegarder()">💾 Enregistrer</button>
-    </div>
-  </div>
-</div></div>
 
 <div class="overlay" id="overlay-dictee" onclick="fermerDictee(event)" style="display:none;"><div class="modal" style="max-width:500px;width:100%;margin:20px;">
   <div class="modal-header"><h3>🎙️ Créer une fiche à la voix</h3><button class="modal-close" onclick="fermerDictee()">✕</button></div>
@@ -1743,6 +1735,59 @@ async function traiterImageDocument(e) {
     
     // On réinitialise le champ fichier pour pouvoir re-scanner
     e.target.value = '';
+  };
+  reader.readAsDataURL(file);
+}
+  // --- GESTION DE L'IMAGE (COLLE ET ANALYSE) ---
+document.addEventListener('DOMContentLoaded', function() {
+  var dropZone = document.getElementById('drop-zone');
+  if (dropZone) {
+    // Gestion du Ctrl+V
+    dropZone.addEventListener('paste', function(e) {
+      var items = (e.clipboardData || window.clipboardData).items;
+      for (var index in items) {
+        var item = items[index];
+        if (item.kind === 'file') {
+          var blob = item.getAsFile();
+          traiterImageDocument({ target: { files: [blob], value: '' } });
+        }
+      }
+    });
+    dropZone.setAttribute('tabindex', '0'); 
+  }
+});
+
+async function traiterImageDocument(e) {
+  var file = e.target.files ? e.target.files[0] : null;
+  if (!file) return;
+  
+  var status = document.getElementById('scan-status');
+  status.style.display = 'block';
+  status.style.color = "var(--bleu)";
+  status.textContent = "⏳ Lecture du document en cours... (L'IA analyse l'image)";
+  
+  var reader = new FileReader();
+  reader.onload = async function(evt) {
+    var base64Data = evt.target.result.split(',')[1];
+    try {
+      var r = await apiPost({ action: 'analyserDocument', imageBase64: base64Data, mimeType: file.type });
+      if (r && r.ok && r.data) {
+        if (r.data.acompte) document.getElementById('f-acompte').value = r.data.acompte;
+        if (r.data.resteAPayer) document.getElementById('f-resteAPayer').value = r.data.resteAPayer;
+        if (r.data.montantFournisseur) document.getElementById('f-factureFournisseur').value = r.data.montantFournisseur;
+        if (r.data.demandeAcompte) document.getElementById('f-alerteProforma').checked = true;
+        
+        status.style.color = "var(--vert)";
+        status.textContent = "✅ Analyse terminée avec succès !";
+        afficherToast('ok', '✅', 'Document analysé', 'Les champs ont été remplis.', 3000);
+      } else {
+        throw new Error(r ? r.error : "Erreur de réponse");
+      }
+    } catch(err) {
+      status.style.color = "var(--rouge)";
+      status.textContent = "❌ Erreur : " + err.message;
+    }
+    if(e.target.value) e.target.value = '';
   };
   reader.readAsDataURL(file);
 }
