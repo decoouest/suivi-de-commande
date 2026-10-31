@@ -1847,6 +1847,57 @@ async function sauvegarderNoteRapide() {
     alert("❌ Erreur : " + e.message);
   }
 }
+  document.addEventListener('DOMContentLoaded', function() {
+  var dropZone = document.getElementById('drop-zone');
+  if (dropZone) {
+    dropZone.addEventListener('paste', function(e) {
+      var items = (e.clipboardData || window.clipboardData).items;
+      for (var index in items) {
+        var item = items[index];
+        if (item.kind === 'file') {
+          var blob = item.getAsFile();
+          traiterImageDocument({ target: { files: [blob], value: '' } });
+        }
+      }
+    });
+    dropZone.setAttribute('tabindex', '0'); 
+  }
+});
+
+async function traiterImageDocument(e) {
+  var file = e.target.files ? e.target.files[0] : null;
+  if (!file) return;
+  
+  var status = document.getElementById('scan-status');
+  status.style.display = 'block';
+  status.style.color = "var(--bleu)";
+  status.textContent = "⏳ Lecture du document en cours... (L'IA analyse l'image)";
+  
+  var reader = new FileReader();
+  reader.onload = async function(evt) {
+    var base64Data = evt.target.result.split(',')[1];
+    try {
+      var r = await apiPost({ action: 'analyserDocument', imageBase64: base64Data, mimeType: file.type });
+      if (r && r.ok && r.data) {
+        if (r.data.acompte) document.getElementById('f-acompte').value = r.data.acompte;
+        if (r.data.resteAPayer) document.getElementById('f-resteAPayer').value = r.data.resteAPayer;
+        if (r.data.montantFournisseur) document.getElementById('f-factureFournisseur').value = r.data.montantFournisseur;
+        if (r.data.demandeAcompte) document.getElementById('f-alerteProforma').checked = true;
+        
+        status.style.color = "var(--vert)";
+        status.textContent = "✅ Analyse terminée avec succès !";
+        afficherToast('ok', '✅', 'Document analysé', 'Les champs ont été remplis.', 3000);
+      } else {
+        throw new Error(r ? r.error : "Erreur de réponse");
+      }
+    } catch(err) {
+      status.style.color = "var(--rouge)";
+      status.textContent = "❌ Erreur : " + err.message;
+    }
+    if(e.target.value) e.target.value = '';
+  };
+  reader.readAsDataURL(file);
+}
 </script>
 </body>
 </html>
