@@ -46,6 +46,8 @@ body{font-family:"Inter",sans-serif;background:#F0F4F8;color:var(--texte);min-he
 .sync-dot{width:7px;height:7px;border-radius:50%;background:var(--vert);display:inline-block;}
 .sync-dot.loading{background:var(--orange);animation:pulse .8s infinite;}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ── KPI & RACCOURCIS ── */
 .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin-bottom:10px;}
 .kpi-card{background:#fff;border-radius:10px;padding:8px 12px;border:1px solid var(--bordure);display:flex;flex-direction:column;gap:2px;cursor:pointer;transition:box-shadow .15s;}
 .kpi-card:hover{box-shadow:0 4px 14px rgba(0,0,0,.08);}
@@ -54,6 +56,8 @@ body{font-family:"Inter",sans-serif;background:#F0F4F8;color:var(--texte);min-he
 .kpi-sub{font-size:9px;color:var(--texte2);}
 .kpi-urgent .kpi-value{color:var(--rouge);}.kpi-warn .kpi-value{color:var(--orange);}
 .kpi-ok .kpi-value{color:var(--vert);}.kpi-info .kpi-value{color:var(--bleu);}
+
+/* ── FILTRES ── */
 .filters-bar{background:#fff;border-radius:10px;border:1px solid var(--bordure);padding:6px 12px;display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:8px;}
 .search-input{flex:1;min-width:180px;border:1.5px solid var(--bordure);border-radius:7px;padding:6px 10px;font-family:inherit;font-size:13px;outline:none;}
 .search-input:focus{border-color:var(--bleu);}
@@ -69,6 +73,8 @@ body{font-family:"Inter",sans-serif;background:#F0F4F8;color:var(--texte);min-he
 .filter-badge.ok.active{background:var(--vert);color:#fff;}
 .filter-badge.sav-active{background:#D32F2F !important;color:#fff !important;}
 .filter-badge.noncmd-active{background:#E65100 !important;color:#fff !important;}
+
+/* ── TABLEAU OPTIMISÉ ── */
 .table-wrap{background:#fff;border-radius:10px;border:1px solid var(--bordure);overflow:auto;max-height:calc(100vh - 200px);display:block;width:100%;margin-bottom:15px;}
 table{width:100%;border-collapse:collapse;font-size:11px;white-space:nowrap;}
 thead th{position:sticky;top:0;z-index:10;background:var(--gris-bg);box-shadow:0 2px 0 var(--bordure);text-align:left;padding:8px 4px;font-size:10px;font-weight:700;color:var(--texte2);text-transform:uppercase;letter-spacing:.3px;cursor:pointer;user-select:none;}
@@ -89,6 +95,8 @@ tr:hover td{background:#F8FBFF;}
 .action-btn{background:none;border:none;cursor:pointer;padding:4px 6px;border-radius:5px;font-size:15px;}
 .action-btn:hover{background:var(--gris-bg);}
 .scroll-hint{font-size:11px;color:var(--texte2);padding:8px 14px;border-top:1px solid var(--bordure);}
+
+/* ── AUTRES VUES ── */
 .empty-state{text-align:center;padding:48px 24px;color:var(--texte2);}
 .overlay{display:none;position:fixed;inset:0;background:rgba(10,20,40,.45);z-index:200;align-items:center;justify-content:center;}
 .overlay.open{display:flex;}
@@ -108,6 +116,36 @@ textarea{resize:vertical;min-height:70px;}
 .modal-footer{padding:16px 28px 22px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--bordure);}
 .saving-msg{font-size:12px;color:var(--texte2);display:none;}
 .saving-msg.active{display:block;}
+.alert-section{margin-bottom:22px;}
+.alert-section-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--texte2);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.dot-badge{width:8px;height:8px;border-radius:50%;display:inline-block;}
+.alert-card{background:#fff;border-radius:9px;border:1px solid var(--bordure);padding:14px 18px;margin-bottom:8px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;}
+.alert-card:hover{box-shadow:0 3px 12px rgba(0,0,0,.07);}
+.alert-card-client{font-weight:700;font-size:14px;margin-bottom:3px;}
+.alert-card-detail{font-size:12px;color:var(--texte2);}
+.alert-card-comment{font-size:12px;color:var(--bleu);font-style:italic;margin-top:4px;}
+.alert-pill{padding:4px 12px;border-radius:6px;font-size:11px;font-weight:700;white-space:nowrap;align-self:flex-start;}
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+.dash-card{background:#fff;border-radius:10px;border:1px solid var(--bordure);padding:20px;}
+.dash-card h4{font-size:13px;font-weight:600;color:var(--texte2);margin-bottom:14px;}
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:12px;}
+.bar-label{width:110px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.bar-track{flex:1;height:8px;background:var(--bordure);border-radius:4px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:4px;}
+.bar-count{width:24px;text-align:right;color:var(--texte2);font-weight:600;}
+.suivipose-card{background:#fff;border-radius:12px;border:1px solid var(--bordure);margin-bottom:14px;overflow:hidden;}
+.suivipose-header{padding:14px 18px;background:var(--gris-bg);display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bordure);}
+.suivipose-client{font-size:15px;font-weight:700;}
+.suivipose-meta{font-size:11px;color:var(--texte2);}
+.suivipose-body{padding:14px 18px;}
+.suivipose-poseur{margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--bordure);}
+.suivipose-poseur:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none;}
+.suivipose-poseur-name{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.suivipose-poseur-avatar{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;}
+.suivipose-poseur-label{font-size:13px;font-weight:700;}
+.suivipose-comment{font-size:12px;color:var(--texte);line-height:1.6;white-space:pre-wrap;padding:8px 12px;background:var(--gris-bg);border-radius:8px;border-left:3px solid var(--bleu);}
+.suivipose-empty{font-size:12px;color:var(--texte2);font-style:italic;padding:6px 0;}
+.suivipose-date{display:inline-block;padding:3px 10px;border-radius:6px;font-size:12px;font-weight:700;background:var(--bleu-bg);color:var(--bleu);}
 .toast{position:fixed;bottom:20px;right:20px;z-index:500;background:#fff;border-radius:10px;box-shadow:0 8px 28px rgba(0,0,0,.2);padding:14px 18px;display:flex;gap:12px;align-items:flex-start;max-width:380px;animation:slideIn .3s ease;border-left:4px solid var(--bleu);}
 .toast.urgent{border-left-color:var(--rouge);}
 .toast.warn{border-left-color:var(--orange);}
@@ -160,6 +198,8 @@ textarea{resize:vertical;min-height:70px;}
 .menu-mobile-item{display:flex;align-items:center;gap:12px;padding:16px 22px;cursor:pointer;font-size:15px;font-weight:500;border-bottom:1px solid var(--bordure);transition:background .15s;color:var(--texte);}
 .menu-mobile-item:hover{background:var(--bleu-bg);}
 .menu-mobile-item .icon{font-size:22px;width:28px;text-align:center;}
+
+/* ── RESPONSIVE MOBILE ── */
 @media(max-width:900px){
   .sidebar{width:52px;}
   .sidebar .nav-item span,.sidebar-logo span,.sidebar-logo small,.sidebar-footer{display:none;}
@@ -187,6 +227,7 @@ textarea{resize:vertical;min-height:70px;}
   .kpi-card{padding:12px;}
   .kpi-value{font-size:22px;}
   .table-wrap{overflow:visible;}
+  
   table:not(.no-responsive) thead{display:none;}
   table:not(.no-responsive), table:not(.no-responsive) tbody, table:not(.no-responsive) tr, table:not(.no-responsive) td{display:block;width:100%;}
   table:not(.no-responsive) tr{background:#fff;border-radius:12px;border:1px solid var(--bordure);margin-bottom:10px;padding:12px;box-shadow:0 1px 3px rgba(0,0,0,.05);}
@@ -195,12 +236,23 @@ textarea{resize:vertical;min-height:70px;}
   table:not(.no-responsive) td:first-child{font-size:16px;font-weight:700;color:var(--bleu);border-bottom:1px solid var(--bordure);padding-bottom:8px;margin-bottom:4px;}
   table:not(.no-responsive) td:first-child::before{display:none;}
   .col-comment{max-width:none !important;white-space:normal !important;}
+  
+  table.no-responsive { display: table !important; width: 100% !important; }
+  table.no-responsive thead { display: table-header-group !important; }
+  table.no-responsive tbody { display: table-row-group !important; }
+  table.no-responsive tr { display: table-row !important; margin-bottom: 0 !important; padding: 0 !important; border-radius: 0 !important; background: transparent !important; box-shadow: none !important; border: none !important; }
+  table.no-responsive th, table.no-responsive td { display: table-cell !important; text-align: center !important; border: 1px solid var(--bordure) !important; padding: 6px 4px !important; font-size: 11px !important; white-space: nowrap !important; }
+  table.no-responsive td::before { display: none !important; }
+  table.no-responsive td:first-child { font-size: 11px !important; font-weight: bold !important; color: var(--texte) !important; border-bottom: 1px solid var(--bordure) !important; background: transparent !important; }
+  
   .form-grid{grid-template-columns:1fr;}
   #planning-titre{font-size:14px;}
   .agent-card{flex-direction:column;gap:10px;}
   .agent-card-actions{width:100%;flex-direction:row;flex-wrap:wrap;}
   .agent-card-btn{flex:1;padding:8px;font-size:13px;}
 }
+
+/* ── SOUS-MODULES TACHES & ACHATS ── */
 .stock-subtabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}
 .stock-subtab{border:1px solid #CFD8DC;background:#fff;color:var(--texte);padding:9px 14px;border-radius:8px;font:inherit;font-size:12px;font-weight:750;cursor:pointer}
 .stock-subtab.active{background:var(--bleu);border-color:var(--bleu);color:#fff}
@@ -244,6 +296,8 @@ textarea.task-input{resize:vertical}
 .task-empty{padding:28px 12px;text-align:center;color:var(--texte2);font-size:12px}
 .task-card-details{font-size:12px;line-height:1.55;color:var(--texte2);white-space:pre-wrap;margin-top:7px;overflow-wrap:anywhere}
 @media(max-width:900px){.task-layout{grid-template-columns:1fr}.task-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.task-list-head{align-items:flex-start;flex-direction:column}.task-filters{width:100%}.task-filters .task-input{flex:1;max-width:none}}
+
+/* ── FLOTTE (MODE ALERTES) ── */
 .flotte-alerte-card{background:#fff;border-radius:10px;border:1px solid var(--bordure);border-left:4px solid;padding:14px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px;}
 .flotte-alerte-card.urgent{border-left-color:var(--rouge);}
 .flotte-alerte-card.warn{border-left-color:var(--orange);}
@@ -261,9 +315,9 @@ textarea.task-input{resize:vertical}
 <div class="menu-mobile-overlay" id="menu-mobile" onclick="fermerMenuMobile(event)">
   <div class="menu-mobile-panel" onclick="event.stopPropagation()">
     <div class="menu-mobile-header"><span>📋 Navigation</span><button onclick="fermerMenuMobile()" style="background:none;border:none;font-size:22px;cursor:pointer;color:#fff;">✕</button></div>
-    <div class="menu-mobile-item" onclick="menuMobileGo('suivi')"><span class="icon">📋</ Commandes</div>
+    <div class="menu-mobile-item" onclick="menuMobileGo('suivi')"><span class="icon">📋</span> Commandes</div>
     <div class="menu-mobile-item" onclick="menuMobileGo('alertes')"><span class="icon">🔔</span> Alertes</div>
-    <div class="menu-mobile-item" onclick="menuMobileGo('taches')"><span class="icon">📝</span> Tâches & Consommables <span id="taches-badge-mobile" class="task-nav-badge"></span></div>
+   <div class="menu-mobile-item" onclick="menuMobileGo('taches')"><span class="icon">📝</span> Tâches & Consommables <span id="taches-badge-mobile" class="task-nav-badge"></span></div>
     <div class="menu-mobile-item" onclick="menuMobileGo('agent')"><span class="icon">🤖</span> Agent IA</div>
     <div class="menu-mobile-item" onclick="menuMobileGo('metre')"><span class="icon">📅</span> Dates Métré</div>
     <div class="menu-mobile-item" onclick="menuMobileGo('dashboard')"><span class="icon">📊</span> Dashboard</div>
@@ -278,9 +332,8 @@ textarea.task-input{resize:vertical}
   <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v15.0</div></div>
   <nav class="nav">
     <div class="nav-item active" id="nav-suivi" onclick="showView('suivi')"><span class="icon">📋</span><span>Commandes</span></div>
-    <div class="nav-item" id="nav-alertes" onclick="showView('alertes')"><span class="icon">🔔</span><span>Alertes</span></div>
     <div class="nav-item" id="nav-taches" onclick="showView('taches')"><span class="icon">📝</span><span>Tâches & Consommables</span></div>
-    <div class="nav-item" id="nav-agent" onclick="showView('agent')"><span class="icon">🤖</span><span>Agent IA</span></div>
+       <div class="nav-item" id="nav-agent" onclick="showView('agent')"><span class="icon">🤖</span><span>Agent IA</span></div>
     <div class="nav-item" id="nav-metre" onclick="showView('metre')"><span class="icon">📅</span><span>Dates Métré</span></div>
     <div class="nav-item" id="nav-dashboard" onclick="showView('dashboard')"><span class="icon">📊</span><span>Dashboard</span></div>
     <div class="nav-item" id="nav-flotte" onclick="showView('flotte')"><span class="icon">🚗</span><span>Flotte</span></div>
@@ -344,7 +397,9 @@ textarea.task-input{resize:vertical}
       
       <div id="sousmodule-taches-notes">
         <div class="task-intro"><strong>📝 Tâches & notes du bureau</strong><span>Consignez un rappel, une relance fournisseur, une action SAV ou une note utile.</span></div>
+        
         <div class="buy-stats" id="taches-stats"></div>
+        
         <div class="buy-layout">
           <section class="task-panel">
             <h3 id="task-form-title">＋ Ajouter une tâche ou une note</h3>
@@ -352,27 +407,33 @@ textarea.task-input{resize:vertical}
               <input type="hidden" id="task-id">
               <label for="task-type">Type</label>
               <select id="task-type" class="task-input"><option value="tache">📝 Tâche à faire</option><option value="note">🗒️ Note / information</option></select>
+              
               <label for="task-title">Titre (ou contenu de la tâche) *</label>
               <div style="display:flex; gap:6px;">
                 <input id="task-title" class="task-input" maxlength="140" required placeholder="Ex. Relancer le fournisseur">
                 <button type="button" class="btn btn-outline" onclick="dicterPourChamp('task-title')" title="Dicter le titre" style="padding:0 10px; border-color:#E65100; color:#E65100;">🎤</button>
               </div>
+              
               <label for="task-details">Détails (ou contenu de la note)</label>
               <div style="display:flex; gap:6px; align-items:flex-start;">
                 <textarea id="task-details" class="task-input" rows="3" maxlength="3000" placeholder="Informations complémentaires..."></textarea>
                 <button type="button" class="btn btn-outline" onclick="dicterPourChamp('task-details')" title="Dicter les détails" style="padding:8px 10px; border-color:#E65100; color:#E65100;">🎤</button>
               </div>
+              
               <div class="task-fields-row">
                 <div><label for="task-echeance">Échéance</label><input id="task-echeance" class="task-input" type="date"></div>
                 <div><label for="task-priorite">Priorité</label><select id="task-priorite" class="task-input"><option value="haute">🔴 Haute</option><option value="normale" selected>🟠 Normale</option><option value="basse">🟢 Basse</option></select></div>
               </div>
+
               <button type="button" class="btn btn-outline" onclick="dicterPourChamp('task-details')" style="width: 100%; margin-top: 15px; padding: 12px; border-color: #E65100; color: #E65100; justify-content: center; font-weight: 700; font-size: 14px;">🎤 Dicter la note / les détails à la voix</button>
+
               <div class="task-form-actions" style="margin-top: 15px;">
                 <button class="btn btn-primary" type="submit">💾 Enregistrer</button>
                 <button class="btn btn-outline" type="button" onclick="reinitialiserFormTache()">Annuler</button>
               </div>
             </form>
           </section>
+          
           <section class="task-panel">
             <div class="task-list-head">
               <h3>📌 Tâches et notes</h3>
@@ -443,7 +504,11 @@ textarea.task-input{resize:vertical}
         <h3 style="font-size:16px; margin:0; color:var(--bleu);">État de la flotte</h3>
         <button class="btn btn-primary btn-sm" onclick="ouvrirModalVehicule()">+ Ajouter / Modifier un véhicule</button>
       </div>
+      
+      <!-- Zone des alertes -->
       <div id="flotte-alertes" style="display:flex; flex-direction:column; gap:10px;"></div>
+
+      <!-- Affichage permanent des véhicules OK -->
       <div id="flotte-ok-list" style="display:block; margin-top:20px;"></div>
       <button id="btn-toggle-ok" style="display:none;"></button>
     </div>
@@ -522,7 +587,7 @@ textarea.task-input{resize:vertical}
   <div class="modal-footer" style="padding:15px 20px;"><button class="btn btn-outline" onclick="fermerAssistant()">Fermer</button><button class="btn btn-primary" onclick="envoyerQuestionVocal()" id="btn-envoyer-assistant" style="background:#E65100;border:none;">✨ Envoyer</button></div>
 </div></div>
 
-<div class="overlay" id="overlay-action" onclick="fermerAction(event)" style="display:none;z-index:500;"><div class="modal" style="max-width:600px; width:100%;margin:20px;">
+<div class="overlay" id="overlay-action" onclick="fermerAction(event)" style="display:none;z-index:500;"><div class="modal" style="max-width:600px;width:100%;margin:20px;">
   <div class="modal-header" style="background:#2E7D32;color:#fff;"><h3 style="color:#fff;">🗣️ Commande d'action</h3><button class="modal-close" onclick="fermerAction()" style="background:rgba(255,255,255,0.2);color:#fff;">✕</button></div>
   <div class="modal-body" style="padding:20px;">
     <p style="font-size:13px;color:var(--texte2);margin-bottom:12px;">Ex: "Passe GRUN en livré", "Relance CHARLOT", "BELLE livré S48".</p>
@@ -535,7 +600,7 @@ textarea.task-input{resize:vertical}
 </div></div>
 
 <script>
-var WEBAPP_DEFAULT = 'https://script.google.com/macros/s/AKfycbwneVgK1lXdVXFwPaGtXEapMLI95dos3wswmRSHMcHBj8IpMQ2-n5TPcJaPvFhCKB1Z/exec';
+var WEBAPP_DEFAULT = 'https://script.google.com/macros/s/AKfycbzcq9ChzAPdH1DWnH5H-cYBVC_8Ou4DVIy1sKES5PyFC0M3j80RrbnUU8fK8ojL013H/exec';
 var WEBAPP = localStorage.getItem('eco-webapp-url') || WEBAPP_DEFAULT;
 var FOU_COLORS = {'ATLANTEM':'#1565C0','ATULAM':'#6A1B9A','LALLEMANT':'#2E7D32','SOKO':'#00695C','ALUGLASS':'#E65100','FILTERSUN':'#C62828','DC PROD':'#37474F','KE FRANCE':'#0277BD','SKYLUX':'#558B2F','BVL SERRULAC':'#4527A0','LEROY MERLIN':'#1B5E20','FOUSSIER':'#6D4C41','STOCK':'#546E7A'};
 var TERMINES = ['livre','termine','pose'];
@@ -574,20 +639,22 @@ function semaineBadge(s) { if (!s||!str(s).trim()) return '<span style="color:#c
 function getWeekNumber(d) { d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())); d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7)); var ys = new Date(Date.UTC(d.getUTCFullYear(),0,1)); return Math.ceil((((d-ys)/86400000)+1)/7); }
 function aClass(n) { return n===0?'alerte-ok':n===1?'alerte-jaune':n===2?'alerte-orange':n===3?'alerte-rouge':''; }
 
-async function apiPost(body) {
-  return new Promise(function(resolve, reject) {
-    var timeoutId = setTimeout(function() { window.removeEventListener('message', messageHandler); reject(new Error("Délai dépassé")); }, 90000);
-    function messageHandler(event) {
-      if (event.origin !== "https://script.google.com" && event.origin.indexOf(".googleusercontent.com") === -1) return;
-      clearTimeout(timeoutId); window.removeEventListener('message', messageHandler);
-      try { resolve(JSON.parse(event.data)); } catch(e) { reject(new Error("Réponse invalide")); }
-    }
-    window.addEventListener('message', messageHandler);
-    var form = document.createElement('form'); form.method = 'POST'; form.action = WEBAPP; form.target = 'hidden_iframe_' + Date.now(); form.style.display = 'none';
-    var input = document.createElement('input'); input.type = 'hidden'; input.name = 'payload'; input.value = JSON.stringify(body); form.appendChild(input);
-    var iframe = document.createElement('iframe'); iframe.name = form.target; iframe.style.display = 'none';
-    document.body.appendChild(iframe); document.body.appendChild(form); form.submit();
-  });
+async function apiPost(body, tentative) {
+  tentative = tentative || 1;
+  var delai = (body && body.action === 'analyserAgent') ? 90000 : 60000;
+  var timeoutId = null;
+  try {
+    var controller = new AbortController();
+    timeoutId = setTimeout(function(){ controller.abort(); }, delai);
+    var r = await fetch(WEBAPP, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify(body), redirect:'follow', signal:controller.signal });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    var texte = await r.text();
+    if (texte.trim().substring(0,1) === '<') throw new Error('Réponse HTML');
+    return JSON.parse(texte);
+  } catch(e) {
+    var msg = e.name === 'AbortError' ? 'Délai dépassé (' + (delai/1000) + ' s)' : (e.message || 'Erreur réseau');
+    throw new Error(msg);
+  } finally { if (timeoutId !== null) clearTimeout(timeoutId); }
 }
 
 function chargerDepuisCache() { try { var ts = parseInt(localStorage.getItem(CACHE_TIME_KEY) || '0'), age = Date.now()-ts; if (age<CACHE_DUREE) { var cached = localStorage.getItem(CACHE_KEY); if (cached) { commandes = JSON.parse(cached); var t = new Date(ts).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}); sync('ok','Cache · '+t); fillFournisseur(); renderAll(); setLoader(false); return true; } } } catch(e) {} return false; }
@@ -674,11 +741,669 @@ function sortBy(col){if(sortCol===col)sortAsc=!sortAsc;else{sortCol=col;sortAsc=
 function setFilter(f){alertFilter=f;['all','urgent','warn','ok'].forEach(function(k){document.getElementById('fb-'+k).classList.toggle('active',k===f);});document.getElementById('fb-sav').classList.toggle('sav-active',f==='sav');document.getElementById('fb-noncmd').classList.toggle('noncmd-active',f==='noncmd');renderTable();}
 function afficherObjetParLigne(e,ligne){if(e)e.stopPropagation();var c=commandes.find(function(x){return x.ligne===ligne;});if(!c||!c.objetCommande)return;afficherObjet(null,c.objetCommande);}
 
+// ── MODULE FLOTTE (MODE ALERTES) ──
+async function chargerFlotte() {
+  try {
+    var rV = await apiPost({ action: 'lireVehicules' });
+    if (rV.ok) {
+      flotteVehicules = rV.data;
+      renderFlotte();
+    }
+  } catch(e) { console.warn("Erreur chargement flotte :", e.message); }
+}
+
+function renderFlotte() {
+  var containerAlertes = document.getElementById('flotte-alertes');
+  var containerOK = document.getElementById('flotte-ok-list');
+  var btnToggleOK = document.getElementById('btn-toggle-ok');
+  if (!containerAlertes) return;
+
+  var aujourdhui = new Date();
+  var listeUrgents = [];
+  var listeAttention = [];
+  var listeOK = [];
+
+  flotteVehicules.forEach(function(v) {
+    var alertesVehicule = [];
+    var infosIntervention = [];
+
+    // 1. Interventions URGENTES déclarées manuellement
+    if (v.urgence === 'haute' && v.description) {
+      alertesVehicule.push({ sev: 3, txt: '🚨 ACTION URGENTE : ' + v.type + ' — ' + v.description });
+    }
+
+    // 2. Contrôle Technique
+    if (v.prochainCT) {
+      var dateCT = new Date(v.prochainCT);
+      var joursCT = Math.ceil((dateCT - aujourdhui) / (1000 * 60 * 60 * 24));
+      if (joursCT < 0) alertesVehicule.push({ sev: 3, txt: 'Contrôle technique expiré depuis ' + Math.abs(joursCT) + ' jours' });
+      else if (joursCT <= 30) alertesVehicule.push({ sev: 2, txt: 'Contrôle technique dans ' + joursCT + ' jours' });
+    } else {
+      alertesVehicule.push({ sev: 2, txt: 'Date de contrôle technique manquante' });
+    }
+
+    // 3. Révision
+    if (v.kmRevision > 0) {
+      var kmDepuisRev = v.kmActuel - v.kmRevision;
+      var resteRev = 30000 - kmDepuisRev;
+      if (resteRev <= 0) alertesVehicule.push({ sev: 3, txt: 'Révision dépassée de ' + Math.abs(resteRev) + ' km' });
+      else if (resteRev <= 2000) alertesVehicule.push({ sev: 2, txt: 'Révision dans ' + resteRev + ' km' });
+    }
+
+    // 4. Pneus et Pièces d'usure
+    if (v.type && (v.type.toUpperCase() === 'PNEUS' || v.type.toUpperCase().indexOf('PIÈCES') !== -1)) {
+      var estRecent = false;
+      if (v.dateIntervention) {
+        var dateInter = new Date(v.dateIntervention);
+        var joursDepuis = Math.ceil((aujourdhui - dateInter) / (1000 * 60 * 60 * 24));
+        
+        if (joursDepuis < 30) {
+          estRecent = true;
+          alertesVehicule.push({ sev: 0, txt: '✅ ' + v.type + ' FAITS RÉCEMMENT (il y a ' + joursDepuis + ' j)' });
+        } else {
+          var moisDepuis = (aujourdhui.getFullYear() - dateInter.getFullYear()) * 12 + (aujourdhui.getMonth() - dateInter.getMonth());
+          if (moisDepuis >= 60) alertesVehicule.push({ sev: 3, txt: v.type + ' à changer (plus de 5 ans)' });
+          else if (moisDepuis >= 55) alertesVehicule.push({ sev: 2, txt: v.type + ' à prévoir (bientôt 5 ans)' });
+        }
+      }
+      
+      if (!estRecent && v.kmIntervention > 0) {
+        var kmDepuis = v.kmActuel - v.kmIntervention;
+        if (kmDepuis >= 40000) alertesVehicule.push({ sev: 3, txt: v.type + ' usés (' + kmDepuis + ' km)' });
+        else if (kmDepuis >= 38000) alertesVehicule.push({ sev: 2, txt: v.type + ' à prévoir (' + kmDepuis + ' km)' });
+      }
+    }
+
+    // 5. Assurance
+    if (v.dateAssurance) {
+      var dateAssur = new Date(v.dateAssurance);
+      var joursAssur = Math.ceil((dateAssur - aujourdhui) / (1000 * 60 * 60 * 24));
+      if (joursAssur < 0) alertesVehicule.push({ sev: 3, txt: 'Assurance expirée !' });
+      else if (joursAssur <= 30) alertesVehicule.push({ sev: 2, txt: 'Assurance à renouveler dans ' + joursAssur + ' jours' });
+    }
+
+    // Bloc détails
+    if (v.type || v.description || v.dateIntervention) {
+      var badgeUrgence = v.urgence === 'haute' ? '🔴 <strong>URGENT</strong> : ' : '🔧 ';
+      var txt = badgeUrgence + '<strong>' + h(v.type || 'Intervention') + '</strong>';
+      if (v.dateIntervention) {
+        var d = new Date(v.dateIntervention);
+        txt += ' le ' + d.toLocaleDateString('fr-FR');
+      }
+      if (v.kmIntervention > 0) txt += ' à ' + v.kmIntervention + ' km';
+      if (v.description) txt += '<br><span style="color:#333;">« ' + h(v.description) + ' »</span>';
+      
+      if (v.type && v.dateIntervention && Math.ceil((aujourdhui - new Date(v.dateIntervention)) / (1000 * 60 * 60 * 24)) < 30) {
+         txt = '✅ ' + txt.replace('🔧 ', '');
+      }
+      
+      infosIntervention.push(txt);
+    }
+
+    // Tri
+    if (alertesVehicule.length > 0) {
+      var severiteMax = Math.max.apply(null, alertesVehicule.map(function(a) { return a.sev; }));
+      if (severiteMax === 3) listeUrgents.push({ v: v, alertes: alertesVehicule, infos: infosIntervention });
+      else if (severiteMax === 2) listeAttention.push({ v: v, alertes: alertesVehicule, infos: infosIntervention });
+      else listeOK.push({ v: v, alertes: alertesVehicule, infos: infosIntervention });
+    } else {
+      listeOK.push({ v: v, infos: infosIntervention });
+    }
+  });
+
+  function genererCarte(item, type) {
+    var color = type === 'urgent' ? 'var(--rouge)' : 'var(--orange)';
+    var icon = type === 'urgent' ? '🔴' : '🟠';
+    
+    var lignesAlertes = item.alertes.map(function(a) {
+      var txt = a.txt;
+      if (txt.indexOf('ACTION URGENTE') !== -1) {
+        return '<li style="font-size:13px; margin-bottom:6px; font-weight:700; color:var(--rouge); background:#FFEBEE; padding:6px 10px; border-radius:6px;">' + txt + '</li>';
+      }
+      if (txt.indexOf('FAITS RÉCEMMENT') !== -1 || txt.indexOf('FAIT RÉCEMMENT') !== -1) {
+        return '<li style="font-size:13px; margin-bottom:6px; font-weight:700; color:var(--vert); background:#E8F5E9; padding:6px 10px; border-radius:6px;">' + txt + '</li>';
+      }
+      return '<li style="font-size:13px; margin-bottom:4px;">' + txt + '</li>';
+    }).join('');
+
+    var detailsHtml = '';
+    if (item.infos.length > 0) {
+      detailsHtml = '<div class="flotte-details-box">' + item.infos.join('<br>') + '</div>';
+    }
+
+    return '<div class="flotte-alerte-card ' + type + '">' +
+      '<div style="flex:1;">' +
+        '<div class="flotte-alerte-titre">' + icon + ' ' + h(item.v.id) + ' - ' + h(item.v.modele) + ' <span style="font-size:11px; color:var(--texte2); font-weight:normal;">(' + h(item.v.immat) + ')</span></div>' +
+        '<ul class="flotte-alerte-liste" style="list-style:none; padding-left:0;">' + lignesAlertes + '</ul>' +
+        detailsHtml +
+      '</div>' +
+      '<div style="display:flex; flex-direction:column; gap:5px;">' +
+        '<button class="btn btn-outline btn-sm" onclick="ouvrirModalVehicule(\'' + item.v.id + '\')" style="border-color:' + color + '; color:' + color + ';">✏️ Mettre à jour</button>' +
+        '<button class="btn btn-outline btn-sm" onclick="afficherHistoriqueVehicule(\'' + item.v.id + '\')" style="border-color:var(--bleu); color:var(--bleu);">📜 Historique</button>' +
+      '</div>' +
+    '</div>';
+  }
+
+  var html = '';
+  if (listeUrgents.length > 0) {
+    html += '<div style="margin-bottom:15px;"><div style="font-size:12px; font-weight:700; text-transform:uppercase; color:var(--rouge); margin-bottom:8px;">🔴 Urgent (' + listeUrgents.length + ')</div>';
+    listeUrgents.forEach(function(item) { html += genererCarte(item, 'urgent'); });
+    html += '</div>';
+  }
+  if (listeAttention.length > 0) {
+    html += '<div style="margin-bottom:15px;"><div style="font-size:12px; font-weight:700; text-transform:uppercase; color:var(--orange); margin-bottom:8px;">🟠 À prévoir (' + listeAttention.length + ')</div>';
+    listeAttention.forEach(function(item) { html += genererCarte(item, 'attention'); });
+    html += '</div>';
+  }
+  
+  if (!html && listeOK.length === 0) {
+    html = '<div style="text-align:center; padding:40px; color:var(--vert); font-weight:600; font-size:16px;">🟢 Aucun véhicule enregistré.</div>';
+  }
+  containerAlertes.innerHTML = html;
+
+  // AFFICHAGE PERMANENT DES VÉHICULES OK
+  btnToggleOK.style.display = 'none';
+  containerOK.style.display = 'block';
+  containerOK.style.marginTop = '20px';
+  
+  if (listeOK.length > 0) {
+    var htmlOK = '<div style="font-size:12px; font-weight:700; text-transform:uppercase; color:var(--vert); margin-bottom:8px;">🟢 Véhicules à jour (' + listeOK.length + ')</div>';
+    htmlOK += listeOK.map(function(item) {
+      var detailsHtml = '';
+      if (item.infos.length > 0) {
+        detailsHtml = '<div style="margin-top:5px; font-size:10px; color:#546E7A;">' + item.infos.join(' — ') + '</div>';
+      }
+      
+      var alerteHtml = '';
+      if (item.alertes && item.alertes.length > 0) {
+        alerteHtml = '<div style="margin-top:5px; font-size:11px; color:var(--vert); font-weight:700;">' + item.alertes[0].txt + '</div>';
+      }
+
+      return '<div class="flotte-ok-item" style="opacity:1;">' +
+        '<div><strong>' + h(item.v.id) + '</strong> - ' + h(item.v.modele) + ' <span style="font-size:11px; color:var(--texte2);">(' + h(item.v.immat) + ')</span>' + alerteHtml + detailsHtml + '</div>' +
+        '<div style="display:flex; gap:5px;">' +
+          '<button class="action-btn" onclick="afficherHistoriqueVehicule(\'' + item.v.id + '\')" title="Historique">📜</button>' +
+          '<button class="action-btn" onclick="ouvrirModalVehicule(\'' + item.v.id + '\')">✏️</button>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+    containerOK.innerHTML = htmlOK;
+  } else {
+    containerOK.innerHTML = '';
+  }
+}
+
+// Fonction pour afficher la popup d'historique
+async function afficherHistoriqueVehicule(idVehicule) {
+  var overlay = document.getElementById('overlay-historique');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'overlay-historique';
+    overlay.className = 'overlay open';
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(10,20,40,.6);z-index:700;display:flex;align-items:center;justify-content:center;padding:20px;';
+    overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
+    
+    overlay.innerHTML = 
+      '<div class="modal" style="max-width:700px;width:100%;background:#fff;border-radius:14px;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.3);max-height:90vh;overflow-y:auto;" onclick="event.stopPropagation()">' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">' +
+          '<h3 style="font-size:16px;font-weight:700;color:var(--bleu);" id="histo-titre">Historique</h3>' +
+          '<button onclick="document.getElementById(\'overlay-historique\').remove()" style="background:#F5F7FA;border:none;border-radius:8px;width:30px;height:30px;cursor:pointer;font-size:16px;">✕</button>' +
+        '</div>' +
+        '<div id="histo-content" style="font-size:13px;">Chargement...</div>' +
+      '</div>';
+    document.body.appendChild(overlay);
+  }
+  
+  document.getElementById('histo-titre').textContent = 'Historique - ' + idVehicule;
+  document.getElementById('histo-content').innerHTML = '<div style="text-align:center;padding:20px;">⏳ Chargement...</div>';
+  
+  try {
+    var r = await apiPost({action: 'lireHistoriqueVehicule', id: idVehicule});
+    if (!r || !r.ok) throw new Error(r.error || 'Erreur');
+    
+    if (!r.data || r.data.length === 0) {
+      document.getElementById('histo-content').innerHTML = '<div style="text-align:center;padding:20px;color:var(--texte2);">Aucun historique pour ce véhicule.</div>';
+      return;
+    }
+    
+    var html = '<table style="width:100%;border-collapse:collapse;font-size:12px;">' +
+      '<thead><tr style="background:#F5F7FA;text-align:left;">' +
+        '<th style="padding:8px;border-bottom:1px solid #ddd;">Type</th>' +
+        '<th style="padding:8px;border-bottom:1px solid #ddd;">Description</th>' +
+        '<th style="padding:8px;border-bottom:1px solid #ddd;">Date</th>' +
+        '<th style="padding:8px;border-bottom:1px solid #ddd;">Km</th>' +
+        '<th style="padding:8px;border-bottom:1px solid #ddd;">Coût</th>' +
+      '</tr></thead><tbody>';
+      
+    r.data.forEach(function(h) {
+      html += '<tr>' +
+        '<td style="padding:8px;border-bottom:1px solid #eee;"><strong>' + h.type + '</strong></td>' +
+        '<td style="padding:8px;border-bottom:1px solid #eee;">' + h.description + '</td>' +
+        '<td style="padding:8px;border-bottom:1px solid #eee;">' + h.dateIntervention + '</td>' +
+        '<td style="padding:8px;border-bottom:1px solid #eee;">' + h.kmIntervention + '</td>' +
+        '<td style="padding:8px;border-bottom:1px solid #eee;">' + h.coutTTC + ' €</td>' +
+      '</tr>';
+    });
+    html += '</tbody></table>';
+    document.getElementById('histo-content').innerHTML = html;
+    
+  } catch(e) {
+    document.getElementById('histo-content').innerHTML = '<div style="color:var(--rouge);padding:20px;">❌ ' + e.message + '</div>';
+  }
+}
+
+function toggleFlotteOK() {
+  var container = document.getElementById('flotte-ok-list');
+  var btn = document.getElementById('btn-toggle-ok');
+  if (container.style.display === 'none') {
+    container.style.display = 'block';
+    btn.textContent = 'Masquer les véhicules sans alerte';
+  } else {
+    container.style.display = 'none';
+    btn.textContent = btn.textContent.replace('Masquer', 'Afficher');
+  }
+}
+
+// ── MODAL AJOUT / MODIFICATION VÉHICULE ──
+function ouvrirModalVehicule(idVehicule) {
+  var v = flotteVehicules.find(function(x){ return x.id === idVehicule; }) || {};
+  
+  var overlay = document.getElementById('overlay-vehicule');
+  
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'overlay-vehicule';
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(10,20,40,.45);z-index:600;display:none;align-items:center;justify-content:center;padding:20px;';
+    overlay.onclick = function(e) { if (e.target === overlay) document.getElementById('overlay-vehicule').style.display = 'none'; };
+    
+    overlay.innerHTML = 
+      '<div class="modal" style="max-width:600px;width:100%;background:#fff;border-radius:14px;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.2);max-height:90vh;overflow-y:auto;" onclick="event.stopPropagation()">' +
+        '<h3 style="font-size:16px;font-weight:700;margin-bottom:15px;color:var(--bleu);" id="vehicule-modal-title">Ajouter un véhicule</h3>' +
+        '<div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">' +
+          '<div style="grid-column:1/-1;"><label>ID (Repère, ex: V5) *</label><input type="text" id="fv-id" class="task-input"></div>' +
+          '<div><label>Modèle</label><input type="text" id="fv-modele" class="task-input"></div>' +
+          '<div><label>Immatriculation</label><input type="text" id="fv-immat" class="task-input"></div>' +
+          '<div><label>Km Actuel</label><input type="number" id="fv-kmActuel" class="task-input"></div>' +
+          '<div><label>Km Révision</label><input type="number" id="fv-kmRevision" class="task-input"></div>' +
+          '<div><label>Date Révision</label><input type="date" id="fv-dateRevision" class="task-input"></div>' +
+          '<div><label>Prochain CT</label><input type="date" id="fv-prochainCT" class="task-input"></div>' +
+          '<div><label>Date Assurance</label><input type="date" id="fv-dateAssurance" class="task-input"></div>' +
+          '<div><label>Conducteur</label><input type="text" id="fv-conducteur" class="task-input"></div>' +
+          '<div><label>Type d\'intervention / Panne</label><select id="fv-type" class="task-input"><option value="">—</option><option>RÉVISION</option><option>PNEUS</option><option>PIÈCES D\'USURE</option><option>AMPOULE / PHARE</option><option>VITRE / PARE-BRISE</option><option>RÉPARATION</option><option>CONTRÔLE TECHNIQUE</option><option>ASSURANCE / ADMIN</option><option>AUTRE</option></select></div>' +
+          '<div><label style="color:var(--rouge);">Niveau d\'urgence</label><select id="fv-urgence" class="task-input"><option value="normale">🟠 À prévoir (Normal)</option><option value="haute">🔴 URGENT (Sécurité / Bloquant)</option></select></div>' +
+          '<div style="grid-column:1/-1;"><label>Description / Détails</label><input type="text" id="fv-description" class="task-input" placeholder="Ex: Pneu avant droit crevé, phare gauche cassé..."></div>' +
+          '<div><label>Date de l\'intervention</label><input type="date" id="fv-dateIntervention" class="task-input"></div>' +
+          '<div><label>Kilométrage à l\'intervention</label><input type="number" id="fv-kmIntervention" class="task-input" placeholder="Ex: 45000"></div>' +
+        '</div>' +
+        '<div style="display:flex; gap:8px; margin-top:20px; justify-content:flex-end;">' +
+          '<button onclick="document.getElementById(\'overlay-vehicule\').style.display=\'none\'" class="btn btn-outline">Annuler</button>' +
+          '<button onclick="sauvegarderVehicule()" class="btn btn-primary">💾 Enregistrer</button>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(overlay);
+  }
+  
+  overlay.style.display = 'flex';
+  
+  document.getElementById('vehicule-modal-title').textContent = v.id ? 'Modifier ' + v.id : 'Ajouter un véhicule';
+  document.getElementById('fv-id').value = v.id || '';
+  document.getElementById('fv-modele').value = v.modele || '';
+  document.getElementById('fv-immat').value = v.immat || '';
+  document.getElementById('fv-kmActuel').value = v.kmActuel || '';
+  document.getElementById('fv-dateRevision').value = v.dateRevision || '';
+  document.getElementById('fv-kmRevision').value = v.kmRevision || '';
+  document.getElementById('fv-prochainCT').value = v.prochainCT || '';
+  document.getElementById('fv-dateAssurance').value = v.dateAssurance || '';
+  document.getElementById('fv-conducteur').value = v.conducteur || '';
+  document.getElementById('fv-type').value = v.type || '';
+  document.getElementById('fv-urgence').value = v.urgence || 'normale';
+  document.getElementById('fv-description').value = v.description || '';
+  document.getElementById('fv-dateIntervention').value = v.dateIntervention || '';
+  document.getElementById('fv-kmIntervention').value = v.kmIntervention || '';
+}
+
+async function sauvegarderVehicule() {
+  var id = document.getElementById('fv-id').value.trim();
+  if (!id) { alert("L'ID (Repère) est obligatoire (ex: V5)."); return; }
+  
+  var payload = {
+    action: 'enregistrerVehicule',
+    id: id,
+    modele: document.getElementById('fv-modele').value.trim(),
+    immat: document.getElementById('fv-immat').value.trim(),
+    kmActuel: document.getElementById('fv-kmActuel').value || 0,
+    dateRevision: document.getElementById('fv-dateRevision').value,
+    kmRevision: document.getElementById('fv-kmRevision').value || 0,
+    prochainCT: document.getElementById('fv-prochainCT').value,
+    dateAssurance: document.getElementById('fv-dateAssurance').value,
+    conducteur: document.getElementById('fv-conducteur').value.trim(),
+    type: document.getElementById('fv-type').value,
+    urgence: document.getElementById('fv-urgence').value,
+    description: document.getElementById('fv-description').value.trim(),
+    dateIntervention: document.getElementById('fv-dateIntervention').value,
+    kmIntervention: document.getElementById('fv-kmIntervention').value || 0
+  };
+
+  try {
+    var r = await apiPost(payload);
+    if (!r || !r.ok) throw new Error(r.error || 'Erreur');
+    
+    document.getElementById('overlay-vehicule').style.display = 'none';
+    afficherToast('ok', '✅', 'Véhicule enregistré', id, 3000);
+    await chargerFlotte();
+    
+  } catch(e) {
+    alert("❌ Erreur : " + e.message);
+  }
+}
+
+// ── AGENT IA ──
+async function chargerRapportAgent() { var content=document.getElementById('agent-content'), dateEl=document.getElementById('agent-date'); if(dateEl) dateEl.textContent='⏳ Chargement...'; content.innerHTML='<div class="agent-loader"><div class="spinner"></div><div class="loader-msg">📥 Chargement...</div></div>'; try { var r=await apiPost({action:'lireRapport'}); if(!r||!r.ok){content.innerHTML='<div class="empty-state"><div style="font-size:64px;">🤖</div><h3>Aucun rapport</h3><p>Le rapport est généré chaque matin à 8h.</p></div>';if(dateEl)dateEl.textContent='Dernière analyse : aucune';return;} if(dateEl&&r.dateRapport)dateEl.textContent='Dernière analyse : '+r.dateRapport+' (auto)'; else if(dateEl&&r.date)dateEl.textContent='Dernière analyse : '+r.date; dernierRapportAgent=r; afficherRapportAgent(r,0); } catch(e) { content.innerHTML='<div class="empty-state"><p>❌ '+h(e.message)+'</p></div>'; } }
+
+async function lancerAnalyse() { var btn=document.getElementById('btn-analyser'), icon=document.getElementById('btn-analyser-icon'), text=document.getElementById('btn-analyser-text'), content=document.getElementById('agent-content'); btn.disabled=true; icon.textContent='⏳'; text.textContent='Analyse...'; content.innerHTML='<div class="agent-loader"><div class="spinner"></div><div class="loader-msg">🤖 Analyse en cours...</div><div class="loader-sub">Patientez...</div></div>'; var debut=Date.now(); try { var r=await apiPost({action:'analyserAgent'}), duree=Math.round((Date.now()-debut)/1000); if(!r||!r.ok) throw new Error(r.error||'Réponse invalide'); dernierRapportAgent=r; afficherRapportAgent(r,duree); if(document.getElementById('agent-date'))document.getElementById('agent-date').textContent='Dernière analyse : '+(r.date||'à l\'instant')+' (manuelle)'; afficherToast('ok','✅','Analyse terminée', duree+'s', 4000); } catch(e) { content.innerHTML='<div class="empty-state"><p>❌ '+h(e.message)+'</p></div>'; afficherToast('urgent','❌','Erreur analyse', e.message, 8000); } finally { btn.disabled=false; icon.textContent='✨'; text.textContent='Analyser'; } }
+
+function afficherRapportAgent(r, duree) { var content=document.getElementById('agent-content'); if(!r.phrases||!r.phrases.length){content.innerHTML='<div class="empty-state"><div style="font-size:64px;">✅</div><h3>Tout est à jour !</h3></div>';return;} var nbU=r.nbUrgents||0,nbA=r.nbAttention||0,nbI=r.nbInfo||0; var phrases=r.phrases.slice().sort(function(a,b){return (b.severite||0)-(a.severite||0);}); var html='<div class="agent-stats"><div class="agent-stat"><div class="agent-stat-value" style="color:var(--rouge);">'+nbU+'</div><div class="agent-stat-label">🔴 Urgents</div></div><div class="agent-stat"><div class="agent-stat-value" style="color:var(--orange);">'+nbA+'</div><div class="agent-stat-label">🟠 Attention</div></div><div class="agent-stat"><div class="agent-stat-value" style="color:var(--jaune);">'+nbI+'</div><div class="agent-stat-label">🟡 Info</div></div><div class="agent-stat"><div class="agent-stat-value" style="color:var(--bleu);">'+r.nbTotal+'</div><div class="agent-stat-label">📋 Total</div></div></div>'; if(r.resumeGlobal&&r.resumeGlobal.indexOf('⚠️')!==0) html+='<div class="agent-resume"><strong>💡 Synthèse :</strong><br>'+h(r.resumeGlobal)+'</div>'; else if(r.resumeGlobal) html+='<div class="agent-resume" style="border-left-color:var(--orange);background:#FFF3E0;">'+h(r.resumeGlobal)+'</div>'; var src = r.source==='gemini'?'✨ Gemini ('+(r.modeleUtilise||'')+')':(r.statut==='secours'?'⚠️ Règles (Gemini indisponible)':'⚠️ Règles'); if(duree>0) src+=' · '+duree+'s'; html+='<div style="font-size:11px;color:var(--texte2);margin-bottom:18px;font-style:italic;">'+h(src)+'</div>'; [3,2,1].forEach(function(sev){ var arr=phrases.filter(function(p){return p.severite===sev;}); if(!arr.length)return; var ic=sev===3?'🔴':sev===2?'🟠':'🟡'; var tx=sev===3?'Action immédiate':sev===2?'À traiter rapidement':'À surveiller'; html+='<div class="agent-section"><div class="agent-section-title">'+ic+' '+tx+' ('+arr.length+')</div>'; arr.forEach(function(p){html+=renderAgentCard(p);}); html+='</div>'; }); content.innerHTML=html; }
+
+function renderAgentCard(p) { var sc='sev-'+(p.severite||1), ic=p.severite===3?'🔴':(p.severite===2?'🟠':'🟡'), nom=p.client||'—', act=p.action||'Ouvrir la commande'; var motif='suivi', t=(p.texte||'').toLowerCase(); if(t.indexOf('commande')!==-1&&(t.indexOf('non envoy')!==-1||t.indexOf('pas encore')!==-1)) motif='commande'; else if(t.indexOf('accusé')!==-1||t.indexOf('arc ')!==-1) motif='arc'; else if(t.indexOf('livraison')!==-1) motif='livraison'; else if(t.indexOf('sav')!==-1) motif='sav'; return '<div class="agent-card '+sc+'"><div class="agent-card-icon">'+ic+'</div><div class="agent-card-content"><div class="agent-card-client">'+h(nom)+'<span class="agent-card-ligne">Ligne '+(p.ligne||'?')+'</span></div><div class="agent-card-texte">'+h(p.texte||'')+'</div><span class="agent-card-action">👉 '+h(act)+'</span></div><div class="agent-card-actions"><button class="agent-card-btn" onclick="relancerFournisseurDepuisAgent('+(p.ligne||0)+',\''+motif+'\')">📧 Relancer</button><button class="agent-card-btn" style="background:#546E7A;" onclick="ouvrirDepuisAgent('+(p.ligne||0)+')">✏️ Ouvrir</button></div></div>'; }
+
+function ouvrirDepuisAgent(ligne) { if (!ligne) return; var idx = commandes.findIndex(function(x){ return x.ligne === ligne; }); if (idx >= 0) openModal(idx); else afficherToast('warn','⚠️','Commande introuvable','', 3000); }
+
+async function relancerFournisseurDepuisAgent(ligne, motif) { var c = commandes.find(function(x){ return x.ligne === ligne; }); if (!c) return; if (!c.fournisseur || !c.fournisseur.trim()) { alert('⚠️ Aucun fournisseur.'); return; } afficherToast('warn','⏳','Création...','', 2000); try { var r = await apiPost({action:'relancerFournisseur', fournisseur:c.fournisseur, client:c.client, ligne:c.ligne, devis:c.devis, commande:c.commande, arc:c.arc, motif:motif, commentaire:(c.commentaire||'').substring(0,300)}); if (!r||!r.ok) throw new Error(r.error||'Erreur'); afficherToast('ok','📧','Brouillon créé','Allez dans Gmail.', 6000); alert('📧 Brouillon Gmail créé !\n\nÀ : '+r.destinataire+'\nSujet : '+r.sujet); } catch(e) { afficherToast('urgent','❌','Erreur', e.message, 8000); } }
+
+// ── ASSISTANT VOCAL ──
+function ouvrirAssistantVocal() { document.getElementById('overlay-assistant').style.display = 'flex'; document.getElementById('assistant-question').value = ''; document.getElementById('assistant-reponse').style.display = 'none'; document.getElementById('assistant-status').style.display = 'none'; }
+function fermerAssistant(e) { if (e && e.target.id !== 'overlay-assistant') return; document.getElementById('overlay-assistant').style.display = 'none'; if (recognitionAssistant) recognitionAssistant.stop(); window.speechSynthesis.cancel(); }
+function lancerQuestionVocale() { if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) { alert("Dictée non supportée."); return; } var SR = window.SpeechRecognition || window.webkitSpeechRecognition; recognitionAssistant = new SR(); recognitionAssistant.lang='fr-FR'; recognitionAssistant.interimResults=false; var st=document.getElementById('assistant-status'), inp=document.getElementById('assistant-question'); st.style.display='block'; st.textContent="🎙️ Parlez..."; inp.value=''; recognitionAssistant.onresult=function(e){inp.value=e.results[0][0].transcript; st.textContent="✅ Enregistré."; setTimeout(function(){st.style.display='none';},2000); envoyerQuestionVocal();}; recognitionAssistant.onerror=function(e){st.textContent="❌ "+e.error; setTimeout(function(){st.style.display='none';},3000);}; recognitionAssistant.start(); }
+async function envoyerQuestionVocal() { 
+  var q = document.getElementById('assistant-question').value.trim(); 
+  if (!q) { alert("Posez une question."); return; } 
+  var btn = document.getElementById('btn-envoyer-assistant'), rep = document.getElementById('assistant-reponse'); 
+  btn.disabled = true; btn.textContent = "⏳..."; rep.style.display = 'none'; window.speechSynthesis.cancel(); 
+  try { 
+    var ql = q.toLowerCase(); 
+    
+    var mots = ql.split(' ').filter(function(m){ return m.length > 2; });
+    var ctx = commandes.filter(function(c){
+      var nomClient = c.client.toLowerCase();
+      return ql.indexOf(nomClient) !== -1 || mots.some(function(mot){ return nomClient.indexOf(mot) !== -1; });
+    });
+
+    var contexteAEnvoyer = ctx.length > 0 ? ctx : commandes.slice(0, 30);
+    
+    var ctxJson = JSON.stringify(contexteAEnvoyer.map(function(c){return {client:c.client,date_metre:formatDateMetre(c.metres),numero_devis:c.devis,devis_ttc:c.devisTTC,fournisseur:c.fournisseur,commande_envoyee:c.commande,numero_arc:c.arc,validation_arc:c.commentaireARC,prevision_livraison:c.prevLivraison,statut_livraison:c.statutLivraison,statut_pose:c.statutPose,date_pose:c.datePose,pv_chantier:c.pvChantier,commentaires:c.commentaire,objet_commande:c.objetCommande};})); 
+    var r = await apiPost({action:'assistantVocal', question:q, contexte:ctxJson}); 
+    if (!r||!r.ok) throw new Error(r.error||'Erreur'); 
+    if (!r.reponse) throw new Error('Pas de réponse'); 
+    rep.innerHTML = '<strong style="color:#E65100;">🤖 Réponse :</strong><br><br>'+h(r.reponse).replace(/\*\*(.*?)\*\*/g,'<b>$1</b>').replace(/^\s*[\*\-]\s+/gm,'• ').replace(/\n/g,'<br>'); 
+    rep.style.display = 'block'; 
+    btn.disabled=false; btn.textContent="✨ Envoyer"; 
+    var msg = new SpeechSynthesisUtterance(nettoyerTextePourVoix(r.reponse)); 
+    msg.lang='fr-FR'; window.speechSynthesis.speak(msg); 
+  } catch(e) { 
+    rep.innerHTML='<span style="color:var(--rouge);">❌ '+h(e.message)+'</span>'; 
+    rep.style.display='block'; 
+    btn.disabled=false; btn.textContent="✨ Envoyer"; 
+  } 
+}
+
+// ── COMMANDES D'ACTION ──
+function ouvrirActionVocale() { document.getElementById('overlay-action').style.display='flex'; document.getElementById('action-question').value=''; document.getElementById('action-reponse').style.display='none'; document.getElementById('action-status').style.display='none'; }
+function fermerAction(e) { if (e && e.target.id !== 'overlay-action') return; document.getElementById('overlay-action').style.display='none'; if (recognitionAction) recognitionAction.stop(); window.speechSynthesis.cancel(); }
+function lancerActionVocale() { if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) { alert("Dictée non supportée."); return; } var SR = window.SpeechRecognition || window.webkitSpeechRecognition; recognitionAction = new SR(); recognitionAction.lang='fr-FR'; recognitionAction.interimResults=false; var st=document.getElementById('action-status'), inp=document.getElementById('action-question'); st.style.display='block'; st.textContent="🎙️ Parlez..."; inp.value=''; recognitionAction.onresult=function(e){inp.value=e.results[0][0].transcript; st.textContent="✅ Enregistré. Cliquez sur Exécuter."; setTimeout(function(){st.style.display='none';},3000);}; recognitionAction.onerror=function(e){st.textContent="❌ "+e.error; setTimeout(function(){st.style.display='none';},3000);}; recognitionAction.start(); }
+async function envoyerActionVocale() { var q = document.getElementById('action-question').value.trim(); if (!q) { alert("Dictez un ordre."); return; } if (!confirm("Exécuter : \"" + q + "\" ?")) return; var btn = document.getElementById('btn-envoyer-action'), rep = document.getElementById('action-reponse'); btn.disabled = true; btn.textContent = "⏳..."; rep.style.display = 'none'; try { var ctx = commandes.map(function(c){return {client:c.client, ligne:c.ligne, statutLivraison:c.statutLivraison, statutPose:c.statutPose, commande:c.commande, arc:c.arc};}); var r = await apiPost({action:'assistantAction', texteDicte:q, contexte:JSON.stringify(ctx)}); if (!r||!r.ok) { if (r&&r.reponse_vocale) throw new Error(r.reponse_vocale); throw new Error(r.error||'Erreur'); } var lt = r.lignes && r.lignes.length>1 ? 'Lignes modifiées : '+r.lignes.join(', ') : 'Ligne modifiée : '+(r.ligne||'?'); rep.innerHTML = '<strong style="color:#2E7D32;">🤖 Action exécutée :</strong><br><br>'+h(r.reponse_vocale)+'<br><br><span style="font-size:11px;color:#777;">'+lt+'</span>'; rep.style.display='block'; try { var msg = new SpeechSynthesisUtterance(nettoyerTextePourVoix(r.reponse_vocale)); msg.lang='fr-FR'; window.speechSynthesis.speak(msg); } catch(e) {} viderCache(); await charger(true); } catch(e) { rep.innerHTML='<span style="color:var(--rouge);">❌ '+h(e.message)+'</span>'; rep.style.display='block'; } finally { btn.disabled = false; btn.textContent = "✨ Exécuter"; } }
+
+// ── DICTÉE FICHE ──
+function ouvrirModalDictee() { document.getElementById('overlay-dictee').style.display='flex'; document.getElementById('dictee-texte').value=''; document.getElementById('dictee-status').style.display='none'; }
+function fermerDictee(e) { if (e && e.target.id !== 'overlay-dictee') return; document.getElementById('overlay-dictee').style.display='none'; if (recognition) recognition.stop(); }
+function lancerDicteeVocale() { if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) { alert("Dictée non supportée."); return; } var SR = window.SpeechRecognition || window.webkitSpeechRecognition; recognition = new SR(); recognition.lang='fr-FR'; recognition.interimResults=false; var st=document.getElementById('dictee-status'), ta=document.getElementById('dictee-texte'); st.style.display='block'; st.textContent="🎙️ Parlez..."; ta.value=''; recognition.onresult=function(e){ta.value=e.results[0][0].transcript; st.textContent="✅ Terminé."; setTimeout(function(){st.style.display='none';},2000);}; recognition.onerror=function(e){st.textContent="❌ "+e.error; setTimeout(function(){st.style.display='none';},3000);}; recognition.start(); }
+async function validerDictee() { var t = document.getElementById('dictee-texte').value.trim(); if (!t) { alert("Dictez une phrase."); return; } var btn = document.getElementById('btn-valider-dictee'); btn.disabled=true; btn.textContent="⏳..."; try { var r = await apiPost({action:'dicteeFiche', texteDicte:t}); if (!r||!r.ok) throw new Error(r.error||'Erreur'); fermerDictee(); afficherToast('ok','✅','Fiche créée','Client '+r.client+' (Ligne '+r.ligne+')', 5000); viderCache(); await charger(true); } catch(e) { alert("❌ Erreur : "+e.message); } finally { btn.disabled=false; btn.textContent="✨ Analyser et Créer"; } }
+
+// ── CATALOGUE INVENTAIRE ──
+async function chargerCatalogueConsommables() {
+  try { var r = await apiPost({action: 'lireCatalogue'}); if (r && r.ok && Array.isArray(r.data)) { catalogueConsommables = r.data; afficherAlerteStock(); } } catch(e) { console.warn('Catalogue non chargé : ' + e.message); }
+}
+function afficherAlerteStock() {
+  var ruptures = catalogueConsommables.filter(function(a) { return a.alerte === 'RUPTURE' || a.alerte === 'STOCK BAS'; });
+  var badge = document.getElementById('catalogue-alerte');
+  if (badge) { if (ruptures.length > 0) { badge.textContent = '⚠ ' + ruptures.length + ' article(s) en stock bas'; badge.style.display = 'inline-block'; badge.style.background = '#FFEBEE'; badge.style.color = '#D32F2F'; } else { badge.style.display = 'none'; } }
+}
+function rechercherArticle() {
+  var input = document.getElementById('achat-nom'), datalist = document.getElementById('datalist-catalogue'), valeur = input.value.trim().toLowerCase();
+  if (!datalist) return;
+  datalist.innerHTML = '';
+  if (!valeur || catalogueConsommables.length === 0) return;
+  var resultats = catalogueConsommables.filter(function(item) { return item.reference.toLowerCase().indexOf(valeur) !== -1 || item.designation.toLowerCase().indexOf(valeur) !== -1 || item.fournisseur.toLowerCase().indexOf(valeur) !== -1; }).slice(0, 15);
+  resultats.forEach(function(item) { var opt = document.createElement('option'); opt.value = item.designation; var infoStock = item.alerte === 'RUPTURE' ? '🔴 RUPTURE' : item.alerte === 'STOCK BAS' ? '🟡 BAS' : '🟢 OK'; opt.textContent = '[' + item.reference + '] ' + item.fournisseur + ' · ' + infoStock + ' · Stock: ' + item.stockRestant; datalist.appendChild(opt); });
+}
+function prefillAchatDepuisCatalogue() {
+  var input = document.getElementById('achat-nom'), valeur = input.value.trim().toLowerCase();
+  if (!valeur) return;
+  var trouve = catalogueConsommables.find(function(item) { return item.designation.toLowerCase() === valeur; });
+  if (trouve) {
+    var refEl = document.getElementById('achat-reference'); if (refEl) refEl.value = trouve.reference;
+    if (trouve.fournisseur) document.getElementById('achat-fournisseur').value = trouve.fournisseur;
+    var notes = document.getElementById('achat-notes');
+    if (notes && trouve.reference) { if (notes.value.indexOf(trouve.reference) === -1) notes.value = (notes.value ? notes.value + '\n' : '') + 'Réf inventaire: ' + trouve.reference + ' (Stock: ' + trouve.stockRestant + ' — ' + trouve.alerte + ')'; }
+    var info = document.getElementById('achat-info-stock');
+    if (info) { info.style.display = 'block'; var couleur = trouve.alerte === 'RUPTURE' ? '#D32F2F' : trouve.alerte === 'STOCK BAS' ? '#E65100' : '#2E7D32'; info.innerHTML = '<strong>Article :</strong> ' + trouve.designation + '<br><span style="color:' + couleur + ';">' + trouve.alerte + '</span> · Stock : <strong>' + trouve.stockRestant + '</strong>'; }
+    afficherToast('ok', '📖', 'Article trouvé', trouve.designation, 2000);
+  }
+}
+function afficherInventaireComplet() {
+  var existing = document.getElementById('inventaire-popup'); if (existing) existing.remove();
+  var popup = document.createElement('div'); popup.id = 'inventaire-popup'; popup.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:600;display:flex;align-items:center;justify-content:center;padding:20px;'; popup.onclick = function() { popup.remove(); };
+  var recherche = '';
+  function renderTable() {
+    var filtres = catalogueConsommables.filter(function(item) { if (!recherche) return true; var r = recherche.toLowerCase(); return item.reference.toLowerCase().indexOf(r) !== -1 || item.designation.toLowerCase().indexOf(r) !== -1 || item.fournisseur.toLowerCase().indexOf(r) !== -1; });
+    var ruptures = filtres.filter(function(a){ return a.alerte === 'RUPTURE'; }).length, bas = filtres.filter(function(a){ return a.alerte === 'STOCK BAS'; }).length, ok = filtres.filter(function(a){ return a.alerte === 'OK'; }).length;
+    var lignes = filtres.map(function(item) { var bg = item.alerte === 'RUPTURE' ? '#FFEBEE' : item.alerte === 'STOCK BAS' ? '#FFF3E0' : '#fff', couleur = item.alerte === 'RUPTURE' ? '#D32F2F' : item.alerte === 'STOCK BAS' ? '#E65100' : '#2E7D32'; return '<tr style="background:' + bg + ';"><td style="padding:8px;font-family:monospace;font-size:11px;">' + h(item.reference) + '</td><td style="padding:8px;font-size:12px;">' + h(item.designation) + '</td><td style="padding:8px;font-size:11px;color:#78909C;">' + h(item.fournisseur) + '</td><td style="padding:8px;text-align:center;font-weight:700;">' + item.stockRestant + '</td><td style="padding:8px;font-weight:700;color:' + couleur + ';">' + h(item.alerte) + '</td></tr>'; }).join('');
+    document.getElementById('inventaire-table-body').innerHTML = lignes;
+    document.getElementById('inventaire-stats').innerHTML = '<span style="color:#D32F2F;font-weight:700;">🔴 ' + ruptures + ' rupture(s)</span> · <span style="color:#E65100;font-weight:700;">🟡 ' + bas + ' stock bas</span> · <span style="color:#2E7D32;font-weight:700;">🟢 ' + ok + ' OK</span> · <span style="color:#78909C;">(' + filtres.length + ' article(s))</span>';
+  }
+  popup.innerHTML = '<div style="background:#fff;border-radius:14px;padding:24px;max-width:900px;width:100%;max-height:90vh;overflow:auto;box-shadow:0 20px 60px rgba(0,0,0,.3);" onclick="event.stopPropagation()"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;"><h3 style="font-size:16px;font-weight:700;">📖 Inventaire complet</h3><button onclick="document.getElementById(\'inventaire-popup\').remove()" style="background:#F5F7FA;border:none;border-radius:8px;width:30px;height:30px;cursor:pointer;font-size:16px;">✕</button></div><div style="margin-bottom:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;"><input type="text" id="inventaire-recherche" placeholder="🔍 Rechercher..." style="flex:1;min-width:200px;border:1.5px solid #E0E7EF;border-radius:7px;padding:8px 12px;font-size:13px;"><div id="inventaire-stats" style="font-size:11px;"></div></div><div style="max-height:60vh;overflow:auto;border:1px solid #E0E7EF;border-radius:8px;"><table style="width:100%;border-collapse:collapse;font-size:12px;"><thead style="position:sticky;top:0;background:#F5F7FA;"><tr><th style="padding:10px;text-align:left;font-size:11px;">Code</th><th style="padding:10px;text-align:left;font-size:11px;">Désignation</th><th style="padding:10px;text-align:left;font-size:11px;">Fournisseur</th><th style="padding:10px;text-align:center;font-size:11px;">Stock</th><th style="padding:10px;text-align:left;font-size:11px;">Alerte</th></tr></thead><tbody id="inventaire-table-body"></tbody></table></div></div>';
+  document.body.appendChild(popup); document.getElementById('inventaire-recherche').addEventListener('input', function(e) { recherche = e.target.value; renderTable(); }); renderTable();
+}
+
+// ── CAPTURE D'IMAGE ACHATS EN COURS (Version Grille) ──
+function capturerAchatsEnCours() {
+  if (typeof html2canvas === 'undefined') { alert('Bibliothèque de capture indisponible.'); return; }
+  var items = achatsConsommables.filter(function(a){ return a.statut !== 'recu'; });
+  if (!items.length) { alert('Aucun achat en cours à capturer.'); return; }
+  
+  var container = document.createElement('div');
+  container.style.cssText = 'position:absolute; left:-9999px; top:0; width:1000px; background:#fff; padding:40px; font-family:Arial, sans-serif;';
+  
+  var today = new Date().toLocaleDateString('fr-FR');
+  
+  var html = '<div style="text-align:center; margin-bottom:30px;">' +
+             '<h1 style="color:#1565C0; margin:0 0 10px 0; font-size:24px;">ECO OUEST - Achats en cours</h1>' +
+             '<p style="color:#666; margin:0; font-size:14px;">Généré le ' + today + '</p></div>';
+
+  html += '<div style="display:grid; grid-template-columns: 12% 40% 8% 15% 15% 10%; gap: 10px; font-weight: bold; color: #546E7A; border-bottom: 2px solid #CFD8DC; padding-bottom: 10px; font-size: 13px;">' +
+          '<div>Réf.</div>' +
+          '<div>Article</div>' +
+          '<div style="text-align:center;">Qté</div>' +
+          '<div>Fournisseur</div>' +
+          '<div>Statut</div>' +
+          '<div>Priorité</div>' +
+          '</div>';
+
+  items.forEach(function(a) {
+    var statut = a.statut === 'commande' ? 'Commandé' : 'À acheter';
+    var color = a.statut === 'commande' ? '#1565C0' : '#E65100';
+    var pColor = a.priorite === 'haute' ? '#D32F2F' : a.priorite === 'basse' ? '#2E7D32' : '#E65100';
+
+    html += '<div style="display:grid; grid-template-columns: 12% 40% 8% 15% 15% 10%; gap: 10px; padding: 12px 0; border-bottom: 1px solid #E0E7EF; font-size: 13px; align-items: center; color: #333;">' +
+            '<div style="font-family:monospace; font-size:12px; color:#455A64;">' + h(a.reference || '—') + '</div>' +
+            '<div style="font-weight:bold; overflow-wrap: break-word;">' + h(a.nom) + '</div>' +
+            '<div style="text-align:center; font-weight:bold;">' + h(a.quantite) + '</div>' +
+            '<div>' + h(a.fournisseur || '—') + '</div>' +
+            '<div style="color:' + color + '; font-weight:bold;">' + statut + '</div>' +
+            '<div style="color:' + pColor + '; font-weight:bold;">' + h(a.priorite) + '</div>' +
+            '</div>';
+  });
+  
+  container.innerHTML = html;
+  document.body.appendChild(container);
+  
+  afficherToast('ok', '📸', 'Génération de l\'image...', 'Patientez', 2000);
+
+  html2canvas(container, { scale: 2, backgroundColor: '#ffffff' }).then(function(canvas) {
+    document.body.removeChild(container);
+    var link = document.createElement('a');
+    link.download = 'Achats_en_cours_' + new Date().toISOString().slice(0,10) + '.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    afficherToast('ok', '✅', 'Image enregistrée', 'Vérifiez vos téléchargements', 3000);
+  }).catch(function(e) {
+    document.body.removeChild(container);
+    alert('Erreur lors de la capture : ' + e.message);
+  });
+}
+
+// ── MODAL ──
+function ajouterOptionHorsListe(sel, v) { if (!sel||!v) return; var val=str(v), existe=false; for (var i=0;i<sel.options.length;i++){ if(sel.options[i].value===val){existe=true;break;} } if (!existe){ var opt=document.createElement('option'); opt.value=val; opt.textContent=val+' (hors liste)'; sel.appendChild(opt); } }
+function openModal(idx) { editLigne=-1; var c=idx>=0?commandes[idx]:{}; if(idx>=0)editLigne=c.ligne; document.getElementById('modal-title').textContent=idx>=0?'Modifier - '+str(c.client):'Nouvelle commande'; document.getElementById('btn-suppr').style.display=idx>=0?'inline-flex':'none'; ['client','devis','devisTTC','fournisseur','commande','arc','commentaireARC','prevLivraison','statutLivraison','statutPose'].forEach(function(f){ var el=document.getElementById('f-'+f); if(el) el.value=str(c[f]); }); ajouterOptionHorsListe(document.getElementById('f-fournisseur'),c.fournisseur); ajouterOptionHorsListe(document.getElementById('f-commande'),c.commande); ajouterOptionHorsListe(document.getElementById('f-commentaireARC'),c.commentaireARC); ajouterOptionHorsListe(document.getElementById('f-statutLivraison'),c.statutLivraison); ajouterOptionHorsListe(document.getElementById('f-statutPose'),c.statutPose); if(c.fournisseur) document.getElementById('f-fournisseur').value=str(c.fournisseur); if(c.commande) document.getElementById('f-commande').value=str(c.commande); if(c.commentaireARC) document.getElementById('f-commentaireARC').value=str(c.commentaireARC); if(c.statutLivraison) document.getElementById('f-statutLivraison').value=str(c.statutLivraison); if(c.statutPose) document.getElementById('f-statutPose').value=str(c.statutPose); var metEl=document.getElementById('f-metres'); if(metEl) metEl.value=c.metres?formatDateMetre(c.metres):''; var pvEl=document.getElementById('f-pvChantier'); if(pvEl) pvEl.checked=str(c.pvChantier).toUpperCase()==='OUI'; var dpEl=document.getElementById('f-datePose'); if(dpEl) dpEl.value=str(c.datePose); var objEl=document.getElementById('f-objetCommande'); if(objEl) objEl.value=str(c.objetCommande); document.getElementById('f-commentaire-historique').value=str(c.commentaire); var cmtNouv=document.getElementById('f-commentaire-nouveau'); if(cmtNouv) cmtNouv.value=''; document.getElementById('overlay').classList.add('open'); }
+function closeModal() { document.getElementById('overlay').classList.remove('open'); }
+function closeOut(e) { if (e.target.id==='overlay') closeModal(); }
+
+async function sauvegarder() { var c={}; ['client','devis','devisTTC','fournisseur','commande','arc','commentaireARC','prevLivraison','statutLivraison','statutPose'].forEach(function(f){ var el=document.getElementById('f-'+f); if(el) c[f]=el.value.trim(); }); var metresRaw=document.getElementById('f-metres'); if(metresRaw){ var valS=metresRaw.value.trim(); var o0=commandes.find(function(x){return x.ligne===editLigne;}); if(o0 && valS===(o0.metres?formatDateMetre(o0.metres):'')) c.metres=o0.metres; else c.metres=valS?(convertirEnDateISO(valS)||valS):''; } var pvEl=document.getElementById('f-pvChantier'); c.pvChantier=pvEl&&pvEl.checked?'OUI':'NON'; var dpEl2=document.getElementById('f-datePose'); c.datePose=dpEl2?dpEl2.value.trim():''; if(!c.client){alert('⚠️ Client obligatoire.');return;} var nouvTxt=document.getElementById('f-commentaire-nouveau').value.trim(), hist=document.getElementById('f-commentaire-historique').value||'', cmtFinal=hist; if(nouvTxt){var ds=new Date().toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'});cmtFinal=hist?hist+'\n['+ds+'] '+nouvTxt:'['+ds+'] '+nouvTxt;} c.commentaire=cmtFinal; var btnSave=document.querySelector('.modal-footer .btn-primary'), oldTxt=btnSave?btnSave.textContent:''; if(btnSave){btnSave.disabled=true;btnSave.textContent='⏳...';} document.getElementById('saving-msg').classList.add('active'); try { var res; if(editLigne>0){ var orig=commandes.find(function(x){return x.ligne===editLigne;}); if(!orig) throw new Error('Commande introuvable.'); var map={1:'client',2:'metres',3:'devis',4:'devisTTC',5:'fournisseur',6:'commande',7:'arc',9:'commentaireARC',10:'prevLivraison',12:'statutLivraison',13:'statutPose',14:'commentaire',16:'pvChantier',20:'datePose'}; var champs={}; Object.keys(map).forEach(function(col){var k=map[col], nouv=str(c[k]).trim(), anc=orig?str(orig[k]).trim():'';if(nouv!==anc)champs[col]=c[k];}); var objNouv=document.getElementById('f-objetCommande').value.trim(); if(!orig||objNouv!==str(orig.objetCommande).trim())champs.note_G=objNouv; if(!Object.keys(champs).length){closeModal();return;} res=await apiPost({action:'modifier', ligne:editLigne, clientAttendu:orig.client, champs:champs}); } else { res=await apiPost({action:'ajouter',commande:c}); } if(!res||!res.ok) throw new Error(res.error||'Erreur'); closeModal(); afficherToast('ok','✅','Enregistré','',2500); viderCache(); await charger(true); } catch(e) { afficherToast('urgent','❌','Erreur', e.message, 8000); } finally { if(btnSave){btnSave.disabled=false;btnSave.textContent=oldTxt;} document.getElementById('saving-msg').classList.remove('active'); } }
+
+async function supprimerCommande() { var c=commandes.find(function(x){return x.ligne===editLigne;}); if(!confirm('⚠️ Supprimer "'+str(c?c.client:'')+'" ?'))return; document.getElementById('saving-msg').classList.add('active'); try{var r=await apiPost({action:'supprimer',ligne:editLigne,clientAttendu:c?c.client:undefined});if(!r||!r.ok)throw new Error(r.error||'Erreur');closeModal();afficherToast('ok','🗑','Supprimé','',2500);viderCache();await charger(true);}catch(e){afficherToast('urgent','❌','Erreur',e.message,8000);} document.getElementById('saving-msg').classList.remove('active'); }
+
+// ── ALERTES ──
+function renderAlertes() { var g={3:[],2:[],1:[]}; commandes.forEach(function(c,i){var a=alerte(c);if(a.n>=1)g[a.n].push({c:c,i:i,a:a});}); var sec=[{n:3,lb:'Urgentes',dot:'#D32F2F',pBg:'#FFEBEE',pC:'#D32F2F'},{n:2,lb:'Attention',dot:'#E65100',pBg:'#FFF3E0',pC:'#E65100'},{n:1,lb:'Information',dot:'#F9A825',pBg:'#FFFDE7',pC:'#B7860B'}]; var html=''; sec.forEach(function(s){var items=g[s.n];if(!items.length)return;html+='<div class="alert-section"><div class="alert-section-title"><span class="dot-badge" style="background:'+s.dot+'"></span>'+s.lb+' ('+items.length+')</div>';items.forEach(function(it){var msgs=it.a.t.split(' | ');html+='<div class="alert-card"><div style="flex:1"><div class="alert-card-client">'+h(it.c.client)+(it.c.fournisseur?' <span style="font-size:11px;color:var(--texte2);">· '+h(it.c.fournisseur)+'</span>':'')+'</div><div class="alert-card-detail">'+msgs.map(function(m){return '• '+h(m);}).join(' ')+'</div>'+(it.c.commentaire?'<div class="alert-card-comment">💬 '+h(it.c.commentaire)+'</div>':'')+'</div><div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;"><span class="alert-pill" style="background:'+s.pBg+';color:'+s.pC+';">'+msgs.length+' alerte(s)</span><button class="btn btn-outline btn-sm" onclick="openModal('+it.i+')">✏️ Modifier</button></div></div>';});html+='</div>';}); if(!html)html='<div class="empty-state"><p>✅ Aucune alerte.</p></div>'; document.getElementById('alertes-content').innerHTML=html; }
+
+// ── DASHBOARD ──
+function renderDashboard() { var byFou={}, ac={u:0,w:0,o:0}, caC=0, caP=0, nbE=0, nbS=0; function parseM(v){ if(!v) return 0; var s=str(v).replace(/[^0-9,.]/g,'').replace(/\s/g,'').replace(',','.'); var p=s.split('.'); if(p.length>2)s=p.slice(0,-1).join('')+'.'+p[p.length-1]; var n=parseFloat(s); return isNaN(n)?0:n; } var nbA=commandes.filter(function(c){return !estAnnulee(c);}).length; commandes.forEach(function(c){ if(estAnnulee(c))return; if(c.fournisseur)byFou[c.fournisseur]=(byFou[c.fournisseur]||0)+1; var a=alerte(c); if(a.n===3)ac.u++;else if(a.n>=1)ac.w++;else if(a.n===0)ac.o++; var m=parseM(c.devisTTC); if(str(c.commande).toUpperCase()==='OUI')caC+=m; if(estTermineStatut(c.statutPose))caP+=m; if(str(c.commande).toUpperCase()!=='OUI')nbE++; if(statutEstSAV(c.statutPose)||statutEstSAV(c.statutLivraison))nbS++; }); function fmt(n){return n.toLocaleString('fr-FR',{maximumFractionDigits:0})+' €';} var fS=Object.entries(byFou).sort(function(a,b){return b[1]-a[1];}), fM=fS[0]?fS[0][1]:1, n=nbA||1; var poseurs=[{nom:'ANATOLE',key:'poseur_ANATOLE',couleur:'#1565C0'},{nom:'ARTIOM',key:'poseur_ARTIOM',couleur:'#2E7D32'},{nom:'ANTONIO',key:'poseur_ANTONIO',couleur:'#E65100'},{nom:'VINCENT',key:'poseur_VINCENT',couleur:'#6A1B9A'},{nom:'LAMRI',key:'poseur_LAMRI',couleur:'#00695C'}]; var actifs=commandes.filter(function(c){return !estTermineStatut(c.statutLivraison)&&!estAnnulee(c);}).slice().sort(function(a,b){return str(b.datePose).localeCompare(str(a.datePose));}); var pvF=commandes.filter(function(c){return str(c.pvChantier).toUpperCase()==='OUI'&&!estAnnulee(c);}).length, pvM=actifs.filter(function(c){return str(c.pvChantier).toUpperCase()!=='OUI';}).length; var hC=''; if(!actifs.length){hC='<div style="text-align:center;padding:24px;color:var(--texte2);">Aucun chantier actif.</div>';}else{actifs.forEach(function(c){var pvFait=str(c.pvChantier).toUpperCase()==='OUI';hC+='<div style="background:#fff;border-radius:10px;border:1px solid var(--bordure);margin-bottom:10px;overflow:hidden;"><div style="padding:10px 14px;background:var(--gris-bg);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;border-bottom:1px solid var(--bordure);"><div><span style="font-weight:700;font-size:14px;">'+h(c.client)+'</span>';if(c.fournisseur)hC+=' <span style="font-size:11px;color:var(--texte2);">· '+h(c.fournisseur)+'</span>';hC+='</div><div style="display:flex;gap:6px;flex-wrap:wrap;">';if(c.metres)hC+='<span style="background:#FFF3E0;color:var(--orange);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;">📋 Métré : '+h(formatDateMetre(c.metres))+'</span>';if(c.datePose)hC+='<span style="background:var(--bleu-bg);color:var(--bleu);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;">📅 '+h(c.datePose)+'</span>';hC+=pvFait?'<span style="background:var(--vert-bg);color:var(--vert);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;">✓ PV Fait</span>':'<span style="background:#FFEBEE;color:var(--rouge);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;">✗ PV Manquant</span>';hC+='</div></div><div style="padding:10px 14px;">';var hasR=false;poseurs.forEach(function(p){if(!c[p.key]||!str(c[p.key]).trim())return;hasR=true;var l=str(c[p.key]).split('\n'),d=l[l.length-1];hC+='<div style="margin-bottom:8px;"><div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;"><div style="width:22px;height:22px;border-radius:50%;background:'+p.couleur+';display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;">'+p.nom.slice(0,2)+'</div><span style="font-size:12px;font-weight:700;color:'+p.couleur+';">'+p.nom+'</span></div><div style="font-size:11px;color:var(--texte);padding:6px 10px;background:var(--gris-bg);border-radius:6px;border-left:3px solid '+p.couleur+';">'+h(d)+'</div></div>';});if(!hasR)hC+='<div style="font-size:12px;color:var(--texte2);font-style:italic;">Aucune remarque poseur.</div>';hC+='</div></div>';});} document.getElementById('dash-content').innerHTML='<div class="dash-card" style="grid-column:1/-1;background:linear-gradient(135deg,#1565C0,#0D47A1);color:#fff;"><h4 style="color:#fff;">💰 Vue financière</h4><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;margin-top:8px;"><div><div style="font-size:24px;font-weight:800;">'+fmt(caC)+'</div><div style="font-size:12px;opacity:.85;">CA commandé</div></div><div><div style="font-size:24px;font-weight:800;">'+fmt(caP)+'</div><div style="font-size:12px;opacity:.85;">CA posé</div></div><div><div style="font-size:24px;font-weight:800;">'+nbE+'</div><div style="font-size:12px;opacity:.85;">En attente commande</div></div><div><div style="font-size:24px;font-weight:800;">'+nbS+'</div><div style="font-size:12px;opacity:.85;">SAV ouverts</div></div></div></div><div class="dash-card"><h4>Par fournisseur</h4>'+fS.map(function(e){return '<div class="bar-row"><span class="bar-label">'+h(e[0])+'</span><div class="bar-track"><div class="bar-fill" style="width:'+Math.round(e[1]/fM*100)+'%;background:'+(FOU_COLORS[e[0]]||'#546E7A')+'"></div></div><span class="bar-count">'+e[1]+'</span></div>';}).join('')+'</div><div class="dash-card"><h4>Alertes</h4>'+[['Urgentes',ac.u,'#D32F2F'],['Attention',ac.w,'#E65100'],['OK',ac.o,'#2E7D32']].map(function(x){return '<div class="bar-row"><span class="bar-label">'+x[0]+'</span><div class="bar-track"><div class="bar-fill" style="width:'+Math.round(x[1]/n*100)+'%;background:'+x[2]+'"></div></div><span class="bar-count">'+x[1]+'</span></div>';}).join('')+'</div><div class="dash-card"><h4>Résumé</h4><div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:4px;"><div style="text-align:center;padding:14px;background:var(--gris-bg);border-radius:8px;"><div style="font-size:28px;font-weight:700;color:var(--bleu);">'+nbA+'</div><div style="font-size:11px;color:var(--texte2);">Total (actifs)</div></div><div style="text-align:center;padding:14px;background:#FFEBEE;border-radius:8px;"><div style="font-size:28px;font-weight:700;color:var(--rouge);">'+ac.u+'</div><div style="font-size:11px;color:var(--texte2);">Urgences</div></div><div style="text-align:center;padding:14px;background:var(--vert-bg);border-radius:8px;"><div style="font-size:28px;font-weight:700;color:var(--vert);">'+pvF+'</div><div style="font-size:11px;color:var(--texte2);">PV Faits</div></div><div style="text-align:center;padding:14px;background:#FFF3E0;border-radius:8px;"><div style="font-size:28px;font-weight:700;color:var(--orange);">'+pvM+'</div><div style="font-size:11px;color:var(--texte2);">PV Manquants</div></div></div></div><div class="dash-card" style="grid-column:1/-1;"><h4>📋 Suivi chantiers</h4>'+hC+'</div>'; }
+
+// ── NAVIGATION ──
+function showView(v) { document.querySelectorAll('.view').forEach(function(el){el.classList.remove('active');}); document.querySelectorAll('.nav-item').forEach(function(el){el.classList.remove('active');}); document.getElementById('view-'+v).classList.add('active'); var nv=document.getElementById('nav-'+v); if(nv)nv.classList.add('active'); var titles={suivi:'Suivi des commandes', alertes:'Alertes actives', taches:'Tâches & Notes', agent:'🤖 Agent IA', metre:'Dates de métré', dashboard:'Tableau de bord', flotte:'État de la flotte', suivipose:'Suivi de Pose', planning:'Planning', config:'Configuration'}; document.getElementById('topbar-title').textContent=titles[v]||v; if(v==='config'){document.getElementById('config-url-input').value=WEBAPP;document.getElementById('config-url-current').textContent=WEBAPP;document.getElementById('config-status').innerHTML='';} if(v==='alertes')renderAlertes(); if(v==='taches'){if(document.getElementById('sousmodule-achats-consommables').style.display!=='none')renderAchatsConsommables();else renderTaches();} if(v==='agent')chargerRapportAgent(); if(v==='metre')renderMetre(); if(v==='dashboard')renderDashboard(); if(v==='flotte')chargerFlotte(); if(v==='suivipose'){renderSuiviPose();setTimeout(traduireCommentairesPoseurs,500);} if(v==='planning')renderPlanning(); }
+
+// ── SUIVI POSE ──
+function renderSuiviPose() { var poseurs=[{nom:'ANATOLE',key:'poseur_ANATOLE',couleur:'#1565C0'},{nom:'ARTIOM',key:'poseur_ARTIOM',couleur:'#2E7D32'},{nom:'ANTONIO',key:'poseur_ANTONIO',couleur:'#E65100'},{nom:'VINCENT',key:'poseur_VINCENT',couleur:'#6A1B9A'},{nom:'LAMRI',key:'poseur_LAMRI',couleur:'#00695C'}]; var semA=getWeekNumber(new Date()); function dpSem(dp,sem){var p=parseDatePose(dp);if(!p)return false;if(p.type==='semaine')return p.num===sem;if(p.type==='date')return getWeekNumber(p.date)===sem;return false;} var items=commandes.filter(function(c){if(estAnnulee(c))return false;if(estTermineStatut(c.statutPose))return false;return dpSem(c.datePose,semA);}).slice().sort(function(a,b){return str(b.datePose).localeCompare(str(a.datePose));}); if(!items.length){document.getElementById('suivipose-content').innerHTML='<div class="empty-state"><p>Aucun chantier actif cette semaine.</p></div>';return;} var html=''; items.forEach(function(c){var pvFait=str(c.pvChantier).toUpperCase()==='OUI';html+='<div class="suivipose-card"><div class="suivipose-header"><div><div class="suivipose-client">'+h(c.client)+'</div><div class="suivipose-meta">'+h(c.fournisseur||'')+(c.devis?' · '+h(c.devis):'')+'</div></div><div style="text-align:right;">';if(c.datePose)html+='<span class="suivipose-date">📅 '+h(cleanDate(c.datePose))+'</span>';var sP=str(c.statutPose);if(sP){var sBg=sP==='SAV'?'#FFEBEE':sP.indexOf('Termin')!==-1?'var(--vert-bg)':'#FFF3E0',sC=sP==='SAV'?'#D32F2F':sP.indexOf('Termin')!==-1?'var(--vert)':'#E65100';html+='<br><span style="font-size:11px;font-weight:700;background:'+sBg+';color:'+sC+';padding:2px 8px;border-radius:5px;display:inline-block;margin-top:4px;">'+h(sP)+'</span>';}html+='<br><span style="font-size:11px;font-weight:700;background:'+(pvFait?'var(--vert-bg)':'#FFEBEE')+';color:'+(pvFait?'var(--vert)':'var(--rouge)')+';padding:2px 8px;border-radius:5px;display:inline-block;margin-top:4px;">'+(pvFait?'✓ PV Fait':'✗ PV Manquant')+'</span></div></div><div class="suivipose-body">';if(c.metres)html+='<div style="margin-bottom:10px;padding:8px 12px;background:#FFF3E0;border-radius:8px;border-left:3px solid var(--orange);"><div style="font-size:11px;font-weight:700;color:var(--orange);margin-bottom:4px;">📋 DATE MÉTRÉ</div><div style="font-size:12px;">'+h(formatDateMetre(c.metres))+'</div></div>';if(c.commentaire)html+='<div style="margin-bottom:10px;padding:8px 12px;background:#FFF3E0;border-radius:8px;border-left:3px solid var(--orange);"><div style="font-size:11px;font-weight:700;color:var(--orange);margin-bottom:4px;">📋 NOTE BUREAU</div><div style="font-size:12px;white-space:pre-wrap;">'+h(c.commentaire)+'</div></div>';poseurs.forEach(function(p){html+='<div class="suivipose-poseur"><div class="suivipose-poseur-name"><div class="suivipose-poseur-avatar" style="background:'+p.couleur+'">'+p.nom.slice(0,2)+'</div><span class="suivipose-poseur-label">'+p.nom+'</span></div>';if(c[p.key]&&str(c[p.key]).trim()){var lignes=str(c[p.key]).split('\n').filter(function(l){return l.trim();});html+='<div class="suivipose-comment" id="cmt-'+c.ligne+'-'+p.key+'">';lignes.forEach(function(l,li){html+='<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid var(--bordure);"><span style="flex:1;font-size:12px;">'+h(l)+'</span><div style="display:flex;gap:4px;flex-shrink:0;"><button data-ligne="'+c.ligne+'" data-key="'+p.key+'" data-idx="'+li+'" class="btn-cmt-edit" style="background:var(--bleu-bg);color:var(--bleu);border:none;border-radius:5px;padding:3px 8px;font-size:11px;cursor:pointer;">✏️</button><button data-ligne="'+c.ligne+'" data-key="'+p.key+'" data-idx="'+li+'" class="btn-cmt-del" style="background:#FFEBEE;color:var(--rouge);border:none;border-radius:5px;padding:3px 8px;font-size:11px;cursor:pointer;">🗑</button></div></div>';});html+='</div>';}else{html+='<div class="suivipose-empty">Aucun suivi poseur.</div>';}html+='</div>';});html+='</div></div>';});document.getElementById('suivipose-content').innerHTML=html;document.getElementById('suivipose-content').querySelectorAll('.btn-cmt-edit').forEach(function(btn){btn.addEventListener('click',function(){modifierCommentaire(parseInt(btn.getAttribute('data-ligne')),btn.getAttribute('data-key'),parseInt(btn.getAttribute('data-idx')));});});document.getElementById('suivipose-content').querySelectorAll('.btn-cmt-del').forEach(function(btn){btn.addEventListener('click',function(){supprimerCommentaire(parseInt(btn.getAttribute('data-ligne')),btn.getAttribute('data-key'),parseInt(btn.getAttribute('data-idx')));});}); }
+function cleanDate(s){if(!s||!str(s).trim())return '';var m=str(s).match(/(\w+ \w+ \d+ \d{4})/);if(m){var d=new Date(s);if(!isNaN(d))return d.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'});}return str(s).trim();}
+
+// ── CONFIG & TRADUCTION ──
+function sauvegarderConfig(){var url=document.getElementById('config-url-input').value.trim();if(!url||!url.startsWith('https://')){document.getElementById('config-status').innerHTML='<span style="color:var(--rouge);">❌ URL invalide</span>';return;}localStorage.setItem('eco-webapp-url',url);WEBAPP=url;document.getElementById('config-status').innerHTML='<span style="color:var(--vert);">✅ Enregistré !</span>';viderCache();setTimeout(function(){charger(true);showView('suivi');},1000);}
+async function traduireTexte(t){if(!t||!str(t).trim())return t;if(!/[\u0400-\u04FF]/.test(t))return t;if(cacheTrad[t])return cacheTrad[t];try{var r=await apiPost({action:'traduire',texte:t});if(r&&r.ok&&r.texte){var res=h(r.texte)+' <span style="font-size:10px;color:#90CAF9;font-style:italic;">[trad. auto]</span>';cacheTrad[t]=res;return res;}throw new Error();}catch(e){return h(t);}}
+async function traduireCommentairesPoseurs(){var els=document.querySelectorAll('.suivipose-comment');for(var i=0;i<els.length;i++){var el=els[i],t=el.textContent.trim();if(/[\u0400-\u04FF]/.test(t)&&!el.querySelector('.trad-flag')){var tr=await traduireTexte(t);if(tr!==t&&tr!==h(t)){var d=document.createElement('div');d.className='trad-flag';d.style.cssText='background:#E3F2FD;border-radius:6px;padding:6px 10px;margin-top:6px;font-size:11px;color:#1565C0;';d.innerHTML='🇫🇷 '+tr;el.appendChild(d);}}}}
+
+// ── POPUP OBJET ──
 function afficherObjet(e,o){if(e)e.stopPropagation();var ex=document.getElementById('objet-popup');if(ex)ex.remove();var p=document.createElement('div');p.id='objet-popup';p.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:400;display:flex;align-items:center;justify-content:center;padding:20px;';p.onclick=function(){p.remove();};p.innerHTML='<div style="background:#fff;border-radius:14px;padding:24px;max-width:400px;width:100%;" onclick="event.stopPropagation()"><div style="font-size:14px;font-weight:700;color:var(--bleu);margin-bottom:12px;">📦 Objet de la commande</div><div style="font-size:14px;color:var(--texte);line-height:1.5;white-space:pre-wrap;">'+h(o)+'</div><button onclick="document.getElementById(\'objet-popup\').remove()" style="margin-top:16px;width:100%;background:var(--bleu);color:#fff;border:none;border-radius:8px;padding:10px;font-size:14px;font-weight:600;cursor:pointer;">Fermer</button></div>';document.body.appendChild(p);}
 
-function afficherObjetParLigne(e,ligne){if(e)e.stopPropagation();var c=commandes.find(function(x){return x.ligne===ligne;});if(!c||!c.objetCommande)return;afficherObjet(null,c.objetCommande);}
+// ── PLANNING ──
+var planningSemA=null;
+function getSemNum(d){return getWeekNumber(d);}
+function planningSemaine(delta){if(planningSemA===null||delta===0)planningSemA=getSemNum(new Date());else{planningSemA+=delta;if(planningSemA>53)planningSemA=1;if(planningSemA<1)planningSemA=53;}renderPlanning();}
+function renderPlanning(){if(planningSemA===null)planningSemA=getSemNum(new Date());var sem=planningSemA;document.getElementById('planning-titre').textContent='Semaine S'+sem;var poseurs=[{nom:'ANATOLE',key:'poseur_ANATOLE',couleur:'#1565C0'},{nom:'ARTIOM',key:'poseur_ARTIOM',couleur:'#2E7D32'},{nom:'ANTONIO',key:'poseur_ANTONIO',couleur:'#E65100'},{nom:'VINCENT',key:'poseur_VINCENT',couleur:'#6A1B9A'},{nom:'LAMRI',key:'poseur_LAMRI',couleur:'#00695C'}];var chantiers=commandes.filter(function(c){if(estAnnulee(c))return false;var p=parseDatePose(c.datePose);if(!p)return false;if(p.type==='semaine')return p.num===sem;if(p.type==='date')return getSemNum(p.date)===sem;return false;});if(!chantiers.length){document.getElementById('planning-content').innerHTML='<div style="text-align:center;padding:48px;color:var(--texte2);"><div style="font-size:48px;">📅</div><p>Aucune pose pour S'+sem+'</p></div>';return;}var html='<div style="display:grid;gap:12px;">';chantiers.forEach(function(c){var pvF=str(c.pvChantier).toUpperCase()==='OUI',sP=str(c.statutPose),sBg=sP==='SAV'?'#FFEBEE':sP.indexOf('Termin')!==-1?'#E8F5E9':'#FFF3E0',sC=sP==='SAV'?'#D32F2F':sP.indexOf('Termin')!==-1?'#2E7D32':'#E65100',pAct=poseurs.filter(function(p){return c[p.key]&&str(c[p.key]).trim();});html+='<div style="background:#fff;border-radius:12px;border:1px solid var(--bordure);border-left:4px solid var(--bleu);padding:16px;"><div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px;"><div><span style="font-size:16px;font-weight:700;">'+h(c.client)+'</span>';if(c.fournisseur)html+=' <span style="font-size:12px;color:var(--texte2);">· '+h(c.fournisseur)+'</span>';html+='</div><div style="display:flex;gap:6px;flex-wrap:wrap;">';if(c.metres)html+='<span style="background:#FFF3E0;color:var(--orange);padding:3px 10px;border-radius:6px;font-size:12px;font-weight:700;">📋 '+h(formatDateMetre(c.metres))+'</span>';html+='<span style="background:var(--bleu-bg);color:var(--bleu);padding:3px 10px;border-radius:6px;font-size:12px;font-weight:700;">📅 '+h(c.datePose)+'</span>';if(sP)html+='<span style="background:'+sBg+';color:'+sC+';padding:3px 10px;border-radius:6px;font-size:12px;font-weight:700;">'+h(sP)+'</span>';html+='<span style="background:'+(pvF?'#E8F5E9':'#FFEBEE')+';color:'+(pvF?'#2E7D32':'#D32F2F')+';padding:3px 10px;border-radius:6px;font-size:12px;font-weight:700;">'+(pvF?'✓ PV':'✗ PV')+'</span></div></div>';if(pAct.length){html+='<div style="display:flex;gap:8px;flex-wrap:wrap;">';pAct.forEach(function(p){html+='<span style="display:inline-flex;align-items:center;gap:5px;background:'+p.couleur+'18;color:'+p.couleur+';padding:4px 10px;border-radius:20px;font-size:12px;font-weight:600;"><span style="width:18px;height:18px;border-radius:50%;background:'+p.couleur+';color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:9px;">'+p.nom.slice(0,2)+'</span>'+p.nom+'</span>';});html+='</div>';}else{html+='<div style="font-size:12px;color:var(--texte2);font-style:italic;">Aucun poseur assigné</div>';}if(c.commentaire)html+='<div style="margin-top:8px;font-size:12px;color:var(--texte2);padding:6px 10px;background:var(--gris-bg);border-radius:6px;">📋 '+h(c.commentaire)+'</div>';html+='</div>';});html+='</div>';document.getElementById('planning-content').innerHTML=html;}
 
-function ouvrirSousModuleTaches(v) { var achat = v === 'achats'; document.getElementById('sousmodule-taches-notes').style.display = achat ? 'none' : ''; document.getElementById('sousmodule-achats-consommables').style.display = achat ? '' : 'none'; document.getElementById('tab-taches-notes').classList.toggle('active', !achat); if (achat) renderAchatsConsommables(); else renderTaches(); }
+// ── PDF ──
+async function genererRapportChantier(){if(editLigne===null||editLigne<0){alert('Enregistrez d\'abord.');return;}var c=commandes.find(function(x){return x.ligne===editLigne;});if(!c)return;try{var jspdf=window.jspdf,doc=new jspdf.jsPDF({orientation:'portrait',unit:'mm',format:'a4'});doc.setFillColor(21,101,192);doc.rect(0,0,210,30,'F');doc.setTextColor(255,255,255);doc.setFontSize(18);doc.setFont('helvetica','bold');doc.text('FICHE CHANTIER',105,13,{align:'center'});doc.setFontSize(10);doc.setFont('helvetica','normal');doc.text('ECO OUEST',105,22,{align:'center'});var y=42;doc.setFontSize(16);doc.setFont('helvetica','bold');doc.setTextColor(21,101,192);doc.text(str(c.client)||'—',14,y);y+=10;doc.setDrawColor(220,220,220);doc.setFontSize(10);doc.setTextColor(60,60,60);doc.setFont('helvetica','normal');function lg(lbl,val){if(y>270){doc.addPage();y=20;}doc.setFont('helvetica','bold');doc.text(lbl,14,y);doc.setFont('helvetica','normal');doc.text(str(val)||'—',70,y);y+=7;}lg('Fournisseur :',c.fournisseur);lg('Date métré :',formatDateMetre(c.metres));lg('N° Devis :',c.devis);lg('Commande :',c.commande);lg('N° ARC :',c.arc);lg('Prev. livraison :',c.prevLivraison);lg('Statut livraison :',c.statutLivraison);lg('Statut pose :',c.statutPose);lg('Date de pose :',c.datePose);lg('PV chantier :',str(c.pvChantier).toUpperCase()==='OUI'?'FAIT':'MANQUANT');var poseurs=[{nom:'ANATOLE',key:'poseur_ANATOLE'},{nom:'ARTIOM',key:'poseur_ARTIOM'},{nom:'ANTONIO',key:'poseur_ANTONIO'},{nom:'VINCENT',key:'poseur_VINCENT'},{nom:'LAMRI',key:'poseur_LAMRI'}];poseurs.forEach(function(p){if(!c[p.key]||!str(c[p.key]).trim())return;if(y>250){doc.addPage();y=20;}doc.setFont('helvetica','bold');doc.setFontSize(10);doc.setTextColor(21,101,192);doc.text('POSEUR : '+p.nom,14,y);y+=6;doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(60,60,60);var lP=doc.splitTextToSize(str(c[p.key]),182);lP.forEach(function(l){if(y>280){doc.addPage();y=20;}doc.text(l,14,y);y+=5;});y+=4;});var tp=doc.internal.getNumberOfPages();for(var i=1;i<=tp;i++){doc.setPage(i);doc.setFillColor(21,101,192);doc.rect(0,285,210,12,'F');doc.setTextColor(255,255,255);doc.setFontSize(8);doc.setFont('helvetica','normal');doc.text('ECO OUEST - ' + new Date().toLocaleDateString('fr-FR') + ' — Page '+i+'/'+tp,105,292,{align:'center'});}var fn='Fiche_'+(str(c.client)||'chantier').replace(/\s/g,'_')+'.pdf';doc.save(fn);}catch(e){alert('Erreur PDF : '+e.message);}}
+
+// ── FOURNISSEURS ──
+function fillFournisseur(){var base=['ATLANTEM','ATULAM','LALLEMANT','SOKO','ALUGLASS','FILTERSUN','DC PROD','KE FRANCE','SKYLUX','BVL SERRULAC','LEROY MERLIN','FOUSSIER','STOCK'];var fous=base.slice();commandes.forEach(function(c){if(c.fournisseur&&fous.indexOf(c.fournisseur)===-1)fous.push(c.fournisseur);});fous.sort();var sel=document.getElementById('filter-fournisseur');if(sel){var cf=sel.value;sel.innerHTML='<option value="">Tous fournisseurs</option>';fous.forEach(function(f){var o=document.createElement('option');o.value=f;o.textContent=f;sel.appendChild(o);});sel.value=cf;}var sm=document.getElementById('f-fournisseur');if(sm){var cur=sm.value;sm.innerHTML='<option value="">— Choisir —</option>';fous.forEach(function(f){var o=document.createElement('option');o.value=f;o.textContent=f;sm.appendChild(o);});sm.value=cur;}}
+
+// ── COMMENTAIRES POSEURS ──
+function modifierCommentaire(ligne,key,idx){var c=commandes.find(function(x){return x.ligne===ligne;});if(!c)return;var lignes=str(c[key]).split('\n').filter(function(l){return l.trim();}),anc=lignes[idx]||'',nv=prompt('Modifier ce commentaire :',anc);if(nv===null)return;if(nv.trim())lignes[idx]=nv.trim();else lignes.splice(idx,1);sauvegarderCommentairePoseur(ligne,key,lignes.filter(function(l){return l.trim();}).join('\n'),c);}
+async function supprimerCommentaire(ligne,key,idx){if(!confirm('Supprimer ce commentaire ?'))return;var c=commandes.find(function(x){return x.ligne===ligne;});if(!c)return;var lignes=str(c[key]).split('\n').filter(function(l){return l.trim();});lignes.splice(idx,1);sauvegarderCommentairePoseur(ligne,key,lignes.join('\n'),c);}
+async function sauvegarderCommentairePoseur(ligne,key,fin,c){var cm={'poseur_ANATOLE':17,'poseur_ARTIOM':18,'poseur_ANTONIO':19,'poseur_VINCENT':21,'poseur_LAMRI':22},col=cm[key];if(!col)return;try{var ch={};ch[col]=fin;var r=await apiPost({action:'modifier',ligne:ligne,clientAttendu:c?c.client:undefined,champs:ch});if(!r||!r.ok)throw new Error(r.error||'Erreur');c[key]=fin;sauvegarderCache(commandes);renderSuiviPose();afficherToast('ok','✅','Commentaire enregistré','',2000);}catch(e){afficherToast('urgent','❌','Erreur',e.message,6000);}}
+
+// ── CSV ──
+function exportCSV(){if(!commandes.length){alert('Aucune donnée.');return;}var cols=['ligne','client','metres','fournisseur','devis','devisTTC','commande','arc','commentaireARC','prevLivraison','statutLivraison','statutPose','commentaire','pvChantier','datePose'];var ent=['Ligne','Client','Date métré','Fournisseur','Devis','Devis TTC','Commande','ARC','Validation ARC','Prev. Livraison','Statut Livraison','Statut Pose','Commentaire','PV','Date Pose'];var lig=[ent.join(';')];commandes.forEach(function(c){var r=cols.map(function(k){var v;if(k==='metres')v=formatDateMetre(c.metres);else v=c[k]==null?'':String(c[k]);return '"'+v.replace(/"/g,'""').replace(/\n/g,' ').replace(/;/g,',')+'"';});lig.push(r.join(';'));});var csv='\uFEFF'+lig.join('\n'),blob=new Blob([csv],{type:'text/csv;charset=utf-8;'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='ECO_OUEST_export_'+new Date().toISOString().slice(0,10)+'.csv';document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);}
+
+// ── NOTIFICATIONS ──
+var NOTIF_KEY='eco-ouest-notif-urgents',notifActive=false,knownUrgents=[];
+function chargerPrefsNotif(){try{var s=JSON.parse(localStorage.getItem(NOTIF_KEY)||'{}');notifActive=s.active===true;knownUrgents=s.known||[];}catch(e){notifActive=false;knownUrgents=[];}majBoutonNotif();}
+function sauvegarderPrefsNotif(){try{localStorage.setItem(NOTIF_KEY,JSON.stringify({active:notifActive,known:knownUrgents}));}catch(e){}}
+function majBoutonNotif(){var btn=document.getElementById('btn-notif');if(!btn)return;if(!('Notification' in window)){btn.textContent='🔕 N/A';btn.disabled=true;return;}if(Notification.permission==='denied'){btn.textContent='🔕 Bloqué';btn.style.borderColor='var(--rouge)';btn.style.color='var(--rouge)';return;}if(notifActive&&Notification.permission==='granted'){btn.textContent='🔔 Actives';btn.style.borderColor='var(--vert)';btn.style.color='var(--vert)';}else{btn.textContent='🔕 Notifs';btn.style.borderColor='';btn.style.color='';}}
+async function activerNotifications(){if(!('Notification' in window)){alert('Notifications non supportées.');return;}if(Notification.permission==='denied'){alert('❌ Bloquées.');return;}if(notifActive&&Notification.permission==='granted'){notifActive=false;sauvegarderPrefsNotif();majBoutonNotif();afficherToast('warn','🔕','Désactivées','',3000);return;}try{var p=await Notification.requestPermission();if(p==='granted'){notifActive=true;sauvegarderPrefsNotif();majBoutonNotif();afficherToast('ok','🔔','Activées','',4000);envoyerNotification('🔔 Activées','Vous recevrez une alerte pour chaque commande urgente.');}else{afficherToast('urgent','❌','Refusée','',4000);majBoutonNotif();}}catch(e){alert('Erreur : '+e.message);}}
+function envoyerNotification(titre,corps,options){options=options||{};if(!notifActive||Notification.permission!=='granted')return null;try{var n=new Notification(titre,{body:corps,tag:options.tag||'eco-'+Date.now(),requireInteraction:options.requireInteraction===true,silent:options.silent===true});n.onclick=function(){window.focus();if(options.view&&typeof showView==='function')showView(options.view);n.close();};return n;}catch(e){return null;}}
+function detecterUrgences(){if(!notifActive||Notification.permission!=='granted'||!commandes||!commandes.length)return;var urgents=commandes.map(function(c){return {c:c,a:alerte(c)};}).filter(function(x){return x.a.n===3;});var cle=function(x){return String(x.c.ligne)+':'+x.a.t.split(' | ')[0];};var nouvelles=urgents.filter(function(x){return knownUrgents.indexOf(cle(x))===-1;});var actives=urgents.map(cle);knownUrgents=knownUrgents.filter(function(k){return actives.indexOf(String(k))!==-1;});if(!nouvelles.length)return;nouvelles.slice(0,3).forEach(function(x,i){setTimeout(function(){envoyerNotification('🔴 À traiter : '+str(x.c.client||'Sans nom'),x.a.t+(x.c.fournisseur?' · '+x.c.fournisseur:''),{tag:'urgent-'+x.c.ligne,requireInteraction:true,view:'alertes'});},i*400);});if(nouvelles.length>3)setTimeout(function(){envoyerNotification('⚠️ '+(nouvelles.length-3)+' autre(s) urgence(s)','Ouvrez l\'application.',{view:'alertes'});},1500);nouvelles.forEach(function(x){var k=cle(x);if(knownUrgents.indexOf(k)===-1)knownUrgents.push(k);});sauvegarderPrefsNotif();}
+
+// ── INIT ──
+function renderAll(){renderKPI();renderTable();setTimeout(detecterUrgences,500);}
+
+function actualiserTout() {
+  viderCache();
+  charger(true);
+  chargerTachesNotes();
+  chargerAchatsConsommables();
+  chargerCatalogueConsommables();
+  chargerFlotte();
+}
+
+chargerPrefsNotif();
+charger();
+chargerAchatsConsommables();
+chargerTachesNotes();
+chargerCatalogueConsommables();
+setTimeout(function(){showView('suivi');},100);
+setInterval(function(){charger();},5*60*1000);
+var lastVisibility=Date.now();
+document.addEventListener('visibilitychange',function(){if(!document.hidden){var e=Date.now()-lastVisibility;if(e>15*60*1000)charger(true);lastVisibility=Date.now();}});
+
+async function chargerTachesNotes() {
+  try { 
+    var r = await apiPost({action:'lireTaches'}); 
+    if (r && r.ok && Array.isArray(r.data)) { 
+      tachesNotes = r.data; 
+      majBadgeTaches(); 
+      if (document.getElementById('view-taches').classList.contains('active')) {
+        if (document.getElementById('sousmodule-taches-notes').style.display !== 'none') {
+          renderTaches();
+        }
+      }
+    } else {
+      console.warn('Réponse lireTaches invalide:', r);
+      if (document.getElementById('view-taches').classList.contains('active')) {
+        document.getElementById('taches-list').innerHTML = '<div class="task-empty" style="color:var(--rouge)">Erreur chargement : ' + (r && r.error ? r.error : 'inconnue') + '</div>';
+      }
+    }
+  } catch(e) { 
+    console.warn('Tâches non chargées : ' + e.message); 
+    if (document.getElementById('view-taches').classList.contains('active')) {
+      document.getElementById('taches-list').innerHTML = '<div class="task-empty" style="color:var(--rouge)">Erreur réseau : ' + e.message + '</div>';
+    }
+  }
+}
+
+function majBadgeTaches() {
+  var auj = dateLocaleISO(new Date());
+  var a = tachesNotes.filter(function(t){ return t.type === 'tache' && !t.terminee && t.echeance && t.echeance <= auj; }).length;
+  ['taches-badge','taches-badge-mobile'].forEach(function(id){
+    var el = document.getElementById(id);
+    if (el) el.textContent = a ? String(a) : '';
+  });
+}
+
+function dateLocaleISO(d) { return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
+function formatEcheance(v) { if (!v) return 'Sans échéance'; var d = new Date(v+'T12:00:00'); return isNaN(d.getTime()) ? v : d.toLocaleDateString('fr-FR'); }
+function etatTache(t) { if (t.type === 'note') return 'note'; if (t.terminee) return 'terminee'; if (!t.echeance) return 'active'; var auj = dateLocaleISO(new Date()); if (t.echeance < auj) return 'retard'; if (t.echeance === auj) return 'aujourdhui'; return 'active'; }
+
+async function enregistrerTache(e) {
+  if (e) e.preventDefault();
+  var id = document.getElementById('task-id').value;
+  var titre = document.getElementById('task-title').value.trim();
+  if (!titre) { alert('Veuillez saisir un titre.'); return; }
+  var t = {
+    id: id || '',
+    type: document.getElementById('task-type').value,
+    titre: titre,
+    details: document.getElementById('task-details').value.trim(),
+    echeance: document.getElementById('task-echeance').value,
+    priorite: document.getElementById('task-priorite').value
+  };
+  try {
+    var ancien = id ? tachesNotes.find(function(x){ return x.id === id; }) : null;
+    var r = id 
+      ? await apiPost({action:'modifierTache', id: id, type: t.type, titre: t.titre, details: t.details, echeance: t.echeance, priorite: t.priorite, terminee: ancien ? !!ancien.terminee : false})
+      : await apiPost({action:'ajouterTache', type: t.type, titre: t.titre, details: t.details, echeance: t.echeance, priorite: t.priorite});
+    if (!r || !r.ok) throw new Error(r.error || 'Erreur');
+    reinitialiserFormTache(); await chargerTachesNotes(); renderTaches();
+    afficherToast('ok','✅', id ? 'Tâche/Note modifiée' : 'Tâche/Note enregistrée', t.titre, 2500);
+  } catch(err) { alert('❌ ' + err.message); }
+}
 
 function reinitialiserFormTache() { var f = document.getElementById('task-form'); if (!f) return; f.reset(); document.getElementById('task-id').value = ''; document.getElementById('task-type').value = 'tache'; document.getElementById('task-priorite').value = 'normale'; document.getElementById('task-form-title').textContent = '＋ Ajouter une tâche ou une note'; }
 
@@ -750,58 +1475,6 @@ function renderTaches() {
   majBadgeTaches();
 }
 
-async function chargerTachesNotes() {
-  try { 
-    var r = await apiPost({action:'lireTaches'}); 
-    if (r && r.ok && Array.isArray(r.data)) { 
-      tachesNotes = r.data; 
-      majBadgeTaches(); 
-      if (document.getElementById('view-taches').classList.contains('active')) {
-        if (document.getElementById('sousmodule-taches-notes').style.display !== 'none') {
-          renderTaches();
-        }
-      }
-    }
-  } catch(e) { console.warn('Tâches non chargées : ' + e.message); }
-}
-
-function majBadgeTaches() {
-  var auj = dateLocaleISO(new Date());
-  var a = tachesNotes.filter(function(t){ return t.type === 'tache' && !t.terminee && t.echeance && t.echeance <= auj; }).length;
-  ['taches-badge','taches-badge-mobile'].forEach(function(id){
-    var el = document.getElementById(id);
-    if (el) el.textContent = a ? String(a) : '';
-  });
-}
-
-function dateLocaleISO(d) { return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
-function formatEcheance(v) { if (!v) return 'Sans échéance'; var d = new Date(v+'T12:00:00'); return isNaN(d.getTime()) ? v : d.toLocaleDateString('fr-FR'); }
-function etatTache(t) { if (t.type === 'note') return 'note'; if (t.terminee) return 'terminee'; if (!t.echeance) return 'active'; var auj = dateLocaleISO(new Date()); if (t.echeance < auj) return 'retard'; if (t.echeance === auj) return 'aujourdhui'; return 'active'; }
-
-async function enregistrerTache(e) {
-  if (e) e.preventDefault();
-  var id = document.getElementById('task-id').value;
-  var titre = document.getElementById('task-title').value.trim();
-  if (!titre) { alert('Veuillez saisir un titre.'); return; }
-  var t = {
-    id: id || '',
-    type: document.getElementById('task-type').value,
-    titre: titre,
-    details: document.getElementById('task-details').value.trim(),
-    echeance: document.getElementById('task-echeance').value,
-    priorite: document.getElementById('task-priorite').value
-  };
-  try {
-    var ancien = id ? tachesNotes.find(function(x){ return x.id === id; }) : null;
-    var r = id 
-      ? await apiPost({action:'modifierTache', id: id, type: t.type, titre: t.titre, details: t.details, echeance: t.echeance, priorite: t.priorite, terminee: ancien ? !!ancien.terminee : false})
-      : await apiPost({action:'ajouterTache', type: t.type, titre: t.titre, details: t.details, echeance: t.echeance, priorite: t.priorite});
-    if (!r || !r.ok) throw new Error(r.error || 'Erreur');
-    reinitialiserFormTache(); await chargerTachesNotes(); renderTaches();
-    afficherToast('ok','✅', id ? 'Tâche/Note modifiée' : 'Tâche/Note enregistrée', t.titre, 2500);
-  } catch(err) { alert('❌ ' + err.message); }
-}
-
 async function chargerAchatsConsommables() {
   try { 
     var r = await apiPost({action:'lireAchats'}); 
@@ -813,11 +1486,23 @@ async function chargerAchatsConsommables() {
           renderAchatsConsommables();
         }
       }
+    } else {
+      console.warn('Réponse lireAchats invalide:', r);
+      if (document.getElementById('view-taches').classList.contains('active')) {
+        document.getElementById('achats-list').innerHTML = '<div class="task-empty" style="color:var(--rouge)">Erreur chargement : ' + (r && r.error ? r.error : 'inconnue') + '</div>';
+      }
     }
-  } catch(e) { console.warn('Achats non chargés : ' + e.message); }
+  } catch(e) { 
+    console.warn('Achats non chargés : ' + e.message); 
+    if (document.getElementById('view-taches').classList.contains('active')) {
+      document.getElementById('achats-list').innerHTML = '<div class="task-empty" style="color:var(--rouge)">Erreur réseau : ' + e.message + '</div>';
+    }
+  }
 }
 
 function majBadgeAchats() { var n = achatsConsommables.filter(function(a){ return a.statut !== 'recu'; }).length; var b = document.getElementById('achats-badge'); if (b) b.textContent = n ? String(n) : ''; }
+
+function ouvrirSousModuleTaches(v) { var achat = v === 'achats'; document.getElementById('sousmodule-taches-notes').style.display = achat ? 'none' : ''; document.getElementById('sousmodule-achats-consommables').style.display = achat ? '' : 'none'; document.getElementById('tab-taches-notes').classList.toggle('active', !achat); document.getElementById('tab-achats-consommables').classList.toggle('active', achat); if (achat) renderAchatsConsommables(); else renderTaches(); }
 
 function reinitialiserFormAchat() { var f = document.getElementById('achat-form'); if (!f) return; f.reset(); document.getElementById('achat-id').value = ''; document.getElementById('achat-priorite').value = 'normale'; document.getElementById('achat-statut').value = 'a-acheter'; document.getElementById('achat-reference').value = ''; document.getElementById('achat-info-stock').style.display = 'none'; document.getElementById('achat-form-title').textContent = '＋ Ajouter un consommable'; }
 
@@ -881,418 +1566,46 @@ function renderAchatsConsommables() {
   }).join('');
 }
 
-async function chargerFlotte() {
-  try {
-    var rV = await apiPost({ action: 'lireVehicules' });
-    if (rV.ok) {
-      flotteVehicules = rV.data;
-      renderFlotte();
-    }
-  } catch(e) { console.warn("Erreur chargement flotte :", e.message); }
-}
-
-function renderFlotte() {
-  var containerAlertes = document.getElementById('flotte-alertes');
-  var containerOK = document.getElementById('flotte-ok-list');
-  var btnToggleOK = document.getElementById('btn-toggle-ok');
-  if (!containerAlertes) return;
-
-  var aujourdhui = new Date();
-  var listeUrgents = [];
-  var listeAttention = [];
-  var listeOK = [];
-
-  flotteVehicules.forEach(function(v) {
-    var alertesVehicule = [];
-    var infosIntervention = [];
-
-    if (v.urgence === 'haute' && v.description) {
-      alertesVehicule.push({ sev: 3, txt: '🚨 ACTION URGENTE : ' + v.type + ' — ' + v.description });
-    }
-
-    if (v.prochainCT) {
-      var dateCT = new Date(v.prochainCT);
-      var joursCT = Math.ceil((dateCT - aujourdhui) / (1000 * 60 * 60 * 24));
-      if (joursCT < 0) alertesVehicule.push({ sev: 3, txt: 'Contrôle technique expiré depuis ' + Math.abs(joursCT) + ' jours' });
-      else if (joursCT <= 30) alertesVehicule.push({ sev: 2, txt: 'Contrôle technique dans ' + joursCT + ' jours' });
-    } else {
-      alertesVehicule.push({ sev: 2, txt: 'Date de contrôle technique manquante' });
-    }
-
-    if (v.kmRevision > 0) {
-      var kmDepuisRev = v.kmActuel - v.kmRevision;
-      var resteRev = 30000 - kmDepuisRev;
-      if (resteRev <= 0) alertesVehicule.push({ sev: 3, txt: 'Révision dépassée de ' + Math.abs(resteRev) + ' km' });
-      else if (resteRev <= 2000) alertesVehicule.push({ sev: 2, txt: 'Révision dans ' + resteRev + ' km' });
-    }
-
-    if (v.type && (v.type.toUpperCase() === 'PNEUS' || v.type.toUpperCase().indexOf('PIÈCES') !== -1)) {
-      var estRecent = false;
-      if (v.dateIntervention) {
-        var dateInter = new Date(v.dateIntervention);
-        var joursDepuis = Math.ceil((aujourdhui - dateInter) / (1000 * 60 * 60 * 24));
-        if (joursDepuis < 30) {
-          estRecent = true;
-          alertesVehicule.push({ sev: 0, txt: '✅ ' + v.type + ' FAITS RÉCEMMENT (il y a ' + joursDepuis + ' j)' });
-        } else {
-          var moisDepuis = (aujourdhui.getFullYear() - dateInter.getFullYear()) * 12 + (aujourdhui.getMonth() - dateInter.getMonth());
-          if (moisDepuis >= 60) alertesVehicule.push({ sev: 3, txt: v.type + ' à changer (plus de 5 ans)' });
-          else if (moisDepuis >= 55) alertesVehicule.push({ sev: 2, txt: v.type + ' à prévoir (bientôt 5 ans)' });
-        }
-      }
-      if (!estRecent && v.kmIntervention > 0) {
-        var kmDepuis = v.kmActuel - v.kmIntervention;
-        if (kmDepuis >= 40000) alertesVehicule.push({ sev: 3, txt: v.type + ' usés (' + kmDepuis + ' km)' });
-        else if (kmDepuis >= 38000) alertesVehicule.push({ sev: 2, txt: v.type + ' à prévoir (' + kmDepuis + ' km)' });
-      }
-    }
-
-    if (v.dateAssurance) {
-      var dateAssur = new Date(v.dateAssurance);
-      var joursAssur = Math.ceil((dateAssur - aujourdhui) / (1000 * 60 * 60 * 24));
-      if (joursAssur < 0) alertesVehicule.push({ sev: 3, txt: 'Assurance expirée !' });
-      else if (joursAssur <= 30) alertesVehicule.push({ sev: 2, txt: 'Assurance à renouveler dans ' + joursAssur + ' jours' });
-    }
-
-    if (v.type || v.description || v.dateIntervention) {
-      var badgeUrgence = v.urgence === 'haute' ? '🔴 <strong>URGENT</strong> : ' : '🔧 ';
-      var txt = badgeUrgence + '<strong>' + h(v.type || 'Intervention') + '</strong>';
-      if (v.dateIntervention) {
-        var d = new Date(v.dateIntervention);
-        txt += ' le ' + d.toLocaleDateString('fr-FR');
-      }
-      if (v.kmIntervention > 0) txt += ' à ' + v.kmIntervention + ' km';
-      if (v.description) txt += '<br><span style="color:#333;">« ' + h(v.description) + ' »</span>';
-      if (v.type && v.dateIntervention && Math.ceil((aujourdhui - new Date(v.dateIntervention)) / (1000 * 60 * 60 * 24)) < 30) {
-         txt = '✅ ' + txt.replace('🔧 ', '');
-      }
-      infosIntervention.push(txt);
-    }
-
-    if (alertesVehicule.length > 0) {
-      var severiteMax = Math.max.apply(null, alertesVehicule.map(function(a) { return a.sev; }));
-      if (severiteMax === 3) listeUrgents.push({ v: v, alertes: alertesVehicule, infos: infosIntervention });
-      else if (severiteMax === 2) listeAttention.push({ v: v, alertes: alertesVehicule, infos: infosIntervention });
-      else listeOK.push({ v: v, alertes: alertesVehicule, infos: infosIntervention });
-    } else {
-      listeOK.push({ v: v, infos: infosIntervention });
-    }
-  });
-
-  function genererCarte(item, type) {
-    var color = type === 'urgent' ? 'var(--rouge)' : 'var(--orange)';
-    var icon = type === 'urgent' ? '🔴' : '🟠';
-    var lignesAlertes = item.alertes.map(function(a) {
-      var txt = a.txt;
-      if (txt.indexOf('ACTION URGENTE') !== -1) {
-        return '<li style="font-size:13px; margin-bottom:6px; font-weight:700; color:var(--rouge); background:#FFEBEE; padding:6px 10px; border-radius:6px;">' + txt + '</li>';
-      }
-      if (txt.indexOf('FAITS RÉCEMMENT') !== -1 || txt.indexOf('FAIT RÉCEMMENT') !== -1) {
-        return '<li style="font-size:13px; margin-bottom:6px; font-weight:700; color:var(--vert); background:#E8F5E9; padding:6px 10px; border-radius:6px;">' + txt + '</li>';
-      }
-      return '<li style="font-size:13px; margin-bottom:4px;">' + txt + '</li>';
-    }).join('');
-    var detailsHtml = '';
-    if (item.infos.length > 0) {
-      detailsHtml = '<div class="flotte-details-box">' + item.infos.join('<br>') + '</div>';
-    }
-    return '<div class="flotte-alerte-card ' + type + '">' +
-      '<div style="flex:1;">' +
-        '<div class="flotte-alerte-titre">' + icon + ' ' + h(item.v.id) + ' - ' + h(item.v.modele) + ' <span style="font-size:11px; color:var(--texte2); font-weight:normal;">(' + h(item.v.immat) + ')</span></div>' +
-        '<ul class="flotte-alerte-liste" style="list-style:none; padding-left:0;">' + lignesAlertes + '</ul>' +
-        detailsHtml +
-      '</div>' +
-      '<div style="display:flex; flex-direction:column; gap:5px;">' +
-        '<button class="btn btn-outline btn-sm" onclick="ouvrirModalVehicule(\'' + item.v.id + '\')" style="border-color:' + color + '; color:' + color + ';">✏️ Mettre à jour</button>' +
-        '<button class="btn btn-outline btn-sm" onclick="afficherHistoriqueVehicule(\'' + item.v.id + '\')" style="border-color:var(--bleu); color:var(--bleu);">📜 Historique</button>' +
-      '</div>' +
-    '</div>';
-  }
-
-  var html = '';
-  if (listeUrgents.length > 0) {
-    html += '<div style="margin-bottom:15px;"><div style="font-size:12px; font-weight:700; text-transform:uppercase; color:var(--rouge); margin-bottom:8px;">🔴 Urgent (' + listeUrgents.length + ')</div>';
-    listeUrgents.forEach(function(item) { html += genererCarte(item, 'urgent'); });
-    html += '</div>';
-  }
-  if (listeAttention.length > 0) {
-    html += '<div style="margin-bottom:15px;"><div style="font-size:12px; font-weight:700; text-transform:uppercase; color:var(--orange); margin-bottom:8px;">🟠 À prévoir (' + listeAttention.length + ')</div>';
-    listeAttention.forEach(function(item) { html += genererCarte(item, 'attention'); });
-    html += '</div>';
-  }
-  if (!html && listeOK.length === 0) {
-    html = '<div style="text-align:center; padding:40px; color:var(--vert); font-weight:600; font-size:16px;">🟢 Aucun véhicule enregistré.</div>';
-  }
-  containerAlertes.innerHTML = html;
-
-  btnToggleOK.style.display = 'none';
-  containerOK.style.display = 'block';
-  containerOK.style.marginTop = '20px';
-  
-  if (listeOK.length > 0) {
-    var htmlOK = '<div style="font-size:12px; font-weight:700; text-transform:uppercase; color:var(--vert); margin-bottom:8px;">🟢 Véhicules à jour (' + listeOK.length + ')</div>';
-    htmlOK += listeOK.map(function(item) {
-      var detailsHtml = '';
-      if (item.infos.length > 0) {
-        detailsHtml = '<div style="margin-top:5px; font-size:10px; color:#546E7A;">' + item.infos.join(' — ') + '</div>';
-      }
-      var alerteHtml = '';
-      if (item.alertes && item.alertes.length > 0) {
-        alerteHtml = '<div style="margin-top:5px; font-size:11px; color:var(--vert); font-weight:700;">' + item.alertes[0].txt + '</div>';
-      }
-      return '<div class="flotte-ok-item" style="opacity:1;">' +
-        '<div><strong>' + h(item.v.id) + '</strong> - ' + h(item.v.modele) + ' <span style="font-size:11px; color:var(--texte2);">(' + h(item.v.immat) + ')</span>' + alerteHtml + detailsHtml + '</div>' +
-        '<div style="display:flex; gap:5px;">' +
-          '<button class="action-btn" onclick="afficherHistoriqueVehicule(\'' + item.v.id + '\')" title="Historique">📜</button>' +
-          '<button class="action-btn" onclick="ouvrirModalVehicule(\'' + item.v.id + '\')">✏️</button>' +
-        '</div>' +
-      '</div>';
-    }).join('');
-    containerOK.innerHTML = htmlOK;
-  } else {
-    containerOK.innerHTML = '';
-  }
-}
-
-async function afficherHistoriqueVehicule(idVehicule) {
-  var overlay = document.getElementById('overlay-historique');
-  if (!overlay) {
-    overlay = document.createElement('div');
-    overlay.id = 'overlay-historique';
-    overlay.className = 'overlay open';
-    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(10,20,40,.6);z-index:700;display:flex;align:center;justify-content:center;padding:20px;';
-    overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
-    
-    overlay.innerHTML = 
-      '<div class="modal" style="max-width:700px;width:100%;background:#fff;border-radius:14px;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.3);max-height:90vh;overflow-y:auto;" onclick="event.stopPropagation()">' +
-        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">' +
-          '<h3 style="font-size:16px;font-weight:700;color:var(--bleu);" id="histo-titre">Historique</h3>' +
-          '<button onclick="document.getElementById(\'overlay-historique\').remove()" style="background:#F5F7FA;border:none;border-radius:8px;width:30px;height:30px;cursor:pointer;font-size:16px;">✕</button>' +
-        '</div>' +
-        '<div id="histo-content" style="font-size:13px;">Chargement...</div>' +
-      '</div>';
-    document.body.appendChild(overlay);
-  }
-  
-  document.getElementById('histo-titre').textContent = 'Historique - ' + idVehicule;
-  document.getElementById('histo-content').innerHTML = '<div style="text-align:center;padding:20px;">⏳ Chargement...</div>';
-  
-  try {
-    var r = await apiPost({action: 'lireHistoriqueVehicule', id: idVehicule});
-    if (!r || !r.ok) throw new Error(r.error || 'Erreur');
-    if (!r.data || r.data.length === 0) {
-      document.getElementById('histo-content').innerHTML = '<div style="text-align:center;padding:20px;color:var(--texte2);">Aucun historique pour ce véhicule.</div>';
-      return;
-    }
-    var html = '<table style="width:100%;border-collapse:collapse;font-size:12px;">' +
-      '<thead><tr style="background:#F5F7FA;text-align:left;">' +
-        '<th style="padding:8px;border-bottom:1px solid #ddd;">Type</th>' +
-        '<th style="padding:8px;border-bottom:1px solid #ddd;">Description</th>' +
-        '<th style="padding:8px;border-bottom:1px solid #ddd;">Date</th>' +
-        '<th style="padding:8px;border-bottom:1px solid #ddd;">Km</th>' +
-        '<th style="padding:8px;border-bottom:1px solid #ddd;">Coût</th>' +
-      '</tr></thead><tbody>';
-    r.data.forEach(function(h) {
-      html += '<tr>' +
-        '<td style="padding:8px;border-bottom:1px solid #eee;"><strong>' + h.type + '</strong></td>' +
-        '<td style="padding:8px;border-bottom:1px solid #eee;">' + h.description + '</td>' +
-        '<td style="padding:8px;border-bottom:1px solid #eee;">' + h.dateIntervention + '</td>' +
-        '<td style="padding:8px;border-bottom:1px solid #eee;">' + h.kmIntervention + '</td>' +
-        '<td style="padding:8px;border-bottom:1px solid #eee;">' + h.coutTTC + ' €</td>' +
-      '</tr>';
-    });
-    html += '</tbody></table>';
-    document.getElementById('histo-content').innerHTML = html;
-  } catch(e) {
-    document.getElementById('histo-content').innerHTML = '<div style="color:var(--rouge);padding:20px;">❌ ' + e.message + '</div>';
-  }
-}
-
-function ouvrirModalVehicule(idVehicule) {
-  var v = flotteVehicules.find(function(x){ return x.id === idVehicule; }) || {};
-  var overlay = document.getElementById('overlay-vehicule');
-  if (!overlay) {
-    overlay = document.createElement('div');
-    overlay.id = 'overlay-vehicule';
-    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(10,20,40,.45);z-index:600;display:none;align-items:center;justify-content:center;padding:20px;';
-    overlay.onclick = function(e) { if (e.target === overlay) document.getElementById('overlay-vehicule').style.display = 'none'; };
-    overlay.innerHTML = 
-      '<div class="modal" style="max-width:600px;width:100%;background:#fff;border-radius:14px;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.2);max-height:90vh;overflow-y:auto;" onclick="event.stopPropagation()">' +
-        '<h3 style="font-size:16px;font-weight:700;margin-bottom:15px;color:var(--bleu);" id="vehicule-modal-title">Ajouter un véhicule</h3>' +
-        '<div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">' +
-          '<div style="grid-column:1/-1;"><label>ID (Repère, ex: V5) *</label><input type="text" id="fv-id" class="task-input"></div>' +
-          '<div><label>Modèle</label><input type="text" id="fv-modele" class="task-input"></div>' +
-          '<div><label>Immatriculation</label><input type="text" id="fv-immat" class="task-input"></div>' +
-          '<div><label>Km Actuel</label><input type="number" id="fv-kmActuel" class="task-input"></div>' +
-          '<div><label>Km Révision</label><input type="number" id="fv-kmRevision" class="task-input"></div>' +
-          '<div><label>Date Révision</label><input type="date" id="fv-dateRevision" class="task-input"></div>' +
-          '<div><label>Prochain CT</label><input type="date" id="fv-prochainCT" class="task-input"></div>' +
-          '<div><label>Date Assurance</label><input type="date" id="fv-dateAssurance" class="task-input"></div>' +
-          '<div><label>Conducteur</label><input type="text" id="fv-conducteur" class="task-input"></div>' +
-          '<div><label>Type d\'intervention / Panne / Crit\'Air</label><select id="fv-type" class="task-input"><option value="">—</option><option>RÉVISION</option><option>PNEUS</option><option>PIÈCES D\'USURE</option><option>AMPOULE / PHARE</option><option>VITRE / PARE-BRISE</option><option>RÉPARATION</option><option>CONTRÔLE TECHNIQUE</option><option>ASSURANCE / ADMIN</option><option disabled>──────────</option><option value="CRITAIR_0">Vignette Crit\'Air 0 (Électrique)</option><option value="CRITAIR_1">Vignette Crit\'Air 1 (Violet)</option><option value="CRITAIR_2">Vignette Crit\'Air 2 (Vert)</option><option value="CRITAIR_3">Vignette Crit\'Air 3 (Orange)</option><option value="CRITAIR_4">Vignette Crit\'Air 4 (Bordeaux)</option><option value="CRITAIR_5">Vignette Crit\'Air 5 (Gris)</option><option>AUTRE</option></select></div>' +
-          '<div><label style="color:var(--rouge);">Niveau d\'urgence</label><select id="fv-urgence" class="task-input"><option value="normale">🟠 À prévoir (Normal)</option><option value="haute">🔴 URGENT (Sécurité / Bloquant)</option></select></div>' +
-          '<div style="grid-column:1/-1;"><label>Description / Détails</label><input type="text" id="fv-description" class="task-input" placeholder="Ex: Pneu avant droit crevé, phare gauche cassé..."></div>' +
-          '<div><label>Date de l\'intervention</label><input type="date" id="fv-dateIntervention" class="task-input"></div>' +
-          '<div><label>Kilométrage à l\'intervention</label><input type="number" id="fv-kmIntervention" class="task-input" placeholder="Ex: 45000"></div>' +
-        '</div>' +
-        '<div style="display:flex; gap:8px; margin-top:20px; justify-content:flex-end;">' +
-          '<button onclick="document.getElementById(\'overlay-vehicule\').style.display=\'none\'" class="btn btn-outline">Annuler</button>' +
-          '<button onclick="sauvegarderVehicule()" class="btn btn-primary">💾 Enregistrer</button>' +
-        '</div>' +
-      '</div>';
-    document.body.appendChild(overlay);
-  }
-  
-  overlay.style.display = 'flex';
-  document.getElementById('vehicule-modal-title').textContent = v.id ? 'Modifier ' + v.id : 'Ajouter un véhicule';
-  document.getElementById('fv-id').value = v.id || '';
-  document.getElementById('fv-modele').value = v.modele || '';
-  document.getElementById('fv-immat').value = v.immat || '';
-  document.getElementById('fv-kmActuel').value = v.kmActuel || '';
-  document.getElementById('fv-dateRevision').value = v.dateRevision || '';
-  document.getElementById('fv-kmRevision').value = v.kmRevision || '';
-  document.getElementById('fv-prochainCT').value = v.prochainCT || '';
-  document.getElementById('fv-dateAssurance').value = v.dateAssurance || '';
-  document.getElementById('fv-conducteur').value = v.conducteur || '';
-  if (v.critAir) {
-    document.getElementById('fv-type').value = 'CRITAIR_' + v.critAir;
-  } else {
-    document.getElementById('fv-type').value = v.type || '';
-  }
-  document.getElementById('fv-urgence').value = v.urgence || 'normale';
-  document.getElementById('fv-description').value = v.description || '';
-  document.getElementById('fv-dateIntervention').value = v.dateIntervention || '';
-  document.getElementById('fv-kmIntervention').value = v.kmIntervention || '';
-}
-
-async function sauvegarderVehicule() {
-  var id = document.getElementById('fv-id').value.trim();
-  if (!id) { alert("L'ID (Repère) est obligatoire (ex: V5)."); return; }
-  
-  var typeSelectionne = document.getElementById('fv-type').value;
-  var critAirValue = '';
-  var typeIntervention = typeSelectionne;
-  if (typeSelectionne.indexOf('CRITAIR_') === 0) {
-    critAirValue = typeSelectionne.replace('CRITAIR_', '');
-    typeIntervention = '';
-  }
-
-  var payload = {
-    action: 'enregistrerVehicule',
-    id: id,
-    modele: document.getElementById('fv-modele').value.trim(),
-    immat: document.getElementById('fv-immat').value.trim(),
-    kmActuel: document.getElementById('fv-kmActuel').value || 0,
-    dateRevision: document.getElementById('fv-dateRevision').value,
-    kmRevision: document.getElementById('fv-kmRevision').value || 0,
-    prochainCT: document.getElementById('fv-prochainCT').value,
-    dateAssurance: document.getElementById('fv-dateAssurance').value,
-    conducteur: document.getElementById('fv-conducteur').value.trim(),
-    type: typeIntervention,
-    critAir: critAirValue,
-    urgence: document.getElementById('fv-urgence').value,
-    description: document.getElementById('fv-description').value.trim(),
-    dateIntervention: document.getElementById('fv-dateIntervention').value,
-    kmIntervention: document.getElementById('fv-kmIntervention').value || 0
-  };
-
-  try {
-    var r = await apiPost(payload);
-    if (!r || !r.ok) throw new Error(r.error || 'Erreur');
-    document.getElementById('overlay-vehicule').style.display = 'none';
-    afficherToast('ok', '✅', 'Véhicule enregistré', id, 3000);
-    await chargerFlotte();
-  } catch(e) {
-    alert("❌ Erreur : " + e.message);
-  }
-}
-
-async function chargerRapportAgent() { var content=document.getElementById('agent-content'), dateEl=document.getElementById('agent-date'); if(dateEl) dateEl.textContent='⏳ Chargement...'; content.innerHTML='<div class="agent-loader"><div class="spinner"></div><div class="loader-msg">📥 Chargement...</div></div>'; try { var r=await apiPost({action:'lireRapport'}); if(!r||!r.ok){content.innerHTML='<div class="empty-state"><div style="font-size:64px;">🤖</div><h3>Aucun rapport</h3><p>Le rapport est généré chaque matin à 8h.</p></div>';if(dateEl)dateEl.textContent='Dernière analyse : aucune';return;} if(dateEl&&r.dateRapport)dateEl.textContent='Dernière analyse : '+r.dateRapport+' (auto)'; else if(dateEl&&r.date)dateEl.textContent='Dernière analyse : '+r.date; dernierRapportAgent=r; afficherRapportAgent(r,0); } catch(e) { content.innerHTML='<div class="empty-state"><p>❌ '+h(e.message)+'</p></div>'; } }
-
-async function lancerAnalyse() { var btn=document.getElementById('btn-analyser'), icon=document.getElementById('btn-analyser-icon'), text=document.getElementById('btn-analyser-text'), content=document.getElementById('agent-content'); btn.disabled=true; icon.textContent='⏳'; text.textContent='Analyse...'; content.innerHTML='<div class="agent-loader"><div class="spinner"></div><div class="loader-msg">🤖 Analyse en cours...</div><div class="loader-sub">Patientez...</div></div>'; var debut=Date.now(); try { var r=await apiPost({action:'analyserAgent'}), duree=Math.round((Date.now()-debut)/1000); if(!r||!r.ok) throw new Error(r.error||'Réponse invalide'); dernierRapportAgent=r; afficherRapportAgent(r,duree); if(document.getElementById('agent-date'))document.getElementById('agent-date').textContent='Dernière analyse : '+(r.date||'à l\'instant')+' (manuelle)'; afficherToast('ok','✅','Analyse terminée', duree+'s', 4000); } catch(e) { content.innerHTML='<div class="empty-state"><p>❌ '+h(e.message)+'</p></div>'; afficherToast('urgent','❌','Erreur analyse', e.message, 8000); } finally { btn.disabled=false; icon.textContent='✨'; text.textContent='Analyser'; } }
-
-function afficherRapportAgent(r, duree) { var content=document.getElementById('agent-content'); if(!r.phrases||!r.phrases.length){content.innerHTML='<div class="empty-state"><div style="font-size:64px;">✅</div><h3>Tout est à jour !</h3></div>';return;} var nbU=r.nbUrgents||0,nbA=r.nbAttention||0,nbI=r.nbInfo||0; var phrases=r.phrases.slice().sort(function(a,b){return (b.severite||0)-(a.severite||0);}); var html='<div class="agent-stats"><div class="agent-stat"><div class="agent-stat-value" style="color:var(--rouge);">'+nbU+'</div><div class="agent-stat-label">🔴 Urgents</div></div><div class="agent-stat"><div class="agent-stat-value" style="color:var(--orange);">'+nbA+'</div><div class="agent-stat-label">🟠 Attention</div></div><div class="agent-stat"><div class="agent-stat-value" style="color:var(--jaune);">'+nbI+'</div><div class="agent-stat-label">🟡 Info</div></div><div class="agent-stat"><div class="agent-stat-value" style="color:var(--bleu);">'+r.nbTotal+'</div><div class="agent-stat-label">📋 Total</div></div></div>'; if(r.resumeGlobal&&r.resumeGlobal.indexOf('⚠️')!==0) html+='<div class="agent-resume"><strong>💡 Synthèse :</strong><br>'+h(r.resumeGlobal)+'</div>'; else if(r.resumeGlobal) html+='<div class="agent-resume" style="border-left-color:var(--orange);background:#FFF3E0;">'+h(r.resumeGlobal)+'</div>'; var src = r.source==='groq'?'✨ Groq ('+(r.modeleUtilise||'')+')':(r.statut==='secours'?'⚠️ Règles':'⚠️ Règles'); if(duree>0) src+=' · '+duree+'s'; html+='<div style="font-size:11px;color:var(--texte2);margin-bottom:18px;font-style:italic;">'+h(src)+'</div>'; [3,2,1].forEach(function(sev){ var arr=phrases.filter(function(p){return p.severite===sev;}); if(!arr.length)return; var ic=sev===3?'🔴':sev===2?'🟠':'🟡'; var tx=sev===3?'Action immédiate':sev===2?'À traiter rapidement':'À surveiller'; html+='<div class="agent-section"><div class="agent-section-title">'+ic+' '+tx+' ('+arr.length+')</div>'; arr.forEach(function(p){html+=renderAgentCard(p);}); html+='</div>'; }); content.innerHTML=html; }
-
-function renderAgentCard(p) { var sc='sev-'+(p.severite||1), ic=p.severite===3?'🔴':(p.severite===2?'🟠':'🟡'), nom=p.client||'—', act=p.action||'Ouvrir la commande'; var motif='suivi', t=(p.texte||'').toLowerCase(); if(t.indexOf('commande')!==-1&&(t.indexOf('non envoy')!==-1||t.indexOf('pas encore')!==-1)) motif='commande'; else if(t.indexOf('accusé')!==-1||t.indexOf('arc ')!==-1) motif='arc'; else if(t.indexOf('livraison')!==-1) motif='livraison'; else if(t.indexOf('sav')!==-1) motif='sav'; return '<div class="agent-card '+sc+'"><div class="agent-card-icon">'+ic+'</div><div class="agent-card-content"><div class="agent-card-client">'+h(nom)+'<span class="agent-card-ligne">Ligne '+(p.ligne||'?')+'</span></div><div class="agent-card-texte">'+h(p.texte||'')+'</div><span class="agent-card-action">👉 '+h(act)+'</span></div><div class="agent-card-actions"><button class="agent-card-btn" onclick="relancerFournisseurDepuisAgent('+(p.ligne||0)+',\''+motif+'\')">📧 Relancer</button><button class="agent-card-btn" style="background:#546E7A;" onclick="ouvrirDepuisAgent('+(p.ligne||0)+')">✏️ Ouvrir</button></div></div>'; }
-
-function ouvrirDepuisAgent(ligne) { if (!ligne) return; var idx = commandes.findIndex(function(x){ return x.ligne === ligne; }); if (idx >= 0) openModal(idx); else afficherToast('warn','⚠️','Commande introuvable','', 3000); }
-
-async function relancerFournisseurDepuisAgent(ligne, motif) { var c = commandes.find(function(x){ return x.ligne === ligne; }); if (!c) return; if (!c.fournisseur || !c.fournisseur.trim()) { alert('⚠️ Aucun fournisseur.'); return; } afficherToast('warn','⏳','Création...','', 2000); try { var r = await apiPost({action:'relancerFournisseur', fournisseur:c.fournisseur, client:c.client, ligne:c.ligne, devis:c.devis, commande:c.commande, arc:c.arc, motif:motif, commentaire:(c.commentaire||'').substring(0,300)}); if (!r||!r.ok) throw new Error(r.error||'Erreur'); afficherToast('ok','📧','Brouillon créé','Allez dans Gmail.', 6000); alert('📧 Brouillon Gmail créé !\n\nÀ : '+r.destinataire+'\nSujet : '+r.sujet); } catch(e) { afficherToast('urgent','❌','Erreur', e.message, 8000); } }
-
-function ouvrirAssistantVocal() { document.getElementById('overlay-assistant').style.display = 'flex'; document.getElementById('assistant-question').value = ''; document.getElementById('assistant-reponse').style.display = 'none'; document.getElementById('assistant-status').style.display = 'none'; }
-function fermerAssistant(e) { if (e && e.target.id !== 'overlay-assistant') return; document.getElementById('overlay-assistant').style.display = 'none'; if (recognitionAssistant) recognitionAssistant.stop(); window.speechSynthesis.cancel(); }
-function lancerQuestionVocale() { if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) { alert("Dictée non supportée."); return; } var SR = window.SpeechRecognition || window.webkitSpeechRecognition; recognitionAssistant = new SR(); recognitionAssistant.lang='fr-FR'; recognitionAssistant.interimResults=false; var st=document.getElementById('assistant-status'), inp=document.getElementById('assistant-question'); st.style.display='block'; st.textContent="🎙️ Parlez..."; inp.value=''; recognitionAssistant.onresult=function(e){inp.value=e.results[0][0].transcript; st.textContent="✅ Enregistré."; setTimeout(function(){st.style.display='none';},2000); envoyerQuestionVocal();}; recognitionAssistant.onerror=function(e){st.textContent="❌ "+e.error; setTimeout(function(){st.style.display='none';},3000);}; recognitionAssistant.start(); }
-
-async function envoyerQuestionVocal() { 
-  var q = document.getElementById('assistant-question').value.trim(); 
-  if (!q) { alert("Posez une question."); return; } 
-  var btn = document.getElementById('btn-envoyer-assistant'), rep = document.getElementById('assistant-reponse'); 
-  btn.disabled = true; btn.textContent = "⏳..."; rep.style.display = 'none'; window.speechSynthesis.cancel(); 
-  try { 
-    var ql = q.toLowerCase(); 
-    var mots = ql.split(' ').filter(function(m){ return m.length > 2; });
-    var ctx = commandes.filter(function(c){
-      var nomClient = c.client.toLowerCase();
-      return ql.indexOf(nomClient) !== -1 || mots.some(function(mot){ return nomClient.indexOf(mot) !== -1; });
-    });
-    var contexteAEnvoyer = ctx.length > 0 ? ctx : commandes.slice(0, 30);
-    var ctxJson = JSON.stringify(contexteAEnvoyer.map(function(c){return {client:c.client,date_metre:formatDateMetre(c.metres),numero_devis:c.devis,devis_ttc:c.devisTTC,fournisseur:c.fournisseur,commande_envoyee:c.commande,numero_arc:c.arc,validation_arc:c.commentaireARC,prevision_livraison:c.prevLivraison,statut_livraison:c.statutLivraison,statut_pose:c.statutPose,date_pose:c.datePose,pv_chantier:c.pvChantier,commentaires:c.commentaire,objet_commande:c.objetCommande};})); 
-    var r = await apiPost({action:'assistantVocal', question:q, contexte:ctxJson}); 
-    if (!r||!r.ok) throw new Error(r.error||'Erreur'); 
-    if (!r.reponse) throw new Error('Pas de réponse'); 
-    rep.innerHTML = '<strong style="color:#E65100;">🤖 Réponse :</strong><br><br>'+h(r.reponse).replace(/\*\*(.*?)\*\*/g,'<b>$1</b>').replace(/^\s*[\*\-]\s+/gm,'• ').replace(/\n/g,'<br>'); 
-    rep.style.display = 'block'; 
-    btn.disabled=false; btn.textContent="✨ Envoyer"; 
-    var msg = new SpeechSynthesisUtterance(nettoyerTextePourVoix(r.reponse)); 
-    msg.lang='fr-FR'; window.speechSynthesis.speak(msg); 
-  } catch(e) { 
-    rep.innerHTML='<span style="color:var(--rouge);">❌ '+h(e.message)+'</span>'; 
-    rep.style.display='block'; 
-    btn.disabled=false; btn.textContent="✨ Envoyer"; 
-  } 
-}
-
-function ouvrirActionVocale() { document.getElementById('overlay-action').style.display='flex'; document.getElementById('action-question').value=''; document.getElementById('action-reponse').style.display='none'; document.getElementById('action-status').style.display='none'; }
-function fermerAction(e) { if (e && e.target.id !== 'overlay-action') return; document.getElementById('overlay-action').style.display='none'; if (recognitionAction) recognitionAction.stop(); window.speechSynthesis.cancel(); }
-function lancerActionVocale() { if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) { alert("Dictée non supportée."); return; } var SR = window.SpeechRecognition || window.webkitSpeechRecognition; recognitionAction = new SR(); recognitionAction.lang='fr-FR'; recognitionAction.interimResults=false; var st=document.getElementById('action-status'), inp=document.getElementById('action-question'); st.style.display='block'; st.textContent="🎙️ Parlez..."; inp.value=''; recognitionAction.onresult=function(e){inp.value=e.results[0][0].transcript; st.textContent="✅ Enregistré. Cliquez sur Exécuter."; setTimeout(function(){st.style.display='none';},3000);}; recognitionAction.onerror=function(e){st.textContent="❌ "+e.error; setTimeout(function(){st.style.display='none';},3000);}; recognitionAction.start(); }
-
-async function envoyerActionVocale() { var q = document.getElementById('action-question').value.trim(); if (!q) { alert("Dictez un ordre."); return; } if (!confirm("Exécuter : \"" + q + "\" ?")) return; var btn = document.getElementById('btn-envoyer-action'), rep = document.getElementById('action-reponse'); btn.disabled = true; btn.textContent = "⏳..."; rep.style.display = 'none'; try { var ctx = commandes.map(function(c){return {client:c.client, ligne:c.ligne, statutLivraison:c.statutLivraison, statutPose:c.statutPose, commande:c.commande, arc:c.arc};}); var r = await apiPost({action:'assistantAction', texteDicte:q, contexte:JSON.stringify(ctx)}); if (!r||!r.ok) { if (r&&r.reponse_vocale) throw new Error(r.reponse_vocale); throw new Error(r.error||'Erreur'); } var lt = r.lignes && r.lignes.length>1 ? 'Lignes modifiées : '+r.lignes.join(', ') : 'Ligne modifiée : '+(r.ligne||'?'); rep.innerHTML = '<strong style="color:#2E7D32;">🤖 Action exécutée :</strong><br><br>'+h(r.reponse_vocale)+'<br><br><span style="font-size:11px;color:#777;">'+lt+'</span>'; rep.style.display='block'; try { var msg = new SpeechSynthesisUtterance(nettoyerTextePourVoix(r.reponse_vocale)); msg.lang='fr-FR'; window.speechSynthesis.speak(msg); } catch(e) {} viderCache(); await charger(true); } catch(e) { rep.innerHTML='<span style="color:var(--rouge);">❌ '+h(e.message)+'</span>'; rep.style.display='block'; } finally { btn.disabled = false; btn.textContent = "✨ Exécuter"; } }
-
-function ouvrirModalDictee() { document.getElementById('overlay-dictee').style.display='flex'; document.getElementById('dictee-texte').value=''; document.getElementById('dictee-status').style.display='none'; }
-function fermerDictee(e) { if (e && e.target.id !== 'overlay-dictee') return; document.getElementById('overlay-dictee').style.display='none'; if (recognition) recognition.stop(); }
-function lancerDicteeVocale() { if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) { alert("Dictée non supportée."); return; } var SR = window.SpeechRecognition || window.webkitSpeechRecognition; recognition = new SR(); recognition.lang='fr-FR'; recognition.interimResults=false; var st=document.getElementById('dictee-status'), ta=document.getElementById('dictee-texte'); st.style.display='block'; st.textContent="🎙️ Parlez..."; ta.value=''; recognition.onresult=function(e){ta.value=e.results[0][0].transcript; st.textContent="✅ Terminé."; setTimeout(function(){st.style.display='none';},2000);}; recognition.onerror=function(e){st.textContent="❌ "+e.error; setTimeout(function(){st.style.display='none';},3000);}; recognition.start(); }
-
-async function validerDictee() { var t = document.getElementById('dictee-texte').value.trim(); if (!t) { alert("Dictez une phrase."); return; } var btn = document.getElementById('btn-valider-dictee'); btn.disabled=true; btn.textContent="⏳..."; try { var r = await apiPost({action:'dicteeFiche', texteDicte:t}); if (!r||!r.ok) throw new Error(r.error||'Erreur'); fermerDictee(); afficherToast('ok','✅','Fiche créée','Client '+r.client+' (Ligne '+r.ligne+')', 5000); viderCache(); await charger(true); } catch(e) { alert("❌ Erreur : "+e.message); } finally { btn.disabled=false; btn.textContent="✨ Analyser et Créer"; } }
-
+// ── DICTÉE POUR LES CHAMPS DE TEXTE ──
 function dicterPourChamp(idChamp) {
   if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
     alert("La dictée vocale n'est pas supportée par ce navigateur.");
     return;
   }
+  
   var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   var rec = new SR();
   rec.lang = 'fr-FR';
   rec.interimResults = false;
+  
   var champ = document.getElementById(idChamp);
   var ancienTexte = champ.value;
   var ancienPlaceholder = champ.placeholder;
+  
   champ.placeholder = "🎙️ Écoute en cours... Parlez maintenant.";
   champ.style.borderColor = "#E65100";
   champ.style.backgroundColor = "#FFF3E0";
+  
   rec.onresult = function(e) {
     var texteDicte = e.results[0][0].transcript;
     champ.value = ancienTexte ? ancienTexte + ' ' + texteDicte : texteDicte;
   };
-  rec.onerror = function(e) { console.warn("Erreur dictée :", e.error); };
+  
+  rec.onerror = function(e) {
+    console.warn("Erreur dictée :", e.error);
+  };
+  
   rec.onend = function() {
     champ.placeholder = ancienPlaceholder;
     champ.style.borderColor = "";
     champ.style.backgroundColor = "";
     champ.focus();
   };
+  
   rec.start();
 }
 
+// ── DICTÉE NOTE RAPIDE (DEPUIS L'ACCUEIL) ──
 function ouvrirModalDicteeNoteRapide() {
   var overlay = document.getElementById('overlay-dictee-note-rapide');
   if (!overlay) {
@@ -1301,6 +1614,7 @@ function ouvrirModalDicteeNoteRapide() {
     overlay.className = 'overlay open';
     overlay.style.cssText = 'position:fixed;inset:0;background:rgba(10,20,40,.45);z-index:600;display:flex;align-items:center;justify-content:center;padding:20px;';
     overlay.onclick = function(e) { if (e.target === overlay) fermerModalDicteeNoteRapide(); };
+    
     overlay.innerHTML = 
       '<div class="modal" style="max-width:400px;width:100%;background:#fff;border-radius:14px;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.2);" onclick="event.stopPropagation()">' +
         '<h3 style="font-size:16px;font-weight:700;margin-bottom:10px;color:var(--bleu);">🎤 Note rapide</h3>' +
@@ -1319,11 +1633,15 @@ function ouvrirModalDicteeNoteRapide() {
   }
 }
 
-function fermerModalDicteeNoteRapide() { var o = document.getElementById('overlay-dictee-note-rapide'); if (o) o.style.display = 'none'; }
+function fermerModalDicteeNoteRapide() {
+  var o = document.getElementById('overlay-dictee-note-rapide');
+  if (o) o.style.display = 'none';
+}
 
 function lancerDicteeNoteRapide() {
   if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-    alert("La dictée vocale n'est pas supportée par ce navigate    return;
+    alert("La dictée vocale n'est pas supportée par ce navigateur.");
+    return;
   }
   var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   var rec = new SR();
@@ -1372,129 +1690,6 @@ async function sauvegarderNoteRapide() {
     alert("❌ Erreur : " + e.message);
   }
 }
-
-async function chargerCatalogueConsommables() {
-  try { var r = await apiPost({action: 'lireCatalogue'}); if (r && r.ok && Array.isArray(r.data)) { catalogueConsommables = r.data; afficherAlerteStock(); } } catch(e) { console.warn('Catalogue non chargé : ' + e.message); }
-}
-
-function afficherAlerteStock() {
-  var ruptures = catalogueConsommables.filter(function(a) { return a.alerte === 'RUPTURE' || a.alerte === 'STOCK BAS'; });
-  var badge = document.getElementById('catalogue-alerte');
-  if (badge) { if (ruptures.length > 0) { badge.textContent = '⚠ ' + ruptures.length + ' article(s) en stock bas'; badge.style.display = 'inline-block'; badge.style.background = '#FFEBEE'; badge.style.color = '#D32F2F'; } else { badge.style.display = 'none'; } }
-}
-
-function rechercherArticle() {
-  var input = document.getElementById('achat-nom'), datalist = document.getElementById('datalist-catalogue'), valeur = input.value.trim().toLowerCase();
-  if (!datalist) return;
-  datalist.innerHTML = '';
-  if (!valeur || catalogueConsommables.length === 0) return;
-  var resultats = catalogueConsommables.filter(function(item) { return item.reference.toLowerCase().indexOf(valeur) !== -1 || item.designation.toLowerCase().indexOf(valeur) !== -1 || item.fournisseur.toLowerCase().indexOf(valeur) !== -1; }).slice(0, 15);
-  resultats.forEach(function(item) { var opt = document.createElement('option'); opt.value = item.designation; var infoStock = item.alerte === 'RUPTURE' ? '🔴 RUPTURE' : item.alerte === 'STOCK BAS' ? '🟡 BAS' : '🟢 OK'; opt.textContent = '[' + item.reference + '] ' + item.fournisseur + ' · ' + infoStock + ' · Stock: ' + item.stockRestant; datalist.appendChild(opt); });
-}
-
-function prefillAchatDepuisCatalogue() {
-  var input = document.getElementById('achat-nom'), valeur = input.value.trim().toLowerCase();
-  if (!valeur) return;
-  var trouve = catalogueConsommables.find(function(item) { return item.designation.toLowerCase() === valeur; });
-  if (trouve) {
-    var refEl = document.getElementById('achat-reference'); if (refEl) refEl.value = trouve.reference;
-    if (trouve.fournisseur) document.getElementById('achat-fournisseur').value = trouve.fournisseur;
-    var notes = document.getElementById('achat-notes');
-    if (notes && trouve.reference) { if (notes.value.indexOf(trouve.reference) === -1) notes.value = (notes.value ? notes.value + '\n' : '') + 'Réf inventaire: ' + trouve.reference + ' (Stock: ' + trouve.stockRestant + ' — ' + trouve.alerte + ')'; }
-    var info = document.getElementById('achat-info-stock');
-    if (info) { info.style.display = 'block'; var couleur = trouve.alerte === 'RUPTURE' ? '#D32F2F' : trouve.alerte === 'STOCK BAS' ? '#E65100' : '#2E7D32'; info.innerHTML = '<strong>Article :</strong> ' + trouve.designation + '<br><span style="color:' + couleur + ';">' + trouve.alerte + '</span> · Stock : <strong>' + trouve.stockRestant + '</strong>'; }
-    afficherToast('ok', '📖', 'Article trouvé', trouve.designation, 2000);
-  }
-}
-
-function afficherInventaireComplet() {
-  var existing = document.getElementById('inventaire-popup'); if (existing) existing.remove();
-  var popup = document.createElement('div'); popup.id = 'inventaire-popup'; popup.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:600;display:flex;align-items:center;justify-content:center;padding:20px;'; popup.onclick = function() { popup.remove(); };
-  var recherche = '';
-  function renderTable() {
-    var filtres = catalogueConsommables.filter(function(item) { if (!recherche) return true; var r = recherche.toLowerCase(); return item.reference.toLowerCase().indexOf(r) !== -1 || item.designation.toLowerCase().indexOf(r) !== -1 || item.fournisseur.toLowerCase().indexOf(r) !== -1; });
-    var ruptures = filtres.filter(function(a){ return a.alerte === 'RUPTURE'; }).length, bas = filtres.filter(function(a){ return a.alerte === 'STOCK BAS'; }).length, ok = filtres.filter(function(a){ return a.alerte === 'OK'; }).length;
-    var lignes = filtres.map(function(item) { var bg = item.alerte === 'RUPTURE' ? '#FFEBEE' : item.alerte === 'STOCK BAS' ? '#FFF3E0' : '#fff', couleur = item.alerte === 'RUPTURE' ? '#D32F2F' : item.alerte === 'STOCK BAS' ? '#E65100' : '#2E7D32'; return '<tr style="background:' + bg + ';"><td style="padding:8px;font-family:monospace;font-size:11px;">' + h(item.reference) + '</td><td style="padding:8px;font-size:12px;">' + h(item.designation) + '</td><td style="padding:8px;font-size:11px;color:#78909C;">' + h(item.fournisseur) + '</td><td style="padding:8px;text-align:center;font-weight:700;">' + item.stockRestant + '</td><td style="padding:8px;font-weight:700;color:' + couleur + ';">' + h(item.alerte) + '</td></tr>'; }).join('');
-    document.getElementById('inventaire-table-body').innerHTML = lignes;
-    document.getElementById('inventaire-stats').innerHTML = '<span style="color:#D32F2F;font-weight:700;">🔴 ' + ruptures + ' rupture(s)</span> · <span style="color:#E65100;font-weight:700;">🟡 ' + bas + ' stock bas</span> · <span style="color:#2E7D32;font-weight:700;">🟢 ' + ok + ' OK</span> · <span style="color:#78909C;">(' + filtres.length + ' article(s))</span>';
-  }
-  popup.innerHTML = '<div style="background:#fff;border-radius:14px;padding:24px;max-width:900px;width:100%;max-height:90vh;overflow:auto;box-shadow:0 20px 60px rgba(0,0,0,.3);" onclick="event.stopPropagation()"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;"><h3 style="font-size:16px;font-weight:700;">📖 Inventaire complet</h3><button onclick="document.getElementById(\'inventaire-popup\').remove()" style="background:#F5F7FA;border:none;border-radius:8px;width:30px;height:30px;cursor:pointer;font-size:16px;">✕</button></div><div style="margin-bottom:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;"><input type="text" id="inventaire-recherche" placeholder="🔍 Rechercher..." style="flex:1;min-width:200px;border:1.5px solid #E0E7EF;border-radius:7px;padding:8px 12px;font-size:13px;"><div id="inventaire-stats" style="font-size:11px;"></div></div><div style="max-height:60vh;overflow:auto;border:1px solid #E0E7EF;border-radius:8px;"><table style="width:100%;border-collapse:collapse;font-size:12px;"><thead style="position:sticky;top:0;background:#F5F7FA;"><tr><th style="padding:10px;text-align:left;font-size:11px;">Code</th><th style="padding:10px;text-align:left;font-size:11px;">Désignation</th><th style="padding:10px;text-align:left;font-size:11px;">Fournisseur</th><th style="padding:10px;text-align:center;font-size:11px;">Stock</th><th style="padding:10px;text-align:left;font-size:11px;">Alerte</th></tr></thead><tbody id="inventaire-table-body"></tbody></table></div></div>';
-  document.body.appendChild(popup); document.getElementById('inventaire-recherche').addEventListener('input', function(e) { recherche = e.target.value; renderTable(); }); renderTable();
-}
-
-function capturerAchatsEnCours() {
-  if (typeof html2canvas === 'undefined') { alert('Bibliothèque de capture indisponible.'); return; }
-  var items = achatsConsommables.filter(function(a){ return a.statut !== 'recu'; });
-  if (!items.length) { alert('Aucun achat en cours à capturer.'); return; }
-  
-  var container = document.createElement('div');
-  container.style.cssText = 'position:absolute; left:-9999px; top:0; width:1000px; background:#fff; padding:40px; font-family:Arial, sans-serif;';
-  var today = new Date().toLocaleDateString('fr-FR');
-  var html = '<div style="text-align:center; margin-bottom:30px;">' +
-             '<h1 style="color:#1565C0; margin:0 0 10px 0; font-size:24px;">ECO OUEST - Achats en cours</h1>' +
-             '<p style="color:#666; margin:0; font-size:14px;">Généré le ' + today + '</p></div>';
-  html += '<div style="display:grid; grid-template-columns: 12% 40% 8% 15% 15% 10%; gap: 10px; font-weight: bold; color: #546E7A; border-bottom: 2px solid #CFD8DC; padding-bottom: 10px; font-size: 13px;">' +
-          '<div>Réf.</div><div>Article</div><div style="text-align:center;">Qté</div><div>Fournisseur</div><div>Statut</div><div>Priorité</div></div>';
-  items.forEach(function(a) {
-    var statut = a.statut === 'commande' ? 'Commandé' : 'À acheter';
-    var color = a.statut === 'commande' ? '#1565C0' : '#E65100';
-    var pColor = a.priorite === 'haute' ? '#D32F2F' : a.priorite === 'basse' ? '#2E7D32' : '#E65100';
-    html += '<div style="display:grid; grid-template-columns: 12% 40% 8% 15% 15% 10%; gap: 10px; padding: 12px 0; border-bottom: 1px solid #E0E7EF; font-size: 13px; align-items: center; color: #333;">' +
-            '<div style="font-family:monospace; font-size:12px; color:#455A64;">' + h(a.reference || '—') + '</div>' +
-            '<div style="font-weight:bold; overflow-wrap: break-word;">' + h(a.nom) + '</div>' +
-            '<div style="text-align:center; font-weight:bold;">' + h(a.quantite) + '</div>' +
-            '<div>' + h(a.fournisseur || '—') + '</div>' +
-            '<div style="color:' + color + '; font-weight:bold;">' + statut + '</div>' +
-            '<div style="color:' + pColor + '; font-weight:bold;">' + h(a.priorite) + '</div>' +
-            '</div>';
-  });
-  container.innerHTML = html;
-  document.body.appendChild(container);
-  afficherToast('ok', '📸', 'Génération de l\'image...', 'Patientez', 2000);
-  html2canvas(container, { scale: 2, backgroundColor: '#ffffff' }).then(function(canvas) {
-    document.body.removeChild(container);
-    var link = document.createElement('a');
-    link.download = 'Achats_en_cours_' + new Date().toISOString().slice(0,10) + '.png';
-    link.href = canvas.toDataURL('image/png');
-    link.click();
-    afficherToast('ok', '✅', 'Image enregistrée', 'Vérifiez vos téléchargements', 3000);
-  }).catch(function(e) {
-    document.body.removeChild(container);
-    alert('Erreur lors de la capture : ' + e.message);
-  });
-}
-
-function ajouterOptionHorsListe(sel, v) { if (!sel||!v) return; var val=str(v), existe=false; for (var i=0;i<sel.options.length;i++){ if(sel.options[i].value===val){existe=true;break;} } if (!existe){ var opt=document.createElement('option'); opt.value=val; opt.textContent=val+' (hors liste)'; sel.appendChild(opt); } }
-
-function openModal(idx) { editLigne=-1; var c=idx>=0?commandes[idx]:{}; if(idx>=0)editLigne=c.ligne; document.getElementById('modal-title').textContent=idx>=0?'Modifier - '+str(c.client):'Nouvelle commande'; document.getElementById('btn-suppr').style.display=idx>=0?'inline-flex':'none'; ['client','devis','devisTTC','fournisseur','commande','arc','commentaireARC','prevLivraison','statutLivraison','statutPose'].forEach(function(f){ var el=document.getElementById('f-'+f); if(el) el.value=str(c[f]); }); ajouterOptionHorsListe(document.getElementById('f-fournisseur'),c.fournisseur); ajouterOptionHorsListe(document.getElementById('f-commande'),c.commande); ajouterOptionHorsListe(document.getElementById('f-commentaireARC'),c.commentaireARC); ajouterOptionHorsListe(document.getElementById('f-statutLivraison'),c.statutLivraison); ajouterOptionHorsListe(document.getElementById('f-statutPose'),c.statutPose); if(c.fournisseur) document.getElementById('f-fournisseur').value=str(c.fournisseur); if(c.commande) document.getElementById('f-commande').value=str(c.commande); if(c.commentaireARC) document.getElementById('f-commentaireARC').value=str(c.commentaireARC); if(c.statutLivraison) document.getElementById('f-statutLivraison').value=str(c.statutLivraison); if(c.statutPose) document.getElementById('f-statutPose').value=str(c.statutPose); var metEl=document.getElementById('f-metres'); if(metEl) metEl.value=c.metres?formatDateMetre(c.metres):''; var pvEl=document.getElementById('f-pvChantier'); if(pvEl) pvEl.checked=str(c.pvChantier).toUpperCase()==='OUI'; var dpEl=document.getElementById('f-datePose'); if(dpEl) dpEl.value=str(c.datePose); var objEl=document.getElementById('f-objetCommande'); if(objEl) objEl.value=str(c.objetCommande); document.getElementById('f-commentaire-historique').value=str(c.commentaire); var cmtNouv=document.getElementById('f-commentaire-nouveau'); if(cmtNouv) cmtNouv.value=''; document.getElementById('overlay').classList.add('open'); }
-
-function closeModal() { document.getElementById('overlay').classList.remove('open'); }
-function closeOut(e) { if (e.target.id==='overlay') closeModal(); }
-
-async function sauvegarder() { var c={}; ['client','devis','devisTTC','fournisseur','commande','arc','commentaireARC','prevLivraison','statutLivraison','statutPose'].forEach(function(f){ var el=document.getElementById('f-'+f); if(el) c[f]=el.value.trim(); }); var metresRaw=document.getElementById('f-metres'); if(metresRaw){ var valS=metresRaw.value.trim(); var o0=commandes.find(function(x){return x.ligne===editLigne;}); if(o0 && valS===(o0.metres?formatDateMetre(o0.metres):'')) c.metres=o0.metres; else c.metres=valS?(convertirEnDateISO(valS)||valS):''; } var pvEl=document.getElementById('f-pvChantier'); c.pvChantier=pvEl&&pvEl.checked?'OUI':'NON'; var dpEl2=document.getElementById('f-datePose'); c.datePose=dpEl2?dpEl2.value.trim():''; if(!c.client){alert('⚠️ Client obligatoire.');return;} var nouvTxt=document.getElementById('f-commentaire-nouveau').value.trim(), hist=document.getElementById('f-commentaire-historique').value||'', cmtFinal=hist; if(nouvTxt){var ds=new Date().toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'});cmtFinal=hist?hist+'\n['+ds+'] '+nouvTxt:'['+ds+'] '+nouvTxt;} c.commentaire=cmtFinal; var btnSave=document.querySelector('.modal-footer .btn-primary'), oldTxt=btnSave?btnSave.textContent:''; if(btnSave){btnSave.disabled=true;btnSave.textContent='⏳...';} document.getElementById('saving-msg').classList.add('active'); try { var res; if(editLigne>0){ var orig=commandes.find(function(x){return x.ligne===editLigne;}); if(!orig) throw new Error('Commande introuvable.'); var map={1:'client',2:'metres',3:'devis',4:'devisTTC',5:'fournisseur',6:'commande',7:'arc',9:'commentaireARC',10:'prevLivraison',12:'statutLivraison',13:'statutPose',14:'commentaire',16:'pvChantier',20:'datePose'}; var champs={}; Object.keys(map).forEach(function(col){var k=map[col], nouv=str(c[k]).trim(), anc=orig?str(orig[k]).trim():'';if(nouv!==anc)champs[col]=c[k];}); var objNouv=document.getElementById('f-objetCommande').value.trim(); if(!orig||objNouv!==str(orig.objetCommande).trim())champs.note_G=objNouv; if(!Object.keys(champs).length){closeModal();return;} res=await apiPost({action:'modifier', ligne:editLigne, clientAttendu:orig.client, champs:champs}); } else { res=await apiPost({action:'ajouter',commande:c}); } if(!res||!res.ok) throw new Error(res.error||'Erreur'); closeModal(); afficherToast('ok','✅','Enregistré','',2500); viderCache(); await charger(true); } catch(e) { afficherToast('urgent','❌','Erreur', e.message, 8000); } finally { if(btnSave){btnSave.disabled=false;btnSave.textContent=oldTxt;} document.getElementById('saving-msg').classList.remove('active'); } }
-
-async function supprimerCommande() { var c=commandes.find(function(x){return x.ligne===editLigne;}); if(!confirm('⚠️ Supprimer "'+str(c?c.client:'')+'" ?'))return; document.getElementById('saving-msg').classList.add('active'); try{var r=await apiPost({action:'supprimer',ligne:editLigne,clientAttendu:c?c.client:undefined});if(!r||!r.ok)throw new Error(r.error||'Erreur');closeModal();afficherToast('ok','🗑','Supprimé','',2500);viderCache();await charger(true);}catch(e){afficherToast('urgent','❌','Erreur',e.message,8000);} document.getElementById('saving-msg').classList.remove('active'); }
-
-function renderAlertes() { var g={3:[],2:[],1:[]}; commandes.forEach(function(c,i){var a=alerte(c);if(a.n>=1)g[a.n].push({c:c,i:i,a:a});}); var sec=[{n:3,lb:'Urgentes',dot:'#D32F2F',pBg:'#FFEBEE',pC:'#D32F2F'},{n:2,lb:'Attention',dot:'#E65100',pBg:'#FFF3E0',pC:'#E65100'},{n:1,lb:'Information',dot:'#F9A825',pBg:'#FFFDE7',pC:'#B7860B'}]; var html=''; sec.forEach(function(s){var items=g[s.n];if(!items.length)return;html+='<div class="alert-section"><div class="alert-section-title"><span class="dot-badge" style="background:'+s.dot+'"></span>'+s.lb+' ('+items.length+')</div>';items.forEach(function(it){var msgs=it.a.t.split(' | ');html+='<div class="alert-card"><div style="flex:1"><div class="alert-card-client">'+h(it.c.client)+(it.c.fournisseur?' <span style="font-size:11px;color:var(--texte2);">· '+h(it.c.fournisseur)+'</span>':'')+'</div><div class="alert-card-detail">'+msgs.map(function(m){return '• '+h(m);}).join(' ')+'</div>'+(it.c.commentaire?'<div class="alert-card-comment">💬 '+h(it.c.commentaire)+'</div>':'')+'</div><div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;"><span class="alert-pill" style="background:'+s.pBg+';color:'+s.pC+';">'+msgs.length+' alerte(s)</span><button class="btn btn-outline btn-sm" onclick="openModal('+it.i+')">✏️ Modifier</button></div></div>';});html+='</div>';}); if(!html)html='<div class="empty-state"><p>✅ Aucune alerte.</p></div>'; document.getElementById('alertes-content').innerHTML=html; }
-
-function showView(v) { document.querySelectorAll('.view').forEach(function(el){el.classList.remove('active');}); document.querySelectorAll('.nav-item').forEach(function(el){el.classList.remove('active');}); document.getElementById('view-'+v).classList.add('active'); var nv=document.getElementById('nav-'+v); if(nv)nv.classList.add('active'); var titles={suivi:'Suivi des commandes', alertes:'Alertes actives', taches:'Tâches & Notes', agent:'🤖 Agent IA', metre:'Dates de métré', dashboard:'Tableau de bord', flotte:'État de la flotte', suivipose:'Suivi de Pose', planning:'Planning', config:'Configuration'}; document.getElementById('topbar-title').textContent=titles[v]||v; if(v==='config'){document.getElementById('config-url-input').value=WEBAPP;document.getElementById('config-url-current').textContent=WEBAPP;document.getElementById('config-status').innerHTML='';} if(v==='alertes')renderAlertes(); if(v==='taches'){if(document.getElementById('sousmodule-achats-consommables').style.display!=='none')renderAchatsConsommables();else renderTaches();} if(v==='agent')chargerRapportAgent(); if(v==='metre')renderMetre(); if(v==='dashboard')renderDashboard(); if(v==='flotte')chargerFlotte(); if(v==='suivipose'){renderSuiviPose();setTimeout(traduireCommentairesPoseurs,500);} if(v==='planning')renderPlanning(); }
-
-function showView(v) { document.querySelectorAll('.view').forEach(function(el){el.classList.remove('active');}); document.querySelectorAll('.nav-item').forEach(function(el){el.classList.remove('active');}); document.getElementById('view-'+v).classList.add('active'); var nv=document.getElementById('nav-'+v); if(nv)nv.classList.add('active'); var titles={suivi:'Suivi des commandes', alertes:'Alertes actives', taches:'Tâches & Notes', agent:'🤖 Agent IA', metre:'Dates de métré', dashboard:'Tableau de bord', flotte:'État de la flotte', suivipose:'Suivi de Pose', planning:'Planning', config:'Configuration'}; document.getElementById('topbar-title').textContent=titles[v]||v; if(v==='config'){document.getElementById('config-url-input').value=WEBAPP;document.getElementById('config-url-current').textContent=WEBAPP;document.getElementById('config-status').innerHTML='';} if(v==='alertes')renderAlertes(); if(v==='taches'){if(document.getElementById('sousmodule-achats-consommables').style.display!=='none')renderAchatsConsommables();else renderTaches();} if(v==='agent')chargerRapportAgent(); if(v==='metre')renderMetre(); if(v==='dashboard')renderDashboard(); if(v==='flotte')chargerFlotte(); if(v==='suivipose'){renderSuiviPose();setTimeout(traduireCommentairesPoseurs,500);} if(v==='planning')renderPlanning(); }
-
-function fillFournisseur(){var base=['ATLANTEM','ATULAM','LALLEMANT','SOKO','ALUGLASS','FILTERSUN','DC PROD','KE FRANCE','SKYLUX','BVL SERRULAC','LEROY MERLIN','FOUSSIER','STOCK'];var fous=base.slice();commandes.forEach(function(c){if(c.fournisseur&&fous.indexOf(c.fournisseur)===-1)fous.push(c.fournisseur);});fous.sort();var sel=document.getElementById('filter-fournisseur');if(sel){var cf=sel.value;sel.innerHTML='<option value="">Tous fournisseurs</option>';fous.forEach(function(f){var o=document.createElement('option');o.value=f;o.textContent=f;sel.appendChild(o);});sel.value=cf;}var sm=document.getElementById('f-fournisseur');if(sm){var cur=sm.value;sm.innerHTML='<option value="">— Choisir —</option>';fous.forEach(function(f){var o=document.createElement('option');o.value=f;o.textContent=f;sm.appendChild(o);});sm.value=cur;}}
-
-function actualiserTout() {
-  viderCache();
-  charger(true);
-  chargerTachesNotes();
-  chargerAchatsConsommables();
-  chargerCatalogueConsommables();
-  chargerFlotte();
-}
-
-charger();
-setTimeout(function(){showView('suivi');},100);
 </script>
 </body>
 </html>
-      
