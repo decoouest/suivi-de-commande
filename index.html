@@ -639,24 +639,78 @@ function semaineBadge(s) { if (!s||!str(s).trim()) return '<span style="color:#c
 function getWeekNumber(d) { d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())); d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7)); var ys = new Date(Date.UTC(d.getUTCFullYear(),0,1)); return Math.ceil((((d-ys)/86400000)+1)/7); }
 function aClass(n) { return n===0?'alerte-ok':n===1?'alerte-jaune':n===2?'alerte-orange':n===3?'alerte-rouge':''; }
 
-async function apiPost(body, tentative) {
-  tentative = tentative || 1;
+async function apiPost(body) {
+  // 1. On tente d'abord avec fetch (pour le PC, qui fonctionne bien)
   var delai = (body && body.action === 'analyserAgent') ? 90000 : 60000;
-  var timeoutId = null;
   try {
     var controller = new AbortController();
-    timeoutId = setTimeout(function(){ controller.abort(); }, delai);
-    var r = await fetch(WEBAPP, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify(body), redirect:'follow', signal:controller.signal });
-    if (!r.ok) throw new Error('HTTP ' + r.status);
-    var texte = await r.text();
-    if (texte.trim().substring(0,1) === '<') throw new Error('Réponse HTML');
-    return JSON.parse(texte);
-  } catch(e) {
-    var msg = e.name === 'AbortError' ? 'Délai dépassé (' + (delai/1000) + ' s)' : (e.message || 'Erreur réseau');
-    throw new Error(msg);
-  } finally { if (timeoutId !== null) clearTimeout(timeoutId); }
-}
+    var timeoutId = setTimeout(function(){ controller.abort(); }, delai);
+    var r = await fetch(WEBAPP, { 
+      method: 'POST', 
+      headers: {'Content-Type': 'text/plain;charset=utf-8'}, 
+      body: JSON.stringify(body), 
+      redirect: 'follow', 
+      signal: controller.signal 
+    });
+    clearTimeout(timeoutId);
+    
+    if (r.ok) {
+      var texte = await r.text();
+      if (texte.trim().substring(0,1) !== '<') {
+        return JSON.parse(texte);
+      }
+    }
+    throw new Error("Echec fetch (CORS probable)");
+  } catch (e) {
+    // 2. Si le fetch échoue (ce qui arrive sur mobile), on bascule sur la méthode Formulaire
+    console.warn("Fetch bloqué (CORS), bascule sur la méthode formulaire pour mobile...");
+    return new Promise(function(resolve, reject) {
+      var form = document.createElement('form');
+      form.method = 'POST';
+      form.action = WEBAPP;
+      form.target = 'hidden_iframe_' + Date.now(); 
+      form.style.display = 'none';
+      var input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = 'payload';
+      input.value = JSON.stringify(body);
+      form.appendChild(input);
+      
+      var iframeName = form.target;
+      var iframe = document.createElement('iframe');
+      iframe.name = iframeName;
+      iframe.style.display = 'none';
+      document.body.appendChild(iframe);
 
+      // Sécurité anti-blocage (si le serveur ne répond jamais)
+      var timeoutForm = setTimeout(function() {
+        document.body.removeChild(form);
+        document.body.removeChild(iframe);
+        reject(new Error("Délai dépassé (Formulaire)"));
+      }, delai);
+
+      iframe.onload = function() {
+        clearTimeout(timeoutForm);
+        try {
+          var responseText = iframe.contentWindow.document.body.innerText;
+          if (responseText) {
+            resolve(JSON.parse(responseText));
+          } else {
+            reject(new Error("Réponse vide"));
+          }
+        } catch(err) {
+          reject(new Error("Erreur lecture: " + err.message));
+        } finally {
+          document.body.removeChild(form);
+          document.body.removeChild(iframe);
+        }
+      };
+
+      document.body.appendChild(form);
+      form.submit();
+    });
+  }
+}
 function chargerDepuisCache() { try { var ts = parseInt(localStorage.getItem(CACHE_TIME_KEY) || '0'), age = Date.now()-ts; if (age<CACHE_DUREE) { var cached = localStorage.getItem(CACHE_KEY); if (cached) { commandes = JSON.parse(cached); var t = new Date(ts).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}); sync('ok','Cache · '+t); fillFournisseur(); renderAll(); setLoader(false); return true; } } } catch(e) {} return false; }
 function sauvegarderCache(d) { try { localStorage.setItem(CACHE_KEY, JSON.stringify(d)); localStorage.setItem(CACHE_TIME_KEY, String(Date.now())); } catch(e) {} }
 function viderCache() { try { localStorage.removeItem(CACHE_KEY); localStorage.removeItem(CACHE_TIME_KEY); } catch(e) {} }
