@@ -597,7 +597,7 @@ textarea.task-input{resize:vertical}
 </div></div>
 
 <script>
-var WEBAPP_DEFAULT = 'https://script.google.com/macros/s/AKfycbxKxXOOYCNQkItK2k7dIr4j8iWWSwx0souGSLLFvX9FXjZJEimLDwyHjI4PkDz0i-tU/exec';
+var WEBAPP_DEFAULT = 'https://script.google.com/macros/s/AKfycbwneVgK1lXdVXFwPaGtXEapMLI95dos3wswmRSHMcHBj8IpMQ2-n5TPcJaPvFhCKB1Z/exec';
 var WEBAPP = localStorage.getItem('eco-webapp-url') || WEBAPP_DEFAULT;
 var FOU_COLORS = {'ATLANTEM':'#1565C0','ATULAM':'#6A1B9A','LALLEMANT':'#2E7D32','SOKO':'#00695C','ALUGLASS':'#E65100','FILTERSUN':'#C62828','DC PROD':'#37474F','KE FRANCE':'#0277BD','SKYLUX':'#558B2F','BVL SERRULAC':'#4527A0','LEROY MERLIN':'#1B5E20','FOUSSIER':'#6D4C41','STOCK':'#546E7A'};
 var TERMINES = ['livre','termine','pose'];
@@ -740,205 +740,305 @@ function sortBy(col){if(sortCol===col)sortAsc=!sortAsc;else{sortCol=col;sortAsc=
 function setFilter(f){alertFilter=f;['all','urgent','warn','ok'].forEach(function(k){document.getElementById('fb-'+k).classList.toggle('active',k===f);});document.getElementById('fb-sav').classList.toggle('sav-active',f==='sav');document.getElementById('fb-noncmd').classList.toggle('noncmd-active',f==='noncmd');renderTable();}
 function afficherObjetParLigne(e,ligne){if(e)e.stopPropagation();var c=commandes.find(function(x){return x.ligne===ligne;});if(!c||!c.objetCommande)return;afficherObjet(null,c.objetCommande);}
 
-//  MODULE FLOTTE — Vue simplifiée (v16.0)
-function renderFlotte() {
-  var box = document.getElementById('flotte-alertes');
-  if (!box) return;
-  
-  if (!flotteVehicules || !flotteVehicules.length) {
-    box.innerHTML = '<div style="text-align:center;padding:40px;color:#2E7D32;font-weight:700;background:#E8F5E9;border-radius:12px;border:2px dashed #A5D6A7;">🟢 Aucun véhicule enregistré.</div>';
-    return;
-  }
+// ── MODULE FLOTTE (MODE ALERTES) ──
+async function chargerFlotte() {
+  try {
+    var rV = await apiPost({ action: 'lireVehicules' });
+    if (rV.ok) {
+      flotteVehicules = rV.data;
+      renderFlotte();
+    }
+  } catch(e) { console.warn("Erreur chargement flotte :", e.message); }
+}
 
-  var auj = new Date(); auj.setHours(0,0,0,0);
-  var MS_JOUR = 1000 * 60 * 60 * 24;
-  
-  var urgents = [], attn = [], okListe = [];
+function renderFlotte() {
+  var containerAlertes = document.getElementById('flotte-alertes');
+  var containerOK = document.getElementById('flotte-ok-list');
+  var btnToggleOK = document.getElementById('btn-toggle-ok');
+  if (!containerAlertes) return;
+
+  var aujourdhui = new Date();
+  var listeUrgents = [];
+  var listeAttention = [];
+  var listeOK = [];
 
   flotteVehicules.forEach(function(v) {
-    var badges = [], sevMax = 0;
-    
-    function addBadge(sev, bg, color, icon, txt, sub) {
-      badges.push({ sev: sev, bg: bg, color: color, icon: icon, txt: txt, sub: sub || '' });
-      if (sev > sevMax) sevMax = sev;
-    }
+    var alertesVehicule = [];
+    var infosIntervention = [];
 
-    // 1. Contrôle technique
-    if (v.prochainCT) {
-      var dCT = new Date(v.prochainCT);
-      if (!isNaN(dCT.getTime())) {
-        var jCT = Math.ceil((dCT - auj) / MS_JOUR);
-        if (jCT < 0) addBadge(3, '#FFEBEE', '#C62828', '🛑', 'CT expiré', 'depuis ' + Math.abs(jCT) + ' j');
-        else if (jCT <= 30) addBadge(2, '#FFF3E0', '#E65100', '📅', 'CT dans ' + jCT + ' j', '');
-      }
-    } else {
-      addBadge(2, '#FFF3E0', '#E65100', '❓', 'CT non renseigné', '');
-    }
-
-    // 2. Assurance
-    if (v.dateAssurance) {
-      var dAssur = new Date(v.dateAssurance);
-      if (!isNaN(dAssur.getTime())) {
-        var jAss = Math.ceil((dAssur - auj) / MS_JOUR);
-        if (jAss < 0) addBadge(3, '#FFEBEE', '#C62828', '🛡️', 'Assurance expirée', 'depuis ' + Math.abs(jAss) + ' j');
-        else if (jAss <= 30) addBadge(2, '#FFF3E0', '#E65100', '🛡️', 'Assurance : ' + jAss + ' j', '');
-      }
-    }
-
-    // 3. Révision
-    if (v.kmRevision > 0 && v.kmActuel > 0) {
-      var kmRest = 30000 - (v.kmActuel - v.kmRevision);
-      if (kmRest <= 0) addBadge(3, '#FFEBEE', '#C62828', '🔧', 'Révision en retard', 'de ' + Math.abs(kmRest) + ' km');
-      else if (kmRest <= 2000) addBadge(2, '#FFF3E0', '#E65100', '🔧', 'Révision dans ' + kmRest + ' km', '');
-    }
-
-    // 4. Pneus / Pièces
-    if (v.type) {
-      var typeUp = String(v.type).toUpperCase();
-      if (typeUp === 'PNEUS' || typeUp.indexOf('PIÈCES') !== -1 || typeUp.indexOf('PIECES') !== -1) {
-        var dateValid = v.dateIntervention && !isNaN(new Date(v.dateIntervention).getTime());
-        var recent = false;
-        
-        if (dateValid) {
-          var dInt = new Date(v.dateIntervention);
-          var jInt = Math.ceil((auj - dInt) / MS_JOUR);
-          if (jInt >= 0 && jInt < 30) {
-            recent = true;
-            addBadge(1, '#E3F2FD', '#1565C0', '✅', typeUp, 'fait il y a ' + jInt + ' j');
-          } else {
-            var mois = (auj.getFullYear() - dInt.getFullYear()) * 12 + (auj.getMonth() - dInt.getMonth());
-            if (mois >= 60) addBadge(3, '#FFEBEE', '#C62828', '⚫', typeUp, 'plus de 5 ans');
-            else if (mois >= 55) addBadge(2, '#FFF3E0', '#E65100', '⚫', typeUp, 'bientôt 5 ans');
-          }
-        }
-        
-        if (!recent && v.kmIntervention > 0 && v.kmActuel > 0) {
-          var kmInt = v.kmActuel - v.kmIntervention;
-          if (kmInt >= 40000) addBadge(3, '#FFEBEE', '#C62828', '⚫', typeUp + ' usés', kmInt + ' km');
-          else if (kmInt >= 38000) addBadge(2, '#FFF3E0', '#E65100', '⚫', typeUp + ' à prévoir', kmInt + ' km');
-        }
-      }
-    }
-
-    // 5. Urgence manuelle
     if (v.urgence === 'haute' && v.description) {
-      var descShort = v.description.length > 40 ? v.description.substring(0,40) + '…' : v.description;
-      addBadge(3, '#FFEBEE', '#C62828', '🚨', v.type || 'URGENT', descShort);
-    } else if (v.description && v.type) {
-      var descShort2 = v.description.length > 40 ? v.description.substring(0,40) + '…' : v.description;
-      addBadge(1, '#E3F2FD', '#1565C0', '📝', v.type, descShort2);
+      alertesVehicule.push({ sev: 3, txt: '🚨 ACTION URGENTE : ' + v.type + ' — ' + v.description });
     }
 
-    var item = { v: v, badges: badges };
-    if (sevMax >= 3) urgents.push(item);
-    else if (sevMax === 2) attn.push(item);
-    else okListe.push(item);
+    if (v.prochainCT) {
+      var dateCT = new Date(v.prochainCT);
+      var joursCT = Math.ceil((dateCT - aujourdhui) / (1000 * 60 * 60 * 24));
+      if (joursCT < 0) alertesVehicule.push({ sev: 3, txt: 'Contrôle technique expiré depuis ' + Math.abs(joursCT) + ' jours' });
+      else if (joursCT <= 30) alertesVehicule.push({ sev: 2, txt: 'Contrôle technique dans ' + joursCT + ' jours' });
+    } else {
+      alertesVehicule.push({ sev: 2, txt: 'Date de contrôle technique manquante' });
+    }
+
+    if (v.kmRevision > 0) {
+      var kmDepuisRev = v.kmActuel - v.kmRevision;
+      var resteRev = 30000 - kmDepuisRev;
+      if (resteRev <= 0) alertesVehicule.push({ sev: 3, txt: 'Révision dépassée de ' + Math.abs(resteRev) + ' km' });
+      else if (resteRev <= 2000) alertesVehicule.push({ sev: 2, txt: 'Révision dans ' + resteRev + ' km' });
+    }
+
+    if (v.type && (v.type.toUpperCase() === 'PNEUS' || v.type.toUpperCase().indexOf('PIÈCES') !== -1)) {
+      var estRecent = false;
+      if (v.dateIntervention) {
+        var dateInter = new Date(v.dateIntervention);
+        var joursDepuis = Math.ceil((aujourdhui - dateInter) / (1000 * 60 * 60 * 24));
+        
+        if (joursDepuis < 30 && joursDepuis >= 0) {
+          estRecent = true;
+          alertesVehicule.push({ sev: 0, txt: '✅ ' + v.type + ' FAITS RÉCEMMENT (il y a ' + joursDepuis + ' j)' });
+        } else {
+          var moisDepuis = (aujourdhui.getFullYear() - dateInter.getFullYear()) * 12 + (aujourdhui.getMonth() - dateInter.getMonth());
+          if (moisDepuis >= 60) alertesVehicule.push({ sev: 3, txt: v.type + ' à changer (plus de 5 ans)' });
+          else if (moisDepuis >= 55) alertesVehicule.push({ sev: 2, txt: v.type + ' à prévoir (bientôt 5 ans)' });
+        }
+      }
+      
+      if (!estRecent && v.kmIntervention > 0) {
+        var kmDepuis = v.kmActuel - v.kmIntervention;
+        if (kmDepuis >= 40000) alertesVehicule.push({ sev: 3, txt: v.type + ' usés (' + kmDepuis + ' km)' });
+        else if (kmDepuis >= 38000) alertesVehicule.push({ sev: 2, txt: v.type + ' à prévoir (' + kmDepuis + ' km)' });
+      }
+    }
+
+    if (v.dateAssurance) {
+      var dateAssur = new Date(v.dateAssurance);
+      var joursAssur = Math.ceil((dateAssur - aujourdhui) / (1000 * 60 * 60 * 24));
+      if (joursAssur < 0) alertesVehicule.push({ sev: 3, txt: 'Assurance expirée !' });
+      else if (joursAssur <= 30) alertesVehicule.push({ sev: 2, txt: 'Assurance à renouveler dans ' + joursAssur + ' jours' });
+    }
+
+    if (v.type || v.description || v.dateIntervention) {
+      var badgeUrgence = v.urgence === 'haute' ? '🔴 <strong>URGENT</strong> : ' : '🔧 ';
+      var txt = badgeUrgence + '<strong>' + h(v.type || 'Intervention') + '</strong>';
+      if (v.dateIntervention) {
+        var d = new Date(v.dateIntervention);
+        txt += ' le ' + d.toLocaleDateString('fr-FR');
+      }
+      if (v.kmIntervention > 0) txt += ' à ' + v.kmIntervention + ' km';
+      if (v.description) txt += '<br><span style="color:#333;">« ' + h(v.description) + ' »</span>';
+      
+      if (v.type && v.dateIntervention && Math.ceil((aujourdhui - new Date(v.dateIntervention)) / (1000 * 60 * 60 * 24)) < 30) {
+         txt = '✅ ' + txt.replace('🔧 ', '');
+      }
+      
+      infosIntervention.push(txt);
+    }
+
+    if (alertesVehicule.length > 0) {
+      var severiteMax = Math.max.apply(null, alertesVehicule.map(function(a) { return a.sev; }));
+      if (severiteMax === 3) listeUrgents.push({ v: v, alertes: alertesVehicule, infos: infosIntervention });
+      else if (severiteMax === 2) listeAttention.push({ v: v, alertes: alertesVehicule, infos: infosIntervention });
+      else listeOK.push({ v: v, alertes: alertesVehicule, infos: infosIntervention });
+    } else {
+      listeOK.push({ v: v, infos: infosIntervention });
+    }
   });
 
-  function genererCarte(item, typeCls) {
-    var v = item.v;
-    var borderLeft = typeCls === 'urgent' ? '#D32F2F' : (typeCls === 'warn' ? '#E65100' : '#2E7D32');
+  function genererCarte(item, type) {
+    var color = type === 'urgent' ? 'var(--rouge)' : 'var(--orange)';
+    var icon = type === 'urgent' ? '🔴' : '🟠';
     
-    var badgesHtml = item.badges.map(function(b) {
-      return '<div style="display:inline-flex; align-items:center; gap:6px; background:' + b.bg + '; color:' + b.color + '; padding:6px 12px; border-radius:8px; font-size:13px; font-weight:700; margin:4px 4px 4px 0; border:1px solid ' + b.color + '40;">' +
-        '<span>' + b.icon + '</span>' +
-        '<span>' + h(b.txt) + '</span>' +
-        (b.sub ? '<span style="font-weight:500; opacity:0.85; font-size:11px;">' + h(b.sub) + '</span>' : '') +
-      '</div>';
+    var lignesAlertes = item.alertes.map(function(a) {
+      var txt = a.txt;
+      if (txt.indexOf('ACTION URGENTE') !== -1) {
+        return '<li style="font-size:13px; margin-bottom:6px; font-weight:700; color:var(--rouge); background:#FFEBEE; padding:6px 10px; border-radius:6px;">' + txt + '</li>';
+      }
+      if (txt.indexOf('FAITS RÉCEMMENT') !== -1 || txt.indexOf('FAIT RÉCEMMENT') !== -1) {
+        return '<li style="font-size:13px; margin-bottom:6px; font-weight:700; color:var(--vert); background:#E8F5E9; padding:6px 10px; border-radius:6px;">' + txt + '</li>';
+      }
+      return '<li style="font-size:13px; margin-bottom:4px;">' + txt + '</li>';
     }).join('');
-    
-    var critHtml = '';
-    if (v.critAir) {
-      var bg = v.critAir==='0'?'#2E7D32':v.critAir==='1'?'#8E24AA':v.critAir==='2'?'#43A047':v.critAir==='3'?'#F57C00':v.critAir==='4'?'#AD1457':'#757575';
-      critHtml = '<span style="font-size:11px; font-weight:800; color:#fff; background:' + bg + '; padding:2px 8px; border-radius:6px; margin-left:10px;">Crit\'Air ' + h(v.critAir) + '</span>';
+
+    var detailsHtml = '';
+    if (item.infos.length > 0) {
+      detailsHtml = '<div class="flotte-details-box">' + item.infos.join('<br>') + '</div>';
     }
-    
-    return '<div style="background:#fff; border-radius:12px; border:1px solid #E0E7EF; border-left:6px solid ' + borderLeft + '; padding:16px 20px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:flex-start; gap:16px; box-shadow:0 2px 6px rgba(0,0,0,0.02);">' +
-      
+
+    var critAirBadge = '';
+    if (item.v.critAir) {
+      var bgCrit = item.v.critAir==='0'?'#2E7D32':item.v.critAir==='1'?'#8E24AA':item.v.critAir==='2'?'#43A047':item.v.critAir==='3'?'#F57C00':item.v.critAir==='4'?'#AD1457':'#757575';
+      critAirBadge = ' <span style="font-size:10px; font-weight:700; padding:2px 6px; border-radius:4px; margin-left:6px; color:#fff; background:' + bgCrit + ';">Crit\'Air ' + h(item.v.critAir) + '</span>';
+    }
+
+    return '<div class="flotte-alerte-card ' + type + '">' +
       '<div style="flex:1;">' +
-        // Ligne du titre
-        '<div style="display:flex; align-items:center; flex-wrap:wrap; margin-bottom:12px;">' +
-          '<span style="font-size:16px; font-weight:800; color:#1A1A2E;">' + h(v.id) + '</span>' +
-          '<span style="font-size:14px; font-weight:600; color:#546E7A; margin-left:10px;">' + h(v.modele || '—') + '</span>' +
-          '<span style="font-family:monospace; font-size:12px; font-weight:700; color:#546E7A; background:#F5F7FA; padding:3px 10px; border-radius:6px; margin-left:10px;">' + h(v.immat || '—') + '</span>' +
-          critHtml +
-        '</div>' +
-        // Ligne des badges
-        '<div style="display:flex; flex-wrap:wrap;">' + 
-          (badgesHtml || '<div style="display:inline-flex; align-items:center; gap:6px; background:#E8F5E9; color:#2E7D32; padding:6px 12px; border-radius:8px; font-size:13px; font-weight:700; border:1px solid #C8E6C9;"><span>✅</span> Aucune alerte</div>') + 
-        '</div>' +
+        '<div class="flotte-alerte-titre">' + icon + ' ' + h(item.v.id) + ' - ' + h(item.v.modele) + ' <span style="font-size:11px; color:var(--texte2); font-weight:normal;">(' + h(item.v.immat) + ')</span>' + critAirBadge + '</div>' +
+        '<ul class="flotte-alerte-liste" style="list-style:none; padding-left:0;">' + lignesAlertes + '</ul>' +
+        detailsHtml +
       '</div>' +
-      
-      // Boutons d'action
-      '<div style="display:flex; flex-direction:column; gap:6px;">' +
-        '<button onclick="ouvrirModalVehicule(\'' + h(v.id).replace(/'/g, "\\'") + '\')" style="background:#F5F7FA; border:1px solid #CFD8DC; border-radius:8px; padding:8px 12px; font-size:16px; cursor:pointer; transition:all 0.2s;" onmouseover="this.style.background=\'#E3F2FD\'" onmouseout="this.style.background=\'#F5F7FA\'" title="Modifier">✏️</button>' +
-        '<button onclick="afficherHistoriqueVehicule(\'' + h(v.id).replace(/'/g, "\\'") + '\')" style="background:#F5F7FA; border:1px solid #CFD8DC; border-radius:8px; padding:8px 12px; font-size:16px; cursor:pointer; transition:all 0.2s;" onmouseover="this.style.background=\'#E3F2FD\'" onmouseout="this.style.background=\'#F5F7FA\'" title="Historique">📜</button>' +
+      '<div style="display:flex; flex-direction:column; gap:5px;">' +
+        '<button class="btn btn-outline btn-sm" onclick="ouvrirModalVehicule(\'' + item.v.id + '\')" style="border-color:' + color + '; color:' + color + ';">✏️ Mettre à jour</button>' +
+        '<button class="btn btn-outline btn-sm" onclick="afficherHistoriqueVehicule(\'' + item.v.id + '\')" style="border-color:var(--bleu); color:var(--bleu);">📜 Historique</button>' +
       '</div>' +
-      
     '</div>';
   }
 
   var html = '';
-  if (urgents.length) {
-    html += '<div style="font-size:14px; font-weight:800; color:#D32F2F; text-transform:uppercase; letter-spacing:1px; margin:20px 0 10px;">🔴 À TRAITER D\'URGENCE (' + urgents.length + ')</div>';
-    html += urgents.map(function(it){ return genererCarte(it, 'urgent'); }).join('');
+  if (listeUrgents.length > 0) {
+    html += '<div style="margin-bottom:15px;"><div style="font-size:12px; font-weight:700; text-transform:uppercase; color:var(--rouge); margin-bottom:8px;">🔴 Urgent (' + listeUrgents.length + ')</div>';
+    listeUrgents.forEach(function(item) { html += genererCarte(item, 'urgent'); });
+    html += '</div>';
   }
-  if (attn.length) {
-    html += '<div style="font-size:14px; font-weight:800; color:#E65100; text-transform:uppercase; letter-spacing:1px; margin:20px 0 10px;">🟠 À PRÉVOIR (' + attn.length + ')</div>';
-    html += attn.map(function(it){ return genererCarte(it, 'warn'); }).join('');
-  }
-  if (okListe.length) {
-    html += '<div style="font-size:14px; font-weight:800; color:#2E7D32; text-transform:uppercase; letter-spacing:1px; margin:20px 0 10px;">🟢 À JOUR (' + okListe.length + ')</div>';
-    html += okListe.map(function(it){ return genererCarte(it, 'ok'); }).join('');
+  if (listeAttention.length > 0) {
+    html += '<div style="margin-bottom:15px;"><div style="font-size:12px; font-weight:700; text-transform:uppercase; color:var(--orange); margin-bottom:8px;">🟠 À prévoir (' + listeAttention.length + ')</div>';
+    listeAttention.forEach(function(item) { html += genererCarte(item, 'attention'); });
+    html += '</div>';
   }
   
-  box.innerHTML = html;
+  if (!html && listeOK.length === 0) {
+    html = '<div style="text-align:center; padding:40px; color:var(--vert); font-weight:600; font-size:16px;">🟢 Aucun véhicule enregistré.</div>';
+  }
+  containerAlertes.innerHTML = html;
+
+  btnToggleOK.style.display = 'none';
+  containerOK.style.display = 'block';
+  containerOK.style.marginTop = '20px';
+  
+  if (listeOK.length > 0) {
+    var htmlOK = '<div style="font-size:12px; font-weight:700; text-transform:uppercase; color:var(--vert); margin-bottom:8px;">🟢 Véhicules à jour (' + listeOK.length + ')</div>';
+    htmlOK += listeOK.map(function(item) {
+      var detailsHtml = '';
+      if (item.infos.length > 0) {
+        detailsHtml = '<div style="margin-top:5px; font-size:10px; color:#546E7A;">' + item.infos.join(' — ') + '</div>';
+      }
+      
+      var alerteHtml = '';
+      if (item.alertes && item.alertes.length > 0) {
+        alerteHtml = '<div style="margin-top:5px; font-size:11px; color:var(--vert); font-weight:700;">' + item.alertes[0].txt + '</div>';
+      }
+      
+      var critAirBadge = '';
+      if (item.v.critAir) {
+        var bgCrit = item.v.critAir==='0'?'#2E7D32':item.v.critAir==='1'?'#8E24AA':item.v.critAir==='2'?'#43A047':item.v.critAir==='3'?'#F57C00':item.v.critAir==='4'?'#AD1457':'#757575';
+        critAirBadge = ' <span style="font-size:10px; font-weight:700; padding:2px 6px; border-radius:4px; color:#fff; background:' + bgCrit + ';">Crit\'Air ' + h(item.v.critAir) + '</span>';
+      }
+
+      return '<div class="flotte-ok-item" style="opacity:1;">' +
+        '<div><strong>' + h(item.v.id) + '</strong> - ' + h(item.v.modele) + ' <span style="font-size:11px; color:var(--texte2);">(' + h(item.v.immat) + ')</span>' + critAirBadge + alerteHtml + detailsHtml + '</div>' +
+        '<div style="display:flex; gap:5px;">' +
+          '<button class="action-btn" onclick="afficherHistoriqueVehicule(\'' + item.v.id + '\')" title="Historique">📜</button>' +
+          '<button class="action-btn" onclick="ouvrirModalVehicule(\'' + item.v.id + '\')">✏️</button>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+    containerOK.innerHTML = htmlOK;
+  } else {
+    containerOK.innerHTML = '';
+  }
 }
 
+async function afficherHistoriqueVehicule(idVehicule) {
+  var overlay = document.getElementById('overlay-historique');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'overlay-historique';
+    overlay.className = 'overlay open';
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(10,20,40,.6);z-index:700;display:flex;align-items:center;justify-content:center;padding:20px;';
+    overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
+    
+    overlay.innerHTML = 
+      '<div class="modal" style="max-width:700px;width:100%;background:#fff;border-radius:14px;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.3);max-height:90vh;overflow-y:auto;" onclick="event.stopPropagation()">' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">' +
+          '<h3 style="font-size:16px;font-weight:700;color:var(--bleu);" id="histo-titre">Historique</h3>' +
+          '<button onclick="document.getElementById(\'overlay-historique\').remove()" style="background:#F5F7FA;border:none;border-radius:8px;width:30px;height:30px;cursor:pointer;font-size:16px;">✕</button>' +
+        '</div>' +
+        '<div id="histo-content" style="font-size:13px;">Chargement...</div>' +
+      '</div>';
+    document.body.appendChild(overlay);
+  }
+  
+  document.getElementById('histo-titre').textContent = 'Historique - ' + idVehicule;
+  document.getElementById('histo-content').innerHTML = '<div style="text-align:center;padding:20px;">⏳ Chargement...</div>';
+  
+  try {
+    var r = await apiPost({action: 'lireHistoriqueVehicule', id: idVehicule});
+    if (!r || !r.ok) throw new Error(r.error || 'Erreur');
+    
+    if (!r.data || r.data.length === 0) {
+      document.getElementById('histo-content').innerHTML = '<div style="text-align:center;padding:20px;color:var(--texte2);">Aucun historique pour ce véhicule.</div>';
+      return;
+    }
+    
+    var html = '<table style="width:100%;border-collapse:collapse;font-size:12px;">' +
+      '<thead><tr style="background:#F5F7FA;text-align:left;">' +
+        '<th style="padding:8px;border-bottom:1px solid #ddd;">Type</th>' +
+        '<th style="padding:8px;border-bottom:1px solid #ddd;">Description</th>' +
+        '<th style="padding:8px;border-bottom:1px solid #ddd;">Date</th>' +
+        '<th style="padding:8px;border-bottom:1px solid #ddd;">Km</th>' +
+        '<th style="padding:8px;border-bottom:1px solid #ddd;">Coût</th>' +
+      '</tr></thead><tbody>';
+      
+    r.data.forEach(function(h) {
+      html += '<tr>' +
+        '<td style="padding:8px;border-bottom:1px solid #eee;"><strong>' + h.type + '</strong></td>' +
+        '<td style="padding:8px;border-bottom:1px solid #eee;">' + h.description + '</td>' +
+        '<td style="padding:8px;border-bottom:1px solid #eee;">' + h.dateIntervention + '</td>' +
+        '<td style="padding:8px;border-bottom:1px solid #eee;">' + h.kmIntervention + '</td>' +
+        '<td style="padding:8px;border-bottom:1px solid #eee;">' + h.coutTTC + ' €</td>' +
+      '</tr>';
+    });
+    html += '</tbody></table>';
+    document.getElementById('histo-content').innerHTML = html;
+    
+  } catch(e) {
+    document.getElementById('histo-content').innerHTML = '<div style="color:var(--rouge);padding:20px;">❌ ' + e.message + '</div>';
+  }
+}
+
+function toggleFlotteOK() {
+  var container = document.getElementById('flotte-ok-list');
+  var btn = document.getElementById('btn-toggle-ok');
+  if (container.style.display === 'none') {
+    container.style.display = 'block';
+    btn.textContent = 'Masquer les véhicules sans alerte';
+  } else {
+    container.style.display = 'none';
+    btn.textContent = btn.textContent.replace('Masquer', 'Afficher');
+  }
+}
+
+// ── MODAL AJOUT / MODIFICATION VÉHICULE ──
 function ouvrirModalVehicule(idVehicule) {
   var v = flotteVehicules.find(function(x){ return x.id === idVehicule; }) || {};
+  
   var overlay = document.getElementById('overlay-vehicule');
   
   if (!overlay) {
     overlay = document.createElement('div');
     overlay.id = 'overlay-vehicule';
-    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(10,20,40,.5);z-index:600;display:none;align-items:center;justify-content:center;padding:20px;';
-    overlay.onclick = function(e) { if (e.target === overlay) overlay.style.display = 'none'; };
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(10,20,40,.45);z-index:600;display:none;align-items:center;justify-content:center;padding:20px;';
+    overlay.onclick = function(e) { if (e.target === overlay) document.getElementById('overlay-vehicule').style.display = 'none'; };
     
     overlay.innerHTML = 
-      '<div style="max-width:640px;width:100%;background:#fff;border-radius:14px;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.3);max-height:90vh;overflow-y:auto;" onclick="event.stopPropagation()">' +
-        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">' +
-          '<h3 style="font-size:17px;font-weight:800;color:var(--bleu);margin:0;" id="vehicule-modal-title">Ajouter un véhicule</h3>' +
-          '<button onclick="document.getElementById(\'overlay-vehicule\').style.display=\'none\'" style="background:#F5F7FA;border:none;border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:16px;">✕</button>' +
+      '<div class="modal" style="max-width:600px;width:100%;background:#fff;border-radius:14px;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.2);max-height:90vh;overflow-y:auto;" onclick="event.stopPropagation()">' +
+        '<h3 style="font-size:16px;font-weight:700;margin-bottom:15px;color:var(--bleu);" id="vehicule-modal-title">Ajouter un véhicule</h3>' +
+        '<div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">' +
+          '<div style="grid-column:1/-1;"><label>ID (Repère, ex: V5) *</label><input type="text" id="fv-id" class="task-input"></div>' +
+          '<div><label>Modèle</label><input type="text" id="fv-modele" class="task-input"></div>' +
+          '<div><label>Immatriculation</label><input type="text" id="fv-immat" class="task-input"></div>' +
+          '<div><label>Km Actuel</label><input type="number" id="fv-kmActuel" class="task-input"></div>' +
+          '<div><label>Km Révision</label><input type="number" id="fv-kmRevision" class="task-input"></div>' +
+          '<div><label>Date Révision</label><input type="date" id="fv-dateRevision" class="task-input"></div>' +
+          '<div><label>Prochain CT</label><input type="date" id="fv-prochainCT" class="task-input"></div>' +
+          '<div><label>Date Assurance</label><input type="date" id="fv-dateAssurance" class="task-input"></div>' +
+          '<div><label>Conducteur</label><input type="text" id="fv-conducteur" class="task-input"></div>' +
+          '<div><label>Vignette Crit\'Air</label><select id="fv-critair" class="task-input"><option value="">— Aucune —</option><option value="0">Crit\'Air 0 (Électrique)</option><option value="1">Crit\'Air 1 (Violet)</option><option value="2">Crit\'Air 2 (Vert)</option><option value="3">Crit\'Air 3 (Orange)</option><option value="4">Crit\'Air 4 (Bordeaux)</option><option value="5">Crit\'Air 5 (Gris)</option></select></div>' +
+          '<div><label>Type d\'intervention / Panne</label><select id="fv-type" class="task-input"><option value="">—</option><option>RÉVISION</option><option>PNEUS</option><option>PIÈCES D\'USURE</option><option>AMPOULE / PHARE</option><option>VITRE / PARE-BRISE</option><option>RÉPARATION</option><option>CONTRÔLE TECHNIQUE</option><option>ASSURANCE / ADMIN</option><option>AUTRE</option></select></div>' +
+          '<div><label style="color:var(--rouge);">Niveau d\'urgence</label><select id="fv-urgence" class="task-input"><option value="normale">🟠 À prévoir (Normal)</option><option value="haute">🔴 URGENT (Sécurité / Bloquant)</option></select></div>' +
+          '<div style="grid-column:1/-1;"><label>Description / Détails</label><input type="text" id="fv-description" class="task-input" placeholder="Ex: Pneu avant droit crevé, phare gauche cassé..."></div>' +
+          '<div><label>Date de l\'intervention</label><input type="date" id="fv-dateIntervention" class="task-input"></div>' +
+          '<div><label>Kilométrage à l\'intervention</label><input type="number" id="fv-kmIntervention" class="task-input" placeholder="Ex: 45000"></div>' +
         '</div>' +
-        
-        '<div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--bleu);margin-bottom:10px;">🚗 Identification</div>' +
-        '<div class="fv-grid">' +
-          '<div class="full"><label class="fv-label">ID / Repère *</label><input type="text" id="fv-id" class="fv-input" placeholder="Ex: V5"></div>' +
-          '<div><label class="fv-label">Modèle</label><input type="text" id="fv-modele" class="fv-input" placeholder="Ex: CLIO LM"></div>' +
-          '<div><label class="fv-label">Immatriculation</label><input type="text" id="fv-immat" class="fv-input" placeholder="Ex: GJ-247-BY"></div>' +
-          '<div><label class="fv-label">Conducteur</label><input type="text" id="fv-conducteur" class="fv-input"></div>' +
-          '<div><label class="fv-label">Vignette Crit\'Air</label><select id="fv-critair" class="fv-input"><option value="">— Aucune —</option><option value="0">Crit\'Air 0 (Électrique)</option><option value="1">Crit\'Air 1 (Violet)</option><option value="2">Crit\'Air 2 (Vert)</option><option value="3">Crit\'Air 3 (Orange)</option><option value="4">Crit\'Air 4 (Bordeaux)</option><option value="5">Crit\'Air 5 (Gris)</option></select></div>' +
-        '</div>' +
-        
-        '<div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--orange);margin:20px 0 10px;">📅 Échéances</div>' +
-        '<div class="fv-grid">' +
-          '<div><label class="fv-label">Prochain CT</label><input type="date" id="fv-prochainCT" class="fv-input"></div>' +
-          '<div><label class="fv-label">Date Assurance</label><input type="date" id="fv-dateAssurance" class="fv-input"></div>' +
-          '<div><label class="fv-label">Km actuel</label><input type="number" id="fv-kmActuel" class="fv-input" min="0"></div>' +
-          '<div><label class="fv-label">Km révision</label><input type="number" id="fv-kmRevision" class="fv-input" min="0"></div>' +
-        '</div>' +
-        
-        '<div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--rouge);margin:20px 0 10px;">🔧 Intervention en cours</div>' +
-        '<div class="fv-grid">' +
-          '<div><label class="fv-label">Type</label><select id="fv-type" class="fv-input"><option value="">—</option><option>PNEUS</option><option>PIÈCES D\'USURE</option><option>RÉVISION</option><option>CONTRÔLE TECHNIQUE</option><option>AMPOULE / PHARE</option><option>VITRE / PARE-BRISE</option><option>RÉPARATION</option><option>ASSURANCE / ADMIN</option><option>AUTRE</option></select></div>' +
-          '<div><label class="fv-label">Urgence</label><select id="fv-urgence" class="fv-input"><option value="normale">🟠 Normale</option><option value="haute">🔴 URGENT</option></select></div>' +
-          '<div class="full"><label class="fv-label">Description</label><input type="text" id="fv-description" class="fv-input" placeholder="Ex: Pneu avant droit crevé"></div>' +
-          '<div><label class="fv-label">Date intervention</label><input type="date" id="fv-dateIntervention" class="fv-input"></div>' +
-          '<div><label class="fv-label">Km à l\'intervention</label><input type="number" id="fv-kmIntervention" class="fv-input" min="0"></div>' +
-        '</div>' +
-        
-        '<div style="display:flex;gap:10px;margin-top:24px;justify-content:flex-end;">' +
+        '<div style="display:flex; gap:8px; margin-top:20px; justify-content:flex-end;">' +
           '<button onclick="document.getElementById(\'overlay-vehicule\').style.display=\'none\'" class="btn btn-outline">Annuler</button>' +
           '<button onclick="sauvegarderVehicule()" class="btn btn-primary">💾 Enregistrer</button>' +
         '</div>' +
@@ -947,16 +1047,18 @@ function ouvrirModalVehicule(idVehicule) {
   }
   
   overlay.style.display = 'flex';
+  
   document.getElementById('vehicule-modal-title').textContent = v.id ? 'Modifier ' + v.id : 'Ajouter un véhicule';
   document.getElementById('fv-id').value = v.id || '';
   document.getElementById('fv-modele').value = v.modele || '';
   document.getElementById('fv-immat').value = v.immat || '';
-  document.getElementById('fv-conducteur').value = v.conducteur || '';
-  document.getElementById('fv-critair').value = v.critAir || '';
+  document.getElementById('fv-kmActuel').value = v.kmActuel || '';
+  document.getElementById('fv-dateRevision').value = v.dateRevision || '';
+  document.getElementById('fv-kmRevision').value = v.kmRevision || '';
   document.getElementById('fv-prochainCT').value = v.prochainCT || '';
   document.getElementById('fv-dateAssurance').value = v.dateAssurance || '';
-  document.getElementById('fv-kmActuel').value = v.kmActuel || '';
-  document.getElementById('fv-kmRevision').value = v.kmRevision || '';
+  document.getElementById('fv-conducteur').value = v.conducteur || '';
+  document.getElementById('fv-critair').value = v.critAir || '';
   document.getElementById('fv-type').value = v.type || '';
   document.getElementById('fv-urgence').value = v.urgence || 'normale';
   document.getElementById('fv-description').value = v.description || '';
@@ -966,19 +1068,20 @@ function ouvrirModalVehicule(idVehicule) {
 
 async function sauvegarderVehicule() {
   var id = document.getElementById('fv-id').value.trim();
-  if (!id) { alert('L\'ID (Repère) est obligatoire (ex: V5).'); return; }
+  if (!id) { alert("L'ID (Repère) est obligatoire (ex: V5)."); return; }
   
   var payload = {
     action: 'enregistrerVehicule',
     id: id,
     modele: document.getElementById('fv-modele').value.trim(),
     immat: document.getElementById('fv-immat').value.trim(),
-    conducteur: document.getElementById('fv-conducteur').value.trim(),
-    critAir: document.getElementById('fv-critair').value,
+    kmActuel: document.getElementById('fv-kmActuel').value || 0,
+    dateRevision: document.getElementById('fv-dateRevision').value,
+    kmRevision: document.getElementById('fv-kmRevision').value || 0,
     prochainCT: document.getElementById('fv-prochainCT').value,
     dateAssurance: document.getElementById('fv-dateAssurance').value,
-    kmActuel: document.getElementById('fv-kmActuel').value || 0,
-    kmRevision: document.getElementById('fv-kmRevision').value || 0,
+    conducteur: document.getElementById('fv-conducteur').value.trim(),
+    critAir: document.getElementById('fv-critair').value,
     type: document.getElementById('fv-type').value,
     urgence: document.getElementById('fv-urgence').value,
     description: document.getElementById('fv-description').value.trim(),
@@ -989,66 +1092,13 @@ async function sauvegarderVehicule() {
   try {
     var r = await apiPost(payload);
     if (!r || !r.ok) throw new Error(r.error || 'Erreur');
+    
     document.getElementById('overlay-vehicule').style.display = 'none';
     afficherToast('ok', '✅', 'Véhicule enregistré', id, 3000);
     await chargerFlotte();
-  } catch(e) {
-    alert('❌ Erreur : ' + e.message);
-  }
-}
-
-async function afficherHistoriqueVehicule(idVehicule) {
-  var overlay = document.getElementById('overlay-historique');
-  if (!overlay) {
-    overlay = document.createElement('div');
-    overlay.id = 'overlay-historique';
-    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(10,20,40,.6);z-index:700;display:flex;align-items:center;justify-content:center;padding:20px;';
-    overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
-    overlay.innerHTML = 
-      '<div style="max-width:750px;width:100%;background:#fff;border-radius:14px;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.3);max-height:90vh;overflow-y:auto;" onclick="event.stopPropagation()">' +
-        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">' +
-          '<h3 style="font-size:16px;font-weight:800;color:var(--bleu);margin:0;" id="histo-titre">Historique</h3>' +
-          '<button onclick="document.getElementById(\'overlay-historique\').remove()" style="background:#F5F7FA;border:none;border-radius:8px;width:30px;height:30px;cursor:pointer;font-size:16px;">✕</button>' +
-        '</div>' +
-        '<div id="histo-content" style="font-size:13px;">Chargement...</div>' +
-      '</div>';
-    document.body.appendChild(overlay);
-  }
-  
-  document.getElementById('histo-titre').textContent = '📜 Historique — ' + idVehicule;
-  document.getElementById('histo-content').innerHTML = '<div style="text-align:center;padding:20px;">⏳ Chargement...</div>';
-  
-  try {
-    var r = await apiPost({ action: 'lireHistoriqueVehicule', id: idVehicule });
-    if (!r || !r.ok) throw new Error(r.error || 'Erreur');
     
-    if (!r.data || !r.data.length) {
-      document.getElementById('histo-content').innerHTML = '<div style="text-align:center;padding:30px;color:var(--texte2);font-style:italic;">Aucun historique pour ce véhicule.</div>';
-      return;
-    }
-    
-    var html = '<table style="width:100%;border-collapse:collapse;font-size:12px;">' +
-      '<thead><tr style="background:#F5F7FA;">' +
-        '<th style="padding:10px;text-align:left;font-size:11px;text-transform:uppercase;color:var(--texte2);">Type</th>' +
-        '<th style="padding:10px;text-align:left;font-size:11px;text-transform:uppercase;color:var(--texte2);">Description</th>' +
-        '<th style="padding:10px;text-align:left;font-size:11px;text-transform:uppercase;color:var(--texte2);">Date</th>' +
-        '<th style="padding:10px;text-align:right;font-size:11px;text-transform:uppercase;color:var(--texte2);">Km</th>' +
-        '<th style="padding:10px;text-align:right;font-size:11px;text-transform:uppercase;color:var(--texte2);">Coût</th>' +
-      '</tr></thead><tbody>';
-      
-    r.data.forEach(function(hrow) {
-      html += '<tr style="border-top:1px solid var(--bordure);">' +
-        '<td style="padding:10px;font-weight:700;">' + h(hrow.type) + '</td>' +
-        '<td style="padding:10px;">' + h(hrow.description) + '</td>' +
-        '<td style="padding:10px;color:var(--texte2);">' + h(hrow.dateIntervention) + '</td>' +
-        '<td style="padding:10px;text-align:right;font-family:monospace;">' + h(hrow.kmIntervention) + '</td>' +
-        '<td style="padding:10px;text-align:right;font-weight:700;color:var(--vert);">' + (hrow.coutTTC !== '—' ? h(hrow.coutTTC) + ' €' : '—') + '</td>' +
-      '</tr>';
-    });
-    html += '</tbody></table>';
-    document.getElementById('histo-content').innerHTML = html;
   } catch(e) {
-    document.getElementById('histo-content').innerHTML = '<div style="color:var(--rouge);padding:20px;">❌ ' + h(e.message) + '</div>';
+    alert("❌ Erreur : " + e.message);
   }
 }
 
