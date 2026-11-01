@@ -640,47 +640,51 @@ function getWeekNumber(d) { d = new Date(Date.UTC(d.getFullYear(), d.getMonth(),
 function aClass(n) { return n===0?'alerte-ok':n===1?'alerte-jaune':n===2?'alerte-orange':n===3?'alerte-rouge':''; }
 
 async function apiPost(body) {
-  // 1. On tente d'abord avec fetch (pour le PC, qui fonctionne bien)
-  var delai = (body && body.action === 'analyserAgent') ? 90000 : 60000;
-  try {
-    var controller = new AbortController();
-    var timeoutId = setTimeout(function(){ controller.abort(); }, delai);
-    var r = await fetch(WEBAPP, { 
-      method: 'POST', 
-      headers: {'Content-Type': 'text/plain;charset=utf-8'}, 
-      body: JSON.stringify(body), 
-      redirect: 'follow', 
-      signal: controller.signal 
-    });
-    clearTimeout(timeoutId);
-    
-    if (r.ok) {
-      var texte = await r.text();
-      if (texte.trim().substring(0,1) !== '<') {
-        return JSON.parse(texte);
+  return new Promise(function(resolve, reject) {
+    var timeoutId = setTimeout(function() {
+      window.removeEventListener('message', messageHandler);
+      reject(new Error("Délai dépassé"));
+    }, 90000);
+
+    function messageHandler(event) {
+      // On vérifie que le message vient bien de Google
+      if (event.origin !== "https://script.google.com" && event.origin !== "https://*.googleusercontent.com") return;
+      
+      clearTimeout(timeoutId);
+      window.removeEventListener('message', messageHandler);
+      
+      try {
+        var data = JSON.parse(event.data);
+        resolve(data);
+      } catch(e) {
+        reject(new Error("Réponse invalide"));
       }
     }
-    throw new Error("Echec fetch (CORS probable)");
-  } catch (e) {
-    // 2. Si le fetch échoue (ce qui arrive sur mobile), on bascule sur la méthode Formulaire
-    console.warn("Fetch bloqué (CORS), bascule sur la méthode formulaire pour mobile...");
-    return new Promise(function(resolve, reject) {
-      var form = document.createElement('form');
-      form.method = 'POST';
-      form.action = WEBAPP;
-      form.target = 'hidden_iframe_' + Date.now(); 
-      form.style.display = 'none';
-      var input = document.createElement('input');
-      input.type = 'hidden';
-      input.name = 'payload';
-      input.value = JSON.stringify(body);
-      form.appendChild(input);
-      
-      var iframeName = form.target;
-      var iframe = document.createElement('iframe');
-      iframe.name = iframeName;
-      iframe.style.display = 'none';
-      document.body.appendChild(iframe);
+
+    window.addEventListener('message', messageHandler);
+
+    // On crée un formulaire invisible
+    var form = document.createElement('form');
+    form.method = 'POST';
+    form.action = WEBAPP;
+    form.target = 'hidden_iframe_' + Date.now();
+    form.style.display = 'none';
+
+    var input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = 'payload';
+    input.value = JSON.stringify(body);
+    form.appendChild(input);
+
+    var iframe = document.createElement('iframe');
+    iframe.name = form.target;
+    iframe.style.display = 'none';
+    document.body.appendChild(iframe);
+
+    document.body.appendChild(form);
+    form.submit();
+  });
+}
 
       // Sécurité anti-blocage (si le serveur ne répond jamais)
       var timeoutForm = setTimeout(function() {
