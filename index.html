@@ -741,30 +741,12 @@ function setFilter(f){alertFilter=f;['all','urgent','warn','ok'].forEach(functio
 function afficherObjetParLigne(e,ligne){if(e)e.stopPropagation();var c=commandes.find(function(x){return x.ligne===ligne;});if(!c||!c.objetCommande)return;afficherObjet(null,c.objetCommande);}
 
 //  MODULE FLOTTE — Vue simplifiée (v16.0)
-
-async function chargerFlotte() {
-  try {
-    var r = await apiPost({ action: 'lireVehicules' });
-    if (r && r.ok && Array.isArray(r.data)) {
-      flotteVehicules = r.data;
-      renderFlotte();
-    } else {
-      var box = document.getElementById('flotte-alertes');
-      if (box) box.innerHTML = '<div class="flotte-empty-ok" style="background:#FFEBEE;color:#D32F2F;border-color:#FFCDD2;">⚠️ Erreur chargement : ' + h(r && r.error ? r.error : 'inconnue') + '</div>';
-    }
-  } catch(e) {
-    var box2 = document.getElementById('flotte-alertes');
-    if (box2) box2.innerHTML = '<div class="flotte-empty-ok" style="background:#FFEBEE;color:#D32F2F;border-color:#FFCDD2;">⚠️ Erreur réseau : ' + h(e.message) + '</div>';
-    console.warn('Flotte non chargée :', e);
-  }
-}
-
 function renderFlotte() {
   var box = document.getElementById('flotte-alertes');
   if (!box) return;
   
   if (!flotteVehicules || !flotteVehicules.length) {
-    box.innerHTML = '<div class="flotte-empty-ok">🟢 Aucun véhicule enregistré.</div>';
+    box.innerHTML = '<div style="text-align:center;padding:40px;color:#2E7D32;font-weight:700;background:#E8F5E9;border-radius:12px;border:2px dashed #A5D6A7;">🟢 Aucun véhicule enregistré.</div>';
     return;
   }
 
@@ -776,77 +758,75 @@ function renderFlotte() {
   flotteVehicules.forEach(function(v) {
     var badges = [], sevMax = 0;
     
-    function addBadge(sev, cls, icon, txt, sub) {
-      badges.push({ sev: sev, cls: cls, icon: icon, txt: txt, sub: sub || '' });
+    function addBadge(sev, bg, color, icon, txt, sub) {
+      badges.push({ sev: sev, bg: bg, color: color, icon: icon, txt: txt, sub: sub || '' });
       if (sev > sevMax) sevMax = sev;
     }
 
-    // ─── Contrôle technique ───
+    // 1. Contrôle technique
     if (v.prochainCT) {
       var dCT = new Date(v.prochainCT);
       if (!isNaN(dCT.getTime())) {
         var jCT = Math.ceil((dCT - auj) / MS_JOUR);
-        if (jCT < 0) addBadge(3, 'flotte-badge-urgent', '🛑', 'CT expiré', 'depuis ' + Math.abs(jCT) + ' j');
-        else if (jCT <= 30) addBadge(2, 'flotte-badge-warn', '📅', 'CT dans ' + jCT + ' j', '');
+        if (jCT < 0) addBadge(3, '#FFEBEE', '#C62828', '🛑', 'CT expiré', 'depuis ' + Math.abs(jCT) + ' j');
+        else if (jCT <= 30) addBadge(2, '#FFF3E0', '#E65100', '📅', 'CT dans ' + jCT + ' j', '');
       }
     } else {
-      addBadge(2, 'flotte-badge-warn', '❓', 'CT non renseigné', '');
+      addBadge(2, '#FFF3E0', '#E65100', '❓', 'CT non renseigné', '');
     }
 
-    // ─── Assurance ───
+    // 2. Assurance
     if (v.dateAssurance) {
       var dAssur = new Date(v.dateAssurance);
       if (!isNaN(dAssur.getTime())) {
         var jAss = Math.ceil((dAssur - auj) / MS_JOUR);
-        if (jAss < 0) addBadge(3, 'flotte-badge-urgent', '🛡️', 'Assurance expirée', 'depuis ' + Math.abs(jAss) + ' j');
-        else if (jAss <= 30) addBadge(2, 'flotte-badge-warn', '🛡️', 'Assurance : ' + jAss + ' j', '');
+        if (jAss < 0) addBadge(3, '#FFEBEE', '#C62828', '🛡️', 'Assurance expirée', 'depuis ' + Math.abs(jAss) + ' j');
+        else if (jAss <= 30) addBadge(2, '#FFF3E0', '#E65100', '🛡️', 'Assurance : ' + jAss + ' j', '');
       }
     }
 
-    // ─── Révision (km) ───
+    // 3. Révision
     if (v.kmRevision > 0 && v.kmActuel > 0) {
       var kmRest = 30000 - (v.kmActuel - v.kmRevision);
-      if (kmRest <= 0) addBadge(3, 'flotte-badge-urgent', '🔧', 'Révision en retard', 'de ' + Math.abs(kmRest) + ' km');
-      else if (kmRest <= 2000) addBadge(2, 'flotte-badge-warn', '🔧', 'Révision dans ' + kmRest + ' km', '');
+      if (kmRest <= 0) addBadge(3, '#FFEBEE', '#C62828', '🔧', 'Révision en retard', 'de ' + Math.abs(kmRest) + ' km');
+      else if (kmRest <= 2000) addBadge(2, '#FFF3E0', '#E65100', '🔧', 'Révision dans ' + kmRest + ' km', '');
     }
 
-    // ─── Pneus / Pièces d'usure ───
+    // 4. Pneus / Pièces
     if (v.type) {
       var typeUp = String(v.type).toUpperCase();
-      var estPneuOuPiece = (typeUp === 'PNEUS' || typeUp.indexOf('PIÈCES') !== -1 || typeUp.indexOf('PIECES') !== -1);
-      
-      if (estPneuOuPiece) {
-        var dateInterValid = v.dateIntervention && !isNaN(new Date(v.dateIntervention).getTime());
+      if (typeUp === 'PNEUS' || typeUp.indexOf('PIÈCES') !== -1 || typeUp.indexOf('PIECES') !== -1) {
+        var dateValid = v.dateIntervention && !isNaN(new Date(v.dateIntervention).getTime());
         var recent = false;
         
-        if (dateInterValid) {
+        if (dateValid) {
           var dInt = new Date(v.dateIntervention);
           var jInt = Math.ceil((auj - dInt) / MS_JOUR);
           if (jInt >= 0 && jInt < 30) {
             recent = true;
-            addBadge(1, 'flotte-badge-info', '✅', typeUp, 'fait il y a ' + jInt + ' j');
+            addBadge(1, '#E3F2FD', '#1565C0', '✅', typeUp, 'fait il y a ' + jInt + ' j');
           } else {
             var mois = (auj.getFullYear() - dInt.getFullYear()) * 12 + (auj.getMonth() - dInt.getMonth());
-            if (mois >= 60) addBadge(3, 'flotte-badge-urgent', '⚫', typeUp, 'plus de 5 ans');
-            else if (mois >= 55) addBadge(2, 'flotte-badge-warn', '⚫', typeUp, 'bientôt 5 ans');
+            if (mois >= 60) addBadge(3, '#FFEBEE', '#C62828', '⚫', typeUp, 'plus de 5 ans');
+            else if (mois >= 55) addBadge(2, '#FFF3E0', '#E65100', '⚫', typeUp, 'bientôt 5 ans');
           }
         }
         
         if (!recent && v.kmIntervention > 0 && v.kmActuel > 0) {
           var kmInt = v.kmActuel - v.kmIntervention;
-          if (kmInt >= 40000) addBadge(3, 'flotte-badge-urgent', '⚫', typeUp + ' usés', kmInt + ' km');
-          else if (kmInt >= 38000) addBadge(2, 'flotte-badge-warn', '⚫', typeUp + ' à prévoir', kmInt + ' km');
+          if (kmInt >= 40000) addBadge(3, '#FFEBEE', '#C62828', '⚫', typeUp + ' usés', kmInt + ' km');
+          else if (kmInt >= 38000) addBadge(2, '#FFF3E0', '#E65100', '⚫', typeUp + ' à prévoir', kmInt + ' km');
         }
       }
     }
 
-    // ─── Urgence manuelle ───
+    // 5. Urgence manuelle
     if (v.urgence === 'haute' && v.description) {
       var descShort = v.description.length > 40 ? v.description.substring(0,40) + '…' : v.description;
-      addBadge(3, 'flotte-badge-urgent', '🚨', v.type || 'URGENT', descShort);
+      addBadge(3, '#FFEBEE', '#C62828', '🚨', v.type || 'URGENT', descShort);
     } else if (v.description && v.type) {
       var descShort2 = v.description.length > 40 ? v.description.substring(0,40) + '…' : v.description;
-      addBadge(1, 'flotte-badge-info', '📝', v.type, descShort2);
+      addBadge(1, '#E3F2FD', '#1565C0', '📝', v.type, descShort2);
     }
 
     var item = { v: v, badges: badges };
@@ -855,61 +835,62 @@ function renderFlotte() {
     else okListe.push(item);
   });
 
-  function trierParSev(a, b) {
-    var sA = Math.max.apply(null, a.badges.map(function(x){return x.sev;}).concat([0]));
-    var sB = Math.max.apply(null, b.badges.map(function(x){return x.sev;}).concat([0]));
-    return sB - sA;
-  }
-  urgents.sort(trierParSev);
-  attn.sort(trierParSev);
-
   function genererCarte(item, typeCls) {
     var v = item.v;
+    var borderLeft = typeCls === 'urgent' ? '#D32F2F' : (typeCls === 'warn' ? '#E65100' : '#2E7D32');
+    
     var badgesHtml = item.badges.map(function(b) {
-      return '<span class="flotte-badge ' + b.cls + '">' +
+      return '<div style="display:inline-flex; align-items:center; gap:6px; background:' + b.bg + '; color:' + b.color + '; padding:6px 12px; border-radius:8px; font-size:13px; font-weight:700; margin:4px 4px 4px 0; border:1px solid ' + b.color + '40;">' +
         '<span>' + b.icon + '</span>' +
         '<span>' + h(b.txt) + '</span>' +
-        (b.sub ? '<span class="flotte-badge-sub">' + h(b.sub) + '</span>' : '') +
-      '</span>';
+        (b.sub ? '<span style="font-weight:500; opacity:0.85; font-size:11px;">' + h(b.sub) + '</span>' : '') +
+      '</div>';
     }).join('');
     
     var critHtml = '';
     if (v.critAir) {
       var bg = v.critAir==='0'?'#2E7D32':v.critAir==='1'?'#8E24AA':v.critAir==='2'?'#43A047':v.critAir==='3'?'#F57C00':v.critAir==='4'?'#AD1457':'#757575';
-      critHtml = '<span class="flotte-crit" style="background:' + bg + ';">Crit\'Air ' + h(v.critAir) + '</span>';
+      critHtml = '<span style="font-size:11px; font-weight:800; color:#fff; background:' + bg + '; padding:2px 8px; border-radius:6px; margin-left:10px;">Crit\'Air ' + h(v.critAir) + '</span>';
     }
     
-    return '<div class="flotte-card ' + typeCls + '">' +
-      '<div style="flex:1;min-width:0;">' +
-        '<div class="flotte-card-veh">' +
-          '<span>' + h(v.id) + '</span>' +
-          '<span style="font-weight:600;color:var(--texte2);font-size:13px;">' + h(v.modele || '—') + '</span>' +
-          '<span class="flotte-card-immat">' + h(v.immat || '—') + '</span>' +
+    return '<div style="background:#fff; border-radius:12px; border:1px solid #E0E7EF; border-left:6px solid ' + borderLeft + '; padding:16px 20px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:flex-start; gap:16px; box-shadow:0 2px 6px rgba(0,0,0,0.02);">' +
+      
+      '<div style="flex:1;">' +
+        // Ligne du titre
+        '<div style="display:flex; align-items:center; flex-wrap:wrap; margin-bottom:12px;">' +
+          '<span style="font-size:16px; font-weight:800; color:#1A1A2E;">' + h(v.id) + '</span>' +
+          '<span style="font-size:14px; font-weight:600; color:#546E7A; margin-left:10px;">' + h(v.modele || '—') + '</span>' +
+          '<span style="font-family:monospace; font-size:12px; font-weight:700; color:#546E7A; background:#F5F7FA; padding:3px 10px; border-radius:6px; margin-left:10px;">' + h(v.immat || '—') + '</span>' +
           critHtml +
         '</div>' +
-        '<div class="flotte-badges">' + (badgesHtml || '<span class="flotte-badge flotte-badge-ok"><span>✅</span><span>Aucune alerte</span></span>') + '</div>' +
+        // Ligne des badges
+        '<div style="display:flex; flex-wrap:wrap;">' + 
+          (badgesHtml || '<div style="display:inline-flex; align-items:center; gap:6px; background:#E8F5E9; color:#2E7D32; padding:6px 12px; border-radius:8px; font-size:13px; font-weight:700; border:1px solid #C8E6C9;"><span>✅</span> Aucune alerte</div>') + 
+        '</div>' +
       '</div>' +
-      '<div class="flotte-card-actions">' +
-        '<button class="flotte-mini-btn" onclick="ouvrirModalVehicule(\'' + h(v.id).replace(/'/g, "\\'") + '\')" title="Modifier">✏️</button>' +
-        '<button class="flotte-mini-btn" onclick="afficherHistoriqueVehicule(\'' + h(v.id).replace(/'/g, "\\'") + '\')" title="Historique">📜</button>' +
+      
+      // Boutons d'action
+      '<div style="display:flex; flex-direction:column; gap:6px;">' +
+        '<button onclick="ouvrirModalVehicule(\'' + h(v.id).replace(/'/g, "\\'") + '\')" style="background:#F5F7FA; border:1px solid #CFD8DC; border-radius:8px; padding:8px 12px; font-size:16px; cursor:pointer; transition:all 0.2s;" onmouseover="this.style.background=\'#E3F2FD\'" onmouseout="this.style.background=\'#F5F7FA\'" title="Modifier">✏️</button>' +
+        '<button onclick="afficherHistoriqueVehicule(\'' + h(v.id).replace(/'/g, "\\'") + '\')" style="background:#F5F7FA; border:1px solid #CFD8DC; border-radius:8px; padding:8px 12px; font-size:16px; cursor:pointer; transition:all 0.2s;" onmouseover="this.style.background=\'#E3F2FD\'" onmouseout="this.style.background=\'#F5F7FA\'" title="Historique">📜</button>' +
       '</div>' +
+      
     '</div>';
   }
 
   var html = '';
   if (urgents.length) {
-    html += '<div class="flotte-section-title urgent">🔴 À TRAITER D\'URGENCE (' + urgents.length + ')</div>';
+    html += '<div style="font-size:14px; font-weight:800; color:#D32F2F; text-transform:uppercase; letter-spacing:1px; margin:20px 0 10px;">🔴 À TRAITER D\'URGENCE (' + urgents.length + ')</div>';
     html += urgents.map(function(it){ return genererCarte(it, 'urgent'); }).join('');
   }
   if (attn.length) {
-    html += '<div class="flotte-section-title warn">🟠 À PRÉVOIR (' + attn.length + ')</div>';
+    html += '<div style="font-size:14px; font-weight:800; color:#E65100; text-transform:uppercase; letter-spacing:1px; margin:20px 0 10px;">🟠 À PRÉVOIR (' + attn.length + ')</div>';
     html += attn.map(function(it){ return genererCarte(it, 'warn'); }).join('');
   }
   if (okListe.length) {
-    html += '<div class="flotte-section-title ok">🟢 À JOUR (' + okListe.length + ')</div>';
+    html += '<div style="font-size:14px; font-weight:800; color:#2E7D32; text-transform:uppercase; letter-spacing:1px; margin:20px 0 10px;">🟢 À JOUR (' + okListe.length + ')</div>';
     html += okListe.map(function(it){ return genererCarte(it, 'ok'); }).join('');
   }
-  if (!html) html = '<div class="flotte-empty-ok">🟢 Aucune alerte — tout va bien !</div>';
   
   box.innerHTML = html;
 }
