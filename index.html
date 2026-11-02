@@ -549,7 +549,8 @@ textarea.task-input{resize:vertical}
   <div class="modal-body">
   <div class="modal-tabs">
     <button type="button" class="modal-tab active" id="tabbtn-commande" onclick="basculerOngletCommande('commande')">📝 Commande</button>
-    <button type="button" class="modal-tab" id="tabbtn-capture-fournisseur" onclick="basculerOngletCommande('capture-fournisseur')">📸 Capture devis / achats fournisseur</button>
+    <button type="button" class="modal-tab" id="tabbtn-capture-devis" onclick="basculerOngletCommande('capture-devis')">📸 Capture devis client</button>
+    <button type="button" class="modal-tab" id="tabbtn-capture-fournisseur" onclick="basculerOngletCommande('capture-fournisseur')">📦 Capture achats fournisseur</button>
   </div>
   <section id="tab-commande" class="modal-tab-panel active">
   <div class="form-grid">
@@ -572,11 +573,25 @@ textarea.task-input{resize:vertical}
     <div class="form-group full"><label>Ajouter un commentaire</label><textarea id="f-commentaire-nouveau" style="min-height:60px;"></textarea></div>
   </div>
   </section>
+  <section id="tab-capture-devis" class="modal-tab-panel">
+    <p style="font-size:13px;color:var(--texte2);margin-bottom:12px;">Capture réservée aux devis clients. Gemini extrait les données du devis et les reporte dans le formulaire « Commande ». Vérifiez puis utilisez Enregistrer.</p>
+    <input type="file" id="devis-image-file" accept="image/png,image/jpeg,image/webp" style="display:none" onchange="chargerImageDevisDepuisInput(this)">
+    <div class="import-drop" id="devis-import-drop" onclick="document.getElementById('devis-image-file').click()" ondragover="survolImportDevis(event)" ondragleave="quitterSurvolImportDevis(event)" ondrop="deposerImageDevis(event)">
+      <div style="font-size:34px;margin-bottom:8px;">🧾</div><strong>Capture d’un devis client</strong><div style="font-size:12px;color:var(--texte2);margin-top:6px;">Choisir, glisser-déposer ou Ctrl + V</div>
+      <img id="devis-image-preview" class="import-preview" style="display:none;" alt="Aperçu devis client">
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">
+      <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('devis-image-file').click()">📁 Choisir une image</button>
+      <button type="button" class="btn btn-outline btn-sm" id="btn-analyser-devis" onclick="analyserImageDevis()" disabled>✨ Analyser avec Gemini</button>
+      <button type="button" class="btn btn-outline btn-sm" onclick="reinitialiserImageDevis()">✕ Retirer l’image</button>
+    </div>
+    <div id="devis-import-status" class="import-status" aria-live="polite"></div><div id="devis-import-result" class="import-result" style="display:none;"></div>
+  </section>
   <section id="tab-capture-fournisseur" class="modal-tab-panel">
-    <p style="font-size:13px;color:var(--texte2);margin-bottom:12px;">Collez une capture avec Ctrl + V, glissez-déposez une image ou sélectionnez un fichier. Gemini extraira les informations utiles du devis client ou du document fournisseur (commande, ARC, montant, livraison et articles). Vérifiez puis confirmez avant toute écriture dans Sheets.</p>
+    <p style="font-size:13px;color:var(--texte2);margin-bottom:12px;">Capture réservée aux commandes et accusés fournisseurs. Gemini extrait le numéro de commande, ARC, montant TTC, livraison, type et lignes articles. Sélectionnez la commande ECO OUEST correspondante puis confirmez l’import dans Sheets.</p>
     <input type="file" id="fournisseur-image-file" accept="image/png,image/jpeg,image/webp" style="display:none" onchange="chargerImageFournisseurDepuisInput(this)">
     <div class="import-drop" id="fournisseur-import-drop" onclick="document.getElementById('fournisseur-image-file').click()" ondragover="survolImportFournisseur(event)" ondragleave="quitterSurvolImportFournisseur(event)" ondrop="deposerImageFournisseur(event)">
-      <div style="font-size:34px;margin-bottom:8px;">🧾</div><strong>Capture devis client ou document fournisseur</strong>
+      <div style="font-size:34px;margin-bottom:8px;">🧾</div><strong>Capture d’un document fournisseur</strong>
       <div style="font-size:12px;color:var(--texte2);margin-top:6px;">Choisir une image, glisser-déposer ou Ctrl + V</div>
       <img id="fournisseur-image-preview" class="import-preview" style="display:none;" alt="Aperçu capture fournisseur">
     </div>
@@ -1315,7 +1330,7 @@ function ajouterOptionHorsListe(sel, v) { if (!sel||!v) return; var val=str(v), 
 // ── IMPORT DEVIS : image, presse-papiers et analyse Gemini ──
 var imageDevisImport = null;
 function basculerOngletCommande(onglet) {
-  ['commande','capture-fournisseur'].forEach(function(k) {
+  ['commande','capture-devis','capture-fournisseur'].forEach(function(k) {
     var panel=document.getElementById('tab-'+k), btn=document.getElementById('tabbtn-'+k);
     if(panel) panel.classList.toggle('active',k===onglet);
     if(btn) btn.classList.toggle('active',k===onglet);
@@ -1341,12 +1356,12 @@ function survolImportDevis(e){e.preventDefault();document.getElementById('devis-
 function quitterSurvolImportDevis(e){e.preventDefault();document.getElementById('devis-import-drop').classList.remove('dragover');}
 function deposerImageDevis(e){e.preventDefault();quitterSurvolImportDevis(e);var f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0];if(f)definirImageDevis(f);}
 document.addEventListener('paste',function(e){
-  var overlay=document.getElementById('overlay');
-  if(!overlay||!overlay.classList.contains('open'))return;
-  var tabFournisseurActif=document.getElementById('tab-capture-fournisseur').classList.contains('active');
-  if(!tabFournisseurActif)return;
+  var overlay=document.getElementById('overlay');if(!overlay||!overlay.classList.contains('open'))return;
   var items=e.clipboardData&&e.clipboardData.items;if(!items)return;
-  for(var j=0;j<items.length;j++){if(items[j].type&&items[j].type.indexOf('image/')===0){var ff=items[j].getAsFile();if(ff){definirImageFournisseur(new File([ff],'capture-document.png',{type:ff.type}));e.preventDefault();}return;}}
+  var devisActif=document.getElementById('tab-capture-devis').classList.contains('active');
+  var fournisseurActif=document.getElementById('tab-capture-fournisseur').classList.contains('active');
+  if(!devisActif&&!fournisseurActif)return;
+  for(var j=0;j<items.length;j++){if(items[j].type&&items[j].type.indexOf('image/')===0){var ff=items[j].getAsFile();if(ff){var file=new File([ff],'capture-document.png',{type:ff.type});if(devisActif)definirImageDevis(file);else definirImageFournisseur(file);e.preventDefault();}return;}}
 });
 function reinitialiserImageDevis(){
   imageDevisImport=null;
@@ -1361,7 +1376,6 @@ function appliquerDonneesDevis(data){
   var mapping={
     client:'client',fournisseur:'fournisseur',devis:'devis',devisTTC:'devisTTC',
     objetCommande:'objetCommande',prevLivraison:'prevLivraison',
-    dateDevis:'dateDevis',dateValiditeDevis:'dateValiditeDevis'
   };
   Object.keys(mapping).forEach(function(k){
     var id='f-'+mapping[k],el=document.getElementById(id),v=data[k];
@@ -1429,9 +1443,9 @@ function appliquerCaptureAuModal(d,commandeCible){
 }
 
 function afficherCaptureFournisseur(d,matches){var typeDoc=d.documentType||'inconnu';var html='<strong>Type de document : '+h(typeDoc==='client_devis'?'Devis client':typeDoc==='fournisseur_arc'?'ARC fournisseur':typeDoc==='fournisseur_commande'?'Commande fournisseur':'À vérifier')+'</strong><div style=\"margin:6px 0;color:var(--texte2);font-size:12px;\">Les champs détectés sont reportés dans le formulaire principal, sans écriture Sheets avant confirmation.</div><strong>Informations détectées</strong><div style="margin-top:8px;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:6px;">';var labels={client:'Client',fournisseur:'Fournisseur',numeroCommande:'N° commande fournisseur',numeroARC:'N° ARC',referenceAffaire:'Référence affaire',numeroDevis:'N° devis',devisTTC:'Devis TTC',totalTTC:'Montant achat fournisseur TTC',dateLivraisonPrevue:'Livraison prévue',typeCommande:'Type de commande',noteFournisseur:'Note fournisseur'};Object.keys(labels).forEach(function(k){var v=d[k];if(v!==undefined&&v!==null&&String(v).trim())html+='<div><b>'+h(labels[k])+' :</b> '+h(String(v))+'</div>';});html+='</div>';var attendus=['referenceAffaire'];var absents=attendus.filter(function(k){return d[k]===undefined||d[k]===null||String(d[k]).trim()==='';});if(absents.length)html+='<div style="margin-top:8px;color:var(--orange);font-size:12px;"><b>Non détectés / illisibles :</b> '+h(absents.join(', '))+'</div>';var items=Array.isArray(d.articles)?d.articles:[];html+='<div style="margin-top:12px;"><b>Articles ('+items.length+')</b>';if(!items.length)html+='<div style="color:var(--orange);font-size:12px;">Aucune ligne article reconnue.</div>';if(items.length){html+='<div style="overflow:auto"><table style="width:100%;font-size:12px;border-collapse:collapse"><tr><th>Article</th><th>Qté</th><th>Prix unitaire</th><th>Total ligne</th></tr>'+items.map(function(a){return '<tr><td>'+h(a.article||'')+'</td><td>'+h(a.quantite||'')+'</td><td>'+h(a.prixUnitaireTTC||'')+'</td><td>'+h(a.totalLigneTTC||'')+'</td></tr>';}).join('')+'</table></div>';}else html+='<div>Aucune ligne article reconnue.</div>';html+='</div>';document.getElementById('fournisseur-import-preview-data').innerHTML=html;document.getElementById('fournisseur-import-preview-data').style.display='block';
- var m=document.getElementById('fournisseur-import-match');var matchHtml='<b>Commande correspondante</b><br>';if(matches.length===1){ligneCaptureFournisseur=matches[0].ligne;matchHtml+='Correspondance unique : '+h(matches[0].client)+' · ligne '+matches[0].ligne;}else if(matches.length>1){matchHtml+='Plusieurs commandes correspondent. Sélectionnez la bonne : <select id="capture-fournisseur-ligne" style="width:100%;padding:9px;margin-top:6px;"><option value="">— Sélectionner —</option>'+matches.map(function(x){return '<option value="'+x.ligne+'">'+h(x.client)+' · devis '+h(x.devis)+' · ligne '+x.ligne+'</option>';}).join('')+'</select>';ligneCaptureFournisseur=null;}else{matchHtml+='Aucune correspondance automatique. Sélectionnez une commande : <select id="capture-fournisseur-ligne" style="width:100%;padding:9px;margin-top:6px;"><option value="">— Choisir une commande —</option>'+commandes.map(function(x){return '<option value="'+x.ligne+'">'+h(x.client)+' · devis '+h(x.devis)+' · ligne '+x.ligne+'</option>';}).join('')+'</select>';ligneCaptureFournisseur=null;}m.innerHTML=matchHtml;m.style.display='block';var sel=document.getElementById('capture-fournisseur-ligne');if(sel){sel.value='';sel.addEventListener('change',function(){ligneCaptureFournisseur=Number(this.value)||null;document.getElementById('btn-confirmer-fournisseur').disabled=!ligneCaptureFournisseur;if(ligneCaptureFournisseur)appliquerCaptureAuModal(donneesCaptureFournisseur,ligneCaptureFournisseur);});}document.getElementById('btn-confirmer-fournisseur').disabled=!ligneCaptureFournisseur;
+ var m=document.getElementById('fournisseur-import-match');var matchHtml='<b>Commande correspondante</b><br>';if(matches.length===1){ligneCaptureFournisseur=matches[0].ligne;matchHtml+='Correspondance unique : '+h(matches[0].client)+' · ligne '+matches[0].ligne;}else if(matches.length>1){matchHtml+='Plusieurs commandes correspondent. Sélectionnez la bonne : <select id="capture-fournisseur-ligne" style="width:100%;padding:9px;margin-top:6px;"><option value="">— Sélectionner —</option>'+matches.map(function(x){return '<option value="'+x.ligne+'">'+h(x.client)+' · devis '+h(x.devis)+' · ligne '+x.ligne+'</option>';}).join('')+'</select>';ligneCaptureFournisseur=null;}else{matchHtml+='Aucune correspondance automatique. Sélectionnez une commande : <select id="capture-fournisseur-ligne" style="width:100%;padding:9px;margin-top:6px;"><option value="">— Choisir une commande —</option>'+commandes.map(function(x){return '<option value="'+x.ligne+'">'+h(x.client)+' · devis '+h(x.devis)+' · ligne '+x.ligne+'</option>';}).join('')+'</select>';ligneCaptureFournisseur=null;}m.innerHTML=matchHtml;m.style.display='block';var sel=document.getElementById('capture-fournisseur-ligne');if(sel){sel.value='';sel.addEventListener('change',function(){ligneCaptureFournisseur=Number(this.value)||null;document.getElementById('btn-confirmer-fournisseur').disabled=!ligneCaptureFournisseur;});}document.getElementById('btn-confirmer-fournisseur').disabled=!ligneCaptureFournisseur;
 }
-async function analyserImageFournisseur(){if(!imageCommandeFournisseur)return;var btn=document.getElementById('btn-analyser-fournisseur'),st=document.getElementById('fournisseur-import-status');btn.disabled=true;btn.textContent='⏳ Analyse…';st.textContent='Gemini lit le bon de commande fournisseur…';try{var b64=await new Promise(function(resolve,reject){var r=new FileReader();r.onload=function(){resolve(String(r.result).split(',')[1]||'');};r.onerror=reject;r.readAsDataURL(imageCommandeFournisseur);});var r=await apiPost({action:'analyserCommandeFournisseurImage',mimeType:imageCommandeFournisseur.type,imageBase64:b64});if(!r||!r.ok)throw new Error(r&&r.error||'Analyse impossible');donneesCaptureFournisseur=r.data||{};var matches=rechercherCorrespondancesFournisseur(donneesCaptureFournisseur);afficherCaptureFournisseur(donneesCaptureFournisseur,matches);appliquerCaptureAuModal(donneesCaptureFournisseur,matches.length===1?matches[0].ligne:null);var confirmBtn=document.getElementById('btn-confirmer-fournisseur');if(donneesCaptureFournisseur.documentType==='client_devis'){confirmBtn.disabled=false;confirmBtn.textContent='💾 Enregistrer le devis dans Sheets';}else{confirmBtn.textContent='💾 Confirmer et mettre à jour Sheets';confirmBtn.disabled=!ligneCaptureFournisseur;}document.getElementById('fournisseur-import-result').textContent='Analyse terminée. Vérifiez les champs et la commande cible avant confirmation.';document.getElementById('fournisseur-import-result').style.display='block';st.textContent='Analyse terminée'+(r.modeleUtilise?' · '+r.modeleUtilise:'')+'. Aucune donnée n’a encore été enregistrée.';}catch(e){st.textContent='❌ '+e.message;afficherToast('urgent','❌','Capture fournisseur',e.message,7000);}finally{btn.disabled=!imageCommandeFournisseur;btn.textContent='✨ Analyser avec Gemini';}}
+async function analyserImageFournisseur(){if(!imageCommandeFournisseur)return;var btn=document.getElementById('btn-analyser-fournisseur'),st=document.getElementById('fournisseur-import-status');btn.disabled=true;btn.textContent='⏳ Analyse…';st.textContent='Gemini lit le bon de commande fournisseur…';try{var b64=await new Promise(function(resolve,reject){var r=new FileReader();r.onload=function(){resolve(String(r.result).split(',')[1]||'');};r.onerror=reject;r.readAsDataURL(imageCommandeFournisseur);});var r=await apiPost({action:'analyserCommandeFournisseurImage',mimeType:imageCommandeFournisseur.type,imageBase64:b64});if(!r||!r.ok)throw new Error(r&&r.error||'Analyse impossible');donneesCaptureFournisseur=r.data||{};var matches=rechercherCorrespondancesFournisseur(donneesCaptureFournisseur);afficherCaptureFournisseur(donneesCaptureFournisseur,matches);var confirmBtn=document.getElementById('btn-confirmer-fournisseur');if(donneesCaptureFournisseur.documentType==='client_devis'){confirmBtn.disabled=false;confirmBtn.textContent='💾 Enregistrer le devis dans Sheets';}else{confirmBtn.textContent='💾 Confirmer et mettre à jour Sheets';confirmBtn.disabled=!ligneCaptureFournisseur;}document.getElementById('fournisseur-import-result').textContent='Analyse terminée. Vérifiez les champs et la commande cible avant confirmation.';document.getElementById('fournisseur-import-result').style.display='block';st.textContent='Analyse terminée'+(r.modeleUtilise?' · '+r.modeleUtilise:'')+'. Aucune donnée n’a encore été enregistrée.';}catch(e){st.textContent='❌ '+e.message;afficherToast('urgent','❌','Capture fournisseur',e.message,7000);}finally{btn.disabled=!imageCommandeFournisseur;btn.textContent='✨ Analyser avec Gemini';}}
 async function confirmerImportFournisseur(){
   if(!donneesCaptureFournisseur){alert('Analysez d’abord une capture.');return;}
   var btn=document.getElementById('btn-confirmer-fournisseur');
