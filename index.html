@@ -575,13 +575,18 @@ textarea.task-input{resize:vertical}
   </section>
   <section id="tab-capture-devis" class="modal-tab-panel">
     <p style="font-size:13px;color:var(--texte2);margin-bottom:12px;">Capture réservée aux devis clients. Gemini extrait les données du devis et les reporte dans le formulaire « Commande ». Vérifiez puis utilisez Enregistrer.</p>
+    <input type="file" id="devis-pdf-file" accept="application/pdf,.pdf" style="display:none" onchange="chargerPdfDevisDepuisInput(this)">
     <input type="file" id="devis-image-file" accept="image/png,image/jpeg,image/webp" style="display:none" onchange="chargerImageDevisDepuisInput(this)">
+    <div class="import-drop" id="devis-pdf-drop" style="margin-bottom:10px;" onclick="document.getElementById('devis-pdf-file').click()" ondragover="survolImportDevis(event)" ondragleave="quitterSurvolImportDevis(event)" ondrop="deposerPdfDevis(event)">
+      <div style="font-size:30px;margin-bottom:8px;">📄</div><strong>PDF complet du devis client</strong><div id="devis-pdf-name" style="font-size:12px;color:var(--texte2);margin-top:6px;">Choisir ou déposer le PDF</div>
+    </div>
     <div class="import-drop" id="devis-import-drop" onclick="document.getElementById('devis-image-file').click()" ondragover="survolImportDevis(event)" ondragleave="quitterSurvolImportDevis(event)" ondrop="deposerImageDevis(event)">
       <div style="font-size:34px;margin-bottom:8px;">🧾</div><strong>Capture d’un devis client</strong><div style="font-size:12px;color:var(--texte2);margin-top:6px;">Choisir, glisser-déposer ou Ctrl + V</div>
       <img id="devis-image-preview" class="import-preview" style="display:none;" alt="Aperçu devis client">
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">
-      <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('devis-image-file').click()">📁 Choisir une image</button>
+      <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('devis-pdf-file').click()">📄 Choisir le PDF</button>
+      <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('devis-image-file').click()">📷 Ajouter capture</button>
       <button type="button" class="btn btn-outline btn-sm" id="btn-analyser-devis" onclick="analyserImageDevis()" disabled>✨ Analyser avec Gemini</button>
       <button type="button" class="btn btn-outline btn-sm" onclick="reinitialiserImageDevis()">✕ Retirer l’image</button>
     </div>
@@ -604,8 +609,10 @@ textarea.task-input{resize:vertical}
       <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('fournisseur-pdf-file').click()">📁 Choisir le PDF</button>
       <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('fournisseur-image-file').click()">📷 Ajouter une capture</button>
       <button type="button" class="btn btn-outline btn-sm" id="btn-analyser-fournisseur" onclick="analyserImageFournisseur()" disabled>✨ Analyser les documents</button>
+      <button type="button" class="btn btn-outline btn-sm" id="btn-controle-devis-arc" onclick="controlerDevisArc()">🔎 Comparer devis / ARC</button>
       <button type="button" class="btn btn-outline btn-sm" onclick="reinitialiserImageFournisseur()">✕ Tout retirer</button>
     </div>
+    <div id="controle-devis-arc-result" class="import-result" style="display:none;margin-top:12px;"></div>
     <div id="fournisseur-import-status" class="import-status" aria-live="polite"></div>
     <div id="fournisseur-import-result" class="import-result" style="display:none;"></div>
     <div id="fournisseur-import-preview-data" style="display:none;margin-top:12px;"></div>
@@ -1342,6 +1349,11 @@ function basculerOngletCommande(onglet) {
     if(btn) btn.classList.toggle('active',k===onglet);
   });
 }
+var pdfDevisImport=null;
+function rafraichirEtatDevis(){var b=document.getElementById('btn-analyser-devis');if(b)b.disabled=!(pdfDevisImport||imageDevisImport);}
+function definirPdfDevis(file){if(!file)return;if(file.type!=='application/pdf'&&!/\.pdf$/i.test(file.name||'')){afficherToast('urgent','⚠️','Format non accepté','Choisissez un fichier PDF.',4000);return;}if(file.size>18*1024*1024){afficherToast('urgent','⚠️','PDF trop volumineux','Limite : 18 Mo.',4000);return;}pdfDevisImport=file;var n=document.getElementById('devis-pdf-name');if(n)n.textContent='PDF prêt : '+file.name+' ('+(file.size/1024/1024).toFixed(2)+' Mo)';document.getElementById('devis-import-status').textContent='PDF prêt : '+file.name;rafraichirEtatDevis();}
+function chargerPdfDevisDepuisInput(input){if(input.files&&input.files[0])definirPdfDevis(input.files[0]);}
+function deposerPdfDevis(e){e.preventDefault();quitterSurvolImportDevis(e);var f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0];if(f)definirPdfDevis(f);}
 function definirImageDevis(file) {
   if(!file) return;
   if(!/^image\/(png|jpeg|webp)$/.test(file.type)) {
@@ -1353,7 +1365,7 @@ function definirImageDevis(file) {
   imageDevisImport=file;
   var img=document.getElementById('devis-image-preview');
   img.src=URL.createObjectURL(file); img.style.display='block';
-  document.getElementById('btn-analyser-devis').disabled=false;
+  rafraichirEtatDevis();
   document.getElementById('devis-import-status').textContent='Image prête : '+file.name;
   document.getElementById('devis-import-result').style.display='none';
 }
@@ -1370,7 +1382,8 @@ document.addEventListener('paste',function(e){
   for(var j=0;j<items.length;j++){if(items[j].type&&items[j].type.indexOf('image/')===0){var ff=items[j].getAsFile();if(ff){var file=new File([ff],'capture-document.png',{type:ff.type});if(devisActif)definirImageDevis(file);else definirImageFournisseur(file);e.preventDefault();}return;}}
 });
 function reinitialiserImageDevis(){
-  imageDevisImport=null;
+  imageDevisImport=null;pdfDevisImport=null;
+  var pInput=document.getElementById('devis-pdf-file');if(pInput)pInput.value='';var pName=document.getElementById('devis-pdf-name');if(pName)pName.textContent='Choisir ou déposer le PDF';
   var input=document.getElementById('devis-image-file'),img=document.getElementById('devis-image-preview');
   if(input)input.value='';
   if(img){if(img.src&&img.src.indexOf('blob:')===0)URL.revokeObjectURL(img.src);img.removeAttribute('src');img.style.display='none';}
@@ -1399,14 +1412,15 @@ function appliquerDonneesDevis(data){
   afficherToast('ok','✨','Devis analysé','Vérifiez les champs préremplis avant enregistrement.',4500);
 }
 async function analyserImageDevis(){
-  if(!imageDevisImport)return;
+  var source=pdfDevisImport||imageDevisImport;if(!source)return;
   var btn=document.getElementById('btn-analyser-devis'),status=document.getElementById('devis-import-status');
   btn.disabled=true;btn.textContent='⏳ Analyse en cours…';status.textContent='Gemini lit votre devis. Cela peut prendre quelques secondes.';
   try{
     var base64=await new Promise(function(resolve,reject){
-      var reader=new FileReader();reader.onload=function(){resolve(String(reader.result).split(',')[1]||'');};reader.onerror=reject;reader.readAsDataURL(imageDevisImport);
+      var reader=new FileReader();reader.onload=function(){resolve(String(reader.result).split(',')[1]||'');};reader.onerror=reject;reader.readAsDataURL(source);
     });
-    var r=await apiPost({action:'analyserDevisImage',mimeType:imageDevisImport.type,imageBase64:base64});
+    var mime=source.type||(/\.pdf$/i.test(source.name||'')?'application/pdf':'image/jpeg');
+    var r=await apiPost({action:'analyserDevisImage',mimeType:mime,imageBase64:base64,nom:source.name||'devis'});
     if(!r||!r.ok)throw new Error(r&&r.error?r.error:'Analyse impossible.');
     var d=r.data||{};
     appliquerDonneesDevis(d);
@@ -1415,7 +1429,7 @@ async function analyserImageDevis(){
     result.innerHTML='<strong>Informations détectées</strong>'+lignes.join('');result.style.display='block';
     status.textContent='Analyse terminée'+(r.modeleUtilise?' · '+r.modeleUtilise:'')+'. Vérifiez les informations.';
   }catch(e){status.textContent='❌ '+e.message;afficherToast('urgent','❌','Import devis',e.message,7000);}
-  finally{btn.disabled=!imageDevisImport;btn.textContent='✨ Analyser les documents';}
+  finally{btn.disabled=!(pdfDevisImport||imageDevisImport);btn.textContent='✨ Analyser avec Gemini';}
 }
 
 var imageCommandeFournisseur=null, pdfCommandeFournisseur=null, donneesCaptureFournisseur=null, ligneCaptureFournisseur=null;
@@ -1432,7 +1446,7 @@ function definirPdfFournisseur(file){
   pdfCommandeFournisseur=file;
   var label=document.getElementById('fournisseur-pdf-name');if(label)label.textContent='PDF prêt : '+file.name+' ('+(file.size/1024/1024).toFixed(2)+' Mo)';
   donneesCaptureFournisseur=null;ligneCaptureFournisseur=null;
-  ['fournisseur-import-result','fournisseur-import-preview-data','fournisseur-import-match'].forEach(function(id){var e=document.getElementById(id);if(e){e.style.display='none';e.innerHTML='';}});
+  ['fournisseur-import-result','fournisseur-import-preview-data','fournisseur-import-match','controle-devis-arc-result'].forEach(function(id){var e=document.getElementById(id);if(e){e.style.display='none';e.innerHTML='';}});
   document.getElementById('btn-confirmer-fournisseur').disabled=true;rafraichirEtatPiecesFournisseur();
 }
 function chargerPdfFournisseurDepuisInput(input){if(input.files&&input.files[0])definirPdfFournisseur(input.files[0]);}
@@ -1442,7 +1456,7 @@ function definirImageFournisseur(file){
   if(file.size>9*1024*1024){afficherToast('urgent','⚠️','Capture trop volumineuse','Limite : 9 Mo.',4000);return;}
   imageCommandeFournisseur=file;var img=document.getElementById('fournisseur-image-preview');if(img){if(img.src&&img.src.indexOf('blob:')===0)URL.revokeObjectURL(img.src);img.src=URL.createObjectURL(file);img.style.display='block';}
   donneesCaptureFournisseur=null;ligneCaptureFournisseur=null;
-  ['fournisseur-import-result','fournisseur-import-preview-data','fournisseur-import-match'].forEach(function(id){var e=document.getElementById(id);if(e){e.style.display='none';e.innerHTML='';}});
+  ['fournisseur-import-result','fournisseur-import-preview-data','fournisseur-import-match','controle-devis-arc-result'].forEach(function(id){var e=document.getElementById(id);if(e){e.style.display='none';e.innerHTML='';}});
   document.getElementById('btn-confirmer-fournisseur').disabled=true;rafraichirEtatPiecesFournisseur();
 }
 function chargerImageFournisseurDepuisInput(input){if(input.files&&input.files[0])definirImageFournisseur(input.files[0]);}
@@ -1455,7 +1469,7 @@ function reinitialiserImageFournisseur(){
   ['fournisseur-image-file','fournisseur-pdf-file'].forEach(function(id){var i=document.getElementById(id);if(i)i.value='';});
   var img=document.getElementById('fournisseur-image-preview');if(img){if(img.src&&img.src.indexOf('blob:')===0)URL.revokeObjectURL(img.src);img.removeAttribute('src');img.style.display='none';}
   var pdfName=document.getElementById('fournisseur-pdf-name');if(pdfName)pdfName.textContent='Choisir ou déposer le PDF complet';
-  ['fournisseur-import-result','fournisseur-import-preview-data','fournisseur-import-match'].forEach(function(id){var e=document.getElementById(id);if(e){e.style.display='none';e.innerHTML='';}});
+  ['fournisseur-import-result','fournisseur-import-preview-data','fournisseur-import-match','controle-devis-arc-result'].forEach(function(id){var e=document.getElementById(id);if(e){e.style.display='none';e.innerHTML='';}});
   var confirmBtn=document.getElementById('btn-confirmer-fournisseur');if(confirmBtn)confirmBtn.disabled=true;
   var st=document.getElementById('fournisseur-import-status');if(st)st.textContent='';
   rafraichirEtatPiecesFournisseur();
@@ -1496,6 +1510,24 @@ function afficherCaptureFournisseur(d,matches){var typeDoc=d.documentType||'inco
 async function lireFichierBase64Fournisseur(file){
   return new Promise(function(resolve,reject){var r=new FileReader();r.onload=function(){resolve({mimeType:file.type||(/\.pdf$/i.test(file.name)?'application/pdf':'image/jpeg'),base64:String(r.result).split(',')[1]||'',nom:file.name||'piece-jointe'});};r.onerror=reject;r.readAsDataURL(file);});
 }
+async function controlerDevisArc(){
+  var devisFile=pdfDevisImport||imageDevisImport,arcFile=pdfCommandeFournisseur||imageCommandeFournisseur;
+  var box=document.getElementById('controle-devis-arc-result'),btn=document.getElementById('btn-controle-devis-arc');
+  if(!devisFile||!arcFile){afficherToast('urgent','⚠️','Documents manquants','Ajoutez le devis client (PDF ou capture) et le document ARC fournisseur (PDF ou capture).',6000);return;}
+  btn.disabled=true;btn.textContent='⏳ Comparaison…';box.style.display='block';box.innerHTML='Analyse de cohérence des documents en cours…';
+  try{
+    var d=await lireFichierBase64Fournisseur(devisFile);d.role='devis_client';
+    var a=await lireFichierBase64Fournisseur(arcFile);a.role='arc_fournisseur';
+    var docs=[d,a];if(imageDevisImport&&pdfDevisImport){var di=await lireFichierBase64Fournisseur(imageDevisImport);di.role='capture_complementaire_devis';docs.push(di);}if(imageCommandeFournisseur&&pdfCommandeFournisseur){var ai=await lireFichierBase64Fournisseur(imageCommandeFournisseur);ai.role='capture_complementaire_arc';docs.push(ai);}
+    var r=await apiPost({action:'controlerCoherenceDevisARC',documents:docs});if(!r||!r.ok)throw new Error(r&&r.error||'Comparaison impossible.');
+    var data=r.data||{},rows=Array.isArray(data.controles)?data.controles:[];var statusColor=function(s){return s==='Conforme'?'#2E7D32':s==='Écart détecté'?'#C62828':'#E65100';};
+    var htm='<div style="font-weight:700;margin-bottom:8px;">Rapport de cohérence devis client / ARC fournisseur</div><div style="font-size:12px;color:var(--texte2);margin-bottom:8px;">'+h(data.resume||'Vérifiez les valeurs extraites avant décision.')+'</div><div style="overflow:auto"><table style="width:100%;font-size:12px;border-collapse:collapse"><thead><tr><th>Contrôle</th><th>Devis client</th><th>ARC fournisseur</th><th>Résultat</th></tr></thead><tbody>';
+    rows.forEach(function(x){htm+='<tr><td>'+h(x.element||'')+'</td><td>'+h(x.devis||'Non indiqué')+'</td><td>'+h(x.arc||'Non indiqué')+'</td><td style="font-weight:700;color:'+statusColor(x.statut||'À vérifier')+'">'+h(x.statut||'À vérifier')+(x.commentaire?'<div style="font-weight:400;color:var(--texte2);">'+h(x.commentaire)+'</div>':'')+'</td></tr>';});
+    htm+='</tbody></table></div><div style="font-size:11px;color:var(--texte2);margin-top:8px;">Ce rapport est une aide au contrôle : toute donnée absente, ambiguë ou illisible est marquée « À vérifier ». Il ne valide pas automatiquement la commande.</div>';box.innerHTML=htm;
+  }catch(e){box.innerHTML='<span style="color:var(--rouge);">Erreur : '+h(e.message)+'</span>';}
+  finally{btn.disabled=false;btn.textContent='🔎 Comparer devis / ARC';}
+}
+
 async function analyserImageFournisseur(){
   if(!pdfCommandeFournisseur&&!imageCommandeFournisseur)return;
   var btn=document.getElementById('btn-analyser-fournisseur'),st=document.getElementById('fournisseur-import-status');
