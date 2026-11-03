@@ -574,12 +574,17 @@ textarea.task-input{resize:vertical}
   </div>
   </section>
   <section id="tab-capture-devis" class="modal-tab-panel">
-    <p style="font-size:13px;color:var(--texte2);margin-bottom:12px;">Capture réservée aux devis clients. Gemini extrait les données du devis et les reporte dans le formulaire « Commande ». Vérifiez puis utilisez Enregistrer.</p>
+    <div style="border:1px solid #B8D8F2;background:#F2F8FD;border-radius:10px;padding:12px;margin-bottom:14px;">
+      <div style="font-weight:800;color:#185B97;font-size:15px;margin-bottom:5px;">ÉTAPE 1 — DEVIS CLIENT SIGNÉ</div>
+      <p style="font-size:13px;color:var(--texte2);margin:0;">Importez ici le devis validé par le client. Ce document servira de référence pour le comparer ensuite au devis ARC du fournisseur. L’analyse de capture pour remplir la commande reste disponible ci-dessous.</p>
+    </div>
     <input type="file" id="devis-pdf-file" accept="application/pdf,.pdf" style="display:none" onchange="chargerPdfDevisDepuisInput(this)">
     <input type="file" id="devis-image-file" accept="image/png,image/jpeg,image/webp" style="display:none" onchange="chargerImageDevisDepuisInput(this)">
+    <div style="font-size:12px;font-weight:700;color:var(--texte2);margin:0 0 6px;">DOCUMENT DE RÉFÉRENCE — PDF COMPLET</div>
     <div class="import-drop" id="devis-pdf-drop" style="margin-bottom:10px;" onclick="document.getElementById('devis-pdf-file').click()" ondragover="survolImportDevis(event)" ondragleave="quitterSurvolImportDevis(event)" ondrop="deposerPdfDevis(event)">
       <div style="font-size:30px;margin-bottom:8px;">📄</div><strong>PDF complet du devis client</strong><div id="devis-pdf-name" style="font-size:12px;color:var(--texte2);margin-top:6px;">Choisir ou déposer le PDF</div>
     </div>
+    <div style="font-size:12px;font-weight:700;color:var(--texte2);margin:12px 0 6px;">CAPTURE COMPLÉMENTAIRE (FACULTATIVE)</div>
     <div class="import-drop" id="devis-import-drop" onclick="document.getElementById('devis-image-file').click()" ondragover="survolImportDevis(event)" ondragleave="quitterSurvolImportDevis(event)" ondrop="deposerImageDevis(event)">
       <div style="font-size:34px;margin-bottom:8px;">🧾</div><strong>Capture d’un devis client</strong><div style="font-size:12px;color:var(--texte2);margin-top:6px;">Choisir, glisser-déposer ou Ctrl + V</div>
       <img id="devis-image-preview" class="import-preview" style="display:none;" alt="Aperçu devis client">
@@ -593,15 +598,18 @@ textarea.task-input{resize:vertical}
     <div id="devis-import-status" class="import-status" aria-live="polite"></div><div id="devis-import-result" class="import-result" style="display:none;"></div>
   </section>
   <section id="tab-capture-fournisseur" class="modal-tab-panel">
-    <p style="font-size:13px;color:var(--texte2);margin-bottom:12px;">Ajoutez le PDF complet du fournisseur, puis si nécessaire une capture d’écran/photo en complément. Gemini lit les deux pièces ensemble : références, fournisseur, commande, ARC, montants, livraison, conditions et lignes d’articles. Vérifiez la commande cible avant l’enregistrement dans Sheets.</p>
+    <div style="border:1px solid #B8D8F2;background:#F2F8FD;border-radius:10px;padding:12px;margin-bottom:14px;">
+      <div style="font-weight:800;color:#185B97;font-size:15px;margin-bottom:5px;">ÉTAPE 2 — DEVIS ARC FOURNISSEUR</div>
+      <p style="font-size:13px;color:var(--texte2);margin:0;">Importez ici le devis ARC reçu du fabricant après l’envoi de la commande. Il sera comparé au devis client importé dans l’onglet précédent. La capture/photo est facultative et sert uniquement de complément au PDF.</p>
+    </div>
     <input type="file" id="fournisseur-pdf-file" accept="application/pdf,.pdf" style="display:none" onchange="chargerPdfFournisseurDepuisInput(this)">
     <input type="file" id="fournisseur-image-file" accept="image/png,image/jpeg,image/webp" style="display:none" onchange="chargerImageFournisseurDepuisInput(this)">
     <div class="import-drop" id="fournisseur-pdf-drop" onclick="document.getElementById('fournisseur-pdf-file').click()" ondragover="survolImportFournisseur(event)" ondragleave="quitterSurvolImportFournisseur(event)" ondrop="deposerPdfFournisseur(event)">
-      <div style="font-size:34px;margin-bottom:8px;">📄</div><strong>PDF principal fournisseur</strong>
-      <div id="fournisseur-pdf-name" style="font-size:12px;color:var(--texte2);margin-top:6px;">Choisir ou déposer le PDF complet</div>
+      <div style="font-size:34px;margin-bottom:8px;">📄</div><strong>PDF du devis ARC fournisseur</strong>
+      <div id="fournisseur-pdf-name" style="font-size:12px;color:var(--texte2);margin-top:6px;">Document ARC à contrôler — choisir ou déposer le PDF</div>
     </div>
     <div class="import-drop" id="fournisseur-image-drop" style="margin-top:10px;" onclick="document.getElementById('fournisseur-image-file').click()" ondragover="survolImportFournisseur(event)" ondragleave="quitterSurvolImportFournisseur(event)" ondrop="deposerImageFournisseur(event)">
-      <div style="font-size:30px;margin-bottom:8px;">📷</div><strong>Capture d’écran / photo complémentaire (facultative)</strong>
+      <div style="font-size:30px;margin-bottom:8px;">📷</div><strong>Capture du devis ARC (facultative)</strong>
       <div style="font-size:12px;color:var(--texte2);margin-top:6px;">Choisir, glisser-déposer ou Ctrl + V</div>
       <img id="fournisseur-image-preview" class="import-preview" style="display:none;" alt="Aperçu capture fournisseur complémentaire">
     </div>
@@ -609,9 +617,10 @@ textarea.task-input{resize:vertical}
       <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('fournisseur-pdf-file').click()">📁 Choisir le PDF</button>
       <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('fournisseur-image-file').click()">📷 Ajouter une capture</button>
       <button type="button" class="btn btn-outline btn-sm" id="btn-analyser-fournisseur" onclick="analyserImageFournisseur()" disabled>✨ Analyser les documents</button>
-      <button type="button" class="btn btn-outline btn-sm" id="btn-controle-devis-arc" onclick="controlerDevisArc()">🔎 Comparer devis / ARC</button>
+      <button type="button" class="btn btn-primary btn-sm" id="btn-controle-devis-arc" onclick="controlerDevisArc()">🔍 ÉTAPE 3 — COMPARER CLIENT / ARC</button>
       <button type="button" class="btn btn-outline btn-sm" onclick="reinitialiserImageFournisseur()">✕ Tout retirer</button>
     </div>
+    <div style="font-size:12px;color:var(--texte2);margin-top:8px;">La comparaison vérifie notamment les types de menuiseries, quantités, couleurs, vitrages, aérations et crémones. Les deux documents doivent être présents.</div>
     <div id="controle-devis-arc-result" class="import-result" style="display:none;margin-top:12px;"></div>
     <div id="fournisseur-import-status" class="import-status" aria-live="polite"></div>
     <div id="fournisseur-import-result" class="import-result" style="display:none;"></div>
