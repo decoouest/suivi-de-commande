@@ -1572,23 +1572,63 @@ function afficherCaptureFournisseur(d,matches){var typeDoc=d.documentType||'inco
 async function lireFichierBase64Fournisseur(file){
   return new Promise(function(resolve,reject){var r=new FileReader();r.onload=function(){resolve({mimeType:file.type||(/\.pdf$/i.test(file.name)?'application/pdf':'image/jpeg'),base64:String(r.result).split(',')[1]||'',nom:file.name||'piece-jointe'});};r.onerror=reject;r.readAsDataURL(file);});
 }
+async function preparerCanvasRapportCoherence(){
+  var box=document.getElementById('controle-devis-arc-result');
+  if(!box||!box.innerText.trim()) throw new Error('Rapport absent. Lancez d’abord la comparaison devis / ARC.');
+  if(typeof html2canvas!=='function') throw new Error('Bibliothèque de capture indisponible. Vérifiez la connexion internet.');
+  var clone=box.cloneNode(true);
+  clone.querySelectorAll('.rapport-capture-tools').forEach(function(el){el.remove();});
+  clone.querySelectorAll('a').forEach(function(el){el.style.color='#1565C0';});
+  clone.style.cssText+=';display:block;position:absolute;left:-100000px;top:0;width:1100px;max-width:none;height:auto;max-height:none;overflow:visible;background:#ffffff;color:#17212b;padding:20px;box-sizing:border-box;';
+  clone.querySelectorAll('*').forEach(function(el){el.style.maxHeight='none';el.style.overflow='visible';});
+  document.body.appendChild(clone);
+  try {
+    await new Promise(function(resolve){requestAnimationFrame(function(){requestAnimationFrame(resolve);});});
+    var canvas=await html2canvas(clone,{backgroundColor:'#ffffff',scale:2,useCORS:true,logging:false,
+      width:clone.scrollWidth,height:clone.scrollHeight,windowWidth:Math.max(1200,clone.scrollWidth),windowHeight:clone.scrollHeight,
+      scrollX:0,scrollY:0});
+    if(!canvas||!canvas.width||!canvas.height) throw new Error('La capture est vide.');
+    return canvas;
+  } finally { clone.remove(); }
+}
 async function capturerRapportCoherence(){
   var box=document.getElementById('controle-devis-arc-result');
-  if(!box||!box.innerText.trim()){afficherToast('urgent','⚠️','Rapport absent','Lancez d’abord la comparaison devis / ARC.',5000);return;}
-  if(typeof html2canvas!=='function'){afficherToast('urgent','⚠️','Capture indisponible','La bibliothèque de capture ne s’est pas chargée. Réessayez avec une connexion internet.',6000);return;}
-  var bouton=box.querySelector('.rapport-capture-tools button');
-  if(bouton){bouton.disabled=true;bouton.textContent='⏳ Préparation de la capture…';}
+  var bouton=box&&box.querySelector('.rapport-capture-tools button');
+  if(bouton){bouton.disabled=true;bouton.textContent='⏳ Capture complète…';}
   try{
-    var clone=box.cloneNode(true);
-    clone.querySelectorAll('.rapport-capture-tools').forEach(function(el){el.remove();});
-    clone.style.display='block';clone.style.position='fixed';clone.style.left='-100000px';clone.style.top='0';clone.style.width=Math.max(box.scrollWidth,box.clientWidth,720)+'px';clone.style.maxHeight='none';clone.style.overflow='visible';clone.style.background='#ffffff';clone.style.color='#17212b';clone.style.padding='18px';clone.style.boxSizing='border-box';
-    document.body.appendChild(clone);
-    var canvas=await html2canvas(clone,{backgroundColor:'#ffffff',scale:2,useCORS:true,logging:false,windowWidth:Math.max(clone.scrollWidth,720),height:clone.scrollHeight});
-    clone.remove();
+    var canvas=await preparerCanvasRapportCoherence();
     var lien=document.createElement('a');lien.download='rapport-coherence-devis-ARC-'+new Date().toISOString().slice(0,10)+'.png';lien.href=canvas.toDataURL('image/png');lien.click();
-    afficherToast('success','📸','Capture prête','Le rapport complet a été généré au format PNG.',5000);
+    afficherToast('success','📸','Capture prête','Le rapport entier a été exporté en PNG.',5000);
   }catch(e){afficherToast('urgent','⚠️','Échec de la capture',e&&e.message||'Impossible de générer l’image.',6000);}
   finally{if(bouton){bouton.disabled=false;bouton.textContent='📸 Capturer le rapport (PNG)';}}
+}
+async function exporterRapportCoherencePDF(){
+  var box=document.getElementById('controle-devis-arc-result');
+  var bouton=box&&box.querySelector('.rapport-capture-tools .btn-pdf-rapport');
+  if(bouton){bouton.disabled=true;bouton.textContent='⏳ Création du PDF…';}
+  try{
+    if(!window.jspdf||!window.jspdf.jsPDF) throw new Error('Bibliothèque PDF indisponible. Vérifiez la connexion internet.');
+    var canvas=await preparerCanvasRapportCoherence();
+    var pdf=new window.jspdf.jsPDF({orientation:'portrait',unit:'mm',format:'a4',compress:true});
+    var pageW=210,pageH=297,margin=10,usableW=pageW-2*margin,usableH=pageH-2*margin;
+    var imgW=usableW,imgH=canvas.height*imgW/canvas.width;
+    var pageCanvas=document.createElement('canvas'),ctx=pageCanvas.getContext('2d');
+    var sliceHeight=Math.floor(canvas.width*usableH/usableW);
+    var y=0,page=0;
+    while(y<canvas.height){
+      var h=Math.min(sliceHeight,canvas.height-y);
+      pageCanvas.width=canvas.width;pageCanvas.height=h;
+      ctx.clearRect(0,0,pageCanvas.width,pageCanvas.height);
+      ctx.drawImage(canvas,0,y,canvas.width,h,0,0,canvas.width,h);
+      if(page>0)pdf.addPage();
+      var data=pageCanvas.toDataURL('image/jpeg',0.92);
+      pdf.addImage(data,'JPEG',margin,margin,usableW,h*usableW/canvas.width,undefined,'FAST');
+      y+=h;page++;
+    }
+    pdf.save('rapport-coherence-devis-ARC-'+new Date().toISOString().slice(0,10)+'.pdf');
+    afficherToast('success','📄','PDF prêt','Le rapport complet a été exporté en PDF multipage.',5000);
+  }catch(e){afficherToast('urgent','⚠️','Échec du PDF',e&&e.message||'Impossible de générer le PDF.',6000);}
+  finally{if(bouton){bouton.disabled=false;bouton.textContent='📄 Télécharger le rapport (PDF)';}}
 }
 
 async function controlerDevisArc(){
@@ -1604,7 +1644,7 @@ async function controlerDevisArc(){
     var data=r.data||{},rows=Array.isArray(data.controles)?data.controles:[];var statusColor=function(s){return s==='Conforme'?'#2E7D32':s==='Écart détecté'?'#C62828':'#E65100';};
     var htm='<div style="font-weight:700;margin-bottom:8px;">Rapport de cohérence devis client / ARC fournisseur</div><div style="font-size:12px;color:var(--texte2);margin-bottom:8px;">'+h(data.resume||'Vérifiez les valeurs extraites avant décision.')+'</div><div style="overflow:auto"><table style="width:100%;font-size:12px;border-collapse:collapse"><thead><tr><th>Contrôle</th><th>Devis client</th><th>ARC fournisseur</th><th>Résultat</th></tr></thead><tbody>';
     rows.forEach(function(x){htm+='<tr><td>'+h(x.element||'')+'</td><td>'+h(x.devis||'Non indiqué')+'</td><td>'+h(x.arc||'Non indiqué')+'</td><td style="font-weight:700;color:'+statusColor(x.statut||'À vérifier')+'">'+h(x.statut||'À vérifier')+(x.commentaire?'<div style="font-weight:400;color:var(--texte2);">'+h(x.commentaire)+'</div>':'')+'</td></tr>';});
-    htm+='</tbody></table></div><div style="font-size:11px;color:var(--texte2);margin-top:8px;">Ce rapport est une aide au contrôle : toute donnée absente, ambiguë ou illisible est marquée « À vérifier ». Il ne valide pas automatiquement la commande.</div><div class="rapport-capture-tools" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;"><button type="button" class="btn btn-primary btn-sm" onclick="capturerRapportCoherence()">📸 Capturer le rapport (PNG)</button><span style="font-size:11px;color:var(--texte2);align-self:center;">Capture complète, y compris les lignes hors écran.</span></div>';box.innerHTML=htm;
+    htm+='</tbody></table></div><div style="font-size:11px;color:var(--texte2);margin-top:8px;">Ce rapport est une aide au contrôle : toute donnée absente, ambiguë ou illisible est marquée « À vérifier ». Il ne valide pas automatiquement la commande.</div><div class="rapport-capture-tools" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;"><button type="button" class="btn btn-primary btn-sm" onclick="capturerRapportCoherence()">📸 Capturer le rapport (PNG)</button><button type="button" class="btn btn-primary btn-sm btn-pdf-rapport" onclick="exporterRapportCoherencePDF()">📄 Télécharger le rapport (PDF)</button><span style="font-size:11px;color:var(--texte2);align-self:center;">Export complet, même pour un rapport long (PDF multipage).</span></div>';box.innerHTML=htm;
     var ligneAssociee=Number(ligneCaptureFournisseur||editLigne||0);
     var clientAssocie=(document.getElementById('f-client')&&document.getElementById('f-client').value)||'';
     var referenceAssociee=(document.getElementById('f-devis')&&document.getElementById('f-devis').value)||'';
