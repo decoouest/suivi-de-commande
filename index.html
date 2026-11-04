@@ -317,6 +317,48 @@ textarea.task-input{resize:vertical}
 .import-status{font-size:12px;color:var(--texte2);margin-top:12px;white-space:pre-wrap}
 .import-result{margin-top:12px;padding:12px;background:#F5F7FA;border-radius:8px;font-size:12px;line-height:1.6}
 
+
+/* ── ECO OUEST GRAPHIC REFERENCE: clean blue / white dashboard ── */
+:root{--sidebar:180px;--bleu:#1565C0;--bleu-clair:#1976D2;--bleu-bg:#E8F1FE;--gris-bg:#F3F7FC;--bordure:#D8E4F3;}
+body{background:#F4F7FC;color:#102B50;}
+.sidebar{background:linear-gradient(180deg,#0D4F99 0%,#1565C0 100%);box-shadow:3px 0 14px rgba(13,71,161,.12);}
+.sidebar-logo{text-align:left;padding:22px 18px 18px;}
+.sidebar-logo span{font-size:21px;letter-spacing:.3px;}
+.sidebar-logo small{font-size:10px;letter-spacing:1.3px;}
+.nav{padding:16px 0;}
+.nav-item{flex-direction:row;justify-content:flex-start;text-align:left;gap:12px;padding:13px 16px;font-size:13px;border-left:4px solid transparent;color:rgba(255,255,255,.82);}
+.nav-item .icon{font-size:20px;width:24px;flex-shrink:0;}
+.nav-item.active{background:linear-gradient(90deg,rgba(255,255,255,.2),rgba(255,255,255,.08));border-left-color:#90CAF9;color:#fff;}
+.nav-item:hover{background:rgba(255,255,255,.13);}
+.sidebar-footer{font-size:11px;text-align:left;padding:14px 18px;color:rgba(255,255,255,.65);}
+.main{width:calc(100% - var(--sidebar));}
+.topbar{min-height:116px;padding:18px 24px;background:linear-gradient(100deg,#fff 0%,#F0F6FF 65%,#fff 100%);border-bottom:1px solid #D9E7F8;gap:18px;align-items:center;}
+.topbar-title{font-size:0;line-height:1.1;min-width:300px;flex:1;color:#0D2E61;}
+.topbar-title:before{content:'⌂  ECO OUEST';display:block;font-size:28px;font-weight:800;letter-spacing:.1px;color:#12396D;}
+.topbar-title:after{content:'Suivi des commandes';display:block;font-size:22px;font-weight:700;color:#1565C0;margin-top:4px;}
+.topbar-right{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap;max-width:720px;}
+.topbar-right .sync-info{order:5;background:#EAF7EF;border:1px solid #B8E1C5;border-radius:22px;padding:8px 12px;font-size:11px;}
+.topbar-right button[onclick*="ouvrirSousModuleTaches('taches')"]{background:#E8F3FF!important;border:1px solid #B9D7FF!important;color:#124A91!important;border-radius:14px!important;padding:12px 16px!important;min-height:66px;box-shadow:0 3px 10px rgba(21,101,192,.10);font-size:13px!important;}
+.topbar-right button[onclick*="ouvrirSousModuleTaches('achats')"]{background:#FFF4E2!important;border:1px solid #F3D3A1!important;color:#865018!important;border-radius:14px!important;padding:12px 16px!important;min-height:66px;box-shadow:0 3px 10px rgba(180,100,20,.08);font-size:13px!important;}
+.topbar-right button{border-radius:9px;}
+.content{padding:16px 20px;}
+.kpi-grid{grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:14px;}
+.kpi-card{border-radius:15px;padding:16px 18px;border:1px solid #DFE9F7;box-shadow:0 3px 12px rgba(20,64,120,.06);gap:5px;}
+.kpi-label{font-size:11px;letter-spacing:.6px;}
+.kpi-value{font-size:29px;}
+.kpi-sub{font-size:11px;}
+.filters-bar{border-radius:14px;padding:12px 14px;gap:10px;box-shadow:0 2px 8px rgba(20,64,120,.04);}
+.search-input,.select-filter{padding:10px 12px;border-radius:10px;border-color:#D7E2F1;}
+.filter-badge{padding:7px 13px;font-size:12px;}
+.table-wrap{border-radius:15px;border:1px solid #D7E4F5;box-shadow:0 3px 12px rgba(20,64,120,.05);max-height:calc(100vh - 260px);}
+table{font-size:12px;}
+thead th{background:#E8F1FE;color:#214B7B;padding:12px 9px;font-size:11px;border-right:1px solid #D5E3F6;}
+td{padding:11px 9px;font-size:12px;border-bottom:1px solid #E5ECF5;}
+tr:hover td{background:#F5F9FF;}
+.badge{padding:4px 8px;border-radius:16px;font-size:10px;}
+.btn{border-radius:10px;}
+@media(max-width:1100px){.topbar{align-items:flex-start;flex-wrap:wrap}.topbar-title{min-width:220px}.topbar-right{max-width:none;justify-content:flex-start}.topbar-right .sync-info{order:0}}
+@media(max-width:760px){:root{--sidebar:0px}.sidebar{display:none}.main{margin-left:0;width:100%}.topbar{min-height:unset;padding:12px;gap:10px}.topbar-title{font-size:0;min-width:0}.topbar-title:before{font-size:21px}.topbar-title:after{font-size:16px}.topbar-right{width:100%;justify-content:flex-start;gap:6px}.topbar-right button[onclick*="ouvrirSousModuleTaches"]{min-height:48px;padding:8px 10px!important}.content{padding:10px}.kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.kpi-card{padding:12px}.kpi-value{font-size:24px}.table-wrap{max-height:none;overflow:auto}}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -340,7 +382,7 @@ textarea.task-input{resize:vertical}
 </div>
 
 <aside class="sidebar">
-  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v15.0</div></div>
+  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v16.5</div></div>
   <nav class="nav">
     <div class="nav-item active" id="nav-suivi" onclick="showView('suivi')"><span class="icon">📋</span><span>Commandes</span></div>
     <div class="nav-item" id="nav-alertes" onclick="showView('alertes')"><span class="icon">🔔</span><span>Alertes</span></div>
@@ -353,7 +395,7 @@ textarea.task-input{resize:vertical}
     <div class="nav-item" id="nav-planning" onclick="showView('planning')"><span class="icon">📅</span><span>Planning</span></div>
     <div class="nav-item" id="nav-config" onclick="showView('config')"><span class="icon">⚙️</span><span>Config</span></div>
   </nav>
-  <div class="sidebar-footer">v15.0</div>
+  <div class="sidebar-footer">v16.5</div>
 </aside>
 
 <div class="main">
@@ -362,6 +404,8 @@ textarea.task-input{resize:vertical}
     <span class="topbar-title" id="topbar-title">Suivi des commandes</span>
     <div class="topbar-right">
       <span class="sync-info"><span class="sync-dot" id="sync-dot"></span><span id="sync-label">Chargement...</span></span>
+      <button class="btn btn-outline btn-sm" onclick="showView('taches'); ouvrirSousModuleTaches('taches'); document.getElementById('task-filter-type').value='taches'; renderTaches();" style="border-color:#1565C0;color:#1565C0;font-weight:800;">📝 TÂCHES <span id="top-taches-count" class="task-nav-badge"></span></button>
+      <button class="btn btn-outline btn-sm" onclick="showView('taches'); ouvrirSousModuleTaches('achats');" style="border-color:#E65100;color:#E65100;font-weight:800;">🛒 CONSOMMABLES <span id="top-achats-count" class="task-nav-badge"></span></button>
       <button class="btn btn-outline btn-sm" id="btn-notif" onclick="activerNotifications()" title="Notifications">🔕 Notifs</button>
       <button class="btn btn-outline btn-sm" onclick="actualiserTout()">🔄 Actualiser</button>
       <button class="btn btn-outline btn-sm" onclick="exportCSV()">⬇ CSV</button>
@@ -393,7 +437,7 @@ textarea.task-input{resize:vertical}
       </div>
       <div class="table-wrap">
         <table><thead><tr>
-          <th onclick="sortBy('client')">Client ↕</th><th onclick="sortBy('fournisseur')">Fournisseur ↕</th><th onclick="sortBy('metres')">📅 Métré ↕</th><th>N° Devis</th><th>Commande</th><th>ARC</th><th onclick="sortBy('prevLivraison')">Livraison ↕</th><th>Statut livraison</th><th>Statut pose</th><th>Date pose</th><th>PV Chantier</th><th>Commentaire</th><th>Alerte</th><th></th>
+          <th onclick="sortBy('client')">Client ↕</th><th onclick="sortBy('fournisseur')">Fournisseur ↕</th><th onclick="sortBy('metres')">📅 Métré ↕</th><th>N° Devis</th><th>Montant devis client TTC</th><th>Montant fournisseur TTC</th><th>Commande</th><th>ARC</th><th onclick="sortBy('prevLivraison')">Livraison ↕</th><th>Statut livraison</th><th>Statut pose</th><th>Date pose</th><th>PV Chantier</th><th>Commentaire</th><th>Alerte</th><th></th>
         </tr></thead><tbody id="table-body"></tbody></table>
         <div class="scroll-hint" id="scroll-hint"></div>
       </div>
@@ -770,6 +814,8 @@ function renderKPI() {
   var actifsTaches = tachesNotes.filter(function(t){ return t.type === 'tache' && !t.terminee; }).length;
   var notesCount = tachesNotes.filter(function(t){ return t.type === 'note'; }).length;
   var achatsEnCours = achatsConsommables.filter(function(a){ return a.statut !== 'recu'; }).length;
+  var topTaches = document.getElementById('top-taches-count'); if (topTaches) topTaches.textContent = actifsTaches;
+  var topAchats = document.getElementById('top-achats-count'); if (topAchats) topAchats.textContent = achatsEnCours;
 
   var shortcuts = document.createElement('div');
   shortcuts.className = 'kpi-card';
@@ -783,6 +829,13 @@ function renderKPI() {
       '<button onclick="ouvrirModalDicteeNoteRapide()" style="width:100%; padding:4px; font-size:11px; font-weight:700; border:1.5px solid #E65100; background:#FFF3E0; color:#E65100; border-radius:6px; cursor:pointer; justify-content:center; white-space:nowrap; display:flex; align-items:center; gap:4px;">🎤 Dicter</button>' +
     '</div>';
   grid.appendChild(shortcuts);
+}
+
+function formatMontantTable(v) {
+  if (v === null || v === undefined || String(v).trim() === '') return '—';
+  var n = Number(String(v).replace(/[^0-9,.-]/g, '').replace(/\s/g, '').replace(',', '.'));
+  if (!isFinite(n)) return h(String(v));
+  return n.toLocaleString('fr-FR', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' €';
 }
 
 function renderTable() {
@@ -802,7 +855,7 @@ function renderTable() {
   if (alertFilter==='encours') rows = rows.filter(function(c){return !estTermineStatut(c.statutLivraison);});
   rows.sort(function(a,b){ if(sortCol==='ligne') return sortAsc ? a.ligne-b.ligne : b.ligne-a.ligne; var va=str(a[sortCol]).toLowerCase(),vb=str(b[sortCol]).toLowerCase(); return sortAsc?va.localeCompare(vb):vb.localeCompare(va); });
   var tb = document.getElementById('table-body');
-  if (!rows.length) { tb.innerHTML='<tr><td colspan="14"><div class="empty-state"><p>Aucune commande.</p></div></td></tr>'; document.getElementById('scroll-hint').textContent=''; return; }
+  if (!rows.length) { tb.innerHTML='<tr><td colspan="16"><div class="empty-state"><p>Aucune commande.</p></div></td></tr>'; document.getElementById('scroll-hint').textContent=''; return; }
   tb.innerHTML = rows.map(function(c){
     var a=c._a,fc=FOU_COLORS[c.fournisseur]||'#546E7A';
     var sL = c.statutLivraison?'<span class="badge '+(c.statutLivraison==='Livré'?'badge-ok':c.statutLivraison==='SAV'?'badge-urgent':'badge-info')+'">'+h(c.statutLivraison)+'</span>':'—';
@@ -810,7 +863,7 @@ function renderTable() {
     var extra = a.t.indexOf(' | ')!==-1?'<br><span style="font-size:10px;color:var(--texte2);">+'+(a.t.split(' | ').length-1)+' autre(s)</span>':'';
     var objetBadge = c.objetCommande?'<span style="border-bottom:2px dotted var(--bleu);cursor:pointer;" onclick="afficherObjetParLigne(event,'+c.ligne+')">'+h(c.arc||'—')+' 📦</span>':h(c.arc||'—');
     var metreCell = c.metres?'<span style="background:#FFF3E0;color:var(--orange);padding:3px 9px;border-radius:5px;font-size:11px;font-weight:700;">📅 '+h(formatDateMetre(c.metres))+'</span>':'<span style="color:#ccc;">—</span>';
-    return '<tr><td class="col-client" data-label="Client"><span style="display:none;">L'+c.ligne+'</span>'+h(c.client)+'</td><td data-label="Fournisseur"><span style="background:'+fc+'18;color:'+fc+';padding:3px 8px;border-radius:5px;font-size:11px;font-weight:700;">'+h(c.fournisseur||'—')+'</span></td><td data-label="Métré">'+metreCell+'</td><td class="col-mono" data-label="Devis">'+h(c.devis||'—')+'</td><td>'+(c.commande==='OUI'?'<span class="badge badge-ok">OUI</span>':c.commande==='NON'?'<span class="badge badge-urgent">NON</span>':'—')+'</td><td class="col-mono" data-label="ARC">'+objetBadge+'</td><td data-label="Livraison">'+semaineBadge(c.prevLivraison)+'</td><td data-label="Statut livr.">'+sL+'</td><td data-label="Statut pose">'+sP+'</td><td style="font-size:12px;font-weight:600;color:var(--bleu);" data-label="Date pose">'+h(c.datePose||'—')+'</td><td data-label="PV">'+pvBadge(c.pvChantier,c.ligne)+'</td><td class="col-comment" data-label="Commentaire" title="'+escAttr(c.commentaire)+'">'+h(c.commentaire||'')+'</td><td data-label="Alerte"><span class="alerte-text '+aClass(a.n)+'">'+(a.n===0?'OK':a.n===-1?'⏹ Annulée':'⚠ '+h(a.t.split(' | ')[0]))+'</span>'+extra+'</td><td><button class="action-btn" onclick="openModal('+c._i+')">✏️</button></td></tr>';
+    return '<tr><td class="col-client" data-label="Client"><span style="display:none;">L'+c.ligne+'</span>'+h(c.client)+'</td><td data-label="Fournisseur"><span style="background:'+fc+'18;color:'+fc+';padding:3px 8px;border-radius:5px;font-size:11px;font-weight:700;">'+h(c.fournisseur||'—')+'</span></td><td data-label="Métré">'+metreCell+'</td><td class="col-mono" data-label="Devis">'+h(c.devis||'—')+'</td><td data-label="Montant devis client TTC" style="font-weight:700;white-space:nowrap;">'+formatMontantTable(c.devisTTC)+'</td><td data-label="Montant fournisseur TTC" style="font-weight:700;color:#6D4C41;white-space:nowrap;">'+formatMontantTable(c.totalAchatsTTC)+'</td><td>'+(c.commande==='OUI'?'<span class="badge badge-ok">OUI</span>':c.commande==='NON'?'<span class="badge badge-urgent">NON</span>':'—')+'</td><td class="col-mono" data-label="ARC">'+objetBadge+'</td><td data-label="Livraison">'+semaineBadge(c.prevLivraison)+'</td><td data-label="Statut livr.">'+sL+'</td><td data-label="Statut pose">'+sP+'</td><td style="font-size:12px;font-weight:600;color:var(--bleu);" data-label="Date pose">'+h(c.datePose||'—')+'</td><td data-label="PV">'+pvBadge(c.pvChantier,c.ligne)+'</td><td class="col-comment" data-label="Commentaire" title="'+escAttr(c.commentaire)+'">'+h(c.commentaire||'')+'</td><td data-label="Alerte"><span class="alerte-text '+aClass(a.n)+'">'+(a.n===0?'OK':a.n===-1?'⏹ Annulée':'⚠ '+h(a.t.split(' | ')[0]))+'</span>'+extra+'</td><td><button class="action-btn" onclick="openModal('+c._i+')">✏️</button></td></tr>';
   }).join('');
   document.getElementById('scroll-hint').textContent = rows.length+' commande(s) sur '+commandes.length;
 }
@@ -1519,6 +1572,25 @@ function afficherCaptureFournisseur(d,matches){var typeDoc=d.documentType||'inco
 async function lireFichierBase64Fournisseur(file){
   return new Promise(function(resolve,reject){var r=new FileReader();r.onload=function(){resolve({mimeType:file.type||(/\.pdf$/i.test(file.name)?'application/pdf':'image/jpeg'),base64:String(r.result).split(',')[1]||'',nom:file.name||'piece-jointe'});};r.onerror=reject;r.readAsDataURL(file);});
 }
+async function capturerRapportCoherence(){
+  var box=document.getElementById('controle-devis-arc-result');
+  if(!box||!box.innerText.trim()){afficherToast('urgent','⚠️','Rapport absent','Lancez d’abord la comparaison devis / ARC.',5000);return;}
+  if(typeof html2canvas!=='function'){afficherToast('urgent','⚠️','Capture indisponible','La bibliothèque de capture ne s’est pas chargée. Réessayez avec une connexion internet.',6000);return;}
+  var bouton=box.querySelector('.rapport-capture-tools button');
+  if(bouton){bouton.disabled=true;bouton.textContent='⏳ Préparation de la capture…';}
+  try{
+    var clone=box.cloneNode(true);
+    clone.querySelectorAll('.rapport-capture-tools').forEach(function(el){el.remove();});
+    clone.style.display='block';clone.style.position='fixed';clone.style.left='-100000px';clone.style.top='0';clone.style.width=Math.max(box.scrollWidth,box.clientWidth,720)+'px';clone.style.maxHeight='none';clone.style.overflow='visible';clone.style.background='#ffffff';clone.style.color='#17212b';clone.style.padding='18px';clone.style.boxSizing='border-box';
+    document.body.appendChild(clone);
+    var canvas=await html2canvas(clone,{backgroundColor:'#ffffff',scale:2,useCORS:true,logging:false,windowWidth:Math.max(clone.scrollWidth,720),height:clone.scrollHeight});
+    clone.remove();
+    var lien=document.createElement('a');lien.download='rapport-coherence-devis-ARC-'+new Date().toISOString().slice(0,10)+'.png';lien.href=canvas.toDataURL('image/png');lien.click();
+    afficherToast('success','📸','Capture prête','Le rapport complet a été généré au format PNG.',5000);
+  }catch(e){afficherToast('urgent','⚠️','Échec de la capture',e&&e.message||'Impossible de générer l’image.',6000);}
+  finally{if(bouton){bouton.disabled=false;bouton.textContent='📸 Capturer le rapport (PNG)';}}
+}
+
 async function controlerDevisArc(){
   var devisFile=pdfDevisImport||imageDevisImport,arcFile=pdfCommandeFournisseur||imageCommandeFournisseur;
   var box=document.getElementById('controle-devis-arc-result'),btn=document.getElementById('btn-controle-devis-arc');
@@ -1532,7 +1604,7 @@ async function controlerDevisArc(){
     var data=r.data||{},rows=Array.isArray(data.controles)?data.controles:[];var statusColor=function(s){return s==='Conforme'?'#2E7D32':s==='Écart détecté'?'#C62828':'#E65100';};
     var htm='<div style="font-weight:700;margin-bottom:8px;">Rapport de cohérence devis client / ARC fournisseur</div><div style="font-size:12px;color:var(--texte2);margin-bottom:8px;">'+h(data.resume||'Vérifiez les valeurs extraites avant décision.')+'</div><div style="overflow:auto"><table style="width:100%;font-size:12px;border-collapse:collapse"><thead><tr><th>Contrôle</th><th>Devis client</th><th>ARC fournisseur</th><th>Résultat</th></tr></thead><tbody>';
     rows.forEach(function(x){htm+='<tr><td>'+h(x.element||'')+'</td><td>'+h(x.devis||'Non indiqué')+'</td><td>'+h(x.arc||'Non indiqué')+'</td><td style="font-weight:700;color:'+statusColor(x.statut||'À vérifier')+'">'+h(x.statut||'À vérifier')+(x.commentaire?'<div style="font-weight:400;color:var(--texte2);">'+h(x.commentaire)+'</div>':'')+'</td></tr>';});
-    htm+='</tbody></table></div><div style="font-size:11px;color:var(--texte2);margin-top:8px;">Ce rapport est une aide au contrôle : toute donnée absente, ambiguë ou illisible est marquée « À vérifier ». Il ne valide pas automatiquement la commande.</div>';box.innerHTML=htm;
+    htm+='</tbody></table></div><div style="font-size:11px;color:var(--texte2);margin-top:8px;">Ce rapport est une aide au contrôle : toute donnée absente, ambiguë ou illisible est marquée « À vérifier ». Il ne valide pas automatiquement la commande.</div><div class="rapport-capture-tools" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;"><button type="button" class="btn btn-primary btn-sm" onclick="capturerRapportCoherence()">📸 Capturer le rapport (PNG)</button><span style="font-size:11px;color:var(--texte2);align-self:center;">Capture complète, y compris les lignes hors écran.</span></div>';box.innerHTML=htm;
     var ligneAssociee=Number(ligneCaptureFournisseur||editLigne||0);
     var clientAssocie=(document.getElementById('f-client')&&document.getElementById('f-client').value)||'';
     var referenceAssociee=(document.getElementById('f-devis')&&document.getElementById('f-devis').value)||'';
