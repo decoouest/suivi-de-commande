@@ -100,7 +100,7 @@ tr:hover td{background:#F8FBFF;}
 .empty-state{text-align:center;padding:48px 24px;color:var(--texte2);}
 .overlay{display:none;position:fixed;inset:0;background:rgba(10,20,40,.45);z-index:200;align-items:center;justify-content:center;}
 .overlay.open{display:flex;}
-.modal{background:#fff;border-radius:14px;width:920px;max-width:96vw;max-height:92vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2);animation:fadeUp .2s ease;}
+.modal{background:#fff;border-radius:14px;width:min(1180px,98vw);max-width:98vw;max-height:94vh;overflow-y:auto;overflow-x:hidden;box-shadow:0 20px 60px rgba(0,0,0,.2);animation:fadeUp .2s ease;}
 @keyframes fadeUp{from{transform:translateY(16px);opacity:0}to{transform:translateY(0);opacity:1}}
 .modal-header{display:flex;align-items:center;justify-content:space-between;padding:22px 28px 16px;border-bottom:1px solid var(--bordure);}
 .modal-header h3{font-size:17px;font-weight:700;}
@@ -359,6 +359,20 @@ tr:hover td{background:#F5F9FF;}
 .btn{border-radius:10px;}
 @media(max-width:1100px){.topbar{align-items:flex-start;flex-wrap:wrap}.topbar-title{min-width:220px}.topbar-right{max-width:none;justify-content:flex-start}.topbar-right .sync-info{order:0}}
 @media(max-width:760px){:root{--sidebar:0px}.sidebar{display:none}.main{margin-left:0;width:100%}.topbar{min-height:unset;padding:12px;gap:10px}.topbar-title{font-size:0;min-width:0}.topbar-title:before{font-size:21px}.topbar-title:after{font-size:16px}.topbar-right{width:100%;justify-content:flex-start;gap:6px}.topbar-right button[onclick*="ouvrirSousModuleTaches"]{min-height:48px;padding:8px 10px!important}.content{padding:10px}.kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.kpi-card{padding:12px}.kpi-value{font-size:24px}.table-wrap{max-height:none;overflow:auto}}
+
+/* v16.8 — fenêtre d'import et de contrôle plus lisible */
+#overlay-commande .modal{width:min(1180px,98vw);max-width:98vw}
+#controle-devis-arc-result{max-width:100%;overflow-wrap:anywhere}
+#controle-devis-arc-result table{width:100%;min-width:760px}
+#controle-devis-arc-result th,#controle-devis-arc-result td{padding:9px 10px;vertical-align:top;white-space:normal;overflow-wrap:anywhere}
+@media(max-width:700px){
+  .overlay{align-items:flex-start;padding:8px;overflow-y:auto}
+  .modal,#overlay-commande .modal{width:100%;max-width:100%;max-height:calc(100dvh - 16px);border-radius:10px}
+  .modal-header{padding:14px 16px}
+  .modal-body{padding:14px 16px}
+  #controle-devis-arc-result table{min-width:650px;font-size:11px}
+}
+
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -437,7 +451,7 @@ tr:hover td{background:#F5F9FF;}
       </div>
       <div class="table-wrap">
         <table><thead><tr>
-          <th onclick="sortBy('client')">Client ↕</th><th onclick="sortBy('fournisseur')">Fournisseur ↕</th><th onclick="sortBy('metres')">📅 Métré ↕</th><th>N° Devis</th><th>devis TTC</th><th>fournisseur TTC</th><th>Commande</th><th>ARC</th><th onclick="sortBy('prevLivraison')">Livraison ↕</th><th>Statut livraison</th><th>Statut pose</th><th>Date pose</th><th>PV Chantier</th><th>Commentaire</th><th>Alerte</th><th></th>
+          <th onclick="sortBy('client')">Client ↕</th><th onclick="sortBy('fournisseur')">Fournisseur ↕</th><th onclick="sortBy('metres')">📅 Métré ↕</th><th>N° Devis</th><th>Montant devis client TTC</th><th>Montant fournisseur TTC</th><th>Commande</th><th>ARC</th><th onclick="sortBy('prevLivraison')">Livraison ↕</th><th>Statut livraison</th><th>Statut pose</th><th>Date pose</th><th>PV Chantier</th><th>Commentaire</th><th>Alerte</th><th></th>
         </tr></thead><tbody id="table-body"></tbody></table>
         <div class="scroll-hint" id="scroll-hint"></div>
       </div>
