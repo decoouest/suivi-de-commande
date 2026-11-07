@@ -414,6 +414,31 @@ tr:hover td{background:#F5F9FF;}
 .fc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(200px,100%),1fr));gap:8px;}
 .fc-autre{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:7px 10px;border:1px solid var(--bordure);border-radius:8px;margin-top:6px;cursor:pointer;font-size:12px;}
 .fc-autre:hover{background:#F0F6FF;}
+
+/* ===== v17.4 : barre du haut réorganisée (2 rangées alignées à droite) ===== */
+.topbar{min-height:92px!important;padding:12px 24px!important;align-items:center!important;gap:16px!important;}
+.topbar-right{display:flex!important;flex-direction:column!important;align-items:flex-end!important;justify-content:center!important;gap:8px!important;max-width:none!important;flex:0 1 auto;margin-left:auto;}
+.topbar-right .tb-row{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:8px;}
+.topbar-right .sync-info{order:0!important;background:#EAF7EF!important;border:1px solid #B8E1C5!important;border-radius:999px!important;padding:5px 11px!important;font-size:11px!important;font-weight:600;white-space:nowrap;}
+.topbar-right .tb-tool,.topbar-right .tb-task,.topbar-right .tb-conso,.topbar-right .tb-dicter,.topbar-right .tb-new{display:inline-flex!important;align-items:center;justify-content:center;gap:6px;height:36px!important;min-height:36px!important;padding:0 14px!important;font-size:13px!important;font-weight:700!important;border-radius:10px!important;white-space:nowrap;box-shadow:none!important;}
+.topbar-right .tb-tool{background:#fff!important;border:1px solid #C9D8EC!important;color:#1F4E8C!important;height:32px!important;min-height:32px!important;font-size:12px!important;padding:0 11px!important;font-weight:600!important;}
+.topbar-right .tb-tool:hover{background:#F0F6FF!important;}
+.topbar-right .tb-task{background:#E8F3FF!important;border:1px solid #B9D7FF!important;color:#124A91!important;}
+.topbar-right .tb-conso{background:#FFF4E2!important;border:1px solid #F3D3A1!important;color:#865018!important;}
+.topbar-right .tb-dicter{background:#fff!important;border:1.5px solid #E65100!important;color:#E65100!important;}
+.topbar-right .tb-new{background:var(--bleu,#1565C0)!important;border:1px solid var(--bleu,#1565C0)!important;color:#fff!important;padding:0 18px!important;box-shadow:0 2px 8px rgba(21,101,192,.3)!important;}
+.topbar-right .tb-new:hover{filter:brightness(1.08);}
+.topbar-right .task-nav-badge:empty{display:none;}
+@media(max-width:1100px){.topbar{flex-wrap:wrap!important;}.topbar-right{width:100%!important;align-items:stretch!important;}.topbar-right .tb-row{justify-content:flex-start;}}
+@media(max-width:760px){
+  .topbar{min-height:unset!important;padding:10px 12px!important;}
+  .topbar-right .tb-row{width:100%;display:grid;gap:6px;}
+  .topbar-right .tb-row-top{grid-template-columns:1fr 1fr 1fr;}
+  .topbar-right .tb-row-top .sync-info{grid-column:1/-1;justify-content:center;}
+  .topbar-right .tb-row-main{grid-template-columns:1fr 1fr;}
+  .topbar-right .tb-new{height:36px!important;padding:0 6px!important;font-size:12px!important;}
+  .topbar-right .tb-tool,.topbar-right .tb-task,.topbar-right .tb-conso,.topbar-right .tb-dicter{width:100%;padding:0 6px!important;font-size:12px!important;}
+}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -437,7 +462,7 @@ tr:hover td{background:#F5F9FF;}
 </div>
 
 <aside class="sidebar">
-  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v17.3</div></div>
+  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v17.4</div></div>
   <nav class="nav">
     <div class="nav-item active" id="nav-suivi" onclick="showView('suivi')"><span class="icon">📋</span><span>Commandes</span></div>
     <div class="nav-item" id="nav-alertes" onclick="showView('alertes')"><span class="icon">🔔</span><span>Alertes</span></div>
@@ -450,7 +475,7 @@ tr:hover td{background:#F5F9FF;}
     <div class="nav-item" id="nav-planning" onclick="showView('planning')"><span class="icon">📅</span><span>Planning</span></div>
     <div class="nav-item" id="nav-config" onclick="showView('config')"><span class="icon">⚙️</span><span>Config</span></div>
   </nav>
-  <div class="sidebar-footer">v17.3</div>
+  <div class="sidebar-footer">v17.4</div>
 </aside>
 
 <div class="main">
@@ -458,14 +483,18 @@ tr:hover td{background:#F5F9FF;}
     <button class="menu-burger" id="menu-burger" onclick="ouvrirMenuMobile()" title="Menu">☰</button>
     <span class="topbar-title" id="topbar-title">Suivi des commandes</span>
     <div class="topbar-right">
-      <span class="sync-info"><span class="sync-dot" id="sync-dot"></span><span id="sync-label">Chargement...</span></span>
-      <button class="btn btn-outline btn-sm" onclick="showView('taches'); ouvrirSousModuleTaches('taches'); document.getElementById('task-filter-type').value='taches'; renderTaches();" style="border-color:#1565C0;color:#1565C0;font-weight:800;">📝 TÂCHES <span id="top-taches-count" class="task-nav-badge"></span></button>
-      <button class="btn btn-outline btn-sm" onclick="showView('taches'); ouvrirSousModuleTaches('achats');" style="border-color:#E65100;color:#E65100;font-weight:800;">🛒 CONSOMMABLES <span id="top-achats-count" class="task-nav-badge"></span></button>
-      <button class="btn btn-outline btn-sm" id="btn-notif" onclick="activerNotifications()" title="Notifications">🔕 Notifs</button>
-      <button class="btn btn-outline btn-sm" onclick="actualiserTout()">🔄 Actualiser</button>
-      <button class="btn btn-outline btn-sm" onclick="exportCSV()">⬇ CSV</button>
-      <button class="btn btn-outline btn-sm" onclick="ouvrirModalDictee()" style="border-color:#E65100;color:#E65100;">🎙️ Dicter</button>
-      <button class="btn btn-primary btn-sm" onclick="openModal(-1)">+ Nouvelle commande</button>
+      <div class="tb-row tb-row-top">
+        <span class="sync-info"><span class="sync-dot" id="sync-dot"></span><span id="sync-label">Chargement...</span></span>
+        <button class="btn btn-outline btn-sm tb-tool" id="btn-notif" onclick="activerNotifications()" title="Notifications">🔕 Notifs</button>
+        <button class="btn btn-outline btn-sm tb-tool" onclick="actualiserTout()" title="Actualiser les données">🔄 Actualiser</button>
+        <button class="btn btn-outline btn-sm tb-tool" onclick="exportCSV()" title="Exporter en CSV">⬇ CSV</button>
+      </div>
+      <div class="tb-row tb-row-main">
+        <button class="btn btn-outline btn-sm tb-task" onclick="showView('taches'); ouvrirSousModuleTaches('taches'); document.getElementById('task-filter-type').value='taches'; renderTaches();">📝 Tâches <span id="top-taches-count" class="task-nav-badge"></span></button>
+        <button class="btn btn-outline btn-sm tb-conso" onclick="showView('taches'); ouvrirSousModuleTaches('achats');">🛒 Consommables <span id="top-achats-count" class="task-nav-badge"></span></button>
+        <button class="btn btn-outline btn-sm tb-dicter" onclick="ouvrirModalDictee()">🎙️ Dicter</button>
+        <button class="btn btn-primary btn-sm tb-new" onclick="openModal(-1)">＋ Nouvelle commande</button>
+      </div>
     </div>
   </div>
   <div class="content">
