@@ -408,6 +408,12 @@ tr:hover td{background:#F5F9FF;}
 #controle-devis-arc-result .rc-table,#fournisseur-import-preview-data .rc-table{min-width:0!important;width:100%;font-size:12px}
 #controle-devis-arc-result .rc-table th,#controle-devis-arc-result .rc-table td{padding:7px 8px}
 @media(max-width:760px){#controle-devis-arc-result .rc-table{min-width:0!important}}
+
+.client-link{color:var(--bleu);cursor:pointer;text-decoration:none;}
+.client-link:hover,.client-link:focus{text-decoration:underline;}
+.fc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(200px,100%),1fr));gap:8px;}
+.fc-autre{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:7px 10px;border:1px solid var(--bordure);border-radius:8px;margin-top:6px;cursor:pointer;font-size:12px;}
+.fc-autre:hover{background:#F0F6FF;}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -431,7 +437,7 @@ tr:hover td{background:#F5F9FF;}
 </div>
 
 <aside class="sidebar">
-  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v17.2</div></div>
+  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v17.3</div></div>
   <nav class="nav">
     <div class="nav-item active" id="nav-suivi" onclick="showView('suivi')"><span class="icon">📋</span><span>Commandes</span></div>
     <div class="nav-item" id="nav-alertes" onclick="showView('alertes')"><span class="icon">🔔</span><span>Alertes</span></div>
@@ -444,7 +450,7 @@ tr:hover td{background:#F5F9FF;}
     <div class="nav-item" id="nav-planning" onclick="showView('planning')"><span class="icon">📅</span><span>Planning</span></div>
     <div class="nav-item" id="nav-config" onclick="showView('config')"><span class="icon">⚙️</span><span>Config</span></div>
   </nav>
-  <div class="sidebar-footer">v17.2</div>
+  <div class="sidebar-footer">v17.3</div>
 </aside>
 
 <div class="main">
@@ -925,7 +931,7 @@ function renderTable() {
     var extra = a.t.indexOf(' | ')!==-1?'<br><span style="font-size:10px;color:var(--texte2);">+'+(a.t.split(' | ').length-1)+' autre(s)</span>':'';
     var objetBadge = c.objetCommande?'<span style="border-bottom:2px dotted var(--bleu);cursor:pointer;" onclick="afficherObjetParLigne(event,'+c.ligne+')">'+h(c.arc||'—')+' 📦</span>':h(c.arc||'—');
     var metreCell = c.metres?'<span style="background:#FFF3E0;color:var(--orange);padding:3px 9px;border-radius:5px;font-size:11px;font-weight:700;">📅 '+h(formatDateMetre(c.metres))+'</span>':'<span style="color:#ccc;">—</span>';
-    return '<tr><td class="col-client" data-label="Client"><span style="display:none;">L'+c.ligne+'</span><div class="client-cell"><span class="client-name">'+h(c.client)+'</span><button class="client-edit-btn" title="Modifier cette commande" aria-label="Modifier la commande de '+escAttr(c.client)+'" onclick="openModal('+c._i+')">✏️</button></div></td><td data-label="Fournisseur"><span style="background:'+fc+'18;color:'+fc+';padding:3px 8px;border-radius:5px;font-size:11px;font-weight:700;">'+h(c.fournisseur||'—')+'</span></td><td data-label="Métré">'+metreCell+'</td><td class="col-mono" data-label="Devis">'+h(c.devis||'—')+'</td><td data-label="Montant devis client TTC" style="font-weight:700;white-space:nowrap;">'+formatMontantTable(c.devisTTC)+'</td><td data-label="Montant fournisseur TTC" style="font-weight:700;color:#6D4C41;white-space:nowrap;">'+formatMontantTable(c.totalAchatsTTC)+'</td><td>'+(c.commande==='OUI'?'<span class="badge badge-ok">OUI</span>':c.commande==='NON'?'<span class="badge badge-urgent">NON</span>':'—')+'</td><td class="col-mono" data-label="ARC">'+objetBadge+'</td><td data-label="Livraison">'+semaineBadge(c.prevLivraison)+'</td><td data-label="Statut livr.">'+sL+'</td><td data-label="Statut pose">'+sP+'</td><td style="font-size:12px;font-weight:600;color:var(--bleu);" data-label="Date pose">'+h(c.datePose||'—')+'</td><td data-label="PV">'+pvBadge(c.pvChantier,c.ligne)+'</td><td class="col-comment" data-label="Commentaire" title="'+escAttr(c.commentaire)+'">'+h(c.commentaire||'')+'</td><td data-label="Alerte"><span class="alerte-text '+aClass(a.n)+'">'+(a.n===0?'OK':a.n===-1?'⏹ Annulée':'⚠ '+h(a.t.split(' | ')[0]))+'</span>'+extra+'</td><td></td></tr>';
+    return '<tr><td class="col-client" data-label="Client"><span style="display:none;">L'+c.ligne+'</span><div class="client-cell"><a class="client-name client-link" href="javascript:void(0)" role="button" title="Ouvrir la fiche client" onclick="ouvrirFicheClient('+c.ligne+')">'+h(c.client)+'</a><button class="client-edit-btn" title="Modifier cette commande" aria-label="Modifier la commande de '+escAttr(c.client)+'" onclick="openModal('+c._i+')">✏️</button></div></td><td data-label="Fournisseur"><span style="background:'+fc+'18;color:'+fc+';padding:3px 8px;border-radius:5px;font-size:11px;font-weight:700;">'+h(c.fournisseur||'—')+'</span></td><td data-label="Métré">'+metreCell+'</td><td class="col-mono" data-label="Devis">'+h(c.devis||'—')+'</td><td data-label="Montant devis client TTC" style="font-weight:700;white-space:nowrap;">'+formatMontantTable(c.devisTTC)+'</td><td data-label="Montant fournisseur TTC" style="font-weight:700;color:#6D4C41;white-space:nowrap;">'+formatMontantTable(c.totalAchatsTTC)+'</td><td>'+(c.commande==='OUI'?'<span class="badge badge-ok">OUI</span>':c.commande==='NON'?'<span class="badge badge-urgent">NON</span>':'—')+'</td><td class="col-mono" data-label="ARC">'+objetBadge+'</td><td data-label="Livraison">'+semaineBadge(c.prevLivraison)+'</td><td data-label="Statut livr.">'+sL+'</td><td data-label="Statut pose">'+sP+'</td><td style="font-size:12px;font-weight:600;color:var(--bleu);" data-label="Date pose">'+h(c.datePose||'—')+'</td><td data-label="PV">'+pvBadge(c.pvChantier,c.ligne)+'</td><td class="col-comment" data-label="Commentaire" title="'+escAttr(c.commentaire)+'">'+h(c.commentaire||'')+'</td><td data-label="Alerte"><span class="alerte-text '+aClass(a.n)+'">'+(a.n===0?'OK':a.n===-1?'⏹ Annulée':'⚠ '+h(a.t.split(' | ')[0]))+'</span>'+extra+'</td><td></td></tr>';
   }).join('');
   document.getElementById('scroll-hint').textContent = rows.length+' commande(s) sur '+commandes.length;
 }
@@ -1109,6 +1115,34 @@ async function sauvegarderVehicule(){
   catch(e){btn.disabled=false;btn.textContent='💾 Enregistrer';alert('❌ Non enregistré : '+e.message);}
 }
 function toggleFlotteOK(){}
+
+
+// ── Fiche client (lecture seule) ──
+function fcCell(label,val,fort){var v=(val===undefined||val===null||String(val).trim()==='')?'—':String(val);return '<div class="rc-cell"><b>'+h(label)+'</b><span'+(fort?' style="font-weight:700;"':'')+'>'+h(v)+'</span></div>';}
+function fcBadgeAlerte(a){var cls=a.n>=3?'rc-b-ko':a.n>=1?'rc-b-chk':'rc-b-ok';return '<span class="rc-badge '+cls+'">'+(a.n>=3?'🔴 ':a.n>=1?'🟠 ':'🟢 ')+h(a.t)+'</span>';}
+function ouvrirFicheClient(ligne){
+  var idx=commandes.findIndex(function(x){return x.ligne===ligne;});if(idx<0)return;
+  var c=commandes[idx],a=alerte(c);
+  var nom=str(c.client).trim().toLowerCase();
+  var autres=commandes.filter(function(x){return x.ligne!==ligne&&str(x.client).trim().toLowerCase()===nom;});
+  var pv=str(c.pvChantier).toUpperCase()==='OUI'?'Fait':'Non fait';
+  var h2=function(t){return '<h4 style="margin:14px 0 6px;font-size:12px;text-transform:uppercase;letter-spacing:.4px;color:var(--texte2);">'+t+'</h4>';};
+  var html='<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;"><div><h3 style="font-size:18px;font-weight:800;margin:0;color:var(--bleu);overflow-wrap:anywhere;">'+h(c.client)+'</h3><div style="margin-top:6px;">'+fcBadgeAlerte(a)+'</div></div><button onclick="fermerFicheClient()" aria-label="Fermer" style="background:#F5F7FA;border:none;border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:16px;flex:0 0 auto;">✕</button></div>'+
+    h2('Commande')+'<div class="fc-grid">'+fcCell('N° devis',c.devis)+fcCell('Fournisseur',c.fournisseur)+fcCell('Commande envoyée',c.commande)+fcCell('N° ARC',c.arc)+fcCell('Validation ARC',c.commentaireARC)+fcCell('Date de métré',c.metres?formatDateMetre(c.metres):'')+'</div>'+
+    h2('Montants')+'<div class="fc-grid">'+fcCell('Devis client TTC',(c.devisTTC===''||c.devisTTC==null)?'':formatMontantTable(c.devisTTC),true)+fcCell('Achats fournisseur TTC',(c.totalAchatsTTC===''||c.totalAchatsTTC==null)?'':formatMontantTable(c.totalAchatsTTC),true)+'</div>'+
+    h2('Livraison et pose')+'<div class="fc-grid">'+fcCell('Livraison prévue',c.prevLivraison)+fcCell('Statut livraison',c.statutLivraison)+fcCell('Statut pose',c.statutPose)+fcCell('Date de pose',c.datePose)+fcCell('PV chantier',pv)+'</div>'+
+    (str(c.commentaire).trim()?h2('Commentaire')+'<div class="rc-cell" style="white-space:pre-wrap;">'+h(str(c.commentaire))+'</div>':'')+
+    (str(c.objetCommande).trim()?h2('Objet de la commande')+'<div class="rc-cell" style="white-space:pre-wrap;">'+h(str(c.objetCommande))+'</div>':'')+
+    (autres.length?h2('Autres commandes de ce client ('+autres.length+')')+autres.map(function(x){var ax=alerte(x);return '<div class="fc-autre" onclick="ouvrirFicheClient('+x.ligne+')"><span>'+h(x.devis||'Sans n° de devis')+' · '+h(x.fournisseur||'—')+'</span><span>'+fcBadgeAlerte(ax)+'</span></div>';}).join(''):'')+
+    '<div style="display:flex;gap:8px;margin-top:18px;justify-content:flex-end;flex-wrap:wrap;"><button class="btn btn-outline" onclick="fermerFicheClient()">Fermer</button><button class="btn btn-primary" onclick="fermerFicheClient();openModal('+idx+')">✏️ Modifier la commande</button></div>';
+  var o=document.getElementById('overlay-fiche-client');if(o)o.remove();
+  o=document.createElement('div');o.id='overlay-fiche-client';o.style.cssText='position:fixed;inset:0;background:rgba(10,20,40,.45);z-index:450;display:flex;align-items:flex-start;justify-content:center;padding:12px;overflow-y:auto;';
+  o.onclick=function(e){if(e.target===o)fermerFicheClient();};
+  o.innerHTML='<div role="dialog" aria-modal="true" style="width:100%;max-width:720px;background:#fff;border-radius:14px;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.2);margin:auto;" onclick="event.stopPropagation()">'+html+'</div>';
+  document.body.appendChild(o);
+}
+function fermerFicheClient(){var o=document.getElementById('overlay-fiche-client');if(o)o.remove();}
+document.addEventListener('keydown',function(e){if(e.key==='Escape')fermerFicheClient();});
 
 // ── AGENT IA ──
 async function chargerRapportAgent() { var content=document.getElementById('agent-content'), dateEl=document.getElementById('agent-date'); if(dateEl) dateEl.textContent='⏳ Chargement...'; content.innerHTML='<div class="agent-loader"><div class="spinner"></div><div class="loader-msg">📥 Chargement...</div></div>'; try { var r=await apiPost({action:'lireRapport'}); if(!r||!r.ok){content.innerHTML='<div class="empty-state"><div style="font-size:64px;">🤖</div><h3>Aucun rapport</h3><p>Le rapport est généré chaque matin à 8h.</p></div>';if(dateEl)dateEl.textContent='Dernière analyse : aucune';return;} if(dateEl&&r.dateRapport)dateEl.textContent='Dernière analyse : '+r.dateRapport+' (auto)'; else if(dateEl&&r.date)dateEl.textContent='Dernière analyse : '+r.date; dernierRapportAgent=r; afficherRapportAgent(r,0); } catch(e) { content.innerHTML='<div class="empty-state"><p>❌ '+h(e.message)+'</p></div>'; } }
