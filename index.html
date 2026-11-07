@@ -301,6 +301,7 @@ textarea.task-input{resize:vertical}
 .flotte-alerte-card{background:#fff;border-radius:10px;border:1px solid var(--bordure);border-left:4px solid;padding:14px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px;}
 .flotte-alerte-card.urgent{border-left-color:var(--rouge);}
 .flotte-alerte-card.warn{border-left-color:var(--orange);}
+.flotte-alerte-card.ok{border-left-color:var(--vert);}
 .flotte-alerte-titre{font-weight:700;font-size:15px;color:var(--texte);margin-bottom:8px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
 .flotte-alerte-liste{margin:0;padding-left:18px;color:var(--texte2);margin-top:6px;font-size:13px;}
 .flotte-alerte-liste li{margin-bottom:6px;line-height: 1.4;}
@@ -373,6 +374,40 @@ tr:hover td{background:#F5F9FF;}
   #controle-devis-arc-result table{min-width:650px;font-size:11px}
 }
 
+/* ===== v16.7 : rapports lisibles (ARC + cohérence) ===== */
+.rc-wrap{width:100%;max-width:1100px;margin:0 auto;box-sizing:border-box;color:var(--texte);}
+.rc-wrap *{box-sizing:border-box;}
+.rc-title{font-size:16px;font-weight:800;margin:0 0 10px;color:var(--bleu);}
+.rc-block{background:#fff;border:1px solid var(--bordure);border-radius:10px;padding:12px 14px;margin-bottom:12px;overflow-wrap:anywhere;word-break:break-word;}
+.rc-block h4{margin:0 0 8px;font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--texte2);}
+.rc-block p{margin:0;font-size:13px;line-height:1.55;}
+.rc-badges{display:flex;flex-wrap:wrap;gap:8px;}
+.rc-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;font-size:12px;font-weight:700;border:1px solid transparent;}
+.rc-b-ok{background:#E8F5E9;color:#2E7D32;border-color:#C8E6C9;}
+.rc-b-ko{background:#FFEBEE;color:#C62828;border-color:#FFCDD2;}
+.rc-b-chk{background:#FFF3E0;color:#E65100;border-color:#FFE0B2;}
+.rc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(230px,100%),1fr));gap:8px;}
+.rc-cell{min-width:0;overflow-wrap:anywhere;font-size:12px;line-height:1.45;background:#F7F9FC;border:1px solid var(--bordure);border-radius:8px;padding:8px 10px;}
+.rc-cell b{display:block;font-size:11px;color:var(--texte2);font-weight:700;margin-bottom:2px;}
+.rc-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:12px;}
+.rc-table th{background:#EEF3FA;color:var(--texte2);text-align:left;font-size:11px;padding:7px 8px;border-bottom:1px solid var(--bordure);}
+.rc-table td{padding:7px 8px;border-bottom:1px solid #EEF1F5;vertical-align:top;overflow-wrap:anywhere;word-break:break-word;}
+.rc-table tr:last-child td{border-bottom:none;}
+.rc-tablebox{border:1px solid var(--bordure);border-radius:8px;overflow:hidden;}
+.rc-note{font-size:11px;color:var(--texte2);line-height:1.5;margin-top:8px;}
+.rc-tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+@media (max-width:760px){
+  .rc-table thead{display:none;}
+  .rc-table,.rc-table tbody,.rc-table tr,.rc-table td{display:block;width:100%;}
+  .rc-table tr{padding:8px 10px;border-bottom:1px solid var(--bordure);}
+  .rc-table td{border:none;padding:2px 0;}
+  .rc-table td[data-l]::before{content:attr(data-l) " : ";font-weight:700;color:var(--texte2);}
+}
+@media print{.rc-tools{display:none!important;}.rc-block{break-inside:avoid;}}
+/* v17.1 : neutralise les largeurs minimales v16.8 pour les nouveaux tableaux */
+#controle-devis-arc-result .rc-table,#fournisseur-import-preview-data .rc-table{min-width:0!important;width:100%;font-size:12px}
+#controle-devis-arc-result .rc-table th,#controle-devis-arc-result .rc-table td{padding:7px 8px}
+@media(max-width:760px){#controle-devis-arc-result .rc-table{min-width:0!important}}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -396,7 +431,7 @@ tr:hover td{background:#F5F9FF;}
 </div>
 
 <aside class="sidebar">
-  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v16.5</div></div>
+  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v17.2</div></div>
   <nav class="nav">
     <div class="nav-item active" id="nav-suivi" onclick="showView('suivi')"><span class="icon">📋</span><span>Commandes</span></div>
     <div class="nav-item" id="nav-alertes" onclick="showView('alertes')"><span class="icon">🔔</span><span>Alertes</span></div>
@@ -409,7 +444,7 @@ tr:hover td{background:#F5F9FF;}
     <div class="nav-item" id="nav-planning" onclick="showView('planning')"><span class="icon">📅</span><span>Planning</span></div>
     <div class="nav-item" id="nav-config" onclick="showView('config')"><span class="icon">⚙️</span><span>Config</span></div>
   </nav>
-  <div class="sidebar-footer">v16.5</div>
+  <div class="sidebar-footer">v17.2</div>
 </aside>
 
 <div class="main">
@@ -553,6 +588,7 @@ tr:hover td{background:#F5F9FF;}
       <div class="agent-header">
         <div class="agent-header-info"><h2>🤖 Agent IA de suivi</h2><p>Analyse intelligente</p><div class="agent-header-date" id="agent-date">Dernière analyse : —</div></div>
         <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="agent-btn" id="btn-micro-agent" onclick="demandeVocaleAgent()" style="background:#C62828;color:#fff;">🎙️ Parler à l'agent</button>
           <button class="agent-btn" onclick="ouvrirAssistantVocal()" style="background:#E65100;color:#fff;">🎤 Poser une question</button>
           <button class="agent-btn" onclick="ouvrirActionVocale()" style="background:#2E7D32;color:#fff;">🗣️ Commande d'action</button>
           <button class="agent-btn" id="btn-analyser" onclick="lancerAnalyse()"><span id="btn-analyser-icon">✨</span><span id="btn-analyser-text">Analyser</span></button>
@@ -570,10 +606,15 @@ tr:hover td{background:#F5F9FF;}
     <div id="view-dashboard" class="view"><div class="dash-grid" id="dash-content"></div></div>
 
     <div id="view-flotte" class="view">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
-        <h3 style="font-size:16px; margin:0; color:var(--bleu);">État de la flotte</h3>
-        <button class="btn btn-primary btn-sm" onclick="ouvrirModalVehicule()">+ Ajouter / Modifier un véhicule</button>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:10px;">
+        <h3 style="font-size:16px; margin:0; color:var(--bleu);">État de la flotte <span id="flotte-maj" style="font-size:11px;font-weight:600;color:var(--texte2);margin-left:6px;"></span></h3>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="btn btn-primary btn-sm" onclick="ouvrirInterventionFlotte()">＋ Intervention / panne</button>
+          <button class="btn btn-outline btn-sm" onclick="ouvrirModalVehicule()">＋ Véhicule</button>
+          <button class="btn btn-outline btn-sm" onclick="chargerFlotte(true)">🔄 Actualiser</button>
+        </div>
       </div>
+      <div id="flotte-resume" class="rc-badges" style="margin-bottom:12px;"></div>
       <div id="flotte-alertes" style="display:flex; flex-direction:column; gap:10px;"></div>
       <div id="flotte-ok-list" style="display:block; margin-top:20px;"></div>
       <button id="btn-toggle-ok" style="display:none;"></button>
@@ -784,7 +825,11 @@ async function apiPost(body, tentative) {
     if (!r.ok) throw new Error('HTTP ' + r.status);
     var texte = await r.text();
     if (texte.trim().substring(0,1) === '<') throw new Error('Réponse HTML');
-    return JSON.parse(texte);
+    var rep = JSON.parse(texte);
+    if (rep && rep.ok === false && /^Action inconnue/i.test(String(rep.error||''))) {
+      rep.error = 'Le script Google déployé est une ancienne version (' + rep.error + '). Collez les fichiers Code.gs et Agent.gs de cette version dans Apps Script, puis Déployer > Gérer les déploiements > Modifier > Nouvelle version.';
+    }
+    return rep;
   } catch(e) {
     var msg = e.name === 'AbortError' ? 'Délai dépassé (' + (delai/1000) + ' s)' : (e.message || 'Erreur réseau');
     if (msg === 'Failed to fetch' || msg === 'NetworkError' || msg === 'Load failed') {
@@ -890,366 +935,180 @@ function setFilter(f){alertFilter=f;['all','urgent','warn','ok'].forEach(functio
 function afficherObjetParLigne(e,ligne){if(e)e.stopPropagation();var c=commandes.find(function(x){return x.ligne===ligne;});if(!c||!c.objetCommande)return;afficherObjet(null,c.objetCommande);}
 
 // ── MODULE FLOTTE (MODE ALERTES) ──
-async function chargerFlotte() {
-  try {
-    var rV = await apiPost({ action: 'lireVehicules' });
-    if (rV.ok) {
-      flotteVehicules = rV.data;
-      renderFlotte();
-    }
-  } catch(e) { console.warn("Erreur chargement flotte :", e.message); }
+var FLOTTE_TYPES=['RÉVISION','PNEUS','PIÈCES D\'USURE','AMPOULE / PHARE','VITRE / PARE-BRISE','RÉPARATION','CONTRÔLE TECHNIQUE','ASSURANCE / ADMIN','AUTRE'];
+var flotteMaj=null;
+function parseDateLocale(s){if(!s)return null;var m=String(s).match(/^(\d{4})-(\d{2})-(\d{2})/);if(m)return new Date(+m[1],+m[2]-1,+m[3]);m=String(s).match(/^(\d{2})\/(\d{2})\/(\d{4})/);if(m)return new Date(+m[3],+m[2]-1,+m[1]);var d=new Date(s);return isNaN(d.getTime())?null:d;}
+function dateFr(s){var d=parseDateLocale(s);return d?d.toLocaleDateString('fr-FR'):'—';}
+function aujourdhuiISO(){var d=new Date();return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
+function joursDe(a,b){return Math.round((a.getTime()-b.getTime())/86400000);}
+function moisEntre(d1,d2){return (d2.getFullYear()-d1.getFullYear())*12+(d2.getMonth()-d1.getMonth());}
+function fmtKm(n){return Number(n||0).toLocaleString('fr-FR')+' km';}
+
+async function chargerFlotte(manuel){
+  var box=document.getElementById('flotte-alertes'),st=document.getElementById('flotte-maj');
+  if(st)st.textContent='⏳ Chargement…';
+  try{
+    var r=await apiPost({action:'lireVehicules'});
+    if(!r||!r.ok)throw new Error((r&&r.error)||'Réponse invalide');
+    flotteVehicules=r.data||[];flotteMaj=new Date();
+    renderFlotte();
+    if(manuel)afficherToast('ok','🚗','Flotte actualisée',flotteVehicules.length+' véhicule(s)',2500);
+  }catch(e){
+    if(st)st.textContent='❌ Non mis à jour';
+    if(box)box.innerHTML='<div class="rc-block" style="border-left:4px solid var(--rouge);"><b>Impossible de charger la flotte.</b><p style="margin-top:6px;">'+h(e.message)+'</p><button class="btn btn-outline btn-sm" style="margin-top:8px;" onclick="chargerFlotte(true)">🔄 Réessayer</button></div>';
+    if(manuel)afficherToast('urgent','⚠️','Flotte',e.message,6000);
+  }
 }
 
-function renderFlotte() {
-  var containerAlertes = document.getElementById('flotte-alertes');
-  var containerOK = document.getElementById('flotte-ok-list');
-  var btnToggleOK = document.getElementById('btn-toggle-ok');
-  if (!containerAlertes) return;
-
-  var aujourdhui = new Date();
-  var listeUrgents = [];
-  var listeAttention = [];
-  var listeOK = [];
-
-  flotteVehicules.forEach(function(v) {
-    var alertesVehicule = [];
-    var infosIntervention = [];
-
-    if (v.urgence === 'haute' && v.description) {
-      alertesVehicule.push({ sev: 3, txt: '🚨 ACTION URGENTE : ' + v.type + ' — ' + v.description });
-    }
-
-    if (v.prochainCT) {
-      var dateCT = new Date(v.prochainCT);
-      var joursCT = Math.ceil((dateCT - aujourdhui) / (1000 * 60 * 60 * 24));
-      if (joursCT < 0) alertesVehicule.push({ sev: 3, txt: 'Contrôle technique expiré depuis ' + Math.abs(joursCT) + ' jours' });
-      else if (joursCT <= 30) alertesVehicule.push({ sev: 2, txt: 'Contrôle technique dans ' + joursCT + ' jours' });
-    } else {
-      alertesVehicule.push({ sev: 2, txt: 'Date de contrôle technique manquante' });
-    }
-
-    if (v.kmRevision > 0) {
-      var kmDepuisRev = v.kmActuel - v.kmRevision;
-      var resteRev = 30000 - kmDepuisRev;
-      if (resteRev <= 0) alertesVehicule.push({ sev: 3, txt: 'Révision dépassée de ' + Math.abs(resteRev) + ' km' });
-      else if (resteRev <= 2000) alertesVehicule.push({ sev: 2, txt: 'Révision dans ' + resteRev + ' km' });
-    }
-
-    if (v.type && (v.type.toUpperCase() === 'PNEUS' || v.type.toUpperCase().indexOf('PIÈCES') !== -1)) {
-      var estRecent = false;
-      if (v.dateIntervention) {
-        var dateInter = new Date(v.dateIntervention);
-        var joursDepuis = Math.ceil((aujourdhui - dateInter) / (1000 * 60 * 60 * 24));
-        
-        if (joursDepuis < 30 && joursDepuis >= 0) {
-          estRecent = true;
-          alertesVehicule.push({ sev: 0, txt: '✅ ' + v.type + ' FAITS RÉCEMMENT (il y a ' + joursDepuis + ' j)' });
-        } else {
-          var moisDepuis = (aujourdhui.getFullYear() - dateInter.getFullYear()) * 12 + (aujourdhui.getMonth() - dateInter.getMonth());
-          if (moisDepuis >= 60) alertesVehicule.push({ sev: 3, txt: v.type + ' à changer (plus de 5 ans)' });
-          else if (moisDepuis >= 55) alertesVehicule.push({ sev: 2, txt: v.type + ' à prévoir (bientôt 5 ans)' });
-        }
-      }
-      
-      if (!estRecent && v.kmIntervention > 0) {
-        var kmDepuis = v.kmActuel - v.kmIntervention;
-        if (kmDepuis >= 40000) alertesVehicule.push({ sev: 3, txt: v.type + ' usés (' + kmDepuis + ' km)' });
-        else if (kmDepuis >= 38000) alertesVehicule.push({ sev: 2, txt: v.type + ' à prévoir (' + kmDepuis + ' km)' });
-      }
-    }
-
-    if (v.dateAssurance) {
-      var dateAssur = new Date(v.dateAssurance);
-      var joursAssur = Math.ceil((dateAssur - aujourdhui) / (1000 * 60 * 60 * 24));
-      if (joursAssur < 0) alertesVehicule.push({ sev: 3, txt: 'Assurance expirée !' });
-      else if (joursAssur <= 30) alertesVehicule.push({ sev: 2, txt: 'Assurance à renouveler dans ' + joursAssur + ' jours' });
-    }
-
-    if (v.type || v.description || v.dateIntervention) {
-      var badgeUrgence = v.urgence === 'haute' ? '🔴 <strong>URGENT</strong> : ' : '🔧 ';
-      var txt = badgeUrgence + '<strong>' + h(v.type || 'Intervention') + '</strong>';
-      if (v.dateIntervention) {
-        var d = new Date(v.dateIntervention);
-        txt += ' le ' + d.toLocaleDateString('fr-FR');
-      }
-      if (v.kmIntervention > 0) txt += ' à ' + v.kmIntervention + ' km';
-      if (v.description) txt += '<br><span style="color:#333;">« ' + h(v.description) + ' »</span>';
-      
-      if (v.type && v.dateIntervention && Math.ceil((aujourdhui - new Date(v.dateIntervention)) / (1000 * 60 * 60 * 24)) < 30) {
-         txt = '✅ ' + txt.replace('🔧 ', '');
-      }
-      
-      infosIntervention.push(txt);
-    }
-
-    if (alertesVehicule.length > 0) {
-      var severiteMax = Math.max.apply(null, alertesVehicule.map(function(a) { return a.sev; }));
-      if (severiteMax === 3) listeUrgents.push({ v: v, alertes: alertesVehicule, infos: infosIntervention });
-      else if (severiteMax === 2) listeAttention.push({ v: v, alertes: alertesVehicule, infos: infosIntervention });
-      else listeOK.push({ v: v, alertes: alertesVehicule, infos: infosIntervention });
-    } else {
-      listeOK.push({ v: v, infos: infosIntervention });
-    }
+function evaluerVehicule(v){
+  var auj=new Date();auj=new Date(auj.getFullYear(),auj.getMonth(),auj.getDate());
+  var al=[],ints=(v.interventions||[]).slice().sort(function(a,b){return String(b.date).localeCompare(String(a.date));});
+  var ouvertes=ints.filter(function(i){return i.statut==='ouvert';});
+  var faites=ints.filter(function(i){return i.statut!=='ouvert';});
+  ouvertes.forEach(function(i){
+    var depuis=parseDateLocale(i.date),j=depuis?joursDe(auj,depuis):null,age=(j!==null&&j>0)?' (signalé il y a '+j+' j)':'';
+    if(i.urgence==='haute')al.push({sev:3,txt:'🚨 URGENT : '+i.type+(i.description?' — '+i.description:'')+age});
+    else al.push({sev:2,txt:'🔧 À faire : '+i.type+(i.description?' — '+i.description:'')+age});
   });
-
-  function genererCarte(item, type) {
-    var color = type === 'urgent' ? 'var(--rouge)' : 'var(--orange)';
-    var icon = type === 'urgent' ? '🔴' : '🟠';
-    
-    var lignesAlertes = item.alertes.map(function(a) {
-      var txt = a.txt;
-      if (txt.indexOf('ACTION URGENTE') !== -1) {
-        return '<li style="font-size:13px; margin-bottom:6px; font-weight:700; color:var(--rouge); background:#FFEBEE; padding:6px 10px; border-radius:6px;">' + txt + '</li>';
-      }
-      if (txt.indexOf('FAITS RÉCEMMENT') !== -1 || txt.indexOf('FAIT RÉCEMMENT') !== -1) {
-        return '<li style="font-size:13px; margin-bottom:6px; font-weight:700; color:var(--vert); background:#E8F5E9; padding:6px 10px; border-radius:6px;">' + txt + '</li>';
-      }
-      return '<li style="font-size:13px; margin-bottom:4px;">' + txt + '</li>';
-    }).join('');
-
-    var detailsHtml = '';
-    if (item.infos.length > 0) {
-      detailsHtml = '<div class="flotte-details-box">' + item.infos.join('<br>') + '</div>';
-    }
-
-    var critAirBadge = '';
-    if (item.v.critAir) {
-      var bgCrit = item.v.critAir==='0'?'#2E7D32':item.v.critAir==='1'?'#8E24AA':item.v.critAir==='2'?'#43A047':item.v.critAir==='3'?'#F57C00':item.v.critAir==='4'?'#AD1457':'#757575';
-      critAirBadge = ' <span style="font-size:10px; font-weight:700; padding:2px 6px; border-radius:4px; margin-left:6px; color:#fff; background:' + bgCrit + ';">Crit\'Air ' + h(item.v.critAir) + '</span>';
-    }
-
-    return '<div class="flotte-alerte-card ' + type + '">' +
-      '<div style="flex:1;">' +
-        '<div class="flotte-alerte-titre">' + icon + ' ' + h(item.v.id) + ' - ' + h(item.v.modele) + ' <span style="font-size:11px; color:var(--texte2); font-weight:normal;">(' + h(item.v.immat) + ')</span>' + critAirBadge + '</div>' +
-        '<ul class="flotte-alerte-liste" style="list-style:none; padding-left:0;">' + lignesAlertes + '</ul>' +
-        detailsHtml +
-      '</div>' +
-      '<div style="display:flex; flex-direction:column; gap:5px;">' +
-        '<button class="btn btn-outline btn-sm" onclick="ouvrirModalVehicule(\'' + item.v.id + '\')" style="border-color:' + color + '; color:' + color + ';">✏️ Mettre à jour</button>' +
-        '<button class="btn btn-outline btn-sm" onclick="afficherHistoriqueVehicule(\'' + item.v.id + '\')" style="border-color:var(--bleu); color:var(--bleu);">📜 Historique</button>' +
-      '</div>' +
-    '</div>';
-  }
-
-  var html = '';
-  if (listeUrgents.length > 0) {
-    html += '<div style="margin-bottom:15px;"><div style="font-size:12px; font-weight:700; text-transform:uppercase; color:var(--rouge); margin-bottom:8px;">🔴 Urgent (' + listeUrgents.length + ')</div>';
-    listeUrgents.forEach(function(item) { html += genererCarte(item, 'urgent'); });
-    html += '</div>';
-  }
-  if (listeAttention.length > 0) {
-    html += '<div style="margin-bottom:15px;"><div style="font-size:12px; font-weight:700; text-transform:uppercase; color:var(--orange); margin-bottom:8px;">🟠 À prévoir (' + listeAttention.length + ')</div>';
-    listeAttention.forEach(function(item) { html += genererCarte(item, 'attention'); });
-    html += '</div>';
-  }
-  
-  if (!html && listeOK.length === 0) {
-    html = '<div style="text-align:center; padding:40px; color:var(--vert); font-weight:600; font-size:16px;">🟢 Aucun véhicule enregistré.</div>';
-  }
-  containerAlertes.innerHTML = html;
-
-  btnToggleOK.style.display = 'none';
-  containerOK.style.display = 'block';
-  containerOK.style.marginTop = '20px';
-  
-  if (listeOK.length > 0) {
-    var htmlOK = '<div style="font-size:12px; font-weight:700; text-transform:uppercase; color:var(--vert); margin-bottom:8px;">🟢 Véhicules à jour (' + listeOK.length + ')</div>';
-    htmlOK += listeOK.map(function(item) {
-      var detailsHtml = '';
-      if (item.infos.length > 0) {
-        detailsHtml = '<div style="margin-top:5px; font-size:10px; color:#546E7A;">' + item.infos.join(' — ') + '</div>';
-      }
-      
-      var alerteHtml = '';
-      if (item.alertes && item.alertes.length > 0) {
-        alerteHtml = '<div style="margin-top:5px; font-size:11px; color:var(--vert); font-weight:700;">' + item.alertes[0].txt + '</div>';
-      }
-      
-      var critAirBadge = '';
-      if (item.v.critAir) {
-        var bgCrit = item.v.critAir==='0'?'#2E7D32':item.v.critAir==='1'?'#8E24AA':item.v.critAir==='2'?'#43A047':item.v.critAir==='3'?'#F57C00':item.v.critAir==='4'?'#AD1457':'#757575';
-        critAirBadge = ' <span style="font-size:10px; font-weight:700; padding:2px 6px; border-radius:4px; color:#fff; background:' + bgCrit + ';">Crit\'Air ' + h(item.v.critAir) + '</span>';
-      }
-
-      return '<div class="flotte-ok-item" style="opacity:1;">' +
-        '<div><strong>' + h(item.v.id) + '</strong> - ' + h(item.v.modele) + ' <span style="font-size:11px; color:var(--texte2);">(' + h(item.v.immat) + ')</span>' + critAirBadge + alerteHtml + detailsHtml + '</div>' +
-        '<div style="display:flex; gap:5px;">' +
-          '<button class="action-btn" onclick="afficherHistoriqueVehicule(\'' + item.v.id + '\')" title="Historique">📜</button>' +
-          '<button class="action-btn" onclick="ouvrirModalVehicule(\'' + item.v.id + '\')">✏️</button>' +
-        '</div>' +
-      '</div>';
-    }).join('');
-    containerOK.innerHTML = htmlOK;
-  } else {
-    containerOK.innerHTML = '';
-  }
+  var ct=parseDateLocale(v.prochainCT);
+  if(!ct)al.push({sev:2,txt:'Date de contrôle technique manquante'});
+  else{var jc=joursDe(ct,auj);if(jc<0)al.push({sev:3,txt:'Contrôle technique expiré depuis '+Math.abs(jc)+' jours'});else if(jc<=30)al.push({sev:2,txt:'Contrôle technique dans '+jc+' jours'});}
+  if(v.kmRevision>0){var reste=30000-(v.kmActuel-v.kmRevision);if(reste<=0)al.push({sev:3,txt:'Révision dépassée de '+Math.abs(reste)+' km'});else if(reste<=2000)al.push({sev:2,txt:'Révision dans '+reste+' km'});}
+  var dr=parseDateLocale(v.dateRevision);
+  if(dr){var mr=moisEntre(dr,auj);if(mr>=12)al.push({sev:3,txt:'Révision annuelle dépassée (dernière le '+dateFr(v.dateRevision)+')'});else if(mr>=11)al.push({sev:2,txt:'Révision annuelle à prévoir (dernière le '+dateFr(v.dateRevision)+')'});}
+  ['PNEUS','PIÈCES D\'USURE'].forEach(function(t){
+    var der=faites.filter(function(i){return i.type===t;})[0];if(!der)return;
+    var d=parseDateLocale(der.date),jd=d?joursDe(auj,d):null;
+    if(jd!==null&&jd>=0&&jd<30){al.push({sev:0,txt:'✅ '+t+' faits récemment (il y a '+jd+' j)'});return;}
+    if(d){var m=moisEntre(d,auj);if(m>=60)al.push({sev:3,txt:t+' à changer (plus de 5 ans)'});else if(m>=55)al.push({sev:2,txt:t+' à prévoir (bientôt 5 ans)'});}
+    if(der.km>0&&v.kmActuel>0){var k=v.kmActuel-der.km;if(k>=40000)al.push({sev:3,txt:t+' usés ('+k+' km)'});else if(k>=38000)al.push({sev:2,txt:t+' à prévoir ('+k+' km)'});}
+  });
+  var as=parseDateLocale(v.dateAssurance);
+  if(as){var ja=joursDe(as,auj);if(ja<0)al.push({sev:3,txt:'Assurance expirée !'});else if(ja<=30)al.push({sev:2,txt:'Assurance à renouveler dans '+ja+' jours'});}
+  var sev=al.reduce(function(m,a){return Math.max(m,a.sev);},0);
+  return {alertes:al,sev:sev,ouvertes:ouvertes,faites:faites};
 }
 
-async function afficherHistoriqueVehicule(idVehicule) {
-  var overlay = document.getElementById('overlay-historique');
-  if (!overlay) {
-    overlay = document.createElement('div');
-    overlay.id = 'overlay-historique';
-    overlay.className = 'overlay open';
-    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(10,20,40,.6);z-index:700;display:flex;align-items:center;justify-content:center;padding:20px;';
-    overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
-    
-    overlay.innerHTML = 
-      '<div class="modal" style="max-width:700px;width:100%;background:#fff;border-radius:14px;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.3);max-height:90vh;overflow-y:auto;" onclick="event.stopPropagation()">' +
-        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">' +
-          '<h3 style="font-size:16px;font-weight:700;color:var(--bleu);" id="histo-titre">Historique</h3>' +
-          '<button onclick="document.getElementById(\'overlay-historique\').remove()" style="background:#F5F7FA;border:none;border-radius:8px;width:30px;height:30px;cursor:pointer;font-size:16px;">✕</button>' +
-        '</div>' +
-        '<div id="histo-content" style="font-size:13px;">Chargement...</div>' +
-      '</div>';
-    document.body.appendChild(overlay);
-  }
-  
-  document.getElementById('histo-titre').textContent = 'Historique - ' + idVehicule;
-  document.getElementById('histo-content').innerHTML = '<div style="text-align:center;padding:20px;">⏳ Chargement...</div>';
-  
-  try {
-    var r = await apiPost({action: 'lireHistoriqueVehicule', id: idVehicule});
-    if (!r || !r.ok) throw new Error(r.error || 'Erreur');
-    
-    if (!r.data || r.data.length === 0) {
-      document.getElementById('histo-content').innerHTML = '<div style="text-align:center;padding:20px;color:var(--texte2);">Aucun historique pour ce véhicule.</div>';
-      return;
-    }
-    
-    var html = '<table style="width:100%;border-collapse:collapse;font-size:12px;">' +
-      '<thead><tr style="background:#F5F7FA;text-align:left;">' +
-        '<th style="padding:8px;border-bottom:1px solid #ddd;">Type</th>' +
-        '<th style="padding:8px;border-bottom:1px solid #ddd;">Description</th>' +
-        '<th style="padding:8px;border-bottom:1px solid #ddd;">Date</th>' +
-        '<th style="padding:8px;border-bottom:1px solid #ddd;">Km</th>' +
-        '<th style="padding:8px;border-bottom:1px solid #ddd;">Coût</th>' +
-      '</tr></thead><tbody>';
-      
-    r.data.forEach(function(h) {
-      html += '<tr>' +
-        '<td style="padding:8px;border-bottom:1px solid #eee;"><strong>' + h.type + '</strong></td>' +
-        '<td style="padding:8px;border-bottom:1px solid #eee;">' + h.description + '</td>' +
-        '<td style="padding:8px;border-bottom:1px solid #eee;">' + h.dateIntervention + '</td>' +
-        '<td style="padding:8px;border-bottom:1px solid #eee;">' + h.kmIntervention + '</td>' +
-        '<td style="padding:8px;border-bottom:1px solid #eee;">' + h.coutTTC + ' €</td>' +
-      '</tr>';
-    });
-    html += '</tbody></table>';
-    document.getElementById('histo-content').innerHTML = html;
-    
-  } catch(e) {
-    document.getElementById('histo-content').innerHTML = '<div style="color:var(--rouge);padding:20px;">❌ ' + e.message + '</div>';
-  }
+function renderFlotte(){
+  var box=document.getElementById('flotte-alertes'),okBox=document.getElementById('flotte-ok-list'),st=document.getElementById('flotte-maj'),sum=document.getElementById('flotte-resume');
+  if(!box)return;
+  if(okBox)okBox.innerHTML='';
+  if(st)st.textContent=flotteMaj?'Mis à jour '+flotteMaj.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}):'';
+  var items=flotteVehicules.map(function(v){var e=evaluerVehicule(v);e.v=v;return e;});
+  items.sort(function(a,b){return b.sev-a.sev||String(a.v.id).localeCompare(String(b.v.id),'fr',{numeric:true});});
+  var nU=items.filter(function(i){return i.sev===3;}).length,nA=items.filter(function(i){return i.sev===2;}).length,nO=items.length-nU-nA;
+  if(sum)sum.innerHTML='<span class="rc-badge rc-b-ko">🔴 '+nU+' urgent</span><span class="rc-badge rc-b-chk">🟠 '+nA+' à prévoir</span><span class="rc-badge rc-b-ok">🟢 '+nO+' à jour</span>';
+  if(!items.length){box.innerHTML='<div style="text-align:center;padding:40px;color:var(--texte2);font-weight:600;">Aucun véhicule. Cliquez sur « ＋ Véhicule » pour commencer.</div>';return;}
+  box.innerHTML=items.map(function(it){
+    var v=it.v,cls=it.sev===3?'urgent':it.sev===2?'warn':'ok',icon=it.sev===3?'🔴':it.sev===2?'🟠':'🟢',id=h(v.id).replace(/'/g,'&#39;');
+    var crit='';if(v.critAir!==''&&v.critAir!==undefined){var bg=v.critAir==='0'?'#2E7D32':v.critAir==='1'?'#8E24AA':v.critAir==='2'?'#43A047':v.critAir==='3'?'#F57C00':v.critAir==='4'?'#AD1457':'#757575';crit=' <span style="font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;color:#fff;background:'+bg+';">Crit\'Air '+h(v.critAir)+'</span>';}
+    var lis=it.alertes.map(function(a){var base='font-size:13px;margin-bottom:5px;';if(a.sev===3)base+='font-weight:700;color:var(--rouge);background:#FFEBEE;padding:6px 10px;border-radius:6px;';else if(a.sev===0)base+='font-weight:700;color:var(--vert);background:#E8F5E9;padding:6px 10px;border-radius:6px;';return '<li style="'+base+'">'+h(a.txt)+'</li>';}).join('');
+    if(!lis)lis='<li style="font-size:13px;color:var(--vert);font-weight:600;">Tout est à jour</li>';
+    var ouv=it.ouvertes.map(function(i){return '<div class="rc-cell" style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:6px;"><span><b style="display:inline;">'+(i.urgence==='haute'?'🔴 ':'🔧 ')+h(i.type)+'</b> '+h(i.description||'')+'</span><button class="btn btn-primary btn-sm" onclick="ouvrirInterventionFlotte(\''+id+'\',\''+h(i.id)+'\')">✔ Fait</button></div>';}).join('');
+    var derniere=it.faites[0],der=derniere?'<div class="flotte-details-box">Dernière intervention : <b>'+h(derniere.type)+'</b> le '+dateFr(derniere.date)+(derniere.km?' à '+fmtKm(derniere.km):'')+(derniere.description?' — '+h(derniere.description):'')+'</div>':'';
+    var infos='<div style="font-size:12px;color:var(--texte2);margin:2px 0 8px;">'+fmtKm(v.kmActuel)+(v.conducteur?' · '+h(v.conducteur):'')+(v.prochainCT?' · CT '+dateFr(v.prochainCT):'')+(v.dateAssurance?' · Assurance '+dateFr(v.dateAssurance):'')+'</div>';
+    return '<div class="flotte-alerte-card '+cls+'" style="flex-wrap:wrap;"><div style="flex:1;min-width:240px;"><div class="flotte-alerte-titre">'+icon+' '+h(v.id)+' - '+h(v.modele)+' <span style="font-size:11px;color:var(--texte2);font-weight:normal;">('+h(v.immat)+')</span>'+crit+'</div>'+infos+'<ul class="flotte-alerte-liste" style="list-style:none;padding-left:0;">'+lis+'</ul>'+ouv+der+'</div>'+
+      '<div style="display:flex;flex-direction:column;gap:5px;min-width:150px;"><button class="btn btn-primary btn-sm" onclick="ouvrirInterventionFlotte(\''+id+'\')">＋ Intervention / panne</button><button class="btn btn-outline btn-sm" onclick="majKmFlotte(\''+id+'\')">⛽ Mettre à jour le km</button><button class="btn btn-outline btn-sm" onclick="afficherHistoriqueVehicule(\''+id+'\')">📜 Historique</button><button class="btn btn-outline btn-sm" onclick="ouvrirModalVehicule(\''+id+'\')">✏️ Fiche véhicule</button></div></div>';
+  }).join('');
 }
 
-function toggleFlotteOK() {
-  var container = document.getElementById('flotte-ok-list');
-  var btn = document.getElementById('btn-toggle-ok');
-  if (container.style.display === 'none') {
-    container.style.display = 'block';
-    btn.textContent = 'Masquer les véhicules sans alerte';
-  } else {
-    container.style.display = 'none';
-    btn.textContent = btn.textContent.replace('Masquer', 'Afficher');
-  }
+async function majKmFlotte(id){
+  var v=flotteVehicules.find(function(x){return x.id===id;});if(!v)return;
+  var rep=prompt('Kilométrage actuel de '+id+' ?\n(compteur précédent : '+v.kmActuel+' km)',v.kmActuel||'');
+  if(rep===null)return;var km=parseInt(String(rep).replace(/\s/g,''),10);
+  if(!km||km<=0){alert('Kilométrage invalide.');return;}
+  try{var r=await apiPost({action:'majKmVehicule',id:id,km:km});if(!r||!r.ok)throw new Error((r&&r.error)||'Erreur');afficherToast('ok','⛽','Km mis à jour',id+' : '+fmtKm(km),2500);await chargerFlotte();}
+  catch(e){afficherToast('urgent','⚠️','Km non enregistré',e.message,6000);}
 }
 
-// ── MODAL AJOUT / MODIFICATION VÉHICULE ──
-function ouvrirModalVehicule(idVehicule) {
-  var v = flotteVehicules.find(function(x){ return x.id === idVehicule; }) || {};
-  
-  var overlay = document.getElementById('overlay-vehicule');
-  
-  if (!overlay) {
-    overlay = document.createElement('div');
-    overlay.id = 'overlay-vehicule';
-    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(10,20,40,.45);z-index:600;display:none;align-items:center;justify-content:center;padding:20px;';
-    overlay.onclick = function(e) { if (e.target === overlay) document.getElementById('overlay-vehicule').style.display = 'none'; };
-    
-    overlay.innerHTML = 
-      '<div class="modal" style="max-width:600px;width:100%;background:#fff;border-radius:14px;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.2);max-height:90vh;overflow-y:auto;" onclick="event.stopPropagation()">' +
-        '<h3 style="font-size:16px;font-weight:700;margin-bottom:15px;color:var(--bleu);" id="vehicule-modal-title">Ajouter un véhicule</h3>' +
-        '<div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">' +
-          '<div style="grid-column:1/-1;"><label>ID (Repère, ex: V5) *</label><input type="text" id="fv-id" class="task-input"></div>' +
-          '<div><label>Modèle</label><input type="text" id="fv-modele" class="task-input"></div>' +
-          '<div><label>Immatriculation</label><input type="text" id="fv-immat" class="task-input"></div>' +
-          '<div><label>Km Actuel</label><input type="number" id="fv-kmActuel" class="task-input"></div>' +
-          '<div><label>Km Révision</label><input type="number" id="fv-kmRevision" class="task-input"></div>' +
-          '<div><label>Date Révision</label><input type="date" id="fv-dateRevision" class="task-input"></div>' +
-          '<div><label>Prochain CT</label><input type="date" id="fv-prochainCT" class="task-input"></div>' +
-          '<div><label>Date Assurance</label><input type="date" id="fv-dateAssurance" class="task-input"></div>' +
-          '<div><label>Conducteur</label><input type="text" id="fv-conducteur" class="task-input"></div>' +
-          '<div><label>Vignette Crit\'Air</label><select id="fv-critair" class="task-input"><option value="">— Aucune —</option><option value="0">Crit\'Air 0 (Électrique)</option><option value="1">Crit\'Air 1 (Violet)</option><option value="2">Crit\'Air 2 (Vert)</option><option value="3">Crit\'Air 3 (Orange)</option><option value="4">Crit\'Air 4 (Bordeaux)</option><option value="5">Crit\'Air 5 (Gris)</option></select></div>' +
-          '<div><label>Type d\'intervention / Panne</label><select id="fv-type" class="task-input"><option value="">—</option><option>RÉVISION</option><option>PNEUS</option><option>PIÈCES D\'USURE</option><option>AMPOULE / PHARE</option><option>VITRE / PARE-BRISE</option><option>RÉPARATION</option><option>CONTRÔLE TECHNIQUE</option><option>ASSURANCE / ADMIN</option><option>AUTRE</option></select></div>' +
-          '<div><label style="color:var(--rouge);">Niveau d\'urgence</label><select id="fv-urgence" class="task-input"><option value="normale">🟠 À prévoir (Normal)</option><option value="haute">🔴 URGENT (Sécurité / Bloquant)</option></select></div>' +
-          '<div style="grid-column:1/-1;"><label>Description / Détails</label><input type="text" id="fv-description" class="task-input" placeholder="Ex: Pneu avant droit crevé, phare gauche cassé..."></div>' +
-          '<div><label>Date de l\'intervention</label><input type="date" id="fv-dateIntervention" class="task-input"></div>' +
-          '<div><label>Kilométrage à l\'intervention</label><input type="number" id="fv-kmIntervention" class="task-input" placeholder="Ex: 45000"></div>' +
-        '</div>' +
-        '<div style="display:flex; gap:8px; margin-top:20px; justify-content:flex-end;">' +
-          '<button onclick="document.getElementById(\'overlay-vehicule\').style.display=\'none\'" class="btn btn-outline">Annuler</button>' +
-          '<button onclick="sauvegarderVehicule()" class="btn btn-primary">💾 Enregistrer</button>' +
-        '</div>' +
-      '</div>';
-    document.body.appendChild(overlay);
-  }
-  
-  overlay.style.display = 'flex';
-  
-  document.getElementById('vehicule-modal-title').textContent = v.id ? 'Modifier ' + v.id : 'Ajouter un véhicule';
-  document.getElementById('fv-id').value = v.id || '';
-  document.getElementById('fv-modele').value = v.modele || '';
-  document.getElementById('fv-immat').value = v.immat || '';
-  document.getElementById('fv-kmActuel').value = v.kmActuel || '';
-  document.getElementById('fv-dateRevision').value = v.dateRevision || '';
-  document.getElementById('fv-kmRevision').value = v.kmRevision || '';
-  document.getElementById('fv-prochainCT').value = v.prochainCT || '';
-  document.getElementById('fv-dateAssurance').value = v.dateAssurance || '';
-  document.getElementById('fv-conducteur').value = v.conducteur || '';
-  document.getElementById('fv-critair').value = v.critAir || '';
-  document.getElementById('fv-type').value = v.type || '';
-  document.getElementById('fv-urgence').value = v.urgence || 'normale';
-  document.getElementById('fv-description').value = v.description || '';
-  document.getElementById('fv-dateIntervention').value = v.dateIntervention || '';
-  document.getElementById('fv-kmIntervention').value = v.kmIntervention || '';
+// ── Saisie rapide d'une intervention / panne (ou clôture d'une intervention ouverte) ──
+function creerOverlayFlotte(id,html){
+  var o=document.getElementById(id);if(o)o.remove();
+  o=document.createElement('div');o.id=id;o.style.cssText='position:fixed;inset:0;background:rgba(10,20,40,.45);z-index:600;display:flex;align-items:flex-start;justify-content:center;padding:12px;overflow-y:auto;';
+  o.onclick=function(e){if(e.target===o)o.remove();};
+  o.innerHTML='<div style="width:100%;max-width:560px;background:#fff;border-radius:14px;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.2);margin:auto;" onclick="event.stopPropagation()">'+html+'</div>';
+  document.body.appendChild(o);return o;
+}
+function ouvrirInterventionFlotte(idVeh,idInt){
+  if(!flotteVehicules.length){alert('Ajoutez d’abord un véhicule.');return;}
+  var cloture=null;
+  if(idInt){var vv=flotteVehicules.find(function(x){return x.id===idVeh;});cloture=vv&&(vv.interventions||[]).find(function(i){return i.id===idInt;});}
+  var cur=flotteVehicules.find(function(x){return x.id===idVeh;})||flotteVehicules[0];
+  var opts=flotteVehicules.map(function(v){return '<option value="'+h(v.id)+'"'+(v.id===cur.id?' selected':'')+'>'+h(v.id)+' - '+h(v.modele)+' ('+h(v.immat)+')</option>';}).join('');
+  var types=FLOTTE_TYPES.map(function(t){return '<option'+(cloture&&cloture.type===t?' selected':'')+'>'+h(t)+'</option>';}).join('');
+  var titre=cloture?'✔ Terminer : '+h(cloture.type):'＋ Intervention / panne';
+  var html='<h3 style="font-size:16px;font-weight:800;margin:0 0 12px;color:var(--bleu);">'+titre+'</h3><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">'+
+   '<div style="grid-column:1/-1;"><label>Véhicule</label><select id="fi-veh" class="task-input"'+(cloture?' disabled':'')+' onchange="majKmDefautIntervention()">'+opts+'</select></div>'+
+   '<div style="grid-column:1/-1;"><label>Type</label><select id="fi-type" class="task-input"'+(cloture?' disabled':'')+' onchange="majChampsIntervention()">'+types+'</select></div>'+
+   (cloture?'':'<div style="grid-column:1/-1;display:flex;gap:8px;"><label style="flex:1;border:1.5px solid var(--bordure);border-radius:8px;padding:9px;cursor:pointer;"><input type="radio" name="fi-statut" value="fait" checked onchange="majChampsIntervention()"> ✅ Déjà fait</label><label style="flex:1;border:1.5px solid var(--bordure);border-radius:8px;padding:9px;cursor:pointer;"><input type="radio" name="fi-statut" value="ouvert" onchange="majChampsIntervention()"> 🔧 À faire / panne</label></div>')+
+   '<div id="fi-urg-box" style="grid-column:1/-1;display:none;"><label style="color:var(--rouge);cursor:pointer;"><input type="checkbox" id="fi-urgence"> 🔴 Urgent (sécurité / véhicule bloqué)</label></div>'+
+   '<div style="grid-column:1/-1;"><label>Description</label><div style="display:flex;gap:6px;"><input type="text" id="fi-desc" class="task-input" style="flex:1;" placeholder="Ex : phare gauche cassé, 4 pneus changés…" value="'+h(cloture?cloture.description:'')+'"><button type="button" class="btn btn-outline" onclick="dicterPourChamp(\'fi-desc\')" style="border-color:#E65100;color:#E65100;">🎤</button></div></div>'+
+   '<div><label>Date</label><input type="date" id="fi-date" class="task-input" value="'+aujourdhuiISO()+'"></div>'+
+   '<div><label>Km au compteur</label><input type="number" id="fi-km" class="task-input" inputmode="numeric"></div>'+
+   '<div id="fi-cout-box"><label>Coût TTC (optionnel)</label><input type="number" id="fi-cout" step="0.01" class="task-input" inputmode="decimal" value="'+(cloture&&cloture.cout?cloture.cout:'')+'"></div>'+
+   '<div id="fi-ech-box" style="display:none;"><label id="fi-ech-label">Nouvelle échéance</label><input type="date" id="fi-ech" class="task-input"></div>'+
+   '</div><div id="fi-aide" style="font-size:11px;color:var(--texte2);margin-top:8px;"></div>'+
+   '<div style="display:flex;gap:8px;margin-top:16px;justify-content:flex-end;"><button class="btn btn-outline" onclick="document.getElementById(\'overlay-interv\').remove()">Annuler</button><button class="btn btn-primary" id="fi-save" onclick="sauvegarderInterventionFlotte('+(cloture?'\''+h(cloture.id)+'\'':'null')+')">💾 Enregistrer</button></div>';
+  creerOverlayFlotte('overlay-interv',html);
+  majKmDefautIntervention();majChampsIntervention();
+}
+function majKmDefautIntervention(){var v=flotteVehicules.find(function(x){return x.id===document.getElementById('fi-veh').value;});var k=document.getElementById('fi-km');if(v&&k&&!k.dataset.touched)k.value=v.kmActuel||'';k.oninput=function(){k.dataset.touched='1';};}
+function majChampsIntervention(){
+  var t=document.getElementById('fi-type').value,sel=document.querySelector('input[name="fi-statut"]:checked'),fait=!sel||sel.value==='fait';
+  document.getElementById('fi-urg-box').style.display=fait?'none':'block';
+  var ech=document.getElementById('fi-ech-box'),lab=document.getElementById('fi-ech-label'),aide=document.getElementById('fi-aide');
+  var ct=t==='CONTRÔLE TECHNIQUE',as=t==='ASSURANCE / ADMIN';
+  ech.style.display=(fait&&(ct||as))?'block':'none';lab.textContent=ct?'Prochain contrôle technique':'Nouvelle échéance assurance';
+  aide.textContent=fait?(t==='RÉVISION'?'La révision met automatiquement à jour la date et le km de dernière révision.':(ct||as)?'Indiquez la nouvelle échéance pour remettre le compteur à zéro.':'Le km saisi met aussi à jour le compteur du véhicule.'):'Une panne ou intervention « à faire » reste en alerte jusqu’à ce que vous cliquiez sur ✔ Fait.';
+}
+async function sauvegarderInterventionFlotte(idInt){
+  var btn=document.getElementById('fi-save'),veh=document.getElementById('fi-veh').value,type=document.getElementById('fi-type').value,desc=document.getElementById('fi-desc').value.trim();
+  var sel=document.querySelector('input[name="fi-statut"]:checked'),statut=idInt?'fait':(sel?sel.value:'fait');
+  if(!idInt&&!desc&&type==='AUTRE'){alert('Ajoutez une description.');return;}
+  var body=idInt?{action:'cloturerInterventionVehicule',idIntervention:idInt}:{action:'ajouterInterventionVehicule',idVehicule:veh,type:type,description:desc,statut:statut,urgence:(document.getElementById('fi-urgence')||{}).checked?'haute':'normale'};
+  body.date=document.getElementById('fi-date').value||aujourdhuiISO();body.km=document.getElementById('fi-km').value||0;body.cout=document.getElementById('fi-cout').value;body.nouvelleEcheance=document.getElementById('fi-ech').value||'';
+  btn.disabled=true;btn.textContent='⏳ Enregistrement…';
+  try{var r=await apiPost(body);if(!r||!r.ok)throw new Error((r&&r.error)||'Erreur');
+    document.getElementById('overlay-interv').remove();afficherToast('ok','✅',idInt?'Intervention terminée':'Intervention enregistrée',veh,3000);await chargerFlotte();}
+  catch(e){btn.disabled=false;btn.textContent='💾 Enregistrer';alert('❌ Non enregistré : '+e.message);}
 }
 
-async function sauvegarderVehicule() {
-  var id = document.getElementById('fv-id').value.trim();
-  if (!id) { alert("L'ID (Repère) est obligatoire (ex: V5)."); return; }
-  
-  var payload = {
-    action: 'enregistrerVehicule',
-    id: id,
-    modele: document.getElementById('fv-modele').value.trim(),
-    immat: document.getElementById('fv-immat').value.trim(),
-    kmActuel: document.getElementById('fv-kmActuel').value || 0,
-    dateRevision: document.getElementById('fv-dateRevision').value,
-    kmRevision: document.getElementById('fv-kmRevision').value || 0,
-    prochainCT: document.getElementById('fv-prochainCT').value,
-    dateAssurance: document.getElementById('fv-dateAssurance').value,
-    conducteur: document.getElementById('fv-conducteur').value.trim(),
-    critAir: document.getElementById('fv-critair').value,
-    type: document.getElementById('fv-type').value,
-    urgence: document.getElementById('fv-urgence').value,
-    description: document.getElementById('fv-description').value.trim(),
-    dateIntervention: document.getElementById('fv-dateIntervention').value,
-    kmIntervention: document.getElementById('fv-kmIntervention').value || 0
-  };
-
-  try {
-    var r = await apiPost(payload);
-    if (!r || !r.ok) throw new Error(r.error || 'Erreur');
-    
-    document.getElementById('overlay-vehicule').style.display = 'none';
-    afficherToast('ok', '✅', 'Véhicule enregistré', id, 3000);
-    await chargerFlotte();
-    
-  } catch(e) {
-    alert("❌ Erreur : " + e.message);
-  }
+// ── Historique ──
+async function afficherHistoriqueVehicule(idVeh){
+  var o=creerOverlayFlotte('overlay-historique','<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;"><h3 style="font-size:16px;font-weight:800;color:var(--bleu);margin:0;">Historique - '+h(idVeh)+'</h3><button onclick="document.getElementById(\'overlay-historique\').remove()" style="background:#F5F7FA;border:none;border-radius:8px;width:30px;height:30px;cursor:pointer;">✕</button></div><div id="histo-content" style="font-size:13px;">⏳ Chargement…</div>');
+  try{
+    var r=await apiPost({action:'lireHistoriqueVehicule',id:idVeh});if(!r||!r.ok)throw new Error((r&&r.error)||'Erreur');
+    var c=document.getElementById('histo-content');if(!r.data.length){c.innerHTML='<div style="text-align:center;padding:20px;color:var(--texte2);">Aucune intervention enregistrée.</div>';return;}
+    c.innerHTML='<div class="rc-tablebox"><table class="rc-table"><colgroup><col style="width:22%"><col style="width:34%"><col style="width:16%"><col style="width:16%"><col style="width:12%"></colgroup><thead><tr><th>Type</th><th>Description</th><th>Date</th><th>Km</th><th>Coût</th></tr></thead><tbody>'+r.data.map(function(x){return '<tr><td data-l="Type"><b>'+h(x.type)+'</b>'+(x.statut==='ouvert'?'<div style="color:var(--orange);font-weight:700;">À faire</div>':'')+'</td><td data-l="Description">'+h(x.description)+'</td><td data-l="Date">'+dateFr(x.dateIntervention)+'</td><td data-l="Km">'+(x.kmIntervention&&x.kmIntervention!=='—'?h(String(x.kmIntervention)):'—')+'</td><td data-l="Coût">'+(x.coutTTC?h(String(x.coutTTC))+' €':'—')+'</td></tr>';}).join('')+'</tbody></table></div>';
+  }catch(e){document.getElementById('histo-content').innerHTML='<div style="color:var(--rouge);padding:20px;">❌ '+h(e.message)+'</div>';}
 }
+
+// ── Fiche véhicule (état uniquement : pas de saisie d'intervention ici) ──
+function prochainIdVehicule(){var n=0;flotteVehicules.forEach(function(v){var m=String(v.id).match(/(\d+)$/);if(m)n=Math.max(n,+m[1]);});return 'V'+(n+1);}
+function ouvrirModalVehicule(idVeh){
+  var v=flotteVehicules.find(function(x){return x.id===idVeh;})||null,nouveau=!v;v=v||{};
+  var crit=['','0','1','2','3','4','5'].map(function(c){return '<option value="'+c+'"'+(String(v.critAir||'')===c?' selected':'')+'>'+(c===''?'— Aucune —':'Crit\'Air '+c)+'</option>';}).join('');
+  function f(label,id,val,type,extra){if(type==='date'&&val){var pd=parseDateLocale(val);val=pd?pd.getFullYear()+'-'+('0'+(pd.getMonth()+1)).slice(-2)+'-'+('0'+pd.getDate()).slice(-2):'';}return '<div><label>'+label+'</label><input type="'+(type||'text')+'" id="'+id+'" class="task-input" value="'+h(val===undefined||val===null?'':val)+'" '+(extra||'')+'></div>';}
+  var html='<h3 style="font-size:16px;font-weight:800;margin:0 0 12px;color:var(--bleu);">'+(nouveau?'Nouveau véhicule':'Fiche '+h(v.id))+'</h3><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">'+
+   '<div style="grid-column:1/-1;"><label>ID (repère)</label><input type="text" id="fv-id" class="task-input" value="'+h(nouveau?prochainIdVehicule():v.id)+'"'+(nouveau?'':' readonly style="background:#F5F7FA;"')+'></div>'+
+   f('Modèle','fv-modele',v.modele)+f('Immatriculation','fv-immat',v.immat)+f('Km actuel','fv-kmActuel',v.kmActuel||'','number','inputmode="numeric"')+f('Conducteur','fv-conducteur',v.conducteur)+
+   f('Prochain contrôle technique','fv-prochainCT',v.prochainCT,'date')+f('Échéance assurance','fv-dateAssurance',v.dateAssurance,'date')+
+   f('Dernière révision (date)','fv-dateRevision',v.dateRevision,'date')+f('Km de la dernière révision','fv-kmRevision',v.kmRevision||'','number','inputmode="numeric"')+
+   '<div style="grid-column:1/-1;"><label>Vignette Crit\'Air</label><select id="fv-critair" class="task-input">'+crit+'</select></div></div>'+
+   '<div style="font-size:11px;color:var(--texte2);margin-top:8px;">Pannes, pneus, révisions faites : utilisez « ＋ Intervention / panne » sur la carte du véhicule.</div>'+
+   '<div style="display:flex;gap:8px;margin-top:16px;justify-content:flex-end;"><button class="btn btn-outline" onclick="document.getElementById(\'overlay-vehicule\').remove()">Annuler</button><button class="btn btn-primary" id="fv-save" onclick="sauvegarderVehicule()">💾 Enregistrer</button></div>';
+  creerOverlayFlotte('overlay-vehicule',html);
+}
+async function sauvegarderVehicule(){
+  var id=document.getElementById('fv-id').value.trim();if(!id){alert('L’ID est obligatoire (ex : V5).');return;}
+  var g=function(x){return document.getElementById(x).value;},btn=document.getElementById('fv-save');
+  var payload={action:'enregistrerVehicule',id:id,modele:g('fv-modele').trim(),immat:g('fv-immat').trim(),kmActuel:g('fv-kmActuel')||0,dateRevision:g('fv-dateRevision'),kmRevision:g('fv-kmRevision')||0,prochainCT:g('fv-prochainCT'),dateAssurance:g('fv-dateAssurance'),conducteur:g('fv-conducteur').trim(),critAir:g('fv-critair')};
+  var ex=flotteVehicules.find(function(x){return x.id===id;});if(ex){payload.dateAchat=ex.dateAchat||'';}
+  btn.disabled=true;btn.textContent='⏳ Enregistrement…';
+  try{var r=await apiPost(payload);if(!r||!r.ok)throw new Error((r&&r.error)||'Erreur');document.getElementById('overlay-vehicule').remove();afficherToast('ok','✅','Véhicule enregistré',id,3000);await chargerFlotte();}
+  catch(e){btn.disabled=false;btn.textContent='💾 Enregistrer';alert('❌ Non enregistré : '+e.message);}
+}
+function toggleFlotteOK(){}
 
 // ── AGENT IA ──
 async function chargerRapportAgent() { var content=document.getElementById('agent-content'), dateEl=document.getElementById('agent-date'); if(dateEl) dateEl.textContent='⏳ Chargement...'; content.innerHTML='<div class="agent-loader"><div class="spinner"></div><div class="loader-msg">📥 Chargement...</div></div>'; try { var r=await apiPost({action:'lireRapport'}); if(!r||!r.ok){content.innerHTML='<div class="empty-state"><div style="font-size:64px;">🤖</div><h3>Aucun rapport</h3><p>Le rapport est généré chaque matin à 8h.</p></div>';if(dateEl)dateEl.textContent='Dernière analyse : aucune';return;} if(dateEl&&r.dateRapport)dateEl.textContent='Dernière analyse : '+r.dateRapport+' (auto)'; else if(dateEl&&r.date)dateEl.textContent='Dernière analyse : '+r.date; dernierRapportAgent=r; afficherRapportAgent(r,0); } catch(e) { content.innerHTML='<div class="empty-state"><p>❌ '+h(e.message)+'</p></div>'; } }
@@ -1298,6 +1157,28 @@ async function envoyerQuestionVocal() {
     rep.style.display='block'; 
     btn.disabled=false; btn.textContent="✨ Envoyer"; 
   } 
+}
+
+
+// ── v16.7 : micro direct sur l'agent (question ou ordre détecté automatiquement) ──
+var recognitionAgent=null;
+function demandeVocaleAgent(){
+  var btn=document.getElementById('btn-micro-agent');
+  if(recognitionAgent){try{recognitionAgent.stop();}catch(e){}recognitionAgent=null;if(btn)btn.textContent="🎙️ Parler à l'agent";return;}
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){alert("La reconnaissance vocale n'est pas supportée par ce navigateur (utilisez Chrome).");return;}
+  recognitionAgent=new SR();recognitionAgent.lang='fr-FR';recognitionAgent.interimResults=false;recognitionAgent.maxAlternatives=1;
+  if(btn)btn.textContent='🔴 Je vous écoute… (toucher pour arrêter)';
+  var fin=function(){recognitionAgent=null;if(btn)btn.textContent="🎙️ Parler à l'agent";};
+  recognitionAgent.onresult=function(e){
+    var txt=(e.results[0]&&e.results[0][0]&&e.results[0][0].transcript||'').trim();fin();if(!txt)return;
+    var estOrdre=/^(passe|passer|mets|met|mettre|marque|marquer|change|changer|modifie|modifier|relance|relancer|note|noter|ajoute|ajouter)\b/i.test(txt)||/\ben (livr[ée]|pos[ée]|sav|retard|attente)\b/i.test(txt);
+    if(estOrdre){ouvrirActionVocale();document.getElementById('action-question').value=txt;document.getElementById('action-status').style.display='block';document.getElementById('action-status').textContent='✅ Ordre compris. Vérifiez puis cliquez sur Exécuter.';}
+    else{ouvrirAssistantVocal();document.getElementById('assistant-question').value=txt;envoyerQuestionVocal();}
+  };
+  recognitionAgent.onerror=function(e){fin();afficherToast('urgent','🎙️','Micro',e.error==='not-allowed'?'Autorisez le micro dans le navigateur.':('Erreur micro : '+e.error),5000);};
+  recognitionAgent.onend=fin;
+  try{recognitionAgent.start();}catch(err){fin();}
 }
 
 // ── COMMANDES D'ACTION ──
@@ -1583,11 +1464,125 @@ function preRemplirModalDepuisCaptureFournisseur(d){
     else if(!el.value.trim()||k==='totalTTC')el.value=String(v);
   });
 }
-function afficherCaptureFournisseur(d,matches){var typeDoc=d.documentType||'inconnu';var html='<strong>Type de document : '+h(typeDoc==='client_devis'?'Devis client':typeDoc==='fournisseur_arc'?'ARC fournisseur':typeDoc==='fournisseur_commande'?'Commande fournisseur':'À vérifier')+'</strong><div style=\"margin:6px 0;color:var(--texte2);font-size:12px;\">Les champs détectés sont reportés dans le formulaire principal, sans écriture Sheets avant confirmation.</div><strong>Informations détectées</strong><div style="margin-top:8px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:10px;">';var labels={client:'Client',fournisseur:'Fournisseur',fournisseurAdresse:'Adresse fournisseur',fournisseurContact:'Contact fournisseur',numeroCommande:'N° commande fournisseur',numeroARC:'N° ARC fournisseur',referenceAffaire:'Référence affaire',numeroDevis:'N° devis',dateDocument:'Date document',devisTTC:'Devis client TTC',montantHT:'Montant HT',remise:'Remise',frais:'Frais',montantTVA:'Montant TVA',tauxTVA:'Taux TVA',totalTTC:'Montant achat fournisseur TTC',dateLivraisonPrevue:'Livraison prévue',adresseLivraison:'Adresse livraison',typeCommande:'Type de commande',conditionsPaiement:'Conditions de paiement',acompte:'Acompte',resteAPayer:'Reste à payer',noteFournisseur:'Note fournisseur'};Object.keys(labels).forEach(function(k){var v=d[k];if(v!==undefined&&v!==null&&String(v).trim())html+='<div style="min-width:0;overflow-wrap:anywhere;line-height:1.45"><b>'+h(labels[k])+' :</b> '+h(String(v))+'</div>';});html+='</div>';var attendus=['referenceAffaire'];var absents=attendus.filter(function(k){return d[k]===undefined||d[k]===null||String(d[k]).trim()==='';});if(absents.length)html+='<div style="margin-top:8px;color:var(--orange);font-size:12px;"><b>Non détectés / illisibles :</b> '+h(absents.join(', '))+'</div>';var items=Array.isArray(d.articles)?d.articles:[];html+='<div style="margin-top:12px;"><b>Articles ('+items.length+')</b>';if(!items.length)html+='<div style="color:var(--orange);font-size:12px;">Aucune ligne article reconnue.</div>';if(items.length){html+='<div style="overflow-x:auto;max-width:100%;border:1px solid var(--bordure);border-radius:8px;"><table style="width:100%;min-width:850px;font-size:12px;border-collapse:collapse;table-layout:auto"><tr><th>Réf.</th><th>Article</th><th>Qté</th><th>Unité</th><th>PU HT</th><th>PU TTC</th><th>TVA</th><th>Total HT</th><th>Total TTC</th></tr>'+items.map(function(a){return '<tr><td>'+h(a.referenceArticle||'')+'</td><td>'+h(a.article||a.description||'')+'</td><td>'+h(a.quantite||'')+'</td><td>'+h(a.unite||'')+'</td><td>'+h(a.prixUnitaireHT||'')+'</td><td>'+h(a.prixUnitaireTTC||'')+'</td><td>'+h(a.tauxTVA||'')+'</td><td>'+h(a.totalLigneHT||'')+'</td><td>'+h(a.totalLigneTTC||'')+'</td></tr>';}).join('')+'</table></div>';}else html+='<div>Aucune ligne article reconnue.</div>';html+='</div>';document.getElementById('fournisseur-import-preview-data').innerHTML=html;document.getElementById('fournisseur-import-preview-data').style.display='block';
+function afficherCaptureFournisseur(d,matches){var typeDoc=d.documentType||'inconnu';var html='<strong>Type de document : '+h(typeDoc==='client_devis'?'Devis client':typeDoc==='fournisseur_arc'?'ARC fournisseur':typeDoc==='fournisseur_commande'?'Commande fournisseur':'À vérifier')+'</strong><div style=\"margin:6px 0;color:var(--texte2);font-size:12px;\">Les champs détectés sont reportés dans le formulaire principal, sans écriture Sheets avant confirmation.</div><strong>Informations détectées</strong><div class="rc-grid" style="margin-top:8px;">';var labels={client:'Client',fournisseur:'Fournisseur',fournisseurAdresse:'Adresse fournisseur',fournisseurContact:'Contact fournisseur',numeroCommande:'N° commande fournisseur',numeroARC:'N° ARC fournisseur',referenceAffaire:'Référence affaire',numeroDevis:'N° devis',dateDocument:'Date document',devisTTC:'Devis client TTC',montantHT:'Montant HT',remise:'Remise',frais:'Frais',montantTVA:'Montant TVA',tauxTVA:'Taux TVA',totalTTC:'Montant achat fournisseur TTC',dateLivraisonPrevue:'Livraison prévue',adresseLivraison:'Adresse livraison',typeCommande:'Type de commande',conditionsPaiement:'Conditions de paiement',acompte:'Acompte',resteAPayer:'Reste à payer',noteFournisseur:'Note fournisseur'};Object.keys(labels).forEach(function(k){var v=d[k];if(v!==undefined&&v!==null&&String(v).trim())html+='<div class="rc-cell"><b>'+h(labels[k])+'</b>'+h(String(v))+'</div>';});html+='</div>';var attendus=['referenceAffaire'];var absents=attendus.filter(function(k){return d[k]===undefined||d[k]===null||String(d[k]).trim()==='';});if(absents.length)html+='<div style="margin-top:8px;color:var(--orange);font-size:12px;"><b>Non détectés / illisibles :</b> '+h(absents.join(', '))+'</div>';html+=tableauArticlesHtml(Array.isArray(d.articles)?d.articles:[]);document.getElementById('fournisseur-import-preview-data').innerHTML=html;document.getElementById('fournisseur-import-preview-data').style.display='block';
  var m=document.getElementById('fournisseur-import-match');var matchHtml='<b>Commande correspondante</b><br>';if(matches.length===1){ligneCaptureFournisseur=matches[0].ligne;matchHtml+='Correspondance unique : '+h(matches[0].client)+' · ligne '+matches[0].ligne;}else if(matches.length>1){matchHtml+='Plusieurs commandes correspondent. Sélectionnez la bonne : <select id="capture-fournisseur-ligne" style="width:100%;padding:9px;margin-top:6px;"><option value="">— Sélectionner —</option>'+matches.map(function(x){return '<option value="'+x.ligne+'">'+h(x.client)+' · devis '+h(x.devis)+' · ligne '+x.ligne+'</option>';}).join('')+'</select>';ligneCaptureFournisseur=null;}else{matchHtml+='Aucune correspondance automatique. Sélectionnez une commande : <select id="capture-fournisseur-ligne" style="width:100%;padding:9px;margin-top:6px;"><option value="">— Choisir une commande —</option>'+commandes.map(function(x){return '<option value="'+x.ligne+'">'+h(x.client)+' · devis '+h(x.devis)+' · ligne '+x.ligne+'</option>';}).join('')+'</select>';ligneCaptureFournisseur=null;}m.innerHTML=matchHtml;m.style.display='block';var sel=document.getElementById('capture-fournisseur-ligne');if(sel){sel.value='';sel.addEventListener('change',function(){ligneCaptureFournisseur=Number(this.value)||null;document.getElementById('btn-confirmer-fournisseur').disabled=!ligneCaptureFournisseur;});}document.getElementById('btn-confirmer-fournisseur').disabled=!ligneCaptureFournisseur;
 }
 async function lireFichierBase64Fournisseur(file){
   return new Promise(function(resolve,reject){var r=new FileReader();r.onload=function(){resolve({mimeType:file.type||(/\.pdf$/i.test(file.name)?'application/pdf':'image/jpeg'),base64:String(r.result).split(',')[1]||'',nom:file.name||'piece-jointe'});};r.onerror=reject;r.readAsDataURL(file);});
+}
+
+function tableauArticlesHtml(items){
+  var t='<div class="rc-block" style="margin-top:12px;"><h4>Articles ('+items.length+')</h4>';
+  if(!items.length) return t+'<p style="color:var(--orange);">Aucune ligne article reconnue.</p></div>';
+  t+='<div class="rc-tablebox"><table class="rc-table"><colgroup><col style="width:12%"><col style="width:30%"><col style="width:7%"><col style="width:8%"><col style="width:10%"><col style="width:10%"><col style="width:7%"><col style="width:8%"><col style="width:8%"></colgroup><thead><tr><th>Réf.</th><th>Article</th><th>Qté</th><th>Unité</th><th>PU HT</th><th>PU TTC</th><th>TVA</th><th>Total HT</th><th>Total TTC</th></tr></thead><tbody>';
+  items.forEach(function(a){t+='<tr><td data-l="Réf.">'+h(a.referenceArticle||'')+'</td><td data-l="Article">'+h(a.article||a.description||'')+'</td><td data-l="Qté">'+h(a.quantite||'')+'</td><td data-l="Unité">'+h(a.unite||'')+'</td><td data-l="PU HT">'+h(a.prixUnitaireHT||'')+'</td><td data-l="PU TTC">'+h(a.prixUnitaireTTC||'')+'</td><td data-l="TVA">'+h(a.tauxTVA||'')+'</td><td data-l="Total HT">'+h(a.totalLigneHT||'')+'</td><td data-l="Total TTC">'+h(a.totalLigneTTC||'')+'</td></tr>';});
+  return t+'</tbody></table></div></div>';
+}
+
+var dernierRapportCoherence=null;
+function statutClasse(st){return st==='Conforme'?'ok':st==='Écart détecté'?'ko':'chk';}
+function rendreRapportCoherence(data,opts){
+  opts=opts||{};
+  var rows=Array.isArray(data.controles)?data.controles:[];
+  var n={ok:0,ko:0,chk:0};rows.forEach(function(x){n[statutClasse(x.statut||'À vérifier')]++;});
+  var global=n.ko?'Écart détecté':(n.chk||!rows.length?'À vérifier':'Conforme');
+  var c='<div class="rc-wrap">';
+  c+='<div class="rc-title">Rapport de cohérence devis client / ARC fournisseur</div>';
+  c+='<div class="rc-block"><h4>Synthèse</h4><div class="rc-badges"><span class="rc-badge rc-b-'+statutClasse(global)+'">Statut global : '+h(global)+'</span><span class="rc-badge rc-b-ok">'+n.ok+' conforme(s)</span><span class="rc-badge rc-b-ko">'+n.ko+' écart(s)</span><span class="rc-badge rc-b-chk">'+n.chk+' à vérifier</span></div>';
+  c+='<p style="margin-top:10px;">'+h(data.resume||'Vérifiez les valeurs extraites avant décision.')+'</p></div>';
+  c+='<div class="rc-block"><h4>Contrôle de cohérence ('+rows.length+' point'+(rows.length>1?'s':'')+')</h4>';
+  if(!rows.length)c+='<p style="color:var(--orange);">Aucun point de contrôle retourné.</p>';
+  else{
+    c+='<div class="rc-tablebox"><table class="rc-table"><colgroup><col style="width:20%"><col style="width:24%"><col style="width:24%"><col style="width:32%"></colgroup><thead><tr><th>Contrôle</th><th>Devis client</th><th>ARC fournisseur</th><th>Résultat</th></tr></thead><tbody>';
+    rows.forEach(function(x){var st=x.statut||'À vérifier';var col=st==='Conforme'?'#2E7D32':st==='Écart détecté'?'#C62828':'#E65100';
+      c+='<tr><td data-l="Contrôle"><b>'+h(x.element||'')+'</b></td><td data-l="Devis">'+h(x.devis||'Non indiqué')+'</td><td data-l="ARC">'+h(x.arc||'Non indiqué')+'</td><td data-l="Résultat" style="font-weight:700;color:'+col+'">'+h(st)+(x.commentaire?'<div style="font-weight:400;color:var(--texte2);margin-top:2px;">'+h(x.commentaire)+'</div>':'')+'</td></tr>';});
+    c+='</tbody></table></div>';
+  }
+  c+='</div>';
+  var ad=Array.isArray(data.elementsDevis)?data.elementsDevis:[],aa=Array.isArray(data.elementsARC)?data.elementsARC:[];
+  c+=articlesCoherenceHtml('Articles du devis client',ad)+articlesCoherenceHtml('Articles de l’ARC fournisseur',aa);
+  c+='<div class="rc-note">Ce rapport est une aide au contrôle : toute donnée absente, ambiguë ou illisible est marquée « À vérifier ». Il ne valide pas automatiquement la commande.</div>';
+  if(!opts.sansOutils)c+='<div class="rc-tools rapport-capture-tools"><button type="button" class="btn btn-primary btn-sm btn-pdf-rapport" onclick="exporterRapportCoherencePDF()">📄 Télécharger le rapport (PDF)</button><button type="button" class="btn btn-outline btn-sm" onclick="capturerRapportCoherence()">📸 Image (PNG)</button></div>';
+  return c+'</div>';
+}
+function articleChamps(a){
+  if(typeof a==='string')return {ref:'',des:a,qte:'',det:''};
+  var det=[];
+  [['Couleur int.',a.couleurInterieure||a.couleurInt],['Couleur ext.',a.couleurExterieure||a.couleurExt],['Vitrage',a.vitrage],['Aération',a.aeration],['Crémone',a.cremone],['Dimensions',a.dimensions]].forEach(function(p){if(p[1]!==undefined&&p[1]!==null&&String(p[1]).trim())det.push(p[0]+' : '+p[1]);});
+  return {ref:a.reference||a.referenceArticle||'',des:a.designation||a.article||a.description||a.element||'',qte:a.quantite!==undefined?a.quantite:(a.qte||''),det:det.join(' · ')};
+}
+function articlesCoherenceHtml(titre,items){
+  if(!items.length)return '<div class="rc-block"><h4>'+h(titre)+' (0)</h4><p style="color:var(--orange);">Aucun article extrait.</p></div>';
+  var t='<div class="rc-block"><h4>'+h(titre)+' ('+items.length+')</h4><div class="rc-tablebox"><table class="rc-table"><colgroup><col style="width:14%"><col style="width:30%"><col style="width:8%"><col style="width:48%"></colgroup><thead><tr><th>Réf.</th><th>Désignation</th><th>Qté</th><th>Caractéristiques</th></tr></thead><tbody>';
+  items.forEach(function(a){var f=articleChamps(a);t+='<tr><td data-l="Réf.">'+h(f.ref)+'</td><td data-l="Désignation">'+h(f.des)+'</td><td data-l="Qté">'+h(f.qte)+'</td><td data-l="Détails">'+h(f.det)+'</td></tr>';});
+  return t+'</tbody></table></div></div>';
+}
+
+/* --- PDF natif jsPDF : aucun fetch, aucune capture d'écran, texte complet --- */
+function pdfTxt(v){return String(v===undefined||v===null?'':v).replace(/[’‘]/g,"'").replace(/[“”]/g,'"').replace(/[–—]/g,'-').replace(/…/g,'...').replace(/[\u00A0\u202F]/g,' ').replace(/[^\x20-\x7E\u00A0-\u00FF€]/g,'').trim();}
+function construirePDFRapportCoherence(data){
+  var jsPDF=window.jspdf.jsPDF,pdf=new jsPDF({orientation:'portrait',unit:'mm',format:'a4',compress:true});
+  var W=210,H=297,M=12,UW=W-2*M,y=M;
+  function saut(b){if(y+b>H-M-6){pdf.addPage();y=M;}}
+  function titre(t){saut(14);pdf.setFont('helvetica','bold');pdf.setFontSize(12);pdf.setTextColor(21,101,192);pdf.text(pdfTxt(t),M,y+4);y+=7;pdf.setDrawColor(21,101,192);pdf.line(M,y,W-M,y);y+=3;}
+  function para(t,sz){pdf.setFont('helvetica','normal');pdf.setFontSize(sz||10);pdf.setTextColor(30,40,50);var l=pdf.splitTextToSize(pdfTxt(t),UW);l.forEach(function(x){saut(5);pdf.text(x,M,y+4);y+=4.6;});y+=2;}
+  function tableau(cols,rows,statCol){
+    var tot=cols.reduce(function(a,c){return a+c.w;},0);cols.forEach(function(c){c.mm=UW*c.w/tot;});
+    function entete(){saut(9);pdf.setFillColor(238,243,250);pdf.rect(M,y,UW,6.5,'F');pdf.setFont('helvetica','bold');pdf.setFontSize(8.5);pdf.setTextColor(60,70,85);var x=M;cols.forEach(function(c){pdf.text(pdfTxt(c.t),x+1.5,y+4.4);x+=c.mm;});y+=6.5;}
+    entete();
+    rows.forEach(function(r){
+      pdf.setFont('helvetica','normal');pdf.setFontSize(8.5);
+      var cells=r.map(function(v,i){return pdf.splitTextToSize(pdfTxt(v),cols[i].mm-3);});
+      var nl=Math.max.apply(null,cells.map(function(c){return c.length;}).concat([1])),hh=nl*3.8+3;
+      if(y+hh>H-M-6){pdf.addPage();y=M;entete();}
+      var x=M;
+      cells.forEach(function(c,i){
+        if(statCol===i){var st=pdfTxt(r[i]);pdf.setFont('helvetica','bold');pdf.setTextColor.apply(pdf,st==='Conforme'?[46,125,50]:st==='Ecart detecte'||st==='Écart détecté'?[198,40,40]:[230,81,0]);}else{pdf.setFont('helvetica','normal');pdf.setTextColor(30,40,50);}
+        c.forEach(function(l,k){pdf.text(l,x+1.5,y+4+k*3.8);});x+=cols[i].mm;
+      });
+      y+=hh;pdf.setDrawColor(225,230,238);pdf.line(M,y,W-M,y);
+    });
+    y+=4;
+  }
+  var rows=Array.isArray(data.controles)?data.controles:[];
+  var n={ok:0,ko:0,chk:0};rows.forEach(function(x){n[statutClasse(x.statut||'À vérifier')]++;});
+  var global=n.ko?'Écart détecté':(n.chk||!rows.length?'À vérifier':'Conforme');
+  pdf.setFont('helvetica','bold');pdf.setFontSize(16);pdf.setTextColor(21,101,192);pdf.text('ECO OUEST - Rapport de coherence devis / ARC',M,y+6);y+=10;
+  pdf.setFont('helvetica','normal');pdf.setFontSize(9);pdf.setTextColor(100,110,120);pdf.text('Genere le '+new Date().toLocaleString('fr-FR'),M,y+3);y+=8;
+  titre('Synthese');
+  para('Statut global : '+global+'  |  '+n.ok+' conforme(s), '+n.ko+' ecart(s), '+n.chk+' a verifier.',10);
+  para(data.resume||'Verifiez les valeurs extraites avant decision.',10);
+  titre('Controle de coherence ('+rows.length+' point'+(rows.length>1?'s':'')+')');
+  if(rows.length)tableau([{t:'Controle',w:20},{t:'Devis client',w:24},{t:'ARC fournisseur',w:24},{t:'Resultat / commentaire',w:32}],rows.map(function(x){return [x.element||'',x.devis||'Non indique',x.arc||'Non indique',(x.statut||'A verifier')+(x.commentaire?' - '+x.commentaire:'')];}),null);
+  else para('Aucun point de controle retourne.',10);
+  [['Articles du devis client',data.elementsDevis],['Articles de l\'ARC fournisseur',data.elementsARC]].forEach(function(g){
+    var it=Array.isArray(g[1])?g[1]:[];titre(g[0]+' ('+it.length+')');
+    if(!it.length){para('Aucun article extrait.',10);return;}
+    tableau([{t:'Ref.',w:14},{t:'Designation',w:30},{t:'Qte',w:8},{t:'Caracteristiques',w:48}],it.map(function(a){var f=articleChamps(a);return [f.ref,f.des,f.qte,f.det];}),null);
+  });
+  para('Ce rapport est une aide au controle : toute donnee absente, ambigue ou illisible est marquee "A verifier". Il ne valide pas automatiquement la commande.',8);
+  var np=pdf.getNumberOfPages();for(var i=1;i<=np;i++){pdf.setPage(i);pdf.setFont('helvetica','normal');pdf.setFontSize(8);pdf.setTextColor(120,130,140);pdf.text('ECO OUEST - page '+i+'/'+np,W-M,H-6,{align:'right'});}
+  return pdf;
+}
+async function exporterRapportCoherencePDF(){
+  var box=document.getElementById('controle-devis-arc-result');
+  var bouton=box&&box.querySelector('.btn-pdf-rapport');
+  if(bouton){bouton.disabled=true;bouton.textContent='⏳ Création du PDF…';}
+  try{
+    if(!dernierRapportCoherence) throw new Error('Rapport absent. Lancez d’abord la comparaison devis / ARC.');
+    if(window.jspdf&&window.jspdf.jsPDF){
+      var pdf=construirePDFRapportCoherence(dernierRapportCoherence);
+      pdf.save('rapport-coherence-devis-ARC-'+new Date().toISOString().slice(0,10)+'.pdf');
+      afficherToast('success','📄','PDF prêt','Rapport complet : synthèse, contrôles et articles.',5000);
+    } else {
+      // Secours sans bibliothèque : impression navigateur (Enregistrer au format PDF)
+      var w=window.open('','_blank');
+      if(!w) throw new Error('Fenêtre bloquée : autorisez les pop-ups ou rechargez la page pour retrouver la bibliothèque PDF.');
+      w.document.write('<!doctype html><html><head><meta charset="utf-8"><title>Rapport de cohérence</title><style>'+(document.querySelector('style')?document.querySelector('style').textContent:'')+' body{background:#fff;padding:16px;}</style></head><body>'+rendreRapportCoherence(dernierRapportCoherence,{sansOutils:true})+'</body></html>');
+      w.document.close();w.focus();setTimeout(function(){w.print();},400);
+    }
+  }catch(e){afficherToast('urgent','⚠️','Échec du PDF',e&&e.message||'Impossible de générer le PDF.',6000);}
+  finally{if(bouton){bouton.disabled=false;bouton.textContent='📄 Télécharger le rapport (PDF)';}}
 }
 async function preparerCanvasRapportCoherence(){
   var box=document.getElementById('controle-devis-arc-result');
@@ -1619,35 +1614,6 @@ async function capturerRapportCoherence(){
   }catch(e){afficherToast('urgent','⚠️','Échec de la capture',e&&e.message||'Impossible de générer l’image.',6000);}
   finally{if(bouton){bouton.disabled=false;bouton.textContent='📸 Capturer le rapport (PNG)';}}
 }
-async function exporterRapportCoherencePDF(){
-  var box=document.getElementById('controle-devis-arc-result');
-  var bouton=box&&box.querySelector('.rapport-capture-tools .btn-pdf-rapport');
-  if(bouton){bouton.disabled=true;bouton.textContent='⏳ Création du PDF…';}
-  try{
-    if(!window.jspdf||!window.jspdf.jsPDF) throw new Error('Bibliothèque PDF indisponible. Vérifiez la connexion internet.');
-    var canvas=await preparerCanvasRapportCoherence();
-    var pdf=new window.jspdf.jsPDF({orientation:'portrait',unit:'mm',format:'a4',compress:true});
-    var pageW=210,pageH=297,margin=10,usableW=pageW-2*margin,usableH=pageH-2*margin;
-    var imgW=usableW,imgH=canvas.height*imgW/canvas.width;
-    var pageCanvas=document.createElement('canvas'),ctx=pageCanvas.getContext('2d');
-    var sliceHeight=Math.floor(canvas.width*usableH/usableW);
-    var y=0,page=0;
-    while(y<canvas.height){
-      var h=Math.min(sliceHeight,canvas.height-y);
-      pageCanvas.width=canvas.width;pageCanvas.height=h;
-      ctx.clearRect(0,0,pageCanvas.width,pageCanvas.height);
-      ctx.drawImage(canvas,0,y,canvas.width,h,0,0,canvas.width,h);
-      if(page>0)pdf.addPage();
-      var data=pageCanvas.toDataURL('image/jpeg',0.92);
-      pdf.addImage(data,'JPEG',margin,margin,usableW,h*usableW/canvas.width,undefined,'FAST');
-      y+=h;page++;
-    }
-    pdf.save('rapport-coherence-devis-ARC-'+new Date().toISOString().slice(0,10)+'.pdf');
-    afficherToast('success','📄','PDF prêt','Le rapport complet a été exporté en PDF multipage.',5000);
-  }catch(e){afficherToast('urgent','⚠️','Échec du PDF',e&&e.message||'Impossible de générer le PDF.',6000);}
-  finally{if(bouton){bouton.disabled=false;bouton.textContent='📄 Télécharger le rapport (PDF)';}}
-}
-
 async function controlerDevisArc(){
   var devisFile=pdfDevisImport||imageDevisImport,arcFile=pdfCommandeFournisseur||imageCommandeFournisseur;
   var box=document.getElementById('controle-devis-arc-result'),btn=document.getElementById('btn-controle-devis-arc');
@@ -1658,15 +1624,14 @@ async function controlerDevisArc(){
     var a=await lireFichierBase64Fournisseur(arcFile);a.role='arc_fournisseur';
     var docs=[d,a];if(imageDevisImport&&pdfDevisImport){var di=await lireFichierBase64Fournisseur(imageDevisImport);di.role='capture_complementaire_devis';docs.push(di);}if(imageCommandeFournisseur&&pdfCommandeFournisseur){var ai=await lireFichierBase64Fournisseur(imageCommandeFournisseur);ai.role='capture_complementaire_arc';docs.push(ai);}
     var r=await apiPost({action:'controlerCoherenceDevisARC',documents:docs});if(!r||!r.ok)throw new Error(r&&r.error||'Comparaison impossible.');
-    var data=r.data||{},rows=Array.isArray(data.controles)?data.controles:[];var statusColor=function(s){return s==='Conforme'?'#2E7D32':s==='Écart détecté'?'#C62828':'#E65100';};
-    var htm='<div style="font-weight:700;margin-bottom:8px;">Rapport de cohérence devis client / ARC fournisseur</div><div style="font-size:12px;color:var(--texte2);margin-bottom:8px;">'+h(data.resume||'Vérifiez les valeurs extraites avant décision.')+'</div><div style="overflow-x:auto;max-width:100%;border:1px solid var(--bordure);border-radius:8px;"><table style="width:100%;min-width:850px;font-size:12px;border-collapse:collapse;table-layout:auto"><thead><tr><th>Contrôle</th><th>Devis client</th><th>ARC fournisseur</th><th>Résultat</th></tr></thead><tbody>';
-    rows.forEach(function(x){htm+='<tr><td>'+h(x.element||'')+'</td><td>'+h(x.devis||'Non indiqué')+'</td><td>'+h(x.arc||'Non indiqué')+'</td><td style="font-weight:700;color:'+statusColor(x.statut||'À vérifier')+'">'+h(x.statut||'À vérifier')+(x.commentaire?'<div style="font-weight:400;color:var(--texte2);">'+h(x.commentaire)+'</div>':'')+'</td></tr>';});
-    htm+='</tbody></table></div><div style="font-size:11px;color:var(--texte2);margin-top:8px;">Ce rapport est une aide au contrôle : toute donnée absente, ambiguë ou illisible est marquée « À vérifier ». Il ne valide pas automatiquement la commande.</div><div class="rapport-capture-tools" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;"><button type="button" class="btn btn-primary btn-sm" onclick="capturerRapportCoherence()">📸 Capturer le rapport (PNG)</button><button type="button" class="btn btn-primary btn-sm btn-pdf-rapport" onclick="exporterRapportCoherencePDF()">📄 Télécharger le rapport (PDF)</button><span style="font-size:11px;color:var(--texte2);align-self:center;">Export complet, même pour un rapport long (PDF multipage).</span></div>';box.innerHTML=htm;
+    var data=r.data||{};dernierRapportCoherence=data;
+    var htm=rendreRapportCoherence(data);box.innerHTML=htm;
+    var htmlArchive='<html><head><meta charset="utf-8"><style>body{font-family:Arial,sans-serif;font-size:11px;color:#17212b}.rc-block{border:1px solid #ccd;border-radius:6px;padding:8px;margin-bottom:10px}.rc-table{width:100%;border-collapse:collapse;table-layout:fixed}.rc-table th,.rc-table td{border:1px solid #ccd;padding:4px;vertical-align:top;word-wrap:break-word}.rc-table th{background:#eef3fa}h4{margin:0 0 6px}</style></head><body>'+rendreRapportCoherence(data,{sansOutils:true})+'</body></html>';
     var ligneAssociee=Number(ligneCaptureFournisseur||editLigne||0);
     var clientAssocie=(document.getElementById('f-client')&&document.getElementById('f-client').value)||'';
     var referenceAssociee=(document.getElementById('f-devis')&&document.getElementById('f-devis').value)||'';
-    var archivage=await apiPost({action:'enregistrerRapportCoherence',rapport:data,documents:docs,ligneCommande:ligneAssociee,client:clientAssocie,reference:referenceAssociee,htmlRapport:htm});
-    if(archivage&&archivage.ok){box.innerHTML+='<div style="margin-top:10px;padding:9px;border:1px solid var(--bordure);border-radius:8px;">📁 Rapport archivé dans Sheets et Drive. <a href="'+h(archivage.pdfUrl)+'" target="_blank" rel="noopener">Ouvrir / télécharger le PDF</a><div style="font-size:11px;color:var(--texte2);margin-top:4px;">Historique : '+h(archivage.sheetName)+' · ligne '+h(String(archivage.row))+' · statut '+h(archivage.statut)+'</div></div>';}else{box.innerHTML+='<div style="margin-top:10px;color:var(--orange);">⚠️ Comparaison terminée, mais archivage non effectué : '+h(archivage&&archivage.error||'erreur inconnue')+'. Le rapport reste affiché.</div>'; }
+    var archivage=await apiPost({action:'enregistrerRapportCoherence',rapport:data,documents:docs,ligneCommande:ligneAssociee,client:clientAssocie,reference:referenceAssociee,htmlRapport:htmlArchive});
+    if(archivage&&archivage.ok){box.innerHTML+='<div class="rc-block" style="margin-top:10px;">📁 Rapport archivé dans Sheets et Drive. <a href="'+h(archivage.pdfUrl)+'" target="_blank" rel="noopener">Ouvrir / télécharger le PDF</a><div style="font-size:11px;color:var(--texte2);margin-top:4px;">Historique : '+h(archivage.sheetName)+' · ligne '+h(String(archivage.row))+' · statut '+h(archivage.statut)+'</div></div>';}else{box.innerHTML+='<div style="margin-top:10px;color:var(--orange);">⚠️ Comparaison terminée, mais archivage non effectué : '+h(archivage&&archivage.error||'erreur inconnue')+'. Le rapport reste affiché.</div>'; }
   }catch(e){box.innerHTML='<span style="color:var(--rouge);">Erreur : '+h(e.message)+'</span>';}
   finally{btn.disabled=false;btn.textContent='🔎 Comparer devis / ARC';}
 }
@@ -1728,7 +1693,7 @@ function renderAlertes() { var g={3:[],2:[],1:[]}; commandes.forEach(function(c,
 function renderDashboard() { var byFou={}, ac={u:0,w:0,o:0}, caC=0, caP=0, nbE=0, nbS=0; function parseM(v){ if(!v) return 0; var s=str(v).replace(/[^0-9,.]/g,'').replace(/\s/g,'').replace(',','.'); var p=s.split('.'); if(p.length>2)s=p.slice(0,-1).join('')+'.'+p[p.length-1]; var n=parseFloat(s); return isNaN(n)?0:n; } var nbA=commandes.filter(function(c){return !estAnnulee(c);}).length; commandes.forEach(function(c){ if(estAnnulee(c))return; if(c.fournisseur)byFou[c.fournisseur]=(byFou[c.fournisseur]||0)+1; var a=alerte(c); if(a.n===3)ac.u++;else if(a.n>=1)ac.w++;else if(a.n===0)ac.o++; var m=parseM(c.devisTTC); if(str(c.commande).toUpperCase()==='OUI')caC+=m; if(estTermineStatut(c.statutPose))caP+=m; if(str(c.commande).toUpperCase()!=='OUI')nbE++; if(statutEstSAV(c.statutPose)||statutEstSAV(c.statutLivraison))nbS++; }); function fmt(n){return n.toLocaleString('fr-FR',{maximumFractionDigits:0})+' €';} var fS=Object.entries(byFou).sort(function(a,b){return b[1]-a[1];}), fM=fS[0]?fS[0][1]:1, n=nbA||1; var poseurs=[{nom:'ANATOLE',key:'poseur_ANATOLE',couleur:'#1565C0'},{nom:'ARTIOM',key:'poseur_ARTIOM',couleur:'#2E7D32'},{nom:'ANTONIO',key:'poseur_ANTONIO',couleur:'#E65100'},{nom:'VINCENT',key:'poseur_VINCENT',couleur:'#6A1B9A'},{nom:'LAMRI',key:'poseur_LAMRI',couleur:'#00695C'}]; var actifs=commandes.filter(function(c){return !estTermineStatut(c.statutLivraison)&&!estAnnulee(c);}).slice().sort(function(a,b){return str(b.datePose).localeCompare(str(a.datePose));}); var pvF=commandes.filter(function(c){return str(c.pvChantier).toUpperCase()==='OUI'&&!estAnnulee(c);}).length, pvM=actifs.filter(function(c){return str(c.pvChantier).toUpperCase()!=='OUI';}).length; var hC=''; if(!actifs.length){hC='<div style="text-align:center;padding:24px;color:var(--texte2);">Aucun chantier actif.</div>';}else{actifs.forEach(function(c){var pvFait=str(c.pvChantier).toUpperCase()==='OUI';hC+='<div style="background:#fff;border-radius:10px;border:1px solid var(--bordure);margin-bottom:10px;overflow:hidden;"><div style="padding:10px 14px;background:var(--gris-bg);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;border-bottom:1px solid var(--bordure);"><div><span style="font-weight:700;font-size:14px;">'+h(c.client)+'</span>';if(c.fournisseur)hC+=' <span style="font-size:11px;color:var(--texte2);">· '+h(c.fournisseur)+'</span>';hC+='</div><div style="display:flex;gap:6px;flex-wrap:wrap;">';if(c.metres)hC+='<span style="background:#FFF3E0;color:var(--orange);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;">📋 Métré : '+h(formatDateMetre(c.metres))+'</span>';if(c.datePose)hC+='<span style="background:var(--bleu-bg);color:var(--bleu);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;">📅 '+h(c.datePose)+'</span>';hC+=pvFait?'<span style="background:var(--vert-bg);color:var(--vert);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;">✓ PV Fait</span>':'<span style="background:#FFEBEE;color:var(--rouge);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;">✗ PV Manquant</span>';hC+='</div></div><div style="padding:10px 14px;">';var hasR=false;poseurs.forEach(function(p){if(!c[p.key]||!str(c[p.key]).trim())return;hasR=true;var l=str(c[p.key]).split('\n'),d=l[l.length-1];hC+='<div style="margin-bottom:8px;"><div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;"><div style="width:22px;height:22px;border-radius:50%;background:'+p.couleur+';display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;">'+p.nom.slice(0,2)+'</div><span style="font-size:12px;font-weight:700;color:'+p.couleur+';">'+p.nom+'</span></div><div style="font-size:11px;color:var(--texte);padding:6px 10px;background:var(--gris-bg);border-radius:6px;border-left:3px solid '+p.couleur+';">'+h(d)+'</div></div>';});if(!hasR)hC+='<div style="font-size:12px;color:var(--texte2);font-style:italic;">Aucune remarque poseur.</div>';hC+='</div></div>';});} document.getElementById('dash-content').innerHTML='<div class="dash-card" style="grid-column:1/-1;background:linear-gradient(135deg,#1565C0,#0D47A1);color:#fff;"><h4 style="color:#fff;">💰 Vue financière</h4><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;margin-top:8px;"><div><div style="font-size:24px;font-weight:800;">'+fmt(caC)+'</div><div style="font-size:12px;opacity:.85;">CA commandé</div></div><div><div style="font-size:24px;font-weight:800;">'+fmt(caP)+'</div><div style="font-size:12px;opacity:.85;">CA posé</div></div><div><div style="font-size:24px;font-weight:800;">'+nbE+'</div><div style="font-size:12px;opacity:.85;">En attente commande</div></div><div><div style="font-size:24px;font-weight:800;">'+nbS+'</div><div style="font-size:12px;opacity:.85;">SAV ouverts</div></div></div></div><div class="dash-card"><h4>Par fournisseur</h4>'+fS.map(function(e){return '<div class="bar-row"><span class="bar-label">'+h(e[0])+'</span><div class="bar-track"><div class="bar-fill" style="width:'+Math.round(e[1]/fM*100)+'%;background:'+(FOU_COLORS[e[0]]||'#546E7A')+'"></div></div><span class="bar-count">'+e[1]+'</span></div>';}).join('')+'</div><div class="dash-card"><h4>Alertes</h4>'+[['Urgentes',ac.u,'#D32F2F'],['Attention',ac.w,'#E65100'],['OK',ac.o,'#2E7D32']].map(function(x){return '<div class="bar-row"><span class="bar-label">'+x[0]+'</span><div class="bar-track"><div class="bar-fill" style="width:'+Math.round(x[1]/n*100)+'%;background:'+x[2]+'"></div></div><span class="bar-count">'+x[1]+'</span></div>';}).join('')+'</div><div class="dash-card"><h4>Résumé</h4><div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:4px;"><div style="text-align:center;padding:14px;background:var(--gris-bg);border-radius:8px;"><div style="font-size:28px;font-weight:700;color:var(--bleu);">'+nbA+'</div><div style="font-size:11px;color:var(--texte2);">Total (actifs)</div></div><div style="text-align:center;padding:14px;background:#FFEBEE;border-radius:8px;"><div style="font-size:28px;font-weight:700;color:var(--rouge);">'+ac.u+'</div><div style="font-size:11px;color:var(--texte2);">Urgences</div></div><div style="text-align:center;padding:14px;background:var(--vert-bg);border-radius:8px;"><div style="font-size:28px;font-weight:700;color:var(--vert);">'+pvF+'</div><div style="font-size:11px;color:var(--texte2);">PV Faits</div></div><div style="text-align:center;padding:14px;background:#FFF3E0;border-radius:8px;"><div style="font-size:28px;font-weight:700;color:var(--orange);">'+pvM+'</div><div style="font-size:11px;color:var(--texte2);">PV Manquants</div></div></div></div><div class="dash-card" style="grid-column:1/-1;"><h4>📋 Suivi chantiers</h4>'+hC+'</div>'; }
 
 // ── NAVIGATION ──
-function showView(v) { document.querySelectorAll('.view').forEach(function(el){el.classList.remove('active');}); document.querySelectorAll('.nav-item').forEach(function(el){el.classList.remove('active');}); document.getElementById('view-'+v).classList.add('active'); var nv=document.getElementById('nav-'+v); if(nv)nv.classList.add('active'); var titles={suivi:'Suivi des commandes', alertes:'Alertes actives', taches:'Tâches & Consommables', agent:'🤖 Agent IA', metre:'Dates de métré', dashboard:'Tableau de bord', flotte:'État de la flotte', suivipose:'Suivi de Pose', planning:'Planning', config:'Configuration'}; document.getElementById('topbar-title').textContent=titles[v]||v; if(v==='config'){document.getElementById('config-url-input').value=WEBAPP;document.getElementById('config-url-current').textContent=WEBAPP;document.getElementById('config-status').innerHTML='';} if(v==='alertes')renderAlertes(); if(v==='taches'){if(document.getElementById('sousmodule-achats-consommables').style.display!=='none')renderAchatsConsommables();else renderTaches();} if(v==='agent')chargerRapportAgent(); if(v==='metre')renderMetre(); if(v==='dashboard')renderDashboard(); if(v==='flotte')chargerFlotte(); if(v==='suivipose'){renderSuiviPose();setTimeout(traduireCommentairesPoseurs,500);} if(v==='planning')renderPlanning(); }
+function showView(v) { document.querySelectorAll('.view').forEach(function(el){el.classList.remove('active');}); document.querySelectorAll('.nav-item').forEach(function(el){el.classList.remove('active');}); document.getElementById('view-'+v).classList.add('active'); var nv=document.getElementById('nav-'+v); if(nv)nv.classList.add('active'); var titles={suivi:'Suivi des commandes', alertes:'Alertes actives', taches:'Tâches & Consommables', agent:'🤖 Agent IA', metre:'Dates de métré', dashboard:'Tableau de bord', flotte:'État de la flotte', suivipose:'Suivi de Pose', planning:'Planning', config:'Configuration'}; if(v==='flotte'&&typeof chargerFlotte==='function')chargerFlotte();document.getElementById('topbar-title').textContent=titles[v]||v; if(v==='config'){document.getElementById('config-url-input').value=WEBAPP;document.getElementById('config-url-current').textContent=WEBAPP;document.getElementById('config-status').innerHTML='';} if(v==='alertes')renderAlertes(); if(v==='taches'){if(document.getElementById('sousmodule-achats-consommables').style.display!=='none')renderAchatsConsommables();else renderTaches();} if(v==='agent')chargerRapportAgent(); if(v==='metre')renderMetre(); if(v==='dashboard')renderDashboard(); if(v==='flotte')chargerFlotte(); if(v==='suivipose'){renderSuiviPose();setTimeout(traduireCommentairesPoseurs,500);} if(v==='planning')renderPlanning(); }
 
 // ── SUIVI POSE ──
 function renderSuiviPose() { var poseurs=[{nom:'ANATOLE',key:'poseur_ANATOLE',couleur:'#1565C0'},{nom:'ARTIOM',key:'poseur_ARTIOM',couleur:'#2E7D32'},{nom:'ANTONIO',key:'poseur_ANTONIO',couleur:'#E65100'},{nom:'VINCENT',key:'poseur_VINCENT',couleur:'#6A1B9A'},{nom:'LAMRI',key:'poseur_LAMRI',couleur:'#00695C'}]; var semA=getWeekNumber(new Date()); function dpSem(dp,sem){var p=parseDatePose(dp);if(!p)return false;if(p.type==='semaine')return p.num===sem;if(p.type==='date')return getWeekNumber(p.date)===sem;return false;} var items=commandes.filter(function(c){if(estAnnulee(c))return false;if(estTermineStatut(c.statutPose))return false;return dpSem(c.datePose,semA);}).slice().sort(function(a,b){return str(b.datePose).localeCompare(str(a.datePose));}); if(!items.length){document.getElementById('suivipose-content').innerHTML='<div class="empty-state"><p>Aucun chantier actif cette semaine.</p></div>';return;} var html=''; items.forEach(function(c){var pvFait=str(c.pvChantier).toUpperCase()==='OUI';html+='<div class="suivipose-card"><div class="suivipose-header"><div><div class="suivipose-client">'+h(c.client)+'</div><div class="suivipose-meta">'+h(c.fournisseur||'')+(c.devis?' · '+h(c.devis):'')+'</div></div><div style="text-align:right;">';if(c.datePose)html+='<span class="suivipose-date">📅 '+h(cleanDate(c.datePose))+'</span>';var sP=str(c.statutPose);if(sP){var sBg=sP==='SAV'?'#FFEBEE':sP.indexOf('Termin')!==-1?'var(--vert-bg)':'#FFF3E0',sC=sP==='SAV'?'#D32F2F':sP.indexOf('Termin')!==-1?'var(--vert)':'#E65100';html+='<br><span style="font-size:11px;font-weight:700;background:'+sBg+';color:'+sC+';padding:2px 8px;border-radius:5px;display:inline-block;margin-top:4px;">'+h(sP)+'</span>';}html+='<br><span style="font-size:11px;font-weight:700;background:'+(pvFait?'var(--vert-bg)':'#FFEBEE')+';color:'+(pvFait?'var(--vert)':'var(--rouge)')+';padding:2px 8px;border-radius:5px;display:inline-block;margin-top:4px;">'+(pvFait?'✓ PV Fait':'✗ PV Manquant')+'</span></div></div><div class="suivipose-body">';if(c.metres)html+='<div style="margin-bottom:10px;padding:8px 12px;background:#FFF3E0;border-radius:8px;border-left:3px solid var(--orange);"><div style="font-size:11px;font-weight:700;color:var(--orange);margin-bottom:4px;">📋 DATE MÉTRÉ</div><div style="font-size:12px;">'+h(formatDateMetre(c.metres))+'</div></div>';if(c.commentaire)html+='<div style="margin-bottom:10px;padding:8px 12px;background:#FFF3E0;border-radius:8px;border-left:3px solid var(--orange);"><div style="font-size:11px;font-weight:700;color:var(--orange);margin-bottom:4px;">📋 NOTE BUREAU</div><div style="font-size:12px;white-space:pre-wrap;">'+h(c.commentaire)+'</div></div>';poseurs.forEach(function(p){html+='<div class="suivipose-poseur"><div class="suivipose-poseur-name"><div class="suivipose-poseur-avatar" style="background:'+p.couleur+'">'+p.nom.slice(0,2)+'</div><span class="suivipose-poseur-label">'+p.nom+'</span></div>';if(c[p.key]&&str(c[p.key]).trim()){var lignes=str(c[p.key]).split('\n').filter(function(l){return l.trim();});html+='<div class="suivipose-comment" id="cmt-'+c.ligne+'-'+p.key+'">';lignes.forEach(function(l,li){html+='<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid var(--bordure);"><span style="flex:1;font-size:12px;">'+h(l)+'</span><div style="display:flex;gap:4px;flex-shrink:0;"><button data-ligne="'+c.ligne+'" data-key="'+p.key+'" data-idx="'+li+'" class="btn-cmt-edit" style="background:var(--bleu-bg);color:var(--bleu);border:none;border-radius:5px;padding:3px 8px;font-size:11px;cursor:pointer;">✏️</button><button data-ligne="'+c.ligne+'" data-key="'+p.key+'" data-idx="'+li+'" class="btn-cmt-del" style="background:#FFEBEE;color:var(--rouge);border:none;border-radius:5px;padding:3px 8px;font-size:11px;cursor:pointer;">🗑</button></div></div>';});html+='</div>';}else{html+='<div class="suivipose-empty">Aucun suivi poseur.</div>';}html+='</div>';});html+='</div></div>';});document.getElementById('suivipose-content').innerHTML=html;document.getElementById('suivipose-content').querySelectorAll('.btn-cmt-edit').forEach(function(btn){btn.addEventListener('click',function(){modifierCommentaire(parseInt(btn.getAttribute('data-ligne')),btn.getAttribute('data-key'),parseInt(btn.getAttribute('data-idx')));});});document.getElementById('suivipose-content').querySelectorAll('.btn-cmt-del').forEach(function(btn){btn.addEventListener('click',function(){supprimerCommentaire(parseInt(btn.getAttribute('data-ligne')),btn.getAttribute('data-key'),parseInt(btn.getAttribute('data-idx')));});}); }
