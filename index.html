@@ -466,7 +466,7 @@ tr:hover td{background:#F5F9FF;}
 </div>
 
 <aside class="sidebar">
-  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v17.8</div></div>
+  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v17.9</div></div>
   <nav class="nav">
     <div class="nav-item active" id="nav-suivi" onclick="showView('suivi')"><span class="icon">📋</span><span>Commandes</span></div>
     <div class="nav-item" id="nav-alertes" onclick="showView('alertes')"><span class="icon">🔔</span><span>Alertes</span></div>
@@ -479,7 +479,7 @@ tr:hover td{background:#F5F9FF;}
     <div class="nav-item" id="nav-planning" onclick="showView('planning')"><span class="icon">📅</span><span>Planning</span></div>
     <div class="nav-item" id="nav-config" onclick="showView('config')"><span class="icon">⚙️</span><span>Config</span></div>
   </nav>
-  <div class="sidebar-footer">v17.8</div>
+  <div class="sidebar-footer">v17.9</div>
 </aside>
 
 <div class="main">
@@ -525,7 +525,7 @@ tr:hover td{background:#F5F9FF;}
       </div>
       <div class="table-wrap">
         <table><thead><tr>
-          <th onclick="sortBy('client')">Client ↕</th><th onclick="sortBy('fournisseur')">Fournisseur ↕</th><th onclick="sortBy('metres')">📅 Métré ↕</th><th>N° Devis</th><th>Montant devis client TTC</th><th>Montant fournisseur TTC</th><th>Commande</th><th>ARC</th><th onclick="sortBy('prevLivraison')">Livraison ↕</th><th>Statut livraison</th><th>Statut pose</th><th>Date pose</th><th>PV Chantier</th><th>Commentaire</th><th>Alerte</th><th></th>
+          <th onclick="sortBy('client')">Client ↕</th><th onclick="sortBy('fournisseur')">Fournisseur ↕</th><th onclick="sortBy('metres')">📅 Métré ↕</th><th>N° Devis</th><th>Montant devis client TTC</th><th>Montant fournisseur TTC</th><th>Commande</th><th>ARC</th><th onclick="sortBy('prevLivraison')">Livraison ↕</th><th>Commentaire</th><th>Alerte</th><th></th>
         </tr></thead><tbody id="table-body"></tbody></table>
         <div class="scroll-hint" id="scroll-hint"></div>
       </div>
@@ -968,7 +968,7 @@ function renderTable() {
   if (alertFilter==='encours') rows = rows.filter(function(c){return !estTermineStatut(c.statutLivraison);});
   rows.sort(function(a,b){ if(sortCol==='ligne') return sortAsc ? a.ligne-b.ligne : b.ligne-a.ligne; var va=str(a[sortCol]).toLowerCase(),vb=str(b[sortCol]).toLowerCase(); return sortAsc?va.localeCompare(vb):vb.localeCompare(va); });
   var tb = document.getElementById('table-body');
-  if (!rows.length) { tb.innerHTML='<tr><td colspan="16"><div class="empty-state"><p>Aucune commande.</p></div></td></tr>'; document.getElementById('scroll-hint').textContent=''; return; }
+  if (!rows.length) { tb.innerHTML='<tr><td colspan="12"><div class="empty-state"><p>Aucune commande.</p></div></td></tr>'; document.getElementById('scroll-hint').textContent=''; return; }
   tb.innerHTML = rows.map(function(c){
     var a=c._a,fc=FOU_COLORS[c.fournisseur]||'#546E7A';
     var sL = c.statutLivraison?'<span class="badge '+(c.statutLivraison==='Livré'?'badge-ok':c.statutLivraison==='SAV'?'badge-urgent':'badge-info')+'">'+h(c.statutLivraison)+'</span>':'—';
@@ -976,7 +976,7 @@ function renderTable() {
     var extra = a.t.indexOf(' | ')!==-1?'<br><span style="font-size:10px;color:var(--texte2);">+'+(a.t.split(' | ').length-1)+' autre(s)</span>':'';
     var objetBadge = c.objetCommande?'<span style="border-bottom:2px dotted var(--bleu);cursor:pointer;" onclick="afficherObjetParLigne(event,'+c.ligne+')">'+h(c.arc||'—')+' 📦</span>':h(c.arc||'—');
     var metreCell = c.metres?'<span style="background:#FFF3E0;color:var(--orange);padding:3px 9px;border-radius:5px;font-size:11px;font-weight:700;">📅 '+h(formatDateMetre(c.metres))+'</span>':'<span style="color:#ccc;">—</span>';
-    return '<tr><td class="col-client" data-label="Client"><span style="display:none;">L'+c.ligne+'</span><div class="client-cell"><a class="client-name client-link" href="javascript:void(0)" role="button" title="Ouvrir la fiche client" onclick="ouvrirFicheClient('+c.ligne+')">'+h(c.client)+'</a><button class="client-edit-btn" title="Modifier cette commande" aria-label="Modifier la commande de '+escAttr(c.client)+'" onclick="openModal('+c._i+')">✏️</button></div></td><td data-label="Fournisseur"><span style="background:'+fc+'18;color:'+fc+';padding:3px 8px;border-radius:5px;font-size:11px;font-weight:700;">'+h(c.fournisseur||'—')+'</span></td><td data-label="Métré">'+metreCell+'</td><td class="col-mono" data-label="Devis">'+h(c.devis||'—')+'</td><td data-label="Montant devis client TTC" style="font-weight:700;white-space:nowrap;">'+formatMontantTable(c.devisTTC)+'</td><td data-label="Montant fournisseur TTC" style="font-weight:700;color:#6D4C41;white-space:nowrap;">'+formatMontantTable(c.totalAchatsTTC)+'</td><td>'+(c.commande==='OUI'?'<span class="badge badge-ok">OUI</span>':c.commande==='NON'?'<span class="badge badge-urgent">NON</span>':'—')+'</td><td class="col-mono" data-label="ARC">'+objetBadge+'</td><td data-label="Livraison">'+semaineBadge(c.prevLivraison)+'</td><td data-label="Statut livr.">'+sL+'</td><td data-label="Statut pose">'+sP+'</td><td style="font-size:12px;font-weight:600;color:var(--bleu);" data-label="Date pose">'+h(c.datePose||'—')+'</td><td data-label="PV">'+pvBadge(c.pvChantier,c.ligne)+'</td><td class="col-comment" data-label="Commentaire" title="'+escAttr(c.commentaire)+'">'+h(c.commentaire||'')+'</td><td data-label="Alerte"><span class="alerte-text '+aClass(a.n)+'">'+(a.n===0?'OK':a.n===-1?'⏹ Annulée':'⚠ '+h(a.t.split(' | ')[0]))+'</span>'+extra+'</td><td></td></tr>';
+    return '<tr><td class="col-client" data-label="Client"><span style="display:none;">L'+c.ligne+'</span><div class="client-cell"><a class="client-name client-link" href="javascript:void(0)" role="button" title="Ouvrir la fiche client" onclick="ouvrirFicheClient('+c.ligne+')">'+h(c.client)+'</a><button class="client-edit-btn" title="Modifier cette commande" aria-label="Modifier la commande de '+escAttr(c.client)+'" onclick="openModal('+c._i+')">✏️</button></div></td><td data-label="Fournisseur"><span style="background:'+fc+'18;color:'+fc+';padding:3px 8px;border-radius:5px;font-size:11px;font-weight:700;">'+h(c.fournisseur||'—')+'</span></td><td data-label="Métré">'+metreCell+'</td><td class="col-mono" data-label="Devis">'+h(c.devis||'—')+'</td><td data-label="Montant devis client TTC" style="font-weight:700;white-space:nowrap;">'+formatMontantTable(c.devisTTC)+'</td><td data-label="Montant fournisseur TTC" style="font-weight:700;color:#6D4C41;white-space:nowrap;">'+formatMontantTable(c.totalAchatsTTC)+'</td><td>'+(c.commande==='OUI'?'<span class="badge badge-ok">OUI</span>':c.commande==='NON'?'<span class="badge badge-urgent">NON</span>':'—')+'</td><td class="col-mono" data-label="ARC">'+objetBadge+'</td><td data-label="Livraison">'+semaineBadge(c.prevLivraison)+'</td><td class="col-comment" data-label="Commentaire" title="'+escAttr(c.commentaire)+'">'+h(c.commentaire||'')+'</td><td data-label="Alerte"><span class="alerte-text '+aClass(a.n)+'">'+(a.n===0?'OK':a.n===-1?'⏹ Annulée':'⚠ '+h(a.t.split(' | ')[0]))+'</span>'+extra+'</td><td></td></tr>';
   }).join('');
   document.getElementById('scroll-hint').textContent = rows.length+' commande(s) sur '+commandes.length;
 }
