@@ -475,7 +475,7 @@ thead th.col-montant{text-align:right;}
 </div>
 
 <aside class="sidebar">
-  <div class="sidebar-logo"><span>D'ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v17.13</div></div>
+  <div class="sidebar-logo"><span>D'ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v17.14</div></div>
   <nav class="nav">
     <div class="nav-item active" id="nav-suivi" onclick="showView('suivi')"><span class="icon">📋</span><span>Commandes</span></div>
     <div class="nav-item" id="nav-alertes" onclick="showView('alertes')"><span class="icon">🔔</span><span>Alertes</span></div>
@@ -488,7 +488,7 @@ thead th.col-montant{text-align:right;}
     <div class="nav-item" id="nav-planning" onclick="showView('planning')"><span class="icon">📅</span><span>Planning</span></div>
     <div class="nav-item" id="nav-config" onclick="showView('config')"><span class="icon">⚙️</span><span>Config</span></div>
   </nav>
-  <div class="sidebar-footer">v17.13</div>
+  <div class="sidebar-footer">v17.14</div>
 </aside>
 
 <div class="main">
@@ -871,7 +871,7 @@ function demanderCodeAcces(){
 }
 async function apiPost(body, tentative) {
   tentative = tentative || 1;
-  var delai = (body && (body.action === 'analyserAgent' || body.action === 'analyserDevisImage' || body.action === 'analyserCommandeFournisseurImage')) ? 90000 : 60000;
+  var delai = (body && (body.action === 'analyserAgent' || body.action === 'analyserDevisImage' || body.action === 'analyserCommandeFournisseurImage' || body.action === 'analyserListeFournisseurImage')) ? 90000 : 60000;
   var timeoutId = null;
   try {
     var controller = new AbortController();
@@ -949,6 +949,7 @@ function renderKPI() {
       '<button class="btn btn-outline" onclick="showView(\'taches\'); ouvrirSousModuleTaches(\'taches\'); document.getElementById(\'task-filter-type\').value=\'notes\'; renderTaches();" style="width:100%; padding:4px; font-size:11px; font-weight:700; border-color:#78909C; color:#78909C; justify-content:center; white-space:nowrap;">🗒️ Notes (' + notesCount + ')</button>' +
       '<button class="btn btn-outline" onclick="showView(\'taches\'); ouvrirSousModuleTaches(\'achats\');" style="width:100%; padding:4px; font-size:11px; font-weight:700; border-color:#E65100; color:#E65100; justify-content:center; white-space:nowrap;">🛒 Achats (' + achatsEnCours + ')</button>' +
       '<button onclick="ouvrirModalDicteeNoteRapide()" style="width:100%; padding:4px; font-size:11px; font-weight:700; border:1.5px solid #E65100; background:#FFF3E0; color:#E65100; border-radius:6px; cursor:pointer; justify-content:center; white-space:nowrap; display:flex; align-items:center; gap:4px;">🎤 Dicter</button>' +
+      '<button onclick="ouvrirImportListeFournisseur()" style="width:100%; padding:4px; font-size:11px; font-weight:700; border:1.5px solid #1565C0; background:#E8F1FB; color:#1565C0; border-radius:6px; cursor:pointer; justify-content:center; white-space:nowrap; display:flex; align-items:center; gap:4px;">📋 Liste fournisseur</button>' +
     '</div>';
   grid.appendChild(shortcuts);
 }
@@ -1197,6 +1198,139 @@ function ouvrirFicheClient(ligne){
 }
 function fermerFicheClient(){var o=document.getElementById('overlay-fiche-client');if(o)o.remove();}
 document.addEventListener('keydown',function(e){if(e.key==='Escape')fermerFicheClient();});
+
+// ── Import d'une liste fournisseur (capture) : lecture Gemini, correspondance, validation, écriture (v17.14) ──
+var imageListeFournisseur=null,revueListe=[],typeMontantListe='inconnu',colonnesDetectees=[];
+function numListe(v){if(v===null||v===undefined||v==='')return null;var t=String(v).replace(/[^0-9,.\-]/g,'');if(t.indexOf(',')!==-1)t=t.replace(/\./g,'').replace(',','.');else if((t.match(/\./g)||[]).length>1)t=t.replace(/\./g,'');var n=Number(t);return isFinite(n)?n:null;}
+function euroListe(n){return n===null||n===undefined?'—':Number(n).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})+' €';}
+function tokensDossier(s){return String(s||'').replace(/…|\.\.\./g,' ').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9 ]/g,' ').split(/\s+/).filter(function(t){return t&&t!=='opsol'&&t!=='cde'&&!/^\d{4}$/.test(t);});}
+function trouverCandidatsListe(l){
+  var arc=normaliserCleImport(l.numeroARC),res=[];
+  if(arc){commandes.forEach(function(c){if(normaliserCleImport(c.numeroArcFournisseur)===arc||normaliserCleImport(c.arc)===arc)res.push({c:c,score:100,mode:'ARC'});});}
+  if(res.length)return res;
+  var td=tokensDossier(l.dossier);if(!td.length)return [];
+  commandes.forEach(function(c){
+    var tc=tokensDossier(c.client);if(!tc.length)return;
+    var shared=td.filter(function(t){return tc.indexOf(t)!==-1;});
+    if(!shared.some(function(t){return t.length>=4;}))return;
+    var extra=(tc.length-shared.length)+(td.length-shared.length);
+    res.push({c:c,score:shared.length*10-extra*3,mode:'Nom'});
+  });
+  res.sort(function(a,b){return b.score-a.score;});
+  return res.filter(function(r,i){return r.score>0&&r.score>=res[0].score-6&&i<5;});
+}
+function calculerMontantListe(l){
+  var ttc=numListe(l.montantTTC),ht=numListe(l.montantHT),np=numListe(l.montantNonPrecise);
+  if(ttc===null&&ht===null&&np!==null){if(typeMontantListe==='TTC')ttc=np;else if(typeMontantListe==='HT')ht=np;}
+  var lu=[];if(ht!==null)lu.push('HT '+euroListe(ht));if(ttc!==null)lu.push('TTC '+euroListe(ttc));if(np!==null&&ttc===null&&ht===null)lu.push('Type ? '+euroListe(np));
+  var r={ttc:null,note:'',lu:lu.join(' · ')||'—',alerte:''};
+  if(ttc!==null){r.ttc=ttc;r.note='TTC lu';if(ht!==null&&ht>0){var q=ttc/ht;if(q<1.05||q>1.21)r.alerte='Écart HT/TTC inhabituel (×'+q.toFixed(3).replace('.',',')+')';}}
+  else if(ht!==null){r.ttc=Math.round(ht*1.2*100)/100;r.note='HT × 1,20 (TVA 20 %)';}
+  else if(np!==null){r.note='Type de montant à préciser';}
+  return r;
+}
+function preparerRevueListe(lignes){
+  revueListe=lignes.map(function(l,i){
+    var cands=trouverCandidatsListe(l),m=calculerMontantListe(l);
+    var o={i:i,l:l,cands:cands,ligne:null,mode:'Aucune',ttc:m.ttc,note:m.note,lu:m.lu,alerte:m.alerte,coche:false};
+    if(cands.length===1||(cands.length>1&&cands[0].mode==='ARC'&&cands.length===1)){o.ligne=cands[0].c.ligne;o.mode=cands[0].mode;}
+    else if(cands.length>1){var top=cands[0].score,uniq=cands.filter(function(x){return x.score===top;}).length===1&&cands[0].score-cands[1].score>=6;if(uniq){o.ligne=cands[0].c.ligne;o.mode=cands[0].mode;}else o.mode='Ambigu';}
+    majEtatLigneListe(o,true);
+    return o;
+  });
+}
+function commandeParLigne(n){return commandes.find(function(c){return c.ligne===Number(n);})||null;}
+function majEtatLigneListe(o,init){
+  var c=o.ligne?commandeParLigne(o.ligne):null;o.existant=c?numListe(c.totalAchatsTTC):null;
+  o.zero=(o.ttc!==null&&o.ttc<=0);
+  if(o.ttc===null||o.zero||!c||o.alerte){o.coche=false;}
+  else if(o.existant!==null&&Math.abs(o.existant-o.ttc)<0.005){o.coche=false;}
+  else if(o.existant!==null){o.coche=false;}
+  else{o.coche=true;}
+  o.etat=!c?(o.mode==='Ambigu'?'Choisir la commande':'Aucune correspondance'):o.zero?'Montant 0,00 ignoré':o.ttc===null?o.note:o.alerte?o.alerte:(o.existant!==null&&Math.abs(o.existant-o.ttc)<0.005)?'Déjà à jour':o.existant!==null?'Remplacerait '+euroListe(o.existant):'Prêt';
+}
+function fermerImportListe(){var o=document.getElementById('overlay-liste-fournisseur');if(o)o.remove();document.removeEventListener('paste',collerImageListe);}
+function collerImageListe(e){var items=(e.clipboardData&&e.clipboardData.items)||[];for(var i=0;i<items.length;i++){if(items[i].type&&items[i].type.indexOf('image/')===0){var f=items[i].getAsFile();if(f){definirImageListe(f);e.preventDefault();return;}}}}
+function definirImageListe(file){
+  if(!file||!/^image\/(png|jpeg|webp)$/.test(file.type)){afficherToast('urgent','⚠️','Format','Utilisez une capture PNG, JPEG ou WEBP.',4000);return;}
+  imageListeFournisseur=file;var url=URL.createObjectURL(file);
+  var z=document.getElementById('liste-apercu');if(z)z.innerHTML='<img src="'+url+'" style="max-width:100%;max-height:220px;border-radius:8px;border:1px solid var(--bordure);">';
+  var b=document.getElementById('liste-btn-analyser');if(b)b.disabled=false;
+  var r=document.getElementById('liste-revue');if(r)r.innerHTML='';
+}
+function ouvrirImportListeFournisseur(){
+  fermerImportListe();imageListeFournisseur=null;revueListe=[];typeMontantListe='inconnu';
+  var o=document.createElement('div');o.id='overlay-liste-fournisseur';o.style.cssText='position:fixed;inset:0;background:rgba(10,20,40,.45);z-index:600;display:flex;align-items:flex-start;justify-content:center;padding:12px;overflow-y:auto;';
+  o.onclick=function(e){if(e.target===o)fermerImportListe();};
+  o.innerHTML='<div style="width:100%;max-width:1040px;background:#fff;border-radius:14px;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.2);margin:auto;box-sizing:border-box;" onclick="event.stopPropagation()">'+
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;"><h3 style="margin:0;font-size:17px;font-weight:800;color:var(--bleu);">📋 Import d’une liste fournisseur</h3><button onclick="fermerImportListe()" style="background:#F5F7FA;border:none;border-radius:8px;width:32px;height:32px;cursor:pointer;">✕</button></div>'+
+    '<p style="font-size:13px;color:var(--texte2);margin:0 0 10px;line-height:1.5;">Collez (Ctrl + V) ou choisissez une capture de la liste de commandes du fournisseur. Gemini lit les lignes, je retrouve les commandes par n° d’ARC puis par nom de client. <b>Rien n’est écrit avant votre validation.</b> Si seul le HT est lu, le TTC est calculé avec 20 % de TVA.</p>'+
+    '<div id="liste-apercu" style="min-height:90px;border:2px dashed var(--bordure);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--texte2);font-size:13px;padding:10px;text-align:center;" ondragover="event.preventDefault()" ondrop="event.preventDefault();definirImageListe(event.dataTransfer.files[0])">Collez ici une capture (Ctrl + V) ou glissez une image</div>'+
+    '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;"><button class="btn btn-outline btn-sm" onclick="document.getElementById(\'liste-fichier\').click()">📁 Choisir une image</button><input type="file" id="liste-fichier" accept="image/png,image/jpeg,image/webp" style="display:none" onchange="definirImageListe(this.files[0])"><button class="btn btn-primary btn-sm" id="liste-btn-analyser" onclick="analyserListeFournisseur()" disabled>✨ Analyser avec Gemini</button><span id="liste-statut" style="font-size:12px;color:var(--texte2);align-self:center;"></span></div>'+
+    '<div id="liste-revue" style="margin-top:14px;"></div></div>';
+  document.body.appendChild(o);document.addEventListener('paste',collerImageListe);
+}
+async function analyserListeFournisseur(){
+  if(!imageListeFournisseur)return;
+  var b=document.getElementById('liste-btn-analyser'),st=document.getElementById('liste-statut'),rv=document.getElementById('liste-revue');
+  b.disabled=true;b.textContent='⏳ Analyse…';st.textContent='Gemini lit la liste…';rv.innerHTML='';
+  try{
+    var d=await lireFichierBase64Fournisseur(imageListeFournisseur);
+    var r=await apiPost({action:'analyserListeFournisseurImage',documents:[d]});
+    if(!r||!r.ok)throw new Error((r&&r.error)||'Analyse impossible.');
+    var data=r.data||{},lignes=data.lignes||[];
+    if(!lignes.length)throw new Error('Aucune ligne reconnue dans la capture.');
+    colonnesDetectees=data.colonnesMontant||[];
+    var types=colonnesDetectees.map(function(c){return String(c.type||'').toUpperCase();});
+    typeMontantListe=types.indexOf('TTC')!==-1&&types.indexOf('HT')===-1?'TTC':types.indexOf('HT')!==-1&&types.indexOf('TTC')===-1?'HT':'inconnu';
+    preparerRevueListe(lignes);st.textContent=lignes.length+' ligne(s) lue(s)';afficherRevueListe();
+  }catch(e){st.textContent='';rv.innerHTML='<div class="rc-block" style="border-left:4px solid var(--rouge);">❌ '+h(e.message)+'</div>';}
+  finally{b.disabled=false;b.textContent='✨ Analyser avec Gemini';}
+}
+function changerTypeMontantListe(v){typeMontantListe=v;revueListe.forEach(function(o){var m=calculerMontantListe(o.l);o.ttc=m.ttc;o.note=m.note;o.lu=m.lu;o.alerte=m.alerte;majEtatLigneListe(o);});afficherRevueListe();}
+function changerCibleListe(i,v){var o=revueListe[i];o.ligne=v?Number(v):null;o.mode=o.ligne?(o.cands.some(function(x){return x.c.ligne===o.ligne;})?o.cands[0].mode:'Choix manuel'):'Aucune';majEtatLigneListe(o);afficherRevueListe();}
+function changerMontantListe(i,v){var o=revueListe[i],n=numListe(v);o.ttc=n;o.note='Montant corrigé à la main';o.alerte='';majEtatLigneListe(o);afficherRevueListe();}
+function cocherLigneListe(i,v){revueListe[i].coche=!!v;majBoutonConfirmerListe();}
+function majBoutonConfirmerListe(){var n=revueListe.filter(function(o){return o.coche&&o.ligne&&o.ttc>0;}).length,b=document.getElementById('liste-btn-confirmer');if(b){b.textContent='💾 Enregistrer '+n+' montant(s)';b.disabled=n===0;}}
+function afficherRevueListe(){
+  var rv=document.getElementById('liste-revue');if(!rv)return;
+  var besoinType=revueListe.some(function(o){var l=o.l;return numListe(l.montantNonPrecise)!==null&&numListe(l.montantTTC)===null&&numListe(l.montantHT)===null;});
+  var html='';
+  if(besoinType||colonnesDetectees.length){html+='<div class="rc-block"><h4>Type des montants de la capture</h4><select class="task-input" style="max-width:420px;" onchange="changerTypeMontantListe(this.value)"><option value="inconnu"'+(typeMontantListe==='inconnu'?' selected':'')+'>— à préciser —</option><option value="TTC"'+(typeMontantListe==='TTC'?' selected':'')+'>Les montants sont TTC</option><option value="HT"'+(typeMontantListe==='HT'?' selected':'')+'>Les montants sont HT (converti en TTC à 20 %)</option></select>'+(typeMontantListe==='inconnu'&&besoinType?'<div class="rc-note" style="color:var(--orange);">Choisissez HT ou TTC : les lignes concernées ne seront pas enregistrées tant que ce n’est pas précisé.</div>':'')+'</div>';}
+  var cl=commandes.slice().sort(function(a,b){return String(a.client).localeCompare(String(b.client),'fr');});
+  html+='<div class="rc-block"><h4>Validation ('+revueListe.length+' ligne'+(revueListe.length>1?'s':'')+')</h4><div class="rc-tablebox"><table class="rc-table"><colgroup><col style="width:5%"><col style="width:22%"><col style="width:24%"><col style="width:15%"><col style="width:14%"><col style="width:20%"></colgroup><thead><tr><th></th><th>Ligne de la capture</th><th>Commande trouvée</th><th>Montant lu</th><th>TTC à écrire</th><th>État</th></tr></thead><tbody>';
+  revueListe.forEach(function(o){
+    var l=o.l,c=o.ligne?commandeParLigne(o.ligne):null,opts='<option value="">— choisir —</option>';
+    var liste=o.cands.length?o.cands.map(function(x){return x.c;}):cl;
+    liste.forEach(function(x){opts+='<option value="'+x.ligne+'"'+(o.ligne===x.ligne?' selected':'')+'>'+h(x.client)+(x.numeroArcFournisseur?' · '+h(x.numeroArcFournisseur):'')+'</option>';});
+    if(o.ligne&&!liste.some(function(x){return x.ligne===o.ligne;}))opts+='<option value="'+o.ligne+'" selected>'+h(c?c.client:'')+'</option>';
+    var badge=o.mode==='ARC'?'<span class="rc-badge rc-b-ok">ARC identique</span>':o.mode==='Nom'?'<span class="rc-badge rc-b-chk">Par le nom</span>':o.mode==='Choix manuel'?'<span class="rc-badge rc-b-chk">Choix manuel</span>':'<span class="rc-badge rc-b-ko">'+h(o.mode)+'</span>';
+    var couleur=o.etat==='Prêt'?'#2E7D32':(o.etat==='Déjà à jour'?'#6B7C93':'#E65100');
+    html+='<tr><td data-l="Valider"><input type="checkbox" '+(o.coche?'checked ':'')+(o.ligne&&o.ttc>0?'':'disabled ')+'onchange="cocherLigneListe('+o.i+',this.checked)"></td>'+
+      '<td data-l="Capture"><b>'+h(l.numeroARC||'—')+'</b><div>'+h(l.dossier||'')+'</div><div style="font-size:11px;color:var(--texte2);">'+h([l.statut,l.produit,l.date].filter(Boolean).join(' · '))+'</div></td>'+
+      '<td data-l="Commande"><select class="task-input" style="width:100%;font-size:12px;" onchange="changerCibleListe('+o.i+',this.value)">'+opts+'</select><div style="margin-top:4px;">'+badge+'</div></td>'+
+      '<td data-l="Montant lu" style="font-size:12px;">'+h(o.lu).split(' · ').join('<br>')+'</td>'+
+      '<td data-l="TTC à écrire"><input type="number" step="0.01" class="task-input" style="width:100%;font-size:12px;" value="'+(o.ttc!==null?o.ttc:'')+'" onchange="changerMontantListe('+o.i+',this.value)"><div class="rc-note" style="margin-top:2px;">'+h(o.note)+'</div></td>'+
+      '<td data-l="État" style="font-weight:700;color:'+couleur+';font-size:12px;">'+h(o.etat)+'</td></tr>';
+  });
+  html+='</tbody></table></div><div class="rc-note">Les montants à 0,00 et les montants déjà renseignés ne sont jamais écrasés sans que vous cochiez la ligne. Vérifiez les chiffres lus avant de valider.</div><div class="rc-tools"><button class="btn btn-primary" id="liste-btn-confirmer" onclick="confirmerImportListe()">💾 Enregistrer</button><button class="btn btn-outline" onclick="fermerImportListe()">Annuler</button></div></div>';
+  rv.innerHTML=html;majBoutonConfirmerListe();
+}
+async function confirmerImportListe(){
+  var lignes=[];
+  revueListe.forEach(function(o){if(!(o.coche&&o.ligne&&o.ttc>0))return;var c=commandeParLigne(o.ligne);if(!c)return;lignes.push({ligne:c.ligne,clientAttendu:c.client,totalTTC:o.ttc,numeroARC:o.l.numeroARC||'',ecraser:(o.existant!==null&&Math.abs(o.existant-o.ttc)>=0.005)});});
+  if(!lignes.length)return;
+  var ecrase=lignes.filter(function(x){return x.ecraser;}).length;
+  if(ecrase&&!confirm(ecrase+' montant(s) déjà renseigné(s) seront remplacés. Continuer ?'))return;
+  var b=document.getElementById('liste-btn-confirmer');b.disabled=true;b.textContent='⏳ Enregistrement…';
+  try{
+    var r=await apiPost({action:'importerListeFournisseur',lignes:lignes});
+    if(!r||!r.ok)throw new Error((r&&r.error)||'Erreur');
+    fermerImportListe();
+    afficherToast('success','✅','Liste importée',r.message+(r.ignores&&r.ignores.length?' — '+r.ignores.slice(0,3).join(' ; '):''),7000);
+    if(typeof charger==='function')charger(true);
+  }catch(e){b.disabled=false;b.textContent='💾 Enregistrer';alert('❌ Non enregistré : '+e.message);}
+}
 
 // ── AGENT IA ──
 async function chargerRapportAgent() { var content=document.getElementById('agent-content'), dateEl=document.getElementById('agent-date'); if(dateEl) dateEl.textContent='⏳ Chargement...'; content.innerHTML='<div class="agent-loader"><div class="spinner"></div><div class="loader-msg">📥 Chargement...</div></div>'; try { var r=await apiPost({action:'lireRapport'}); if(!r||!r.ok){content.innerHTML='<div class="empty-state"><div style="font-size:64px;">🤖</div><h3>Aucun rapport</h3><p>Le rapport est généré chaque matin à 8h.</p></div>';if(dateEl)dateEl.textContent='Dernière analyse : aucune';return;} if(dateEl&&r.dateRapport)dateEl.textContent='Dernière analyse : '+r.dateRapport+' (auto)'; else if(dateEl&&r.date)dateEl.textContent='Dernière analyse : '+r.date; dernierRapportAgent=r; afficherRapportAgent(r,0); } catch(e) { content.innerHTML='<div class="empty-state"><p>❌ '+h(e.message)+'</p></div>'; } }
