@@ -439,6 +439,37 @@ tr:hover td{background:#F5F9FF;}
   .topbar-right .tb-new{height:36px!important;padding:0 6px!important;font-size:12px!important;}
   .topbar-right .tb-tool,.topbar-right .tb-task,.topbar-right .tb-conso,.topbar-right .tb-dicter{width:100%;padding:0 6px!important;font-size:12px!important;}
 }
+
+/* ===== v17.5 : une seule rangée, boutons-icônes plus gros ===== */
+.topbar-right{flex-direction:row!important;flex-wrap:nowrap!important;align-items:center!important;justify-content:flex-end!important;gap:10px!important;}
+.topbar-right .tb-row{display:contents!important;}
+.topbar-right .sync-info{order:0!important;}
+.topbar-right .tb-task{order:1}.topbar-right .tb-conso{order:2}.topbar-right .tb-tool{order:3}.topbar-right .tb-dicter{order:4}.topbar-right .tb-new{order:5}
+.topbar-right .tb-tool,.topbar-right .tb-task,.topbar-right .tb-conso,.topbar-right .tb-dicter{width:48px!important;height:48px!important;min-height:48px!important;padding:0!important;font-size:22px!important;border-radius:14px!important;position:relative;line-height:1;flex:0 0 auto;}
+.topbar-right .tb-tool{background:#fff!important;border:1px solid #C9D8EC!important;}
+.topbar-right .tb-dicter{background:#FFF3E9!important;}
+.topbar-right .tb-new{height:48px!important;min-height:48px!important;font-size:15px!important;padding:0 22px!important;border-radius:14px!important;flex:0 0 auto;}
+.topbar-right .tb-task .task-nav-badge,.topbar-right .tb-conso .task-nav-badge{position:absolute;top:-6px;right:-6px;min-width:20px;height:20px;line-height:20px;font-size:11px;padding:0 5px;border-radius:999px;background:#C62828;color:#fff;text-align:center;font-weight:800;box-shadow:0 0 0 2px #fff;}
+@media(max-width:1100px){.topbar-right{flex-wrap:wrap!important;justify-content:flex-start!important;}}
+@media(max-width:760px){
+  .topbar-right{display:grid!important;grid-template-columns:repeat(6,1fr)!important;gap:8px!important;width:100%;}
+  .topbar-right .sync-info{grid-column:1/-1;justify-content:center;}
+  .topbar-right .tb-tool,.topbar-right .tb-task,.topbar-right .tb-conso,.topbar-right .tb-dicter{width:100%!important;}
+  .topbar-right .tb-new{grid-column:1/-1;width:100%;}
+}
+/* v17.5b : priorité sur les anciens styles des boutons Tâches / Consommables */
+.topbar .topbar-right button.tb-task,.topbar .topbar-right button.tb-conso{width:48px!important;height:48px!important;min-height:48px!important;padding:0!important;font-size:22px!important;border-radius:14px!important;line-height:1!important;box-shadow:none!important;}
+@media(max-width:760px){.topbar .topbar-right button.tb-task,.topbar .topbar-right button.tb-conso{width:100%!important;}}
+@media(max-width:760px){
+  .topbar{box-sizing:border-box;max-width:100vw;overflow:hidden;}
+  .topbar .topbar-right{grid-template-columns:repeat(6,minmax(0,1fr))!important;box-sizing:border-box;max-width:100%;min-width:0;}
+  .topbar .topbar-right>*{min-width:0!important;box-sizing:border-box;max-width:100%;}
+  .topbar .topbar-right button.tb-task,.topbar .topbar-right button.tb-conso,.topbar .topbar-right button.tb-tool,.topbar .topbar-right button.tb-dicter{height:44px!important;min-height:44px!important;font-size:18px!important;}
+  .topbar .topbar-right button.tb-new{width:100%!important;}
+}
+@media(max-width:760px){
+  .topbar .topbar-right button.tb-task,.topbar .topbar-right button.tb-conso,.topbar .topbar-right button.tb-tool,.topbar .topbar-right button.tb-dicter{width:auto!important;min-width:0!important;max-width:none!important;flex:none!important;justify-self:stretch;}
+}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -462,7 +493,7 @@ tr:hover td{background:#F5F9FF;}
 </div>
 
 <aside class="sidebar">
-  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v17.4</div></div>
+  <div class="sidebar-logo"><span>ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v17.7</div></div>
   <nav class="nav">
     <div class="nav-item active" id="nav-suivi" onclick="showView('suivi')"><span class="icon">📋</span><span>Commandes</span></div>
     <div class="nav-item" id="nav-alertes" onclick="showView('alertes')"><span class="icon">🔔</span><span>Alertes</span></div>
@@ -475,7 +506,7 @@ tr:hover td{background:#F5F9FF;}
     <div class="nav-item" id="nav-planning" onclick="showView('planning')"><span class="icon">📅</span><span>Planning</span></div>
     <div class="nav-item" id="nav-config" onclick="showView('config')"><span class="icon">⚙️</span><span>Config</span></div>
   </nav>
-  <div class="sidebar-footer">v17.4</div>
+  <div class="sidebar-footer">v17.7</div>
 </aside>
 
 <div class="main">
@@ -485,14 +516,14 @@ tr:hover td{background:#F5F9FF;}
     <div class="topbar-right">
       <div class="tb-row tb-row-top">
         <span class="sync-info"><span class="sync-dot" id="sync-dot"></span><span id="sync-label">Chargement...</span></span>
-        <button class="btn btn-outline btn-sm tb-tool" id="btn-notif" onclick="activerNotifications()" title="Notifications">🔕 Notifs</button>
-        <button class="btn btn-outline btn-sm tb-tool" onclick="actualiserTout()" title="Actualiser les données">🔄 Actualiser</button>
-        <button class="btn btn-outline btn-sm tb-tool" onclick="exportCSV()" title="Exporter en CSV">⬇ CSV</button>
+        <button class="btn btn-outline btn-sm tb-tool" id="btn-notif" onclick="activerNotifications()" title="Notifications" aria-label="Notifications">🔕</button>
+        <button class="btn btn-outline btn-sm tb-tool" onclick="actualiserTout()" title="Actualiser les données" aria-label="Actualiser">🔄</button>
+        <button class="btn btn-outline btn-sm tb-tool" onclick="exportCSV()" title="Exporter en CSV" aria-label="Exporter en CSV">⬇</button>
       </div>
       <div class="tb-row tb-row-main">
-        <button class="btn btn-outline btn-sm tb-task" onclick="showView('taches'); ouvrirSousModuleTaches('taches'); document.getElementById('task-filter-type').value='taches'; renderTaches();">📝 Tâches <span id="top-taches-count" class="task-nav-badge"></span></button>
-        <button class="btn btn-outline btn-sm tb-conso" onclick="showView('taches'); ouvrirSousModuleTaches('achats');">🛒 Consommables <span id="top-achats-count" class="task-nav-badge"></span></button>
-        <button class="btn btn-outline btn-sm tb-dicter" onclick="ouvrirModalDictee()">🎙️ Dicter</button>
+        <button class="btn btn-outline btn-sm tb-task" title="Tâches" aria-label="Tâches" onclick="showView('taches'); ouvrirSousModuleTaches('taches'); document.getElementById('task-filter-type').value='taches'; renderTaches();">📝<span id="top-taches-count" class="task-nav-badge"></span></button>
+        <button class="btn btn-outline btn-sm tb-conso" title="Consommables" aria-label="Consommables" onclick="showView('taches'); ouvrirSousModuleTaches('achats');">🛒<span id="top-achats-count" class="task-nav-badge"></span></button>
+        <button class="btn btn-outline btn-sm tb-dicter" onclick="ouvrirModalDictee()" title="Dicter une commande" aria-label="Dicter">🎙️</button>
         <button class="btn btn-primary btn-sm tb-new" onclick="openModal(-1)">＋ Nouvelle commande</button>
       </div>
     </div>
@@ -849,6 +880,13 @@ function semaineBadge(s) { if (!s||!str(s).trim()) return '<span style="color:#c
 function getWeekNumber(d) { d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())); d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7)); var ys = new Date(Date.UTC(d.getUTCFullYear(),0,1)); return Math.ceil((((d-ys)/86400000)+1)/7); }
 function aClass(n) { return n===0?'alerte-ok':n===1?'alerte-jaune':n===2?'alerte-orange':n===3?'alerte-rouge':''; }
 
+function codeAcces(){try{return localStorage.getItem('eco-code-acces')||'';}catch(e){return '';}}
+function demanderCodeAcces(){
+  var c=prompt('🔒 Code d’accès ECO OUEST\n(demandé une seule fois sur cet appareil)');
+  if(c===null||!String(c).trim())return false;
+  try{localStorage.setItem('eco-code-acces',String(c).trim());}catch(e){}
+  return true;
+}
 async function apiPost(body, tentative) {
   tentative = tentative || 1;
   var delai = (body && (body.action === 'analyserAgent' || body.action === 'analyserDevisImage' || body.action === 'analyserCommandeFournisseurImage')) ? 90000 : 60000;
@@ -856,11 +894,16 @@ async function apiPost(body, tentative) {
   try {
     var controller = new AbortController();
     timeoutId = setTimeout(function(){ controller.abort(); }, delai);
-    var r = await fetch(WEBAPP, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify(body), redirect:'follow', signal:controller.signal });
+    var corps = Object.assign({}, body, { code: codeAcces() });
+    var r = await fetch(WEBAPP, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify(corps), redirect:'follow', signal:controller.signal });
     if (!r.ok) throw new Error('HTTP ' + r.status);
     var texte = await r.text();
     if (texte.trim().substring(0,1) === '<') throw new Error('Réponse HTML');
     var rep = JSON.parse(texte);
+    if (rep && rep.ok === false && rep.error === 'ACCES_REFUSE') {
+      if (tentative < 3 && demanderCodeAcces()) return await apiPost(body, tentative + 1);
+      throw new Error('Accès refusé : code d’accès requis ou incorrect.');
+    }
     if (rep && rep.ok === false && /^Action inconnue/i.test(String(rep.error||''))) {
       rep.error = 'Le script Google déployé est une ancienne version (' + rep.error + '). Collez les fichiers Code.gs et Agent.gs de cette version dans Apps Script, puis Déployer > Gérer les déploiements > Modifier > Nouvelle version.';
     }
@@ -879,8 +922,8 @@ function chargerDepuisCache() {
 }
 function sauvegarderCache(d) { try { localStorage.setItem(CACHE_KEY, JSON.stringify(d)); localStorage.setItem(CACHE_TIME_KEY, String(Date.now())); } catch(e) {} }
 function viderCache() { try { localStorage.removeItem(CACHE_KEY); localStorage.removeItem(CACHE_TIME_KEY); } catch(e) {} }
-window._jsonpCallback = function(d) { window._jsonpInProgress=false; if (window._jsonpTimeout) { clearTimeout(window._jsonpTimeout); window._jsonpTimeout=null; } var old = document.getElementById('jsonp-script'); if (old) old.remove(); if (!d||!d.ok||!Array.isArray(d.data)) { sync('error',(d&&d.error)?d.error:'Réponse invalide'); setLoader(false); return; } commandes=d.data; sauvegarderCache(commandes); sync('ok','Mis à jour '+new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})); fillFournisseur(); renderAll(); setLoader(false); };
-function charger(force, tent) { if (!force && chargerDepuisCache()) return; if (window._jsonpInProgress && !tent) return; if (window._jsonpTimeout) { clearTimeout(window._jsonpTimeout); window._jsonpTimeout=null; } tent=tent||1; var TIMEOUT_MS = tent>1?60000:45000; window._jsonpInProgress=true; setLoader(true); sync('loading', tent>1?'Nouvelle tentative...':'Chargement...'); var old = document.getElementById('jsonp-script'); if (old) old.remove(); window._jsonpTimeout = setTimeout(function() { if (!window._jsonpInProgress) return; window._jsonpInProgress=false; var s = document.getElementById('jsonp-script'); if (s) s.remove(); if (tent<2) charger(true, tent+1); else { var cached=null; try { cached=JSON.parse(localStorage.getItem(CACHE_KEY)||'null'); } catch(e){viderCache();} if (Array.isArray(cached)) { commandes=cached; sync('warn','Serveur lent · cache'); fillFournisseur(); renderAll(); } else { document.getElementById('table-body').innerHTML='<tr><td colspan="14"><div class="empty-state"><p>❌ Serveur trop lent.</p></div></td></tr>'; } setLoader(false); } }, TIMEOUT_MS); var script = document.createElement('script'); script.id='jsonp-script'; script.src = WEBAPP + '?callback=_jsonpCallback&t=' + Date.now(); document.head.appendChild(script); }
+window._jsonpCallback = function(d) { window._jsonpInProgress=false; if (window._jsonpTimeout) { clearTimeout(window._jsonpTimeout); window._jsonpTimeout=null; } var old = document.getElementById('jsonp-script'); if (old) old.remove(); if (d&&d.error==='ACCES_REFUSE') { setLoader(false); sync('error','Code d’accès requis'); if (!window._codeDejaDemande) { window._codeDejaDemande=true; if (demanderCodeAcces()) { window._codeDejaDemande=false; charger(true); } else { window._codeDejaDemande=false; } } return; } if (!d||!d.ok||!Array.isArray(d.data)) { sync('error',(d&&d.error)?d.error:'Réponse invalide'); setLoader(false); return; } commandes=d.data; sauvegarderCache(commandes); sync('ok','Mis à jour '+new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})); fillFournisseur(); renderAll(); setLoader(false); };
+function charger(force, tent) { if (!force && chargerDepuisCache()) return; if (window._jsonpInProgress && !tent) return; if (window._jsonpTimeout) { clearTimeout(window._jsonpTimeout); window._jsonpTimeout=null; } tent=tent||1; var TIMEOUT_MS = tent>1?60000:45000; window._jsonpInProgress=true; setLoader(true); sync('loading', tent>1?'Nouvelle tentative...':'Chargement...'); var old = document.getElementById('jsonp-script'); if (old) old.remove(); window._jsonpTimeout = setTimeout(function() { if (!window._jsonpInProgress) return; window._jsonpInProgress=false; var s = document.getElementById('jsonp-script'); if (s) s.remove(); if (tent<2) charger(true, tent+1); else { var cached=null; try { cached=JSON.parse(localStorage.getItem(CACHE_KEY)||'null'); } catch(e){viderCache();} if (Array.isArray(cached)) { commandes=cached; sync('warn','Serveur lent · cache'); fillFournisseur(); renderAll(); } else { document.getElementById('table-body').innerHTML='<tr><td colspan="14"><div class="empty-state"><p>❌ Serveur trop lent.</p></div></td></tr>'; } setLoader(false); } }, TIMEOUT_MS); var script = document.createElement('script'); script.id='jsonp-script'; script.src = WEBAPP + '?callback=_jsonpCallback&code=' + encodeURIComponent(codeAcces()) + '&t=' + Date.now(); document.head.appendChild(script); }
 function setLoader(on) { document.getElementById('loader').classList.toggle('active',on); }
 function sync(state,label) { document.getElementById('sync-label').textContent=label; var d = document.getElementById('sync-dot'); d.className='sync-dot'+(state==='loading'?' loading':''); d.style.background=state==='ok'?'#2E7D32':state==='error'?'#D32F2F':'#E65100'; }
 
@@ -1860,7 +1903,7 @@ function exportCSV(){if(!commandes.length){alert('Aucune donnée.');return;}var 
 var NOTIF_KEY='eco-ouest-notif-urgents',notifActive=false,knownUrgents=[];
 function chargerPrefsNotif(){try{var s=JSON.parse(localStorage.getItem(NOTIF_KEY)||'{}');notifActive=s.active===true;knownUrgents=s.known||[];}catch(e){notifActive=false;knownUrgents=[];}majBoutonNotif();}
 function sauvegarderPrefsNotif(){try{localStorage.setItem(NOTIF_KEY,JSON.stringify({active:notifActive,known:knownUrgents}));}catch(e){}}
-function majBoutonNotif(){var btn=document.getElementById('btn-notif');if(!btn)return;if(!('Notification' in window)){btn.textContent='🔕 N/A';btn.disabled=true;return;}if(Notification.permission==='denied'){btn.textContent='🔕 Bloqué';btn.style.borderColor='var(--rouge)';btn.style.color='var(--rouge)';return;}if(notifActive&&Notification.permission==='granted'){btn.textContent='🔔 Actives';btn.style.borderColor='var(--vert)';btn.style.color='var(--vert)';}else{btn.textContent='🔕 Notifs';btn.style.borderColor='';btn.style.color='';}}
+function majBoutonNotif(){var btn=document.getElementById('btn-notif');if(!btn)return;if(!('Notification' in window)){btn.textContent='🔕';btn.title='Notifications non disponibles';btn.disabled=true;return;}if(Notification.permission==='denied'){btn.textContent='🔕';btn.title='Notifications bloquées dans le navigateur';btn.style.borderColor='var(--rouge)';btn.style.color='var(--rouge)';return;}if(notifActive&&Notification.permission==='granted'){btn.textContent='🔔';btn.title='Notifications actives (cliquer pour désactiver)';btn.style.borderColor='var(--vert)';btn.style.color='var(--vert)';}else{btn.textContent='🔕';btn.title='Activer les notifications';btn.style.borderColor='';btn.style.color='';}}
 async function activerNotifications(){if(!('Notification' in window)){alert('Notifications non supportées.');return;}if(Notification.permission==='denied'){alert('❌ Bloquées.');return;}if(notifActive&&Notification.permission==='granted'){notifActive=false;sauvegarderPrefsNotif();majBoutonNotif();afficherToast('warn','🔕','Désactivées','',3000);return;}try{var p=await Notification.requestPermission();if(p==='granted'){notifActive=true;sauvegarderPrefsNotif();majBoutonNotif();afficherToast('ok','🔔','Activées','',4000);envoyerNotification('🔔 Activées','Vous recevrez une alerte pour chaque commande urgente.');}else{afficherToast('urgent','❌','Refusée','',4000);majBoutonNotif();}}catch(e){alert('Erreur : '+e.message);}}
 function envoyerNotification(titre,corps,options){options=options||{};if(!notifActive||Notification.permission!=='granted')return null;try{var n=new Notification(titre,{body:corps,tag:options.tag||'eco-'+Date.now(),requireInteraction:options.requireInteraction===true,silent:options.silent===true});n.onclick=function(){window.focus();if(options.view&&typeof showView==='function')showView(options.view);n.close();};return n;}catch(e){return null;}}
 function detecterUrgences(){if(!notifActive||Notification.permission!=='granted'||!commandes||!commandes.length)return;var urgents=commandes.map(function(c){return {c:c,a:alerte(c)};}).filter(function(x){return x.a.n===3;});var cle=function(x){return String(x.c.ligne)+':'+x.a.t.split(' | ')[0];};var nouvelles=urgents.filter(function(x){return knownUrgents.indexOf(cle(x))===-1;});var actives=urgents.map(cle);knownUrgents=knownUrgents.filter(function(k){return actives.indexOf(String(k))!==-1;});if(!nouvelles.length)return;nouvelles.slice(0,3).forEach(function(x,i){setTimeout(function(){envoyerNotification('🔴 À traiter : '+str(x.c.client||'Sans nom'),x.a.t+(x.c.fournisseur?' · '+x.c.fournisseur:''),{tag:'urgent-'+x.c.ligne,requireInteraction:true,view:'alertes'});},i*400);});if(nouvelles.length>3)setTimeout(function(){envoyerNotification('⚠️ '+(nouvelles.length-3)+' autre(s) urgence(s)','Ouvrez l\'application.',{view:'alertes'});},1500);nouvelles.forEach(function(x){var k=cle(x);if(knownUrgents.indexOf(k)===-1)knownUrgents.push(k);});sauvegarderPrefsNotif();}
