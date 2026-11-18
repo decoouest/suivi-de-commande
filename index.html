@@ -475,7 +475,7 @@ thead th.col-montant{text-align:right;}
 </div>
 
 <aside class="sidebar">
-  <div class="sidebar-logo"><span>D'ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v17.15</div></div>
+  <div class="sidebar-logo"><span>D'ECO OUEST</span><small>Suivi Commandes</small><div id="version-info" style="font-size:10px;font-weight:700;color:#FFD600;background:rgba(0,0,0,.25);display:inline-block;padding:2px 8px;border-radius:4px;margin-top:6px;">v17.18</div></div>
   <nav class="nav">
     <div class="nav-item active" id="nav-suivi" onclick="showView('suivi')"><span class="icon">📋</span><span>Commandes</span></div>
     <div class="nav-item" id="nav-alertes" onclick="showView('alertes')"><span class="icon">🔔</span><span>Alertes</span></div>
@@ -488,7 +488,7 @@ thead th.col-montant{text-align:right;}
     <div class="nav-item" id="nav-planning" onclick="showView('planning')"><span class="icon">📅</span><span>Planning</span></div>
     <div class="nav-item" id="nav-config" onclick="showView('config')"><span class="icon">⚙️</span><span>Config</span></div>
   </nav>
-  <div class="sidebar-footer">v17.15</div>
+  <div class="sidebar-footer">v17.18</div>
 </aside>
 
 <div class="main">
@@ -908,7 +908,14 @@ function chargerDepuisCache() {
 }
 function sauvegarderCache(d) { try { localStorage.setItem(CACHE_KEY, JSON.stringify(d)); localStorage.setItem(CACHE_TIME_KEY, String(Date.now())); } catch(e) {} }
 function viderCache() { try { localStorage.removeItem(CACHE_KEY); localStorage.removeItem(CACHE_TIME_KEY); } catch(e) {} }
-window._jsonpCallback = function(d) { window._jsonpInProgress=false; if (window._jsonpTimeout) { clearTimeout(window._jsonpTimeout); window._jsonpTimeout=null; } var old = document.getElementById('jsonp-script'); if (old) old.remove(); if (d&&d.error==='ACCES_REFUSE') { setLoader(false); sync('error','Code d’accès requis'); if (!window._codeDejaDemande) { window._codeDejaDemande=true; if (demanderCodeAcces()) { window._codeDejaDemande=false; charger(true); } else { window._codeDejaDemande=false; } } return; } if (!d||!d.ok||!Array.isArray(d.data)) { sync('error',(d&&d.error)?d.error:'Réponse invalide'); setLoader(false); return; } commandes=d.data; sauvegarderCache(commandes); sync('ok','Mis à jour '+new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})); fillFournisseur(); renderAll(); setLoader(false); };
+function verifierVersionServeur(d){
+  if(window._avertiServeur)return;
+  var vieux=!d.serveur||parseFloat(String(d.serveur).replace(/^17\./,'0.'))<0.16;
+  if(!vieux)return;
+  window._avertiServeur=true;
+  afficherToast('urgent','⚠️','Script Google pas à jour','Collez Code.gs (v17.16) dans Apps Script puis Déployer > Gérer les déploiements > Modifier > Nouvelle version. Sans cela, le montant à la livraison ne s’enregistre pas.',15000);
+}
+window._jsonpCallback = function(d) { window._jsonpInProgress=false; if (window._jsonpTimeout) { clearTimeout(window._jsonpTimeout); window._jsonpTimeout=null; } var old = document.getElementById('jsonp-script'); if (old) old.remove(); if (d&&d.error==='ACCES_REFUSE') { setLoader(false); sync('error','Code d’accès requis'); if (!window._codeDejaDemande) { window._codeDejaDemande=true; if (demanderCodeAcces()) { window._codeDejaDemande=false; charger(true); } else { window._codeDejaDemande=false; } } return; } if (!d||!d.ok||!Array.isArray(d.data)) { sync('error',(d&&d.error)?d.error:'Réponse invalide'); setLoader(false); return; } commandes=d.data; verifierVersionServeur(d); sauvegarderCache(commandes); sync('ok','Mis à jour '+new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})); fillFournisseur(); renderAll(); setLoader(false); };
 function charger(force, tent) { if (!force && chargerDepuisCache()) return; if (window._jsonpInProgress && !tent) return; if (window._jsonpTimeout) { clearTimeout(window._jsonpTimeout); window._jsonpTimeout=null; } tent=tent||1; var TIMEOUT_MS = tent>1?60000:45000; window._jsonpInProgress=true; setLoader(true); sync('loading', tent>1?'Nouvelle tentative...':'Chargement...'); var old = document.getElementById('jsonp-script'); if (old) old.remove(); window._jsonpTimeout = setTimeout(function() { if (!window._jsonpInProgress) return; window._jsonpInProgress=false; var s = document.getElementById('jsonp-script'); if (s) s.remove(); if (tent<2) charger(true, tent+1); else { var cached=null; try { cached=JSON.parse(localStorage.getItem(CACHE_KEY)||'null'); } catch(e){viderCache();} if (Array.isArray(cached)) { commandes=cached; sync('warn','Serveur lent · cache'); fillFournisseur(); renderAll(); } else { document.getElementById('table-body').innerHTML='<tr><td colspan="14"><div class="empty-state"><p>❌ Serveur trop lent.</p></div></td></tr>'; } setLoader(false); } }, TIMEOUT_MS); var script = document.createElement('script'); script.id='jsonp-script'; script.src = WEBAPP + '?callback=_jsonpCallback&code=' + encodeURIComponent(codeAcces()) + '&t=' + Date.now(); document.head.appendChild(script); }
 function setLoader(on) { document.getElementById('loader').classList.toggle('active',on); }
 function sync(state,label) { document.getElementById('sync-label').textContent=label; var d = document.getElementById('sync-dot'); d.className='sync-dot'+(state==='loading'?' loading':''); d.style.background=state==='ok'?'#2E7D32':state==='error'?'#D32F2F':'#E65100'; }
@@ -1592,10 +1599,24 @@ function appliquerDonneesDevis(data){
       el.value=String(v);
     }
   });
+  // [v17.18] Règlements client : montants explicites, sinon calcul à partir des pourcentages du devis, puis solde.
+  (function(){
+    var devis=numListe(data.devisTTC),notes=[];
+    function eur(v){return v===null||v===undefined||v===''?null:numListe(v);}
+    var mc=eur(data.montantCommande!==undefined&&data.montantCommande!==''?data.montantCommande:data.acompte);
+    var ml=eur(data.montantLivraison),ms=eur(data.soldeRestant!==undefined&&data.soldeRestant!==''?data.soldeRestant:data.resteAPayer);
+    var pc=numListe(data.pourcentageCommande),pl=numListe(data.pourcentageLivraison);
+    if(mc===null&&pc!==null&&devis){mc=Math.round(devis*pc)/100;notes.push('À la commande : '+String(pc).replace('.',',')+' % du devis');}
+    if(ml===null&&pl!==null&&devis){ml=Math.round(devis*pl)/100;notes.push('À la livraison : '+String(pl).replace('.',',')+' % du devis');}
+    var put=function(id,v){var el=document.getElementById(id);if(el&&v!==null&&v!==undefined)el.value=String(v);};
+    put('f-acompte',mc);put('f-montantLivraison',ml);put('f-resteAPayer',ms);
+    if(ms===null)recalculerSoldeCommande();
+    window._notesReglementDevis=notes;
+  })();
   var fournisseur=document.getElementById('f-fournisseur');
   if(fournisseur&&data.fournisseur){ajouterOptionHorsListe(fournisseur,data.fournisseur);fournisseur.value=String(data.fournisseur);}
   basculerOngletCommande('commande');
-  afficherToast('ok','✨','Devis analysé','Vérifiez les champs préremplis avant enregistrement.',4500);
+  afficherToast('ok','✨','Devis analysé',(window._notesReglementDevis&&window._notesReglementDevis.length?'Montants calculés : '+window._notesReglementDevis.join(' ; ')+'. ':'')+'Vérifiez les champs préremplis avant enregistrement.',9000);
 }
 async function analyserImageDevis(){
   var source=pdfDevisImport||imageDevisImport;if(!source)return;
@@ -1667,12 +1688,12 @@ function rechercherCorrespondancesFournisseur(d){var ref=normaliserCleImport(d.r
 function appliquerCaptureAuModal(d,commandeCible){
   if(!d)return;
   var clientDoc=d.documentType==='client_devis';
-  var mapping=clientDoc?{client:'client',numeroDevis:'devis',devisTTC:'devisTTC',acompte:'acompte',resteAPayer:'resteAPayer',fournisseur:'fournisseur',noteFournisseur:'commentaire-nouveau'}:{client:'client',numeroDevis:'devis',fournisseur:'fournisseur',numeroCommande:'commande',totalTTC:'totalAchatsTTC',dateLivraisonPrevue:'prevLivraison',numeroARC:'numeroArcFournisseur'};
+  var mapping=clientDoc?{client:'client',numeroDevis:'devis',devisTTC:'devisTTC',acompte:'acompte',montantCommande:'acompte',montantLivraison:'montantLivraison',soldeRestant:'resteAPayer',resteAPayer:'resteAPayer',fournisseur:'fournisseur',noteFournisseur:'commentaire-nouveau'}:{client:'client',numeroDevis:'devis',fournisseur:'fournisseur',numeroCommande:'commande',totalTTC:'totalAchatsTTC',dateLivraisonPrevue:'prevLivraison',numeroARC:'numeroArcFournisseur'};
   if(commandeCible){
     var cible=commandes.find(function(x){return x.ligne===Number(commandeCible);});
     if(cible){var existing=document.getElementById('f-client');if(existing)existing.value=str(cible.client);}
   }
-  Object.keys(mapping).forEach(function(k){var el=document.getElementById('f-'+mapping[k]),v=d[k];if(!el||v===undefined||v===null||String(v).trim()==='')return;if(k==='devisTTC'||k==='totalTTC'||k==='acompte'||k==='resteAPayer'){var n=String(v).replace(/[^0-9,.-]/g,'').replace(/\s/g,'');if(n.indexOf(',')>=0)n=n.replace(/\./g,'').replace(',','.');if(isFinite(Number(n)))el.value=String(Number(n));}else if(k==='noteFournisseur'){var old=el.value||'';el.value=old?old+'\n'+String(v):String(v);}else{el.value=String(v);}});
+  Object.keys(mapping).forEach(function(k){var el=document.getElementById('f-'+mapping[k]),v=d[k];if(!el||v===undefined||v===null||String(v).trim()==='')return;if(k==='devisTTC'||k==='totalTTC'||k==='acompte'||k==='resteAPayer'||k==='montantCommande'||k==='montantLivraison'||k==='soldeRestant'){var n=String(v).replace(/[^0-9,.-]/g,'').replace(/\s/g,'');if(n.indexOf(',')>=0)n=n.replace(/\./g,'').replace(',','.');if(isFinite(Number(n)))el.value=String(Number(n));}else if(k==='noteFournisseur'){var old=el.value||'';el.value=old?old+'\n'+String(v):String(v);}else{el.value=String(v);}});
   var sel=document.getElementById('f-fournisseur');if(sel&&d.fournisseur){ajouterOptionHorsListe(sel,d.fournisseur);sel.value=String(d.fournisseur);}
   basculerOngletCommande('commande');
 }
@@ -1915,7 +1936,22 @@ function openModal(idx) { editLigne=-1; var c=idx>=0?commandes[idx]:{}; if(idx>=
 function closeModal() { document.getElementById('overlay').classList.remove('open'); }
 function closeOut(e) { if (e.target.id==='overlay') closeModal(); }
 
-async function sauvegarder() { var c={}; ['client','devis','devisTTC','fournisseur','commande','arc','commentaireARC','prevLivraison','statutLivraison','statutPose','totalAchatsTTC','acompte','montantLivraison','resteAPayer'].forEach(function(f){ var el=document.getElementById('f-'+f); if(el) c[f]=el.value.trim(); }); var metresRaw=document.getElementById('f-metres'); if(metresRaw){ var valS=metresRaw.value.trim(); var o0=commandes.find(function(x){return x.ligne===editLigne;}); if(o0 && valS===(o0.metres?formatDateMetre(o0.metres):'')) c.metres=o0.metres; else c.metres=valS?(convertirEnDateISO(valS)||valS):''; } var pvEl=document.getElementById('f-pvChantier'); c.pvChantier=pvEl&&pvEl.checked?'OUI':'NON'; var dpEl2=document.getElementById('f-datePose'); c.datePose=dpEl2?dpEl2.value.trim():''; if(!c.client){alert('⚠️ Client obligatoire.');return;} var nouvTxt=document.getElementById('f-commentaire-nouveau').value.trim(), hist=document.getElementById('f-commentaire-historique').value||'', cmtFinal=hist; if(nouvTxt){var ds=new Date().toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'});cmtFinal=hist?hist+'\n['+ds+'] '+nouvTxt:'['+ds+'] '+nouvTxt;} c.commentaire=cmtFinal; var btnSave=document.querySelector('.modal-footer .btn-primary'), oldTxt=btnSave?btnSave.textContent:''; if(btnSave){btnSave.disabled=true;btnSave.textContent='⏳...';} document.getElementById('saving-msg').classList.add('active'); try { var res; if(editLigne>0){ var orig=commandes.find(function(x){return x.ligne===editLigne;}); if(!orig) throw new Error('Commande introuvable.'); var map={1:'client',2:'metres',3:'devis',4:'devisTTC',5:'fournisseur',6:'commande',7:'arc',9:'commentaireARC',10:'prevLivraison',8:'totalAchatsTTC',12:'statutLivraison',13:'statutPose',14:'commentaire',16:'pvChantier',20:'datePose',23:'acompte',24:'resteAPayer',34:'montantLivraison'}; var champs={}; Object.keys(map).forEach(function(col){var k=map[col], nouv=str(c[k]).trim(), anc=orig?str(orig[k]).trim():'';if(nouv!==anc)champs[col]=c[k];}); var objNouv=document.getElementById('f-objetCommande').value.trim(); if(!orig||objNouv!==str(orig.objetCommande).trim())champs.note_G=objNouv; if(!Object.keys(champs).length){closeModal();return;} res=await apiPost({action:'modifier', ligne:editLigne, clientAttendu:orig.client, champs:champs}); } else { res=await apiPost({action:'ajouter',commande:c}); } if(!res||!res.ok) throw new Error(res.error||'Erreur'); closeModal(); afficherToast('ok','✅','Enregistré','',2500); viderCache(); await charger(true); } catch(e) { afficherToast('urgent','❌','Erreur', e.message, 8000); } finally { if(btnSave){btnSave.disabled=false;btnSave.textContent=oldTxt;} document.getElementById('saving-msg').classList.remove('active'); } }
+function verifierEcritureServeur(res,champs){
+  if(!champs)return '';
+  var noms={1:'Client',2:'Date métré',3:'N° devis',4:'Devis TTC',5:'Fournisseur',6:'Commande',7:'ARC',8:'Achat fournisseur TTC',9:'Validation ARC',10:'Prévision livraison',12:'Statut livraison',13:'Statut pose',14:'Commentaire',16:'PV chantier',20:'Date pose',23:'À régler à la commande',24:'Solde à régler',34:'À régler à la livraison'};
+  if(!res.verif)return 'Le script Google déployé est une ancienne version : il ne confirme pas l’écriture. Collez Code.gs (v17.17) dans Apps Script puis Déployer > Gérer les déploiements > Modifier > Nouvelle version.';
+  var manque=[];
+  Object.keys(champs).forEach(function(col){
+    if(col==='note_G')return;
+    var envoye=champs[col],lu=res.verif[col];
+    if(lu===undefined){manque.push(noms[col]||('colonne '+col));return;}
+    var a=numListe(envoye),b=numListe(lu);
+    var egal=(a!==null&&b!==null&&(String(envoye).trim()!==''&&String(lu).trim()!=='')&&Math.abs(a-b)<0.005)||String(envoye).trim()===String(lu).trim();
+    if(!egal&&!(String(envoye).trim()===''&&String(lu).trim()===''))manque.push(noms[col]||('colonne '+col));
+  });
+  return manque.length?'Google n’a pas conservé : '+manque.join(', ')+'. Vérifiez les protections de la feuille ou redéployez le script.':'';
+}
+async function sauvegarder() { var c={}; ['client','devis','devisTTC','fournisseur','commande','arc','commentaireARC','prevLivraison','statutLivraison','statutPose','totalAchatsTTC','acompte','montantLivraison','resteAPayer'].forEach(function(f){ var el=document.getElementById('f-'+f); if(el) c[f]=el.value.trim(); }); var metresRaw=document.getElementById('f-metres'); if(metresRaw){ var valS=metresRaw.value.trim(); var o0=commandes.find(function(x){return x.ligne===editLigne;}); if(o0 && valS===(o0.metres?formatDateMetre(o0.metres):'')) c.metres=o0.metres; else c.metres=valS?(convertirEnDateISO(valS)||valS):''; } var pvEl=document.getElementById('f-pvChantier'); c.pvChantier=pvEl&&pvEl.checked?'OUI':'NON'; var dpEl2=document.getElementById('f-datePose'); c.datePose=dpEl2?dpEl2.value.trim():''; if(!c.client){alert('⚠️ Client obligatoire.');return;} var nouvTxt=document.getElementById('f-commentaire-nouveau').value.trim(), hist=document.getElementById('f-commentaire-historique').value||'', cmtFinal=hist; if(nouvTxt){var ds=new Date().toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'});cmtFinal=hist?hist+'\n['+ds+'] '+nouvTxt:'['+ds+'] '+nouvTxt;} c.commentaire=cmtFinal; var btnSave=document.querySelector('.modal-footer .btn-primary'), oldTxt=btnSave?btnSave.textContent:''; if(btnSave){btnSave.disabled=true;btnSave.textContent='⏳...';} document.getElementById('saving-msg').classList.add('active'); try { var res; if(editLigne>0){ var orig=commandes.find(function(x){return x.ligne===editLigne;}); if(!orig) throw new Error('Commande introuvable.'); var map={1:'client',2:'metres',3:'devis',4:'devisTTC',5:'fournisseur',6:'commande',7:'arc',9:'commentaireARC',10:'prevLivraison',8:'totalAchatsTTC',12:'statutLivraison',13:'statutPose',14:'commentaire',16:'pvChantier',20:'datePose',23:'acompte',24:'resteAPayer',34:'montantLivraison'}; var champs={}; Object.keys(map).forEach(function(col){var k=map[col], nouv=str(c[k]).trim(), anc=orig?str(orig[k]).trim():'';if(nouv!==anc)champs[col]=c[k];}); var objNouv=document.getElementById('f-objetCommande').value.trim(); if(!orig||objNouv!==str(orig.objetCommande).trim())champs.note_G=objNouv; if(!Object.keys(champs).length){closeModal();return;} res=await apiPost({action:'modifier', ligne:editLigne, clientAttendu:orig.client, champs:champs}); } else { res=await apiPost({action:'ajouter',commande:c}); } if(!res||!res.ok) throw new Error(res.error||'Erreur'); closeModal(); var probleme=verifierEcritureServeur(res,champs); if(probleme){afficherToast('urgent','⚠️','Enregistrement incomplet',probleme,15000);}else{afficherToast('ok','✅','Enregistré','',2500);} viderCache(); await charger(true); } catch(e) { afficherToast('urgent','❌','Erreur', e.message, 8000); } finally { if(btnSave){btnSave.disabled=false;btnSave.textContent=oldTxt;} document.getElementById('saving-msg').classList.remove('active'); } }
 
 async function supprimerCommande() { var c=commandes.find(function(x){return x.ligne===editLigne;}); if(!confirm('⚠️ Supprimer "'+str(c?c.client:'')+'" ?'))return; document.getElementById('saving-msg').classList.add('active'); try{var r=await apiPost({action:'supprimer',ligne:editLigne,clientAttendu:c?c.client:undefined});if(!r||!r.ok)throw new Error(r.error||'Erreur');closeModal();afficherToast('ok','🗑','Supprimé','',2500);viderCache();await charger(true);}catch(e){afficherToast('urgent','❌','Erreur',e.message,8000);} document.getElementById('saving-msg').classList.remove('active'); }
 
